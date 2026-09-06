@@ -179,10 +179,10 @@
 .t-about h2{font-size:1rem;margin:0 0 10px;padding-left:0}
 .t-about p{color:var(--ink-soft);font-size:.9rem;margin:0}
 
+/* 🔴 見出しに句点は使わない（2026-09-06 本人）。⭐句点があった位置で改行する */
+.t-catch .nl{display:block}
+
 @media(max-width:720px){
-  /* 🔴 スマホだけ「だから安心」を次の行に落とす。読点も消す */
-  .t-catch .cm{display:none}
-  .t-catch .nl{display:block}
   .t-two{grid-template-columns:1fr}
   .t-cards{grid-template-columns:1fr}
   .t-card{padding:20px 18px 18px}
