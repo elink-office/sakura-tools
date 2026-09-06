@@ -101,12 +101,25 @@ h3.sub{font-size:1.02rem;margin:0 0 12px;display:flex;align-items:center}
 .tbl tr.off td:not(.chk){opacity:.32}
 /* ⚠取り消し線はやめた（2026-09-05 本人「名前に入る取り消し線はやめて」）。うすくするだけ */
 .tbl input[type=checkbox]{width:17px;height:17px;cursor:pointer}
-.tbl input.ttl{
+.tbl input.ttl, .tbl textarea.ttl{
   width:100%;min-width:120px;font:inherit;font-size:.92rem;
   border:1px solid transparent;border-radius:6px;padding:4px 7px;
   background:var(--bg);color:var(--ink);
 }
-.tbl input.ttl:focus{outline:none;border-color:var(--pink);background:#fff}
+.tbl input.ttl:focus, .tbl textarea.ttl:focus{outline:none;border-color:var(--pink);background:#fff}
+/* 🔴 長い文は1行だと直しにくい（2026-09-06 本人「長い文章だと選択しにくいよね。
+   タップ（クリック）したら枠を大きくできないのかな？」）。
+   ⭐押したら中身の高さまで広がる。離すと1行に戻る（一覧が長くならない）。
+   ⚠改行は入れさせない（1行＝1枚のため）。Enterは「決定」にしてある */
+.tbl textarea.ttl{
+  display:block;resize:none;overflow:hidden;line-height:1.5;
+  /* ⚠共通の style.css に textarea{min-height:170px} がある（貼り付け用の大きな枠）。
+     min-height は height より強いので、ここで 0 に戻さないと1行にならない */
+  min-height:0;
+  height:calc(1.5em + 10px);          /* 1行ぶん */
+  white-space:pre-wrap;word-break:break-word;
+}
+.tbl textarea.ttl:focus{white-space:pre-wrap}
 /* ⚠一度大きくして桃色にしたが、本人の指示で戻した
    （2026-09-05「ボタンはグレーのままのほうがいい。▼も前のままでいい」）。
    気づかれなかった問題は、見た目でなく**一覧の上の説明**で解決する */
@@ -187,9 +200,10 @@ h3.sub{font-size:1.02rem;margin:0 0 12px;display:flex;align-items:center}
 }
 /* ⭐見出し（// の前側）は小さく、少し藄い色で。
    発表者の「作品名＋名前」と同じ見せ方に揃える */
+/* ⚠見出しと本文が近すぎた（2026-09-06 本人「//を入れての改行の時、左と右で、行間もう少し空けて」） */
 #title .sm{
   display:block;font-size:.44em;color:var(--ink-soft);
-  font-weight:700;letter-spacing:.06em;margin-bottom:.35em;line-height:1.3;
+  font-weight:700;letter-spacing:.06em;margin-bottom:.75em;line-height:1.3;
 }
 /* 🔴 「/ で改行した行」のかたまり。ふだんは中央のまま（2026-09-06 本人
    「下の3行を右揃えにしたいという要望あり」）。

@@ -37,7 +37,7 @@
 </style>
 </head>
 <body>
-<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/06 15:36</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/06 17:00</div>
 
 <header class="site-head noprint">
   <div class="wrap">
@@ -68,10 +68,12 @@
     </div>
 
     <div class="row tight" id="quickLoad" hidden style="margin-bottom:12px">
-      <div><label for="clsSel2">さくらツールで保存済の名簿</label>
+      <div><label for="clsSel2">さくらツールで保存済のデータ</label>
         <select id="clsSel2"><option value="">－</option></select></div>
       <div><label>&nbsp;</label>
-        <button class="mini" id="clsLoad2" type="button">この名簿を自動入力</button></div>
+        <button class="mini" id="clsLoad2" type="button">このデータを自動入力</button></div>
+      <div><label>&nbsp;</label>
+        <button class="mini" id="clsDel2" type="button">削除</button></div>
     </div>
 
     <textarea id="names" placeholder="ここをクリック→エクセルデータを貼り付け（手入力可）&#10;&#10;1,やまだ たろう,男&#10;2,さとう はなこ,女&#10;すずき いちろう（名前だけでもOK）&#10;&#10;空のままだとサンプルが出ます"></textarea>
@@ -307,33 +309,28 @@
       </ul>
       <p class="tip-h">さくらツールの中で共通です</p>
       <ul>
-        <li><strong>ほかの道具で保存した名簿も、ここに出ます。</strong>逆もできます。同じ機器なら、名簿を貼り直す必要はありません。</li>
-        <li>名簿は共通ですが、部屋の形や班の設定は<strong>ツールごと</strong>に覚えます。混ざることはありません。</li>
+        <li><strong>ほかの道具で保存したデータも、ここに出ます。</strong>逆もできます。同じ機器なら、名簿を貼り直す必要はありません。</li>
+        <li>データは共通ですが、部屋の形や班の設定は<strong>ツールごと</strong>に覚えます。混ざることはありません。</li>
       </ul>
     </div>
 
-    <p class="hint">保存した名簿は、<b>さくらツール上で利用できます</b>。保存できるのは<b>文字情報のみ</b>です（写真や画像は残りません）。</p>
+    <p class="hint">保存したデータは、<b>さくらツール上で利用できます</b>。保存できるのは<b>文字情報のみ</b>です（写真や画像は残りません）。</p>
 
     <p class="safe">🔒 <strong>保存したものは、使ってる機器の中だけに残ります。</strong></p>
 
     <div class="cls-box">
-      <h3>名簿に名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
+      <h3>データに名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
       <p class="hint">名簿・部屋の形・条件・男女の指定を、まとめて残すときに使います。<strong>「上書き」は、転入・転出で名簿が変わったとき</strong>に使ってください。</p>
       <p class="btn-row">
         <button class="mini" id="clsNew" type="button">新しい名前で保存</button>
         <button class="mini" id="clsSave" type="button">上書き</button>
         <button class="mini" id="clsDel" type="button">削除</button>
       </p>
-      <div class="pick"><label for="clsSel">さくらツールで保存済の名簿</label>
+      <div class="pick"><label for="clsSel">さくらツールで保存済のデータ</label>
         <select id="clsSel"><option value="">－</option></select></div>
-      <p class="hint" style="margin-top:14px">⚠ <strong>共用の機器で使ったときは、使い終わったら下の「削除」を押してください。</strong></p>
+      <p class="hint" style="margin-top:14px">⚠ <strong>共用の機器で使ったときは、⑥のチェックを外して、ブラウザを閉じてください。</strong></p>
     </div>
 
-    <div class="del-box">
-      <h3>削除</h3>
-      <p class="hint">ボタンを押すと、この機器から名簿が消えます。<strong>もとには戻せません。</strong>座席表メーカー・席次表メーカーからも消えます。</p>
-      <p><button class="mini" id="clsClearAll" type="button">名簿の全削除</button></p>
-    </div>
   </section>
 
   <section class="read">
@@ -364,7 +361,7 @@
       <dt>図工室・家庭科室でも使えますか？</dt>
       <dd>使えます。台の数と1台の人数を変えるだけです。部屋の名前は自由に書けるので、「第2理科室」のような書き方もできます。</dd>
       <dt>クラスをいくつも受け持っています</dt>
-      <dd><strong>名簿は20クラスまで残せます。</strong>次に開いたときは、選んで呼び出すだけです。座席表メーカー・席次表メーカーで保存した名簿も、ここに出ます。</dd>
+      <dd><strong>データは20件まで残せます。</strong>次に開いたときは、選んで呼び出すだけです。座席表メーカー・席次表メーカーで保存したデータも、ここに出ます。</dd>
       <dt>班長になる人を1つの班に1人ずつにできますか？</dt>
       <dd>できます。②の「詳しい条件」にある<strong>「班に1人ずつにする人」</strong>でえらんでください。その人が2人になった班と、1人もいない班のあいだで入れかえます。人数が班の数より少ないときは、いない班をお知らせします。班長でなくても、声かけ役・そうじのリーダーなど、分けたい人なら何にでも使えます。</dd>
       <dt>前と同じ班にならないようにできますか？</dt>
@@ -389,7 +386,7 @@
     <span class="copy">さくらツール　© 2026 SAKURA TOOLS</span></div>
 </footer>
 
-<script src="group.js?v=14"></script>
+<script src="group.js?v=16"></script>
 <!-- 🔴 印刷用の1枚絵の置き場。画面には出ない。
      ⚠body の直下に置くこと。中に入れると、印刷のときに親ごと隠されて白紙になる -->
 <div id="printImgWrap"></div>

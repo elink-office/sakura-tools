@@ -180,21 +180,19 @@
         if (!withSets && c.kind === 'slide') return;
         var o = document.createElement('option');
         o.value = String(i);
-        o.textContent = (c.label || ('名簿'+(i+1)))
+        o.textContent = (c.label || ('データ'+(i+1)))
                       + (c.kind === 'slide' ? '（文字）' : ((c.group && c.group.seats) ? '（班あり）' : ''));
         sel.appendChild(o);
       });
       if (keep !== '' && cls[parseInt(keep,10)]) sel.value = keep;
     });
-    if ($('clsDelT')){
-      var cSel = cls[parseInt(($('clsSelT')||{}).value,10)];
-      $('clsDelT').disabled = !(cSel && cSel.kind === 'slide');
-    }
+    // 🔴 削除は⑤に1つだけ（2026-09-06 本人「削除は⑤でしょ？」）。①でえらんでいるものを消す
+    if ($('clsDel')) $('clsDel').disabled = !cls.length;
     var cnt = $('clsCount');
     if (cnt){
       var nR = cls.filter(function(c){ return c.kind !== 'slide'; }).length;
       var nS = cls.length - nR;
-      cnt.textContent = '名簿 ' + nR + '／' + MAXC + '　文字 ' + nS + '／' + MAXS;
+      cnt.textContent = '名前のデータ ' + nR + '／' + MAXC + '　文字のデータ ' + nS + '／' + MAXS;
     }
   }
   // ⚠2つのセレクトは同じものを指す（座席表と同じ）
@@ -242,7 +240,7 @@
       .map(function(s){ return nameOfLine(s); })
       .filter(function(s){ return s !== ''; });
     if (!names.length){
-      $('warn').textContent = 'この名簿に名前が入っていませんでした。';
+      $('warn').textContent = 'このデータに名前が入っていませんでした。';
       $('warn').hidden = false; return;
     }
     $('warn').hidden = true;
@@ -298,10 +296,10 @@
               .filter(function(t){ return t !== ''; })
       : [];
     if (isText && !lines.length){ alert('先に文字を入れてください。'); return; }
-    if (!isText && !rows.length){ alert('先に名簿を読み込んでください。'); return; }
+    if (!isText && !rows.length){ alert('先に①で名前を入れてください。'); return; }
     var st = readStore();
     var cur = st.classes[pickedClass()];
-    var name = prompt('名簿の名前を入れてください', (cur && cur.label) || '名簿');
+    var name = prompt('データの名前を入れてください', (cur && cur.label) || 'データ');
     if (name === null) return;
     name = String(name).replace(/^\s+|\s+$/g, '');
     if (!name) return;
@@ -319,11 +317,11 @@
     var nR = st.classes.filter(function(c){ return c.kind !== 'slide'; }).length;
     var nS = st.classes.length - nR;
     if (isText && nS >= MAXS){
-      alert('文字のセットは' + MAXS + '件までです。いらないものを座席表メーカーで消してください。');
+      alert('文字のデータは' + MAXS + '件までです。いらないものを消してから保存してください。');
       return;
     }
     if (!isText && nR >= MAXC){
-      alert('名簿は' + MAXC + '件までです。いらないものを消してから保存してください。');
+      alert('データは' + MAXC + '件までです。いらないものを消してから保存してください。');
       return;
     }
     var item = {
@@ -336,6 +334,33 @@
     if (!writeStore(st)) return;
     fillClassSelect();
     showCls('「'+name+'」として保存しました');
+  }
+  /* 🔴 上書き（2026-09-06 本人「名簿に関しては上書きできるはずだよね？」）。
+     ⭐名前だけになってしまう問題は namesNow() で解決ずみ＝番号・男女は残る。
+     ⚠文字のまとまりと名簿は入れ替えられない（座席表の名簿が、めあての文で埋まってしまう） */
+  function doClsSave(){
+    var isText = (kind() === 'text');
+    var sel = isText ? $('clsSelT') : $('clsSel');
+    if (!sel || sel.value === ''){ alert('先に①で、上書きするデータをえらんでください。'); return; }
+    var st = readStore(), i = parseInt(sel.value,10), c = st.classes[i];
+    if (!c){ alert('先に①で、上書きするデータをえらんでください。'); return; }
+    var lines = isText
+      ? sheets.map(function(sh){ return (sh.text||'').trim(); })
+              .filter(function(t){ return t !== ''; })
+      : [];
+    if (isText && !lines.length){ alert('先に文字を入れてください。'); return; }
+    if (!isText && !rows.length){ alert('先に①で名前を入れてください。'); return; }
+    if (isText && c.kind !== 'slide'){
+      alert('「' + (c.label||'') + '」は名前のデータです。文字は上書きできません。'); return;
+    }
+    if (!isText && c.kind === 'slide'){
+      alert('「' + (c.label||'') + '」は文字のデータです。名前は上書きできません。'); return;
+    }
+    if (!confirm('「' + (c.label||'') + '」を、いまの中身に入れ替えます。よろしいですか。')) return;
+    c.names = isText ? lines.join('\n') : namesNow(c.names);
+    if (!writeStore(st)) return;
+    fillClassSelect();
+    showCls('「' + (c.label||'') + '」を上書きしました');
   }
   var clsTimer = null;
   function showCls(t){
@@ -482,7 +507,7 @@
       + '<th>出す文字（/ で改行・// で見出し）</th><th class="mv">順番</th><th class="del">消す</th></tr>'
       + '<tr class="ghost"><td class="chk"></td><td class="idx">1</td>'
       + '<td class="pic"><button class="picadd" data-picnew="1" title="ここに写真を入れる">＋</button></td>'
-      + '<td class="members">「＋」で写真、上の枠から文字が入ります</td>'
+      + '<td class="members">「＋」で写真、①準備で文字が入ります</td>'
       + '<td class="mv"></td><td class="del"></td></tr></table>';
       updateCount(); save(); return;
     }
@@ -520,7 +545,7 @@
                 + '<button class="picx" data-picdel="'+i+'" title="写真だけ外す">×</button></span>'
               : '<button class="picadd" data-picadd="'+i+'" title="ここに写真を入れる">＋</button>')
         +  '</td>'
-        +  '<td><input class="ttl" type="text" data-s="'+i+'" value="'+esc(sh.text||'')+'" placeholder="出す文字（写真だけでもよい）"></td>'
+        +  '<td><textarea class="ttl" rows="1" data-s="'+i+'" placeholder="出す文字（写真だけでもよい）">'+esc(sh.text||'')+'</textarea></td>'
         +  '<td class="sel">'+sel('sfont', i, sh.font||'gothic', FONT)+'</td>'
         +  '<td class="sel">'+sel('spos', i, (sh.pos==='top'?'bottom':(sh.pos||'mid')), POS)+'</td>'
         +  '<td class="sel">'+sel('ssize', i, sh.size||'', SIZE)+'</td>'
@@ -536,20 +561,35 @@
     updateCount(); save();
   }
 
+  /* 🔴 ①の枠の中身は消さない（2026-09-06 本人「①の画面には表示されない。
+     表示されないとうまく稼動してないと思ってしまう」）＝入れたものが目で見える。
+     ⭐そのかわり、**すでに②にある行は足さない**（枠が残るので、続けて押すと増えてしまう） */
   function addLines(text){
+    var have = {};
+    sheets.forEach(function(sh){ have[(sh.text||'').trim()] = true; });
+    var n = 0;
     String(text).replace(/\r/g,'').split('\n').forEach(function(line){
-      if (line.trim()==='') return;
-      sheets.push({ text:line.trim(), url:'', name:'', pos:'', size:'', font:'', al:'', off:false });
+      var t = line.trim();
+      if (t === '' || have[t]) return;
+      have[t] = true;
+      sheets.push({ text:t, url:'', name:'', pos:'', size:'', font:'', al:'', off:false });
+      n++;
     });
-    $('lines').value = '';
     drawSheets();
+    return n;   // ⭐何枚入ったかを②に出す
+  }
+  // ⚠①の枠に足す（打ったものは消さずに、下につなげる）
+  function putLines(text){
+    var box = $('lines'); if (!box) return;
+    var cur = String(box.value).replace(/\r/g,'').replace(/^\s+|\s+$/g,'');
+    box.value = cur ? cur + '\n' + text : text;
   }
 
   /* ================= 名簿の一覧 ================= */
   function drawList(){
     var box = $('list');
     if (!rows.length){
-      box.innerHTML = '<p class="empty">まだ名簿を読み込んでいません。</p>';
+      box.innerHTML = '<p class="empty">まだ何もありません。①で名前を入れると、ここに並びます。</p>';
       $('modes').hidden = true; $('tools').hidden = true;
       updateCount(); save(); return;
     }
@@ -569,7 +609,7 @@
           + '<td class="chk"><input type="checkbox" data-g="'+esc(g)+'"'+(off?'':' checked')+'></td>'
           + '<td class="idx">'+(i+1)+'</td>'
           + '<td><b>'+esc(g)+'</b></td>'
-          + '<td><input class="ttl" type="text" data-gt="'+esc(g)+'" value="'+esc(t)+'" placeholder="作品名"></td>'
+          + '<td><textarea class="ttl" rows="1" data-gt="'+esc(g)+'" placeholder="作品名">'+esc(t)+'</textarea></td>'
           + '<td class="members">'+mem.map(function(m){ return esc(m.name); }).join('・')+'</td>'
           + '<td class="mv">'
           +   '<button class="mvbtn" data-gmv="'+i+'" data-d="-1"'+(i===0?' disabled':'')+'>▲</button> '
@@ -587,7 +627,7 @@
           + '<td class="chk"><input type="checkbox" data-i="'+i+'"'+(r.off?'':' checked')+'></td>'
           + '<td class="idx">'+(i+1)+'</td>'
           + '<td><b>'+esc(r.name)+'</b></td>'
-          + '<td><input class="ttl" type="text" data-t="'+i+'" value="'+esc(r.title)+'" placeholder="作品名"></td>';
+          + '<td><textarea class="ttl" rows="1" data-t="'+i+'" placeholder="作品名">'+esc(r.title)+'</textarea></td>';
         h += '<td class="grp">'+grpSel(i, r.group)+'</td>';
         h += '<td class="mv">'
           +   '<button class="mvbtn" data-mv="'+i+'" data-d="-1"'+(i===0?' disabled':'')+'>▲</button> '
@@ -916,20 +956,55 @@
   /* 🔴 ①と②が別のシャッターになって、つながりが見えにくくなった（2026-09-05 本人）。
      ⭐入れたら②が勝手に開く（本人「勝手に展開がいいんじゃないか」＝説明文を足すより、動きで見せる）。
      ⚠すでに開いているときは何もしない。見えていないときだけ、そっと画面を送る。 */
-  function openStep2(){
+  /* 🔴 入れたら②へ連れていく（2026-09-06 本人「サンプルを入れるを押すと、②にも反映するって
+     わからず、私何回も押してる。で、重複データがたまりまくる」）。
+     ⚠前は「②が閉じていたときだけ」動かしていた＝②は最初から開いているので、
+       押しても画面が変わらず、入ったことに気づけなかった。
+     ⭐いつでも②が見える位置まで動かし、①には「何枚入れたか」を出す。 */
+  function openStep2(msg){
+    if (msg) showAdd(msg);
     var d2 = $('d2'); if (!d2) return;
-    var wasOpen = d2.open;
     d2.open = true;
-    if (wasOpen) return;
+    /* 🔴 ①はたたまない（2026-09-06 本人「とじるじゃなくて移動するのほうがいいかも？」）。
+       ⭐入れたら②まで画面を動かす。①は開いたままなので、続けて足すこともできる。
+       ⚠一度「たたむ」で作ってみたが、続けて入れたい人に手数が増えるのでやめた */
     var sm = d2.querySelector('summary'); if (!sm) return;
     var r = sm.getBoundingClientRect();
     if (r.top < 0 || r.bottom > (window.innerHeight || 0)){
-      try{ sm.scrollIntoView({behavior:'smooth', block:'center'}); }catch(e){ sm.scrollIntoView(); }
+      /* ⚠ゆっくり動かす指定（behavior:'smooth'）は、機器の設定によっては**何も起きない**。
+         ⭐そのまま動かす＝確実に②が見える（2026-09-06 実機で smooth が効かないのを確認） */
+      try{ sm.scrollIntoView({block:'center'}); }catch(e){ sm.scrollIntoView(); }
     }
   }
+  /* 🔴 出す文は2か所で役割が違う（2026-09-06 本人「サンプルを入れた後に、出てくる文字は
+     ②へ進みましょうとかのほうがいいかも。で、②の中にサンプルを入れましたとかのメッセージ」）。
+     ⭐①＝つぎにどこを見るかの案内／②＝何が入ったかの結果。
+     ⚠PCでは②がもともと見えていて画面が動かないことがある（本人）。文だけで分かるようにしておく */
+  var addTimer = null;
+  function showAdd(done){
+    ['addMsg','addMsgL'].forEach(function(id){
+      var el = $(id); if (el) el.textContent = done ? '②へ進みましょう' : '';
+    });
+    var el2 = $('addMsg2'); if (el2) el2.textContent = done || '';
+    clearTimeout(addTimer);
+    if (done) addTimer = setTimeout(function(){ showAdd(''); }, 4000);
+  }
 
-  $('addText').addEventListener('click', function(){ addLines($('lines').value); openStep2(); });
-  $('sampleText').addEventListener('click', function(){ addLines(SAMPLE_TEXT); openStep2(); });
+  $('addText').addEventListener('click', function(){
+    var n = addLines($('lines').value);
+    openStep2(n ? n + '枚を入れました' : 'もう入っています');
+  });
+  /* ⚠サンプルは何度も押されて増えていく（2026-09-06 本人）。⭐①の枠にも出して、②には足すだけ */
+  $('sampleText').addEventListener('click', function(){
+    var first = SAMPLE_TEXT.split(String.fromCharCode(10))[0];
+    if (String($('lines').value).indexOf(first) < 0) putLines(SAMPLE_TEXT);
+    var n = addLines(SAMPLE_TEXT);
+    openStep2(n ? 'サンプルを' + n + '枚入れました' : 'サンプルはもう入っています');
+  });
+  // 🔴 ①の枠を空にするボタン（2026-09-06 本人「サンプルを入れるの横に消すボタンを作って」）
+  if ($('clearLines')) $('clearLines').addEventListener('click', function(){
+    $('lines').value = ''; showAdd('');
+  });
   // 🔴 空の1枚を足す。文字を打つのも、写真の「＋」を押すのも、ここから（2026-09-05 本人）
   $('addRow').addEventListener('click', function(){
     sheets.push({ text:'', url:'', name:'', pos:'', size:'', font:'', off:false });
@@ -1090,12 +1165,40 @@
     }
   });
 
+  /* 🔴 押したら中身ぜんぶが見える高さに広げる（2026-09-06 本人「タップしたら枠を大きくできないのかな？」）。
+     ⚠1行＝1枚なので、改行は入れさせない（Enterは決定＝枠から出る） */
+  function fitTtl(el, open){
+    if (!el || el.tagName !== 'TEXTAREA') return;
+    el.style.height = 'auto';
+    el.style.height = (open ? el.scrollHeight : 0) + 'px';
+    if (!open) el.style.height = '';
+  }
+  function bindTtl(box){
+    box.addEventListener('focusin', function(e){
+      if (e.target.classList && e.target.classList.contains('ttl')) fitTtl(e.target, true);
+    });
+    box.addEventListener('focusout', function(e){
+      if (e.target.classList && e.target.classList.contains('ttl')) fitTtl(e.target, false);
+    });
+    box.addEventListener('keydown', function(e){
+      if (e.key === 'Enter' && e.target.classList && e.target.classList.contains('ttl')){
+        e.preventDefault(); e.target.blur();
+      }
+    });
+  }
+  bindTtl($('sheets'));
+  bindTtl($('list'));
+
   // ⚠文字の入力では描き直さない（描き直すとカーソルが飛ぶ）
   $('sheets').addEventListener('input', function(e){
     var el = e.target;
     if (!el.classList || !el.classList.contains('ttl')) return;
     if (!el.hasAttribute('data-s')) return;
-    sheets[parseInt(el.getAttribute('data-s'),10)].text = el.value;
+    // ⚠貼り付けで改行が入ることがある。1行にそろえる
+    var v = String(el.value).replace(/[\r\n]+/g, ' ');
+    if (v !== el.value) el.value = v;
+    sheets[parseInt(el.getAttribute('data-s'),10)].text = v;
+    fitTtl(el, true);
     updateCount(); save();
   });
 
@@ -1113,27 +1216,39 @@
   });
 
   $('clsNew').addEventListener('click', doClsNew);
-  $('clsSel').addEventListener('change', syncCls('clsSel','clsSelT'));
+  if ($('clsSave')) $('clsSave').addEventListener('click', doClsSave);
+  $('clsSel').addEventListener('change', function(){
+    syncCls('clsSel','clsSelT')();
+    refreshDelT();
+  });
   if ($('clsSelT')) $('clsSelT').addEventListener('change', function(){
     syncCls('clsSelT','clsSel')();
     refreshDelT();
   });
-  /* 🔴 文字のまとまりだけ、このページで消せる（2026-09-05）。
-     ⚠名簿は消せない（消すのは持ち主＝座席表メーカー）。作った場所で消す、という切り分け */
+  /* 🔴 保存したものは、このページからでも消せる（2026-09-06 本人
+     「ほかの保存の場所にも…削除できるようにしてほしい」）。
+     ⚠名簿は置き場が共通なので、消すとほかの道具からも消える＝確認でそう伝える */
   function refreshDelT(){
-    var b = $('clsDelT'); if (!b) return;
-    var c = loadRosters()[parseInt(($('clsSelT')||{}).value,10)];
-    b.disabled = !(c && c.kind === 'slide');
+    if ($('clsDel')) $('clsDel').disabled = !loadRosters().length;
   }
-  if ($('clsDelT')) $('clsDelT').addEventListener('click', function(){
-    var i = parseInt($('clsSelT').value,10);
+  function delPicked(selId){
+    var sel = $(selId);
+    if (!sel || sel.value === ''){ alert('先に①で、消すデータをえらんでください。'); return; }
+    var i = parseInt(sel.value,10);
     var st = readStore(), c = st.classes[i];
-    if (!c || c.kind !== 'slide') return;
-    if (!confirm('「'+(c.label||'')+'」を消します。よろしいですか。')) return;
+    if (!c) return;
+    var msg = '「'+(c.label||'')+'」を消します。';
+    // ⚠名簿は座席表メーカーなどと同じ置き場。文字のまとまりはこのページのものだけ
+    if (c.kind !== 'slide') msg += '座席表メーカー・席次表メーカーからも消えます。';
+    if (!confirm(msg + 'よろしいですか。')) return;
     st.classes.splice(i,1);
     if (!writeStore(st)) return;
     fillClassSelect(); refreshDelT();
     showCls('「'+(c.label||'')+'」を消しました');
+  }
+  // ⚠①のどちらの欄でえらんだかは、いまの分岐で決まる（文字＝clsSelT／発表者＝clsSel）
+  if ($('clsDel')) $('clsDel').addEventListener('click', function(){
+    delPicked(kind() === 'text' ? 'clsSelT' : 'clsSel');
   });
   /* 🔴 文字を出す側で名簿を読む（2026-09-05 本人）。⭐1人＝1枚の文字にする。
      ⚠いま入っているぶんは消さず、下に足す */
@@ -1145,31 +1260,38 @@
       .map(function(l){ return (c.kind === 'slide') ? l.trim() : nameOfLine(l); })
       .filter(function(n){ return n !== ''; });
     if (!names.length) return;
-    names.forEach(function(n){
-      sheets.push({ text:n, url:'', name:'', pos:'', size:'', font:'', off:false });
-    });
-    drawSheets(); openStep2();
+    /* ⚠読み込んだ中身も①の枠に出す（2026-09-06 本人「1年3組のデータを読みこむ押しても、
+       その下の文字の部分には表示されない。見た目で見れないの？」）。
+       ⭐名簿でも読める＝1人が1行＝1枚になる（本人の疑問への答え） */
+    var joined = names.join(String.fromCharCode(10));
+    putLines(joined);
+    var n = addLines(joined);
+    openStep2(n ? '「' + (c.label || '') + '」を' + n + '枚入れました'
+                : '「' + (c.label || '') + '」はもう入っています');
   });
 
   $('read').addEventListener('click', function(){
     var got = parse($('paste').value);
     if (!got.length){
-      $('warn').textContent = '名前が読み取れませんでした。Excelの名前の列をコピーして貼り付けてください。';
+      $('warn').textContent = 'データが読み取れませんでした。Excelの名前の列をコピーして貼り付けてください。';
       $('warn').hidden = false; return;
     }
     $('warn').hidden = true;
-    setRows(got); drawList(); openStep2();
+    setRows(got); drawList(); openStep2(got.length + '人を入れました');
   });
   $('sample').addEventListener('click', function(){
     $('paste').value = SAMPLE_LIST; $('warn').hidden = true;
-    setRows(parse(SAMPLE_LIST)); drawList(); openStep2();
+    setRows(parse(SAMPLE_LIST)); drawList(); openStep2('サンプルを入れました');
   });
   $('clear').addEventListener('click', function(){
     $('paste').value = ''; rows = []; groupOrder = []; groupOff = {};
     origRows = []; origGroups = [];
     $('warn').hidden = true; drawList();
   });
-  $('clsLoad').addEventListener('click', function(){ loadFromClass(); openStep2(); });
+  $('clsLoad').addEventListener('click', function(){
+    loadFromClass();
+    openStep2(rows.length ? rows.length + '人を入れました' : '読み込みました');
+  });
 
   $('shuffle').addEventListener('click', doShuffle);
   $('reset').addEventListener('click', doReset);
@@ -1202,12 +1324,15 @@
     var el = e.target;
     if (!el.classList) return;
     if (!el.classList.contains('ttl')) return;
+    var v = String(el.value).replace(/[\r\n]+/g, ' ');
+    if (v !== el.value) el.value = v;
     if (el.hasAttribute('data-t')){
-      rows[parseInt(el.getAttribute('data-t'),10)].title = el.value;
+      rows[parseInt(el.getAttribute('data-t'),10)].title = v;
     } else if (el.hasAttribute('data-gt')){
       var g = el.getAttribute('data-gt');
-      rows.forEach(function(r){ if (r.group===g) r.title = el.value; });
+      rows.forEach(function(r){ if (r.group===g) r.title = v; });
     }
+    fitTtl(el, true);
     updateCount(); save();
   });
   /* 🔴 班をえらんだとき（2026-09-05）。「＋ 新しい班…」だけ名前を聞く */

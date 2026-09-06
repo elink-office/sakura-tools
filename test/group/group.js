@@ -1130,7 +1130,7 @@
     try { localStorage.setItem(KEYC, JSON.stringify(st)); return true; }
     catch (e) {
       $('msg2').innerHTML = '<div class="notice warn">保存できませんでした。' +
-        'ブラウザの空きが足りないようです。古い名簿を消してから、もう一度お試しください。</div>';
+        'ブラウザの空きが足りないようです。古いデータを消してから、もう一度お試しください。</div>';
       return false;
     }
   }
@@ -1157,10 +1157,10 @@
   function clsNew() {
     var st = loadStore();
     if (st.classes.length >= MAXC) {
-      alert('名簿は' + MAXC + '件までです。いらないものを消してから保存してください。');
+      alert('データは' + MAXC + '件までです。いらないものを消してから保存してください。');
       return;
     }
-    var def = className2() || (roomWord() || '名簿');
+    var def = className2() || (roomWord() || 'データ');
     var label = prompt('名前を付けて保存します。', def);
     if (label == null) return;
     label = label.trim();
@@ -1168,7 +1168,7 @@
     var same = null;
     st.classes.forEach(function (c) { if (c.label === label) same = c; });
     if (same) {
-      if (!confirm('同じ名前の名簿があります。差し替えますか。')) return;
+      if (!confirm('同じ名前のデータがあります。差し替えますか。')) return;
       same.names = $('names').value;
       same.group = snapshot();
     } else {
@@ -1185,7 +1185,7 @@
   }
   function clsSave() {
     var st = loadStore(), c = findClass(st, $('clsSel').value);
-    if (!c) { alert('上書きする名簿を選んでください。'); return; }
+    if (!c) { alert('上書きするデータを選んでください。'); return; }
     if (!confirm('「' + c.label + '」を、いまの画面で上書きします。よろしいですか。')) return;
     c.names = $('names').value;
     c.group = snapshot();
@@ -1194,7 +1194,7 @@
   }
   function clsDel() {
     var st = loadStore(), c = findClass(st, $('clsSel').value);
-    if (!c) { alert('消す名簿を選んでください。'); return; }
+    if (!c) { alert('消すデータを選んでください。'); return; }
     if (!confirm('「' + c.label + '」を消します。座席表メーカー・席次表メーカーからも消えます。もとには戻せません。')) return;
     st.classes = st.classes.filter(function (x) { return x.id !== c.id; });
     if (!saveStore(st)) return;
@@ -1203,7 +1203,7 @@
   }
   function clsLoad(id) {
     var st = loadStore(), c = findClass(st, id);
-    if (!c) { alert('呼び出す名簿を選んでください。'); return; }
+    if (!c) { alert('呼び出すデータを選んでください。'); return; }
     if (!confirm('「' + c.label + '」を読み込みます。いま画面にあるものは消えます。よろしいですか。')) return;
     // ⚠ほかのツールだけで保存したものは、この設定が空。そのときは名簿だけ入れる
     var d = c.group ? JSON.parse(JSON.stringify(c.group)) : {};
@@ -1213,11 +1213,12 @@
     if ($('save').checked) save();
     msg2('「' + c.label + '」を読み込みました。');
   }
+  // ⚠いまはどこからも呼んでいない（2026-09-06「全削除」の枠をやめた。消すのは1件ずつ）
   function clsClearAll() {
-    if (!confirm('この機器から、保存した名簿を全部消します。座席表メーカー・席次表メーカーからも消えます。もとには戻せません。')) return;
+    if (!confirm('この機器から、保存したデータを全部消します。座席表メーカー・席次表メーカーからも消えます。もとには戻せません。')) return;
     try { localStorage.removeItem(KEYC); } catch (e) { }
     drawClasses();
-    msg2('保存した名簿を全部消しました。');
+    msg2('保存したデータを全部消しました。');
   }
   function msg2(t) {
     $('msg2').innerHTML = '<div class="notice">' + esc(t) + '</div>';
@@ -1333,7 +1334,8 @@
     $('clsNew').onclick = clsNew;
     $('clsSave').onclick = clsSave;
     $('clsDel').onclick = clsDel;
-    $('clsClearAll').onclick = clsClearAll;
+    // 🔴 ①の呼び出しの横でも消せる（2026-09-06 本人）
+    if ($('clsDel2')) $('clsDel2').onclick = clsDel;
     $('clsLoad2').onclick = function () { clsLoad($('clsSel2').value); };
     $('clsSel').addEventListener('change', function () { $('clsSel2').value = $('clsSel').value; });
     $('clsSel2').addEventListener('change', function () { $('clsSel').value = $('clsSel2').value; });

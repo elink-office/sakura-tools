@@ -99,7 +99,7 @@
 </style>
 </head>
 <body>
-<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/06 15:36</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/06 17:00</div>
 
 <header class="site-head noprint">
   <div class="wrap">
@@ -157,10 +157,12 @@
            ⚠1件も無いうちは出さない。座席表と共通の置き場なので、
              /seat/ で保存したものもここに出る -->
       <div class="row tight" id="quickLoad" hidden style="margin-bottom:12px">
-        <div class="pick"><label for="clsSel2">さくらツールで保存済の名簿</label>
+        <div class="pick"><label for="clsSel2">さくらツールで保存済のデータ</label>
           <select id="clsSel2"><option value="">－</option></select></div>
         <div><label>&nbsp;</label>
-          <button class="mini" id="clsLoad2" type="button">この名簿を自動入力</button></div>
+          <button class="mini" id="clsLoad2" type="button">このデータを自動入力</button></div>
+        <div><label>&nbsp;</label>
+          <button class="mini" id="clsDel2" type="button">削除</button></div>
       </div>
       <div class="in-col">
         <div>
@@ -513,38 +515,33 @@
       </ul>
       <p class="tip-h">さくらツールの中で共通です</p>
       <ul>
-        <li><strong>ほかの道具で保存した名簿も、ここに出ます。</strong>逆もできます。同じ機器なら、名簿を貼り直す必要はありません。</li>
-        <li>名簿は共通ですが、<strong>見た目や会場の形はツールごと</strong>に覚えます。席次表で決めた敬称やふりがなが、座席表に混ざることはありません。</li>
+        <li><strong>ほかの道具で保存したデータも、ここに出ます。</strong>逆もできます。同じ機器なら、名簿を貼り直す必要はありません。</li>
+        <li>データは共通ですが、<strong>見た目や会場の形はツールごと</strong>に覚えます。席次表で決めた敬称やふりがなが、座席表に混ざることはありません。</li>
       </ul>
       <p class="tip-h">呼び出し方</p>
       <ul>
-        <li><strong>①の「この名簿を自動入力」</strong>から呼び出します。あとは「席次表を作る」を押すだけです。</li>
+        <li><strong>①の「このデータを自動入力」</strong>から呼び出します。あとは「席次表を作る」を押すだけです。</li>
       </ul>
     </div>
 
-    <p class="hint">保存した名簿は、<b>さくらツール上で利用できます</b>。保存できるのは<b>文字情報のみ</b>です（写真や画像は残りません）。</p>
+    <p class="hint">保存したデータは、<b>さくらツール上で利用できます</b>。保存できるのは<b>文字情報のみ</b>です（写真や画像は残りません）。</p>
 
     <p class="safe">🔒 <strong>保存したものは、使ってる機器の中だけに残ります。</strong></p>
 
     <div class="cls-box">
-      <h3>名簿に名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
+      <h3>データに名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
       <p class="hint">名簿・会場の形・条件・見た目の設定を、まとめて残すときに使います。<strong>「上書き」は、参加者が変わったとき</strong>に使ってください。</p>
       <p class="btn-row">
         <button class="mini" id="clsNew" type="button">新しい名前で保存</button>
         <button class="mini" id="clsSave" type="button">上書き</button>
         <button class="mini" id="clsDel" type="button">削除</button>
       </p>
-      <div class="pick"><label for="clsSel">さくらツールで保存済の名簿</label>
+      <div class="pick"><label for="clsSel">さくらツールで保存済のデータ</label>
         <select id="clsSel"><option value="">－</option></select></div>
 
-      <p class="hint" style="margin-top:14px">⚠ <strong>共用の機器で使ったときは、使い終わったら下の「削除」を押してください。</strong></p>
+      <p class="hint" style="margin-top:14px">⚠ <strong>共用の機器で使ったときは、⑦のチェックを外して、ブラウザを閉じてください。</strong></p>
     </div>
 
-    <div class="del-box">
-      <h3>削除</h3>
-      <p class="hint">ボタンを押すと、この機器から名簿が消えます。<strong>もとには戻せません。</strong></p>
-      <p><button class="mini" id="clsClearAll" type="button">名簿の全削除</button></p>
-    </div>
   </section>
 
   <section class="read">
@@ -633,7 +630,7 @@
     </ul>
 
     <h2>このツールについて</h2>
-    <p><strong>使ってる機器の中だけで完結できます。</strong>使った名簿がネット上に流れることはありません。外部には送っていないので、AIの学習に使われることも、個人情報が漏れることもありません。社員名簿や学生名簿でも、安心して使えます。「名簿の保存」をオンにしたときだけ、いま使っている機器の中に残ります。オフのままなら、ページを閉じた時点で消えます。インストールも会員登録もいりません。</p>
+    <p><strong>使ってる機器の中だけで完結できます。</strong>使った名簿がネット上に流れることはありません。外部には送っていないので、AIの学習に使われることも、個人情報が漏れることもありません。社員名簿や学生名簿でも、安心して使えます。「画面の保存」をオンにしたときだけ、いま使っている機器の中に残ります。オフのままなら、ページを閉じた時点で消えます。インストールも会員登録もいりません。</p>
   </section>
 </main>
 
@@ -645,7 +642,7 @@
 </footer>
 
 <script src="../seating.js?v=54"></script>
-<script src="seki.js?v=47"></script>
+<script src="seki.js?v=49"></script>
 <!-- 🔴 印刷用の1枚絵の置き場。⚠body の直下に置くこと -->
 <div id="printImgWrap"></div>
 <script>
