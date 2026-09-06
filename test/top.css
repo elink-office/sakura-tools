@@ -202,7 +202,9 @@
 }
 
 /* ---- 読み物 ---- */
-.t-about{max-width:44em;margin-bottom:32px}
+/* 🔴 「くわしくは →」で飛ぶ先。⭐上に横線を1本引いて、そこが画面の上に来るようにする
+   （2026-09-06 本人）。線があると「ここから別の話」と分かる */
+.t-about{max-width:44em;margin-bottom:32px;border-top:1px solid var(--line);padding-top:20px}
 .t-about h2{font-size:1rem;margin:0 0 10px;padding-left:0}
 .t-about p{color:var(--ink-soft);font-size:.9rem;margin:0}
 

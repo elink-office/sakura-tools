@@ -25,7 +25,7 @@
 </script>
 <title>【テスト】席次表メーカー｜無料・エクセルテンプレート不要｜会議・研修・大学</title>
 <meta name="description" content="席次表の作り方は簡単。名簿を貼るだけで、会議・研修・セミナー・大学の席次表が自動で作れる無料ツールです。前を向いて並ぶスクール形式で、席順は名簿順とランダムから選べます。用紙に合わせて自動で調整し、A4の1枚に収めるので、2ページに分かれません。会社名・役職（肩書き）・フリガナ・名前を1マスに並べ、敬称は様・さん・先生から選べます。Excelの名簿から複数の列をそのまま貼り付けでき、通し番号の向きも指定できます。エクセルテンプレートは不要です。印刷とPDFもこのページから。名簿はブラウザの中だけで処理し、AIの学習にも使われません。">
-<link rel="stylesheet" href="../style.css?v=113">
+<link rel="stylesheet" href="../style.css?v=114">
 <link rel="stylesheet" href="seki.css?v=21">
 <link rel="stylesheet" href="../print.css?v=54" media="print">
 <style>
@@ -35,30 +35,7 @@
         あと幅を小さくしたときは、リード文が↓のほうがいいわ」
    ⚠狭い画面では、絵が大きいと①（名簿の欄）がうんと下に行く。
      だから狭いときは**小さくして、文章より上**に置く */
-.samp-btn{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in}
-.samp-btn img{
-  display:block;width:100%;height:auto;border-radius:10px;background:#fff;
-  box-shadow:0 5px 16px rgba(0,0,0,.17), 0 1px 3px rgba(0,0,0,.10);
-  transition:box-shadow .18s ease, transform .18s ease;
-}
-@media (hover:hover){
-  .samp-btn:hover img{box-shadow:0 14px 30px rgba(0,0,0,.22), 0 2px 5px rgba(0,0,0,.12);transform:translateY(-3px)}
-}
-.samp-btn:active img{box-shadow:0 1px 4px rgba(0,0,0,.16);transform:translateY(1px) scale(.995)}
 /* 狭い画面＝絵を小さくして、文章より上に出す */
-/* 押したときに開く大きい見本 */
-.samp-view{
-  position:fixed;inset:0;z-index:9600;background:rgba(0,0,0,.86);
-  overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px;
-}
-.samp-view .samp-head{
-  display:flex;align-items:center;gap:12px;color:#fff;font-weight:bold;flex:0 0 auto;
-}
-.samp-view .samp-head button{margin-left:auto}
-.samp-view img{
-  display:block;max-width:100%;height:auto;margin:auto;
-  background:#fff;border-radius:8px;
-}
 /* 🔴 広い画面では、文章の右に見本を置く（2026-09-04 本人）。
    ⚠クラス名を .hero にしてはいけない。共通の style.css に別物の .hero がある
      （白い箱＋桜色の枠）。名前がぶつかって枠が出た。ここは .intro を使う。
@@ -99,7 +76,7 @@
 </style>
 </head>
 <body>
-<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/06 19:32</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/06 19:47</div>
 
 <header class="site-head noprint">
   <div class="wrap">
@@ -126,19 +103,13 @@
         <li>大学なら<strong>学科・学籍番号</strong>も。<strong>色分け</strong>も一瞬で</li>
       </ul>
     </div>
+    <!-- 🔴 押して大きくするのはやめた（2026-09-06 本人「見本はもういらない。画像を押さなくても
+         いいようにしよう…そのままでもちゃんと見本は見える。それより下にスクロールしてもらいたい」）-->
     <figure class="t-sample noprint">
-      <button type="button" class="samp-btn" aria-label="見本を大きく見る">
-        <img src="../img/seki-sample.png?v=6" width="1280" height="720" alt="23人・5列の研修の席次表の完成見本。会社名・役職・フリガナ・名前を並べたもの">
-      </button>
+      <img src="../img/seki-sample.png?v=7" width="1280" height="720" alt="23人・5列の研修の席次表の完成見本。会社名・役職・フリガナ・名前を並べたもの">
     </figure>
   </div>
   <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
-
-  <!-- 🔴 押すと開く大きい見本（2026-09-04 本人）。⚠紙にも画像にも出さない -->
-  <div class="samp-view noprint" id="sampView" hidden>
-    <div class="samp-head">見本<button type="button" id="sampClose">✕ とじる</button></div>
-    <img src="../img/seki-sample.png?v=6" alt="23人・5列の研修の席次表の完成見本。会社名・役職・フリガナ・名前を並べたもの">
-  </div>
 
 
 
@@ -635,22 +606,5 @@
 <script src="seki.js?v=50"></script>
 <!-- 🔴 印刷用の1枚絵の置き場。⚠body の直下に置くこと -->
 <div id="printImgWrap"></div>
-<script>
-// 🔴 見本を押すと大きく出す（2026-09-04 本人）。⚠外側・✕・Esc のどれでも閉じる
-(function () {
-  var b = document.querySelector('.samp-btn'),
-      v = document.getElementById('sampView'),
-      c = document.getElementById('sampClose');
-  if (!b || !v || !c) return;
-  function open() { v.hidden = false; document.body.style.overflow = 'hidden'; c.focus(); }
-  function close() { v.hidden = true; document.body.style.overflow = ''; b.focus(); }
-  b.addEventListener('click', open);
-  c.addEventListener('click', close);
-  v.addEventListener('click', function (e) { if (e.target === v) close(); });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && !v.hidden) close();
-  });
-})();
-</script>
 </body>
 </html>

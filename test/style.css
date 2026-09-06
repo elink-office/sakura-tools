@@ -29,6 +29,10 @@ body{
 
 /* ヘッダー */
 .site-head{background:#fff;border-bottom:2px solid var(--pink-light);position:sticky;top:0;z-index:30}
+/* 🔴 ページの中のリンク（#…）で飛んだとき、上がヘッダーに隠れないようにする
+   （2026-09-06 本人「詳しくは押すと、スマホで上が見にくい」）。
+   ⭐ヘッダーは約40px。少し余裕を見て52px空ける＝飛び先の頭が画面の上に出る */
+[id]{scroll-margin-top:52px}
 .site-head .wrap{display:flex;align-items:center;gap:10px;padding:7px 16px}
 .site-head a{color:var(--ink);text-decoration:none;font-weight:bold}
 .site-head .logo{font-size:1.1rem}
