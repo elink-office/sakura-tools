@@ -40,6 +40,33 @@
    そのぶん上が短くなって、2枠が上がった */
 
 /* ---- 2枠：左＝学校、右＝仕事 ---- */
+/* 🔴 2026-09-06 カードを独立させた（枠に入れると使う人を固定してしまう・本人）。
+   ⚠絵つき2枚が上、絵なしが下に来るように、列は2つで固定する（自動で詰めると絵の有無が混ざる） */
+/* ⚠カードの高さがそろわず、絵とボタンの位置がズレる（2026-09-06 本人「微妙に箱がズレるのが気持ち悪い」）。
+   原因＝説明文の行数がカードごとに違うこと。⭐空白でごまかさず、
+     ①カードを同じ高さに伸ばす ②説明の高さを3行ぶん確保する ③ボタンを下端にそろえる、で直す */
+.t-cards{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:34px;align-items:stretch}
+.t-card{
+  background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+  padding:22px 22px 20px;
+}
+.t-card.school{border-top:3px solid var(--pink)}
+.t-card.work{border-top:3px solid var(--midori)}
+/* ⭐使う場面は「見出し」ではなくカードの中の小さな札にする＝人を仕分けず、道具の説明になる */
+.t-for{
+  display:inline-block;margin:0 0 12px;padding:2px 11px;
+  font-size:.72rem;color:var(--ink-soft);
+  border:1px solid var(--line);border-radius:999px;background:var(--bg);
+}
+.t-card{display:flex;flex-direction:column}
+.t-card .t-tool{margin-bottom:0;display:flex;flex-direction:column;flex:1}
+/* ⭐説明は3行ぶんの場所を先に取る＝文字数が違っても絵の位置がそろう */
+.t-card .t-tool .ds{min-height:calc(1.7em * 3)}
+/* ⭐ボタンはカードの下端に */
+.t-card .t-tool .go{align-self:flex-start;margin-top:auto}
+.t-card.school .t-tool .go{background:var(--pink)}
+.t-card.work   .t-tool .go{background:var(--midori)}
+
 .t-two{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:48px}
 .t-col{
   background:#fff;border:1px solid var(--line);border-radius:var(--radius);
@@ -85,6 +112,13 @@
        輪郭は影だけで出す＝そのぶん影は強めにする */
   box-shadow:0 5px 16px rgba(0,0,0,.17), 0 1px 3px rgba(0,0,0,.10);
 }
+/* 🔴 2026-09-06 本人：名前と説明を絵の上に。絵は説明の下、ボタンはその下 */
+/* ⚠絵とボタンが近すぎた（2026-09-06 本人）。絵の下に間を取る */
+.t-card .t-shot{margin:14px 0 18px}
+.t-card .t-tool .nm{margin-bottom:6px}
+/* 🔴 絵のないカード（2026-09-06）。⚠絵つきカードの下に続くので、細い線で区切る。
+   ⭐線だけ。枠で囲まない（囲むと絵つきカードより主張が強くなる） */
+.t-tool.noimg{border-top:1px solid var(--line);padding-top:16px}
 .t-tool .nm{font-size:1.08rem;font-weight:700;display:block;margin-bottom:5px}
 .t-tool .ds{font-size:.86rem;color:var(--ink-soft);display:block;line-height:1.7}
 
@@ -133,7 +167,7 @@
 .t-tool .go:active{box-shadow:0 1px 3px rgba(0,0,0,.16);transform:translateY(2px);filter:brightness(.9)}
 
 /* じゅんび中は、枠を作らず文字だけ。できているものと見分けがつくように */
-.t-soon{border-top:1px solid var(--line);margin-top:22px;padding-top:16px}
+.t-soon{border-top:1px solid var(--line);margin-top:22px;padding-top:16px;margin-bottom:48px}
 .t-soon p{margin:0 0 6px;font-size:.83rem;color:var(--ink-soft)}
 .t-soon .lbl{
   font-size:.72rem;letter-spacing:.1em;color:var(--ink-soft);
@@ -150,6 +184,8 @@
   .t-catch .cm{display:none}
   .t-catch .nl{display:block}
   .t-two{grid-template-columns:1fr}
+  .t-cards{grid-template-columns:1fr}
+  .t-card{padding:20px 18px 18px}
   .t-hero{padding:18px 0 4px}
   .t-col{padding:22px 18px 18px}
 }

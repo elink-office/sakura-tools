@@ -40,10 +40,10 @@
 }
 </script>
 <link rel="stylesheet" href="style.css?v=112">
-<link rel="stylesheet" href="top.css?v=25">
+<link rel="stylesheet" href="top.css?v=30">
 </head>
 <body>
-<div style="position:fixed;right:6px;top:6px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/05 18:56</div>
+<div style="position:fixed;right:6px;top:6px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/06 11:34</div>
 
 <header class="site-head">
   <div class="wrap">
@@ -58,64 +58,60 @@
 
 <main class="wrap">
   <div class="t-hero">
-    <h1>教室の座席表を、名簿のコピペで自動作成</h1>
+    <h1>仕事を徹底的に時短したい人のための道具箱</h1>
     <p class="t-catch">
       <span>使ってる機器の中で完結できる</span>
       <span>漏れない、学習されない<span class="cm">、</span><span class="nl">だから安心</span></span>
     </p>
-    <p class="lead">もう<strong>エクセルテンプレート</strong>は不要です。お使いのパソコン・タブレット・スマホの中だけで処理しています。名簿は外部には送っていません。インストールも会員登録もいりません。すべて無料です。<a class="more" href="#naze">くわしくは →</a></p>
+    <p class="lead">「手間をなくしたい」「同じ繰り返しをしたくない」「あのデータとこのデータがほぼ一緒なのにまた入力」──<strong>そういう作業を減らすための道具</strong>を置いています。<strong>保存したデータは、どのツールでも使えます</strong>。エクセルのテンプレートも、インストールも、会員登録もいりません。すべて無料です。<a class="more" href="#naze">くわしくは →</a></p>
   </div>
 
-  <div class="t-two">
-    <section class="t-col l" id="seat">
-      <h2>学校で使う</h2>
-      <p class="who">小学校・中学校・高校の先生に</p>
+  <!-- 🔴 2026-09-06 本人：枠（学校で使う／仕事で使う）をやめて、カードを独立させた。
+       本人「⭐カードは別に独立した方がいい。続きの枠に入れるのは、使う人を固定してしまうから」
+       ⚠使う場面の言葉は捨てず、カードの中に小さく入れる＝見出しにすると人を仕分けるが、
+         カードの中なら道具の説明になる。
+       ⚠絵つき（座席表・席次表）を先に、絵なしを後ろに並べる（段差が自然に出る） -->
+  <div class="t-cards">
 
-      <!-- 🔴 絵とボタンを別々の入口にした（2026-09-03 本人「個別に4つの入り口にして」）。
-           ⚠前はカード全体が1つのリンクで、どちらに乗せても両方が動いていた -->
+    <article class="t-card school" id="seat">
       <div class="t-tool">
-        <a class="t-shot-link" href="seat/"><img class="t-shot" src="img/seat-sample.png?v=2" width="980" height="758" alt="班ごとに色分けした教室の座席表"></a>
         <span class="nm">🪑 座席表メーカー</span>
         <span class="ds">名簿を貼るだけで席替え。30人でも40人でも、4列でも8列でも。班分けと色分け、印刷とPDFまでこのページで。</span>
+        <a class="t-shot-link" href="seat/"><img class="t-shot" src="img/seat-sample.png?v=2" width="980" height="758" alt="班ごとに色分けした教室の座席表"></a>
         <a class="go" href="seat/">使ってみる →</a>
       </div>
+    </article>
 
-      <div class="t-soon">
-        <p class="lbl">準備中</p>
-        <p>タイピング練習｜ミスを減らす練習。ステージ1はホームポジション</p>
-        <p>当番表｜掃除・給食の当番を割り振り</p>
-        <p>席替えルーレット｜その場で発表する席替え</p>
-      </div>
-    </section>
-
-    <section class="t-col r" id="seki">
-      <h2>仕事で使う</h2>
-      <p class="who">会議・研修・大学の授業に</p>
-
+    <article class="t-card work" id="seki">
       <div class="t-tool">
-        <a class="t-shot-link" href="seki/"><img class="t-shot" src="img/seki-sample.png?v=2" width="1080" height="818" alt="会社名と役職を並べた研修の席次表"></a>
         <span class="nm">📋 席次表メーカー</span>
         <span class="ds">会社名・役職・フリガナ・名前を並べた席次表。用紙に合わせて自動で調整し、A4の1枚に収めます。</span>
+        <a class="t-shot-link" href="seki/"><img class="t-shot" src="img/seki-sample.png?v=2" width="1080" height="818" alt="会社名と役職を並べた研修の席次表"></a>
         <a class="go" href="seki/">使ってみる →</a>
       </div>
+    </article>
 
-      <div class="t-soon">
-        <p class="lbl">準備中</p>
-        <p>円卓の上座・下座｜宴会・結婚式の席次のマナー</p>
-        <p>会議室・応接室の上座｜入口からの位置で分かる早見表</p>
-        <p>車・タクシーの上座｜エレベーターや新幹線も</p>
+    <article class="t-card school" id="slide">
+      <div class="t-tool">
+        <span class="nm">🖥️ 簡単スライドメーカー</span>
+        <span class="ds">打った文字と写真を、そのまま大きくモニターへ。今日のめあて・問題文・のこり時間・発表する人の名前。会議や集まりの議題にも。パワーポイントは要りません。</span>
+        <a class="go" href="slide/">使ってみる →</a>
       </div>
-    </section>
+    </article>
+
   </div>
+
 
   <section class="t-about" id="naze">
     <h2>ネットにつながっているのに、外部に出ないの？</h2>
-    <p><strong>普段お使いのパソコンで、名簿を開くのと同じです。</strong>ネットにつながっていても、このページは名簿を受け取っていません。ブラウザの中だけで処理して、そのまま印刷やPDFにしています。だから、外に晒されることも、漏れることも、AIの学習に使われることもありません。いつものパソコン仕事と同じように、安心して使えます。</p>
+    <p><strong>普段お使いのパソコンで、ファイルを開くのと同じです。</strong>ネットにつながっていても、<strong>すべてお使いの機器だけで完結します</strong>。だから、外に晒されることも、漏れることも、AIの学習に使われることもありません。いつもの作業と同じように、安心してお使いいただけます。また、そのままモニターに映したり、印刷やPDFにしたりできる作りです。</p>
   </section>
 
   <section class="t-about">
     <h2>このサイトについて</h2>
-    <p>使った名簿がネット上に流れることはありません。外部には送っていないので、AIの学習に使われることも、個人情報が漏れることもありません。名簿の保存をオンにしたときだけ、いま使っている機器の中に残ります。オフのままなら、ページを閉じた時点で消えます。</p>
+    <p>使ったデータが外部に送られることはなく、<strong>すべてお使いの機器だけで完結します</strong>。AIの学習に使われることも、個人情報が漏れることもありません。</p>
+    <!-- 🔴 2026-09-06 本人：準備中の一覧はやめて、ここに「これから増える」と「データが共通で使える」を書く -->
+    <p><strong>ツールはこれから増やしていく予定です。</strong>保存したデータは、<strong>サイトの中のどのツールでも使えます</strong>。名簿やよく使う言葉など、同じものを何度も作らずに済むので、仕事の時短に直結します。</p>
   </section>
 </main>
 
