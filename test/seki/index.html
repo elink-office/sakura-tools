@@ -7,7 +7,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SAKURA TOOLS">
 <meta property="og:title" content="席次表メーカー｜会議・研修・大学の席次表を無料で自動作成">
-<meta property="og:description" content="名簿を貼るだけで席次表ができる無料ツール。用紙に合わせて自動で調整し、A4の1枚に収めます。会社名・役職・フリガナ・名前に対応。Excelから複数の列をそのまま貼り付けられます。">
+<meta property="og:description" content="名簿を貼るだけで席次表ができる無料ツール。エクセルテンプレートは不要。用紙に合わせて自動で調整し、A4の1枚に収めます。会社名・役職・フリガナ・名前に対応。Excelから複数の列をそのまま貼り付けられます。">
 <meta property="og:url" content="https://sakura-tools.com/seki/">
 <meta property="og:image" content="https://sakura-tools.com/ogp.png">
 <meta property="og:image:width" content="1200">
@@ -24,7 +24,7 @@
   gtag('config', 'G-GCK29PTKBG');
 </script>
 <title>【テスト】席次表メーカー｜会議・研修・大学の席次表を無料で自動作成</title>
-<meta name="description" content="席次表の作り方は簡単。名簿を貼るだけで、会議・研修・セミナー・大学の席次表が自動で作れる無料ツールです。前を向いて並ぶスクール形式で、席順は名簿順とランダムから選べます。用紙に合わせて自動で調整し、A4の1枚に収めるので、2ページに分かれません。会社名・役職（肩書き）・フリガナ・名前を1マスに並べ、敬称は様・さん・先生から選べます。Excelの名簿から複数の列をそのまま貼り付けでき、通し番号の向きも指定できます。印刷とPDFもこのページから。名簿はブラウザの中だけで処理し、AIの学習にも使われません。">
+<meta name="description" content="席次表の作り方は簡単。名簿を貼るだけで、会議・研修・セミナー・大学の席次表が自動で作れる無料ツールです。前を向いて並ぶスクール形式で、席順は名簿順とランダムから選べます。用紙に合わせて自動で調整し、A4の1枚に収めるので、2ページに分かれません。会社名・役職（肩書き）・フリガナ・名前を1マスに並べ、敬称は様・さん・先生から選べます。Excelの名簿から複数の列をそのまま貼り付けでき、通し番号の向きも指定できます。エクセルテンプレートは不要です。印刷とPDFもこのページから。名簿はブラウザの中だけで処理し、AIの学習にも使われません。">
 <link rel="stylesheet" href="../style.css?v=112">
 <link rel="stylesheet" href="seki.css?v=20">
 <link rel="stylesheet" href="../print.css?v=54" media="print">
@@ -81,7 +81,11 @@
 /* ⚠狭い画面の指定は、上の .intro .t-sample{margin:0} より**あと**に置く */
 @media (max-width:859px){
   .intro{display:flex;flex-direction:column}
-  .intro .t-sample{order:-1;max-width:220px;margin:0 auto 16px}
+  /* ⚠絵が16:9になったので、せまい画面でも小さくしない（2026-09-06 本人
+     「幅が小さくなっても、画面表示の見本サイズそのままでいい」）。前は220pxまで縮めていた */
+  /* ⚠order:-1（絵を先に出す）をやめた（2026-09-06 本人「簡単操作の下においてほしい」）
+     ＝リード → できること → 見本 → ？の説明、の順になる */
+  .intro .t-sample{max-width:460px;margin:4px auto 16px}
 }
 /* 🔴 できあがりの見本（2026-09-04 本人）。⚠大きくしすぎない。①が画面の外に出てしまう */
 .t-sample{margin:0 0 20px;max-width:520px}
@@ -95,7 +99,7 @@
 </style>
 </head>
 <body>
-<div style="position:fixed;right:6px;top:6px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/06 13:24</div>
+<div style="position:fixed;right:6px;top:6px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/06 14:10</div>
 
 <header class="site-head noprint">
   <div class="wrap">
@@ -114,15 +118,15 @@
 
   <div class="intro">
     <div class="intro-txt">
-      <p class="lead"><strong>用紙に合わせて自動で調整し、A4の1枚に収めます。</strong>会社名・役職・フリガナ・名前を並べた席次表が、そのまま印刷できます。Excelの名簿から複数の列をまとめて貼り付けられるので、打ち直しはいりません。<br>名簿は、<strong>さくらツールで利用しているデータ</strong>がそのまま使えます。</p>
+      <p class="lead">会社名・役職・フリガナ・名前を並べた席次表を、<strong>用紙に合わせてA4の1枚に自動で収めます</strong>。Excelから複数の列をまとめて貼れるので、打ち直しは不要です。</p>
       <!-- 🔴 できること（2026-09-04 本人・座席表と同じ形） -->
       <ul class="can-do">
         <li><strong>10人でも100人でも</strong>。用紙に合わせて自動で調整</li>
         <li><strong>会社名・役職・フリガナ・名前</strong>をひとマスに</li>
         <li>大学なら<strong>学科・学籍番号</strong>も</li>
         <li>印刷とPDFは<strong>A4の1枚</strong>に収まります</li>
+        <li>名簿は<strong>さくらツールで保存したデータ</strong>も使えます</li>
       </ul>
-      <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
     </div>
     <figure class="t-sample noprint">
       <button type="button" class="samp-btn" aria-label="見本を大きく見る">
@@ -130,6 +134,7 @@
       </button>
     </figure>
   </div>
+  <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
 
   <!-- 🔴 押すと開く大きい見本（2026-09-04 本人）。⚠紙にも画像にも出さない -->
   <div class="samp-view noprint" id="sampView" hidden>
