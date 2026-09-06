@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SAKURA TOOLS">
-<meta property="og:title" content="教室の座席表メーカー｜無料で席替え・30人40人・4列〜8列対応">
+<meta property="og:title" content="教室の座席表メーカー｜エクセルテンプレート不要・30人40人">
 <meta property="og:description" content="名簿を貼るだけで席替えができる無料ツール。エクセルテンプレートは不要。30人・35人・40人、4列〜8列の教室席配置に対応。班分け・色分け・先生の向きへの反転・印刷・PDFまでこのページで。">
 <meta property="og:url" content="https://sakura-tools.com/seat/">
 <meta property="og:image" content="https://sakura-tools.com/ogp.png">
@@ -24,7 +24,7 @@
   gtag('config', 'G-GCK29PTKBG');
 </script>
 <meta name="google-site-verification" content="PfjmCGxUaN1hzuj_dRw3e4PTY6xepghfXM_CrU_sO-A" />
-<title>【テスト】教室の座席表メーカー｜無料で席替え・30人40人・4列〜8列対応</title>
+<title>【テスト】教室の座席表メーカー｜エクセルテンプレート不要・30人40人</title>
 <meta name="description" content="教室の座席表の作り方は簡単。名簿を貼るだけで席替えができる無料ツールです。エクセルテンプレートは不要。新年度の出席番号順にも対応。小学校・中学校・高校のどのクラスでも、30人・35人・40人、4列・5列・6列・8列の教室席配置に対応。生徒に見せる向きと、先生が教卓から見る向きを切り替えられます。班分けと色分けもそのまま印刷・PDFにできます。エクセルテンプレートのダウンロードも、登録もいりません。名簿はブラウザの中だけで処理し、AIの学習にも使われません。">
 <link rel="stylesheet" href="../style.css?v=112">
 <link rel="stylesheet" href="seat.css?v=1">
@@ -141,7 +141,7 @@ body.screen .sheet.masked .grid{display:grid}
      「幅が小さくなっても、画面表示の見本サイズそのままでいい」）。前は220pxまで縮めていた */
   /* ⚠order:-1（絵を先に出す）をやめた（2026-09-06 本人「簡単操作の下においてほしい」）
      ＝リード → できること → 見本 → ？の説明、の順になる */
-  .intro .t-sample{max-width:460px;margin:4px auto 16px}
+  .intro .t-sample{max-width:396px;margin:4px auto 16px}   /* ⭐2列のときと同じ幅にそろえる（本人・2026-09-06） */
 }
 /* 🔴 できあがりの見本（2026-09-04 本人）。⚠大きくしすぎない。①が画面の外に出てしまう */
 .t-sample{margin:0 0 20px;max-width:520px}
@@ -194,7 +194,7 @@ body.screen .seat.dup .nm{text-decoration:none}
 </style>
 </head>
 <body>
-<div style="position:fixed;right:6px;top:6px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/06 14:10</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/06 14:42</div>
 
 <header class="site-head noprint">
   <div class="wrap">
@@ -219,8 +219,8 @@ body.screen .seat.dup .nm{text-decoration:none}
              人数の数字が入ると順位が上がる。その言葉をここで使う。
              ⭐32人・33人は検索されないが、**自分のクラスも大丈夫と分かる**ために書く（本人の判断） -->
       <ul class="can-do">
-        <li><strong>30人・35人・40人</strong>はもちろん、32人・33人のクラスでも</li>
-        <li><strong>班分けも自動提案！</strong>そのうえマグネットみたいに動かせる！</li>
+        <li><strong>30人・35人</strong>はもちろん、32人・33人クラスでも</li>
+        <li><strong>班分けも自動提案！</strong>マグネットみたいに移動も簡単！</li>
         <li><strong>モニター表示</strong>もボタン一つの簡単操作！</li>
       </ul>
     </div>
@@ -241,7 +241,7 @@ body.screen .seat.dup .nm{text-decoration:none}
 
 
     <section class="card noprint">
-      <h2><span class="step">1</span>名簿を入力&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+      <h2><span class="step">1</span>名簿の入力&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
       <div class="tip-body" hidden>
         <p class="tip-h">Excelから貼るとき</p>
         <ul>
@@ -263,11 +263,11 @@ body.screen .seat.dup .nm{text-decoration:none}
 
         <p><strong>いま出ている座席表はサンプルです。</strong>名簿を入れると、自分のクラスに変わります。入れる前でも、席を動かしたり班に分けたりして試せます。</p>
       </div>
-      <p class="safe">🔒 <strong>使ってる機器の中だけで完結できます。</strong>名簿はネット上に流れません。外部には送っていないので、AIの学習に使われることも、個人情報が漏れることもありません。安心して使えます。</p>
+      <p class="safe">🔒 <strong>使ってる機器の中だけで完結しています。</strong>安心してご利用ください。</p>
       <!-- 🔴 次に使うとき⑧まで下がらなくていいように、呼び出しは①に置く（2026-08-31 本人）。
            ⚠残したものが1件も無いときは出さない（はじめての人には邪魔なだけ） -->
       <div class="row tight" id="quickLoad" hidden style="margin-bottom:12px">
-        <div class="pick"><label for="clsSel2">保存した名簿</label>
+        <div class="pick"><label for="clsSel2">さくらツールで保存済の名簿</label>
           <select id="clsSel2"><option value="">－</option></select></div>
         <div><label>&nbsp;</label>
           <button class="mini" id="clsLoad2" type="button">この名簿を自動入力</button></div>
@@ -654,7 +654,7 @@ body.screen .seat.dup .nm{text-decoration:none}
     <label style="font-weight:normal">
       <input type="checkbox" id="save"> この機器に画面を保存する
     </label>
-    <p class="hint">チェックを入れると次回もこのまま表示されます。外すと次回は最初からの設定になります。外部には出ません。</p>
+    <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。外すと消えます。外部には出ません。</p>
     <p><span class="saving" id="savingLabel"></span></p>
   </section>
 
@@ -692,7 +692,7 @@ body.screen .seat.dup .nm{text-decoration:none}
 
     <p class="hint">保存した名簿は、<b>さくらツール上で利用できます</b>。保存できるのは<b>文字情報のみ</b>です（写真や画像は残りません）。</p>
 
-    <p class="safe">🔒 <strong>使ってる機器の中だけで完結します。</strong>保存したものはネット上に流れません。</p>
+    <p class="safe">🔒 <strong>保存したものは、使ってる機器の中だけに残ります。</strong></p>
 
     <div class="cls-box">
       <h3>名簿に名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
@@ -702,7 +702,7 @@ body.screen .seat.dup .nm{text-decoration:none}
         <button class="mini" id="clsSave" type="button">上書き</button>
         <button class="mini" id="clsDel" type="button">削除</button>
       </p>
-      <div class="pick"><label for="clsSel">保存した名簿</label>
+      <div class="pick"><label for="clsSel">さくらツールで保存済の名簿</label>
         <select id="clsSel"><option value="">－</option></select></div>
 
       <h3 style="margin-top:18px">決まった座席を保存（<span id="recCount">0／20件</span>）</h3>

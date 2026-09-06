@@ -37,7 +37,7 @@
 </style>
 </head>
 <body>
-<div style="position:fixed;right:6px;top:6px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/06 14:10</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/06 14:42</div>
 
 <header class="site-head noprint">
   <div class="wrap">
@@ -58,7 +58,7 @@
 
 
   <section class="card noprint">
-    <h2><span class="step">1</span>名簿を入力&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+    <h2><span class="step">1</span>名簿の入力&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
     <div class="tip-body" hidden>
       <ul>
         <li><strong>1行に1人</strong>です。Excelからそのまま貼れます。番号や性別の列がいっしょでもかまいません。</li>
@@ -67,7 +67,7 @@
     </div>
 
     <div class="row tight" id="quickLoad" hidden style="margin-bottom:12px">
-      <div><label for="clsSel2">保存した名簿</label>
+      <div><label for="clsSel2">さくらツールで保存済の名簿</label>
         <select id="clsSel2"><option value="">－</option></select></div>
       <div><label>&nbsp;</label>
         <button class="mini" id="clsLoad2" type="button">この名簿を自動入力</button></div>
@@ -291,7 +291,7 @@
     <label style="font-weight:normal">
       <input type="checkbox" id="save"> この機器に画面を保存する
     </label>
-    <p class="hint">チェックを入れると次回もこのまま表示されます。外すと次回は最初からの設定になります。外部には出ません。</p>
+    <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。外すと消えます。外部には出ません。</p>
     <p><span class="saving" id="savingLabel"></span></p>
   </section>
 
@@ -313,7 +313,7 @@
 
     <p class="hint">保存した名簿は、<b>さくらツール上で利用できます</b>。保存できるのは<b>文字情報のみ</b>です（写真や画像は残りません）。</p>
 
-    <p class="safe">🔒 <strong>使ってる機器の中だけで完結します。</strong>保存したものはネット上に流れません。</p>
+    <p class="safe">🔒 <strong>保存したものは、使ってる機器の中だけに残ります。</strong></p>
 
     <div class="cls-box">
       <h3>名簿に名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
@@ -323,7 +323,7 @@
         <button class="mini" id="clsSave" type="button">上書き</button>
         <button class="mini" id="clsDel" type="button">削除</button>
       </p>
-      <div class="pick"><label for="clsSel">保存した名簿</label>
+      <div class="pick"><label for="clsSel">さくらツールで保存済の名簿</label>
         <select id="clsSel"><option value="">－</option></select></div>
       <p class="hint" style="margin-top:14px">⚠ <strong>共用の機器で使ったときは、使い終わったら下の「削除」を押してください。</strong></p>
     </div>

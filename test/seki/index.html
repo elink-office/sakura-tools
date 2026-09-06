@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SAKURA TOOLS">
-<meta property="og:title" content="席次表メーカー｜会議・研修・大学の席次表を無料で自動作成">
+<meta property="og:title" content="席次表メーカー｜無料・エクセルテンプレート不要｜会議・研修・大学">
 <meta property="og:description" content="名簿を貼るだけで席次表ができる無料ツール。エクセルテンプレートは不要。用紙に合わせて自動で調整し、A4の1枚に収めます。会社名・役職・フリガナ・名前に対応。Excelから複数の列をそのまま貼り付けられます。">
 <meta property="og:url" content="https://sakura-tools.com/seki/">
 <meta property="og:image" content="https://sakura-tools.com/ogp.png">
@@ -23,7 +23,7 @@
   gtag('js', new Date());
   gtag('config', 'G-GCK29PTKBG');
 </script>
-<title>【テスト】席次表メーカー｜会議・研修・大学の席次表を無料で自動作成</title>
+<title>【テスト】席次表メーカー｜無料・エクセルテンプレート不要｜会議・研修・大学</title>
 <meta name="description" content="席次表の作り方は簡単。名簿を貼るだけで、会議・研修・セミナー・大学の席次表が自動で作れる無料ツールです。前を向いて並ぶスクール形式で、席順は名簿順とランダムから選べます。用紙に合わせて自動で調整し、A4の1枚に収めるので、2ページに分かれません。会社名・役職（肩書き）・フリガナ・名前を1マスに並べ、敬称は様・さん・先生から選べます。Excelの名簿から複数の列をそのまま貼り付けでき、通し番号の向きも指定できます。エクセルテンプレートは不要です。印刷とPDFもこのページから。名簿はブラウザの中だけで処理し、AIの学習にも使われません。">
 <link rel="stylesheet" href="../style.css?v=112">
 <link rel="stylesheet" href="seki.css?v=20">
@@ -85,7 +85,7 @@
      「幅が小さくなっても、画面表示の見本サイズそのままでいい」）。前は220pxまで縮めていた */
   /* ⚠order:-1（絵を先に出す）をやめた（2026-09-06 本人「簡単操作の下においてほしい」）
      ＝リード → できること → 見本 → ？の説明、の順になる */
-  .intro .t-sample{max-width:460px;margin:4px auto 16px}
+  .intro .t-sample{max-width:396px;margin:4px auto 16px}   /* ⭐2列のときと同じ幅にそろえる（本人・2026-09-06） */
 }
 /* 🔴 できあがりの見本（2026-09-04 本人）。⚠大きくしすぎない。①が画面の外に出てしまう */
 .t-sample{margin:0 0 20px;max-width:520px}
@@ -99,7 +99,7 @@
 </style>
 </head>
 <body>
-<div style="position:fixed;right:6px;top:6px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/06 14:10</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/06 14:42</div>
 
 <header class="site-head noprint">
   <div class="wrap">
@@ -118,14 +118,12 @@
 
   <div class="intro">
     <div class="intro-txt">
-      <p class="lead">会社名・役職・フリガナ・名前を並べた席次表を、<strong>用紙に合わせてA4の1枚に自動で収めます</strong>。Excelから複数の列をまとめて貼れるので、打ち直しは不要です。</p>
+      <p class="lead"><strong>登録なし・全部無料。</strong>会社名・役職・フリガナ・名前を並べた席次表を、<strong>用紙に合わせてA4の1枚に自動で収めます</strong>。名簿のコピペで、<strong>簡単作成！</strong></p>
       <!-- 🔴 できること（2026-09-04 本人・座席表と同じ形） -->
       <ul class="can-do">
         <li><strong>10人でも100人でも</strong>。用紙に合わせて自動で調整</li>
         <li><strong>会社名・役職・フリガナ・名前</strong>をひとマスに</li>
-        <li>大学なら<strong>学科・学籍番号</strong>も</li>
-        <li>印刷とPDFは<strong>A4の1枚</strong>に収まります</li>
-        <li>名簿は<strong>さくらツールで保存したデータ</strong>も使えます</li>
+        <li>大学なら<strong>学科・学籍番号</strong>も。<strong>色分け</strong>も一瞬で</li>
       </ul>
     </div>
     <figure class="t-sample noprint">
@@ -145,7 +143,7 @@
 
 
     <section class="card noprint">
-      <h2><span class="step">1</span>Excelの名簿の貼り付け&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+      <h2><span class="step">1</span>名簿の入力&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
       <div class="tip-body" hidden>
         <p><strong>Excelから、必要な列をまとめて選んで貼り付けてください。</strong>会社名・役職・名前が並んだ範囲をそのままコピーして、この欄に貼るだけです。</p>
         <p>貼り付けると、<strong>どの列が何なのかを自動で見分けます。</strong>数字だけの列は番号、カタカナだけの列はフリガナ、といった具合です。違っていたら、下のメニューで選び直せます。</p>
@@ -154,12 +152,12 @@
         <span class="hint">株式会社さくら商事,部長,山田 太郎,ヤマダ タロウ</span></p>
         <p>⚠ <strong>空白は区切りになりません。</strong>「山田 太郎」のように名前の中に空白が入るためです。</p>
       </div>
-      <p class="safe">🔒 <strong>使ってる機器の中だけで完結できます。</strong>名簿はネット上に流れません。外部には送っていないので、AIの学習に使われることも、個人情報が漏れることもありません。社員名簿でも、安心して使えます。</p>
+      <p class="safe">🔒 <strong>使ってる機器の中だけで完結しています。</strong>安心してご利用ください。</p>
       <!-- 🔴 保存した名簿の呼び出しは①に置く（⑧まで下がらなくていい）。
            ⚠1件も無いうちは出さない。座席表と共通の置き場なので、
              /seat/ で保存したものもここに出る -->
       <div class="row tight" id="quickLoad" hidden style="margin-bottom:12px">
-        <div class="pick"><label for="clsSel2">保存した名簿</label>
+        <div class="pick"><label for="clsSel2">さくらツールで保存済の名簿</label>
           <select id="clsSel2"><option value="">－</option></select></div>
         <div><label>&nbsp;</label>
           <button class="mini" id="clsLoad2" type="button">この名簿を自動入力</button></div>
@@ -502,7 +500,7 @@
     <label style="font-weight:normal">
       <input type="checkbox" id="save"> この機器に画面を保存する
     </label>
-    <p class="hint">チェックを入れると次回もこのまま表示されます。外すと次回は最初からの設定になります。外部には出ません。</p>
+    <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。外すと消えます。外部には出ません。</p>
     <p><span class="saving" id="savingLabel"></span></p>
   </section>
 
@@ -526,7 +524,7 @@
 
     <p class="hint">保存した名簿は、<b>さくらツール上で利用できます</b>。保存できるのは<b>文字情報のみ</b>です（写真や画像は残りません）。</p>
 
-    <p class="safe">🔒 <strong>使ってる機器の中だけで完結します。</strong>保存したものはネット上に流れません。</p>
+    <p class="safe">🔒 <strong>保存したものは、使ってる機器の中だけに残ります。</strong></p>
 
     <div class="cls-box">
       <h3>名簿に名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
@@ -536,7 +534,7 @@
         <button class="mini" id="clsSave" type="button">上書き</button>
         <button class="mini" id="clsDel" type="button">削除</button>
       </p>
-      <div class="pick"><label for="clsSel">保存した名簿</label>
+      <div class="pick"><label for="clsSel">さくらツールで保存済の名簿</label>
         <select id="clsSel"><option value="">－</option></select></div>
 
       <p class="hint" style="margin-top:14px">⚠ <strong>共用の機器で使ったときは、使い終わったら下の「削除」を押してください。</strong></p>
