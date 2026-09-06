@@ -99,7 +99,7 @@
 </style>
 </head>
 <body>
-<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/06 17:00</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/06 18:53</div>
 
 <header class="site-head noprint">
   <div class="wrap">
@@ -378,7 +378,7 @@
       <div class="body">
       <div class="tip-body" hidden>
         <p><strong>行の中身が同じ人に、同じ色が付きます。</strong>部署ごと・学科ごとに分けたいときは、これがいちばん早いです。色は人に付くので、席を動かすと色もついて動きます。</p>
-        <p><strong>分け方は、その言葉をどの行に入れたかで選びます。</strong>学科を「役職・学部・学科」の行に入れたなら「役職・学部・学科ごと」、「会社名・大学名」の行に入れたなら「会社名・大学名ごと」です。</p>
+        <p><strong>分け方は、その言葉をどの行に入れたかで選びます。</strong>学科を「役職・学部・学科」の行に入れたなら、「役職・学部・学科ごと」です。</p>
         <p><strong>「机のかたまり」「縦の列ごと」</strong>は、席のかたまりに色が付きます。グループ討議で使うときは、こちらです。席を動かして人を入れ替えると、色はその席に残ります。</p>
         <p><strong>グループ記号（A・B・C…）を押すと、その席のグループと色を変えられます。</strong>もう一度作り直すと、手で直したぶんは元にもどります。</p>
         <p>色は印刷にも画像にもそのまま出ます。</p>
@@ -419,11 +419,8 @@
       <summary><span class="step">5</span>見た目と用紙&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
       <div class="body">
       <div class="tip-body" hidden>
-        <p><strong>印刷できないとき</strong></p>
-        <p>お使いの機器がプリンターとつながっているか確認してください。つながっていれば、スマホからでも印刷できます。</p>
-        <p><strong>PDFにしたいとき</strong>は、印刷画面で「送信先」を「PDFに保存」にしてください。</p>
-        <p><strong>たて向きで出てしまうとき</strong>（スマホ・タブレットに多いです）は、印刷画面の設定で用紙の向きを「横」に変えてください。機器によっては、こちらの指定より端末の設定が優先されます。</p>
         <p><strong>丸文字はWindowsとiPadだけ。</strong>ほかの機器ではゴシック体になりますが、崩れません。</p>
+        <p class="hint">⚠印刷の困りごと（PDF・たて向き）は、<strong>⑦の「？」</strong>にまとめてあります。</p>
       </div>
       <div class="row">
         <div><label for="font">書体</label>
@@ -502,7 +499,8 @@
     <label style="font-weight:normal">
       <input type="checkbox" id="save"> この機器に画面を保存する
     </label>
-    <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。外すと消えます。外部には出ません。</p>
+    <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。<br>
+      ⚠<b>共用の機器で使ったときは、このチェックを外して、この画面を閉じてください。</b></p>
     <p><span class="saving" id="savingLabel"></span></p>
   </section>
 
@@ -510,27 +508,20 @@
     <h2><span class="step">8</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
     <div class="tip-body" hidden>
       <ul>
-        <li><strong>名前を付けて、いくつも保存できます。</strong>ボタンを押したときだけ増えます。</li>
-        <li>残るのは<strong>使ってる機器のブラウザの中だけ</strong>です。<strong>どこにも送信されません。</strong></li>
-      </ul>
-      <p class="tip-h">さくらツールの中で共通です</p>
-      <ul>
-        <li><strong>ほかの道具で保存したデータも、ここに出ます。</strong>逆もできます。同じ機器なら、名簿を貼り直す必要はありません。</li>
+        <li><strong>名前を付けて、いくつも保存できます。</strong>残るのは<strong>使ってる機器の中だけ</strong>です。</li>
+        <li><strong>さくらツールの中で共通です。</strong>ほかの道具で保存したデータもここに出ますし、逆もできます。</li>
         <li>データは共通ですが、<strong>見た目や会場の形はツールごと</strong>に覚えます。席次表で決めた敬称やふりがなが、座席表に混ざることはありません。</li>
-      </ul>
-      <p class="tip-h">呼び出し方</p>
-      <ul>
-        <li><strong>①の「このデータを自動入力」</strong>から呼び出します。あとは「席次表を作る」を押すだけです。</li>
+        <li>呼び出すのは①の<strong>「このデータを自動入力」</strong>から。あとは「席次表を作る」を押すだけです。</li>
       </ul>
     </div>
 
-    <p class="hint">保存したデータは、<b>さくらツール上で利用できます</b>。保存できるのは<b>文字情報のみ</b>です（写真や画像は残りません）。</p>
+    <p class="hint">保存したデータは、<b>さくらツール上で利用できます</b>。</p>
 
     <p class="safe">🔒 <strong>保存したものは、使ってる機器の中だけに残ります。</strong></p>
 
     <div class="cls-box">
       <h3>データに名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
-      <p class="hint">名簿・会場の形・条件・見た目の設定を、まとめて残すときに使います。<strong>「上書き」は、参加者が変わったとき</strong>に使ってください。</p>
+      <p class="hint">名簿・会場の形・条件・見た目の設定を、まとめて残すときに使います。<strong>「上書き」は、参加者が変わったとき</strong>に使ってください。<br>保存できるのは<b>文字情報のみ</b>です（写真や画像は残りません）。</p>
       <p class="btn-row">
         <button class="mini" id="clsNew" type="button">新しい名前で保存</button>
         <button class="mini" id="clsSave" type="button">上書き</button>
@@ -539,7 +530,6 @@
       <div class="pick"><label for="clsSel">さくらツールで保存済のデータ</label>
         <select id="clsSel"><option value="">－</option></select></div>
 
-      <p class="hint" style="margin-top:14px">⚠ <strong>共用の機器で使ったときは、⑦のチェックを外して、ブラウザを閉じてください。</strong></p>
     </div>
 
   </section>

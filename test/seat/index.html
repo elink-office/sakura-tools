@@ -194,7 +194,7 @@ body.screen .seat.dup .nm{text-decoration:none}
 </style>
 </head>
 <body>
-<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/06 17:00</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/06 18:53</div>
 
 <header class="site-head noprint">
   <div class="wrap">
@@ -246,13 +246,11 @@ body.screen .seat.dup .nm{text-decoration:none}
         <p class="tip-h">Excelから貼るとき</p>
         <ul>
           <li><strong>名前の列をコピーして、この欄に貼るだけです。</strong></li>
-          <li><strong>出席番号や男女の列が一緒でもかまいません。</strong>読み分けます。<strong>列の順番も自由</strong>です。</li>
+          <li><strong>出席番号や男女の列が一緒でもかまいません。</strong>読み分けます。<strong>列の順番も自由</strong>で、見出しの行（番号・氏名・性別など）はとばします。</li>
           <li>手で書くときは、<strong>カンマ（,）で区切って</strong>もかまいません。<span class="hint">1,やまだ たろう,男</span></li>
-          <li><strong>見出しの行（番号・氏名・性別など）が一緒でもかまいません。</strong>とばします。</li>
-          <li>それ以外の列（住所やメモなど）が<strong>名前より左</strong>にあると、そちらが名前になります。左には置かないでください。</li>
-          <li><strong>貼ったあと、手で足したり直したりできます。</strong>転入生が来たときは1行足すだけです。</li>
-          <li>名字と名前のあいだの空白は、あってもなくてもかまいません。空白があると「姓と名で改行」が使えます。</li>
-          <li>同じ名字の子が何人かいるときは、<strong>名前まで入れておく</strong>と取りちがえません。</li>
+          <li>⚠住所やメモの列が<strong>名前より左</strong>にあると、そちらを名前と読みます。左には置かないでください。</li>
+          <li><strong>貼ったあとに手で足したり直したりできます。</strong>転入生が来たときは1行足すだけです。</li>
+          <li>名字と名前のあいだの空白は、あってもなくても大丈夫です（空白があると「姓と名で改行」が使えます）。同じ名字の子がいるときは、<strong>名前まで入れておく</strong>と取りちがえません。</li>
         </ul>
 
         <p class="tip-h">男女</p>
@@ -399,9 +397,8 @@ body.screen .seat.dup .nm{text-decoration:none}
                Excelに班長列がある先生が貼ったときに、黙って拾うためだけのもの -->
         <h3>班に1人ずつにする人&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h3>
         <div class="tip-body" hidden>
-          <p>班長・リーダー・声かけ役など、<strong>班に1人配置したいとき</strong>に設定します。なんのために使うかは、自由に決めましょう。</p>
-          <p>④の「班に分ける」を入れているときだけ有効です。また、座席表に★を表示するかどうかも④で選べます。</p>
-          <p>人数が班の数より少ないときは、★がいない班をお知らせします。</p>
+          <p>班長・リーダー・声かけ役など、<strong>班に1人ずつ置きたい人</strong>を決められます。使い道は自由です。</p>
+          <p>④で「班に分ける」を入れているときだけ効きます（★を座席表に出すかどうかも④）。★の人数が足りないときは、いない班をお知らせします。</p>
         </div>
         <div id="leadList"></div>
         <!-- 🔴 人数はボタンの右に、それだけ出す（2026-09-03 本人）。
@@ -463,7 +460,7 @@ body.screen .seat.dup .nm{text-decoration:none}
       <summary><span class="step">3</span>男女の文字色&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
       <div class="body">
       <div class="tip-body" hidden>
-        <p><strong>赤と緑は、いちばん見分けにくい組み合わせ</strong>です。教室のモニターに映して子どもが自分の席を探すことを考えて、このツールでは青系と赤紫系のように系統が離れた色を、はじめの組み合わせにしています。明るさも変えてあるので、色が分かりにくい人でも濃さで見分けられます。</p>
+        <p><strong>赤と緑は、いちばん見分けにくい組み合わせ</strong>です。はじめは青系と赤紫系にしてあり、明るさも変えてあるので、色が分かりにくい人でも濃さで見分けられます。</p>
         <p>色を付けたくないときは、両方とも「黒」を選んでください。</p>
       </div>
       <p class="note-sm">下の名前を押すたびに <b>なし → 男 → 女</b> と変わります。</p>
@@ -487,11 +484,9 @@ body.screen .seat.dup .nm{text-decoration:none}
       <div class="body">
       <div class="tip-body" hidden>
         <p>班は<strong>机のかたまり</strong>に付きます。席をドラッグして人を入れ替えると、班もそのまま入れ替わります。</p>
-        <p>机は前後2つをひと組にして数えます。4人なら2席×2段、6人なら3席×2段、<strong>3人ならかぎ型</strong>になります。</p>
-        <p>ひとりだけの班は作りません。35人を2人ずつに分けるときは、3人の班をひとつ作って、あとは2人ずつになります。</p>
-        <p><strong>班の番号を押すと、その席の班をえらべます。</strong>「この子だけ となりの班に」を手で直せます。もう一度席替えをすると、手で直したぶんは元にもどります。</p>
-        <p>「班の番号を出す」を外しても、この画面には薄く残ります。押して班を変えられます。紙・モニター・画像には出ません。</p>
-        <p>色は印刷にも画像にもそのまま出ます。色の見分けがつきにくい方にも伝わる組み合わせを選んであります。</p>
+        <p>机は前後2つでひと組。4人なら2席×2段、6人なら3席×2段、<strong>3人ならかぎ型</strong>です。ひとりだけの班は作りません（35人を2人ずつなら、3人の班が1つできます）。</p>
+        <p><strong>班の番号を押すと、その席の班を変えられます。</strong>「この子だけ となりの班に」ができます。もう一度席替えをすると、手で直したぶんは元にもどります。</p>
+        <p>「班の番号を出す」を外しても、この画面には薄く残ります（押せば変えられます）。紙・モニター・画像には出ません。色は印刷にも画像にもそのまま出ます。</p>
       </div>
       <p class="note-sm">
         席は<strong>マグネットのように、ドラッグで入れ替え</strong>ができます（スマホ・タブレットは長押ししてから）。班番号を押すと、その席の班と色を変えられます。
@@ -553,7 +548,7 @@ body.screen .seat.dup .nm{text-decoration:none}
                 </select></div>
             </div>
             <p class="hint" id="avoidNote"></p>
-            <p class="hint">下の「クラスと記録の保存」で<strong>座席を記録しておくと使えます</strong>。人数と班の数によっては、どうしても重なることがあります。そのときは<strong>重なった人を画面に出します</strong>。</p>
+            <p class="hint">下の<strong>⑧「保存したデータの利用」</strong>で座席を記録しておくと使えます。人数と班の数によっては、どうしても重なることがあります。そのときは<strong>重なった人を画面に出します</strong>。</p>
           </div>
         </div>
       </div>
@@ -564,13 +559,9 @@ body.screen .seat.dup .nm{text-decoration:none}
       <summary><span class="step">5</span>見た目&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
       <div class="body">
       <div class="tip-body" hidden>
-        <p><strong>印刷できないとき</strong></p>
-        <p>お使いの機器がプリンターとつながっているか確認してください。つながっていれば、スマホからでも印刷できます。</p>
-        <p><strong>PDFにしたいとき</strong>は、印刷画面で「送信先」を「PDFに保存」にしてください。</p>
-        <p><strong>たて向きで出てしまうとき</strong>（スマホ・タブレットに多いです）は、印刷画面の設定で用紙の向きを「横」に変えてください。機器によっては、こちらの指定より端末の設定が優先されます。</p>
-        <p><strong>タブレット・スマホで2ページに分かれてしまうとき</strong>は、印刷画面の<strong>「サイズ調整」を80%</strong>くらいにしてください。画像で保存してから、写真アプリで印刷する方法もあります。</p>
         <p><strong>丸文字はWindowsとiPadだけ。</strong>ほかの機器ではゴシック体になりますが、崩れません。</p>
-        <p><strong>印刷（PDF）は先生の向きで出す</strong>にすると、紙は教卓から見た向きになります。生徒に見せるのは画面で足りるので、紙は先生の向きだけで済みます。</p>
+        <p><strong>「印刷（PDF）は先生の向きで出す」</strong>にすると、紙は教卓から見た向きになります。画面はそのままなので、生徒に見せるのは画面で足ります。</p>
+        <p class="hint">⚠印刷の困りごと（PDF・たて向き・2ページに分かれる）は、<strong>⑥の「？」</strong>にまとめてあります。</p>
       </div>
       <div class="row">
         <div><label for="font">書体</label>
@@ -620,6 +611,7 @@ body.screen .seat.dup .nm{text-decoration:none}
         <p><strong>PDFにするとき</strong>は、印刷画面で「送信先」（または「プリンター」）を <strong>PDFに保存</strong> に変えてください。</p>
         <p><strong>印刷できないとき</strong>は、お使いの機器がプリンターとつながっているか確認してください。つながっていれば、スマホからでも印刷できます。</p>
         <p><strong>たて向きで出てしまうとき</strong>（スマホ・タブレットに多いです）は、印刷画面の設定で用紙の向きを「横」に変えてください。機器によっては、こちらの指定より端末の設定が優先されます。</p>
+        <p><strong>2ページに分かれてしまうとき</strong>は、印刷画面の<strong>「サイズ調整」を80%</strong>くらいにしてください。画像で保存して、写真アプリから印刷する方法もあります。</p>
         <p><strong>「先生の向き」</strong>にすると、紙は教卓から見た向き（180度まわした形）で出ます。画面はそのままです。</p>
         <p><strong>「男女の色を出さない」</strong>にすると、紙だけ黒で出ます。<strong>画面は色が付いたままです。</strong>③で色を消すと画面も黒くなるので、紙だけ黒にしたいときはこちらを使ってください。</p>
       </div>
@@ -656,7 +648,8 @@ body.screen .seat.dup .nm{text-decoration:none}
     <label style="font-weight:normal">
       <input type="checkbox" id="save"> この機器に画面を保存する
     </label>
-    <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。外すと消えます。外部には出ません。</p>
+    <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。<br>
+      ⚠<b>共用の機器で使ったときは、このチェックを外して、この画面を閉じてください。</b></p>
     <p><span class="saving" id="savingLabel"></span></p>
   </section>
 
@@ -668,37 +661,22 @@ body.screen .seat.dup .nm{text-decoration:none}
     <h2><span class="step">8</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
     <div class="tip-body" hidden>
       <ul>
-        <li><strong>名前を付けて、いくつも保存できます。</strong>ボタンを押したときだけ増えます。</li>
-        <li>残るのは<strong>使ってる機器のブラウザの中だけ</strong>です。<strong>どこにも送信されません。</strong></li>
-      </ul>
-
-      <p class="tip-h">さくらツールの中で共通です</p>
-      <ul>
-        <li><strong>ほかの道具で保存したデータも、ここに出ます。</strong>逆もできます。同じ機器なら、名簿を貼り直す必要はありません。</li>
-        <li>データは共通ですが、<strong>教室の形や班の設定はツールごと</strong>に覚えます。混ざることはありません。</li>
-      </ul>
-
-      <p class="tip-h">保存したデータを使うとき</p>
-      <ul>
-        <li><strong>①の「このデータを自動入力」</strong>から呼び出します。名簿も条件も入るので、あとは「席替えする」を押すだけです。</li>
-        <li>クラスを持ち替えるたびに、貼り直さなくてよくなります。</li>
-      </ul>
-
-      <p class="tip-h">決まった座席を使うとき</p>
-      <ul>
-        <li><strong>記録の座席を表示</strong>＝そのときの座席をそのまま出します。<strong>席替えはしません。</strong></li>
-        <li>同じ日でも<strong>案1・案2</strong>を別々に保存できます。名前は自由に付けられるので「2学期はじめ」のような書き方もできます。</li>
-        <li>同じ名前で保存したときは、<strong>差し替えるか聞きます。</strong>同じものが2件できることはありません。</li>
+        <li><strong>名前を付けて、いくつも保存できます。</strong>残るのは<strong>使ってる機器の中だけ</strong>です。</li>
+        <li><strong>さくらツールの中で共通です。</strong>ほかの道具で保存したデータもここに出ますし、逆もできます（教室の形や班の設定はツールごとに覚えます）。</li>
+        <li>呼び出すのは①の<strong>「このデータを自動入力」</strong>から。名簿も条件も入るので、あとは「席替えする」を押すだけです。</li>
+        <li><strong>「記録の座席を表示」</strong>＝そのときの座席をそのまま出します（<strong>席替えはしません</strong>）。</li>
+        <li>同じ日でも<strong>案1・案2</strong>を別々に残せます。「2学期はじめ」のような名前も付けられます。</li>
+        <li>同じ名前で保存したときは<strong>差し替えるか聞きます</strong>。同じものが2件できることはありません。</li>
       </ul>
     </div>
 
-    <p class="hint">保存したデータは、<b>さくらツール上で利用できます</b>。保存できるのは<b>文字情報のみ</b>です（写真や画像は残りません）。</p>
+    <p class="hint">保存したデータは、<b>さくらツール上で利用できます</b>。</p>
 
     <p class="safe">🔒 <strong>保存したものは、使ってる機器の中だけに残ります。</strong></p>
 
     <div class="cls-box">
       <h3>データに名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
-      <p class="hint">名簿・教室の形・条件・男女・班の設定を、まとめて残すときに使います。<strong>「上書き」は、転入・転出で名簿が変わったとき</strong>に使ってください。</p>
+      <p class="hint">名簿・教室の形・条件・男女・班の設定を、まとめて残すときに使います。<strong>「上書き」は、転入・転出で名簿が変わったとき</strong>に使ってください。<br>保存できるのは<b>文字情報のみ</b>です（写真や画像は残りません）。</p>
       <p class="btn-row">
         <button class="mini" id="clsNew" type="button">新しい名前で保存</button>
         <button class="mini" id="clsSave" type="button">上書き</button>
@@ -717,7 +695,6 @@ body.screen .seat.dup .nm{text-decoration:none}
       <div class="pick"><label for="recSel">記録</label>
         <select id="recSel"><option value="">－</option></select></div>
 
-      <p class="hint" style="margin-top:14px">⚠ <strong>共用の機器で使ったときは、⑦のチェックを外して、ブラウザを閉じてください。</strong></p>
     </div>
 
   </section>

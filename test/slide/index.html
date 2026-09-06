@@ -29,7 +29,7 @@
 <link rel="stylesheet" href="slide.css?v=64">
 </head>
 <body>
-<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/06 17:00</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/06 18:53</div>
 
 <header class="site-head noprint">
   <div class="wrap">
@@ -47,8 +47,7 @@
   <p class="catch">パワーポイントの代わりに、文字と写真をモニターへ</p>
   <!-- 🔴 上の文章は短く・改行を増やす（2026-09-05 本人「改行増やして、短めに。箇条書きは使ってもいい」） -->
   <p class="lead">
-    文字と写真が<strong>パワーポイントのように、そのまま大きく映ります</strong>。<br>
-    ちょっと表示したいときも、<strong>時間をかけずに簡単作成！</strong>
+    文字と写真が<strong>パワーポイントのように、そのまま大きく映ります</strong>。ちょっと表示したいときも、<strong>時間をかけずに簡単作成！</strong>
   </p>
   <ul class="can-do">
     <li>会議や集まりの議題・順番にも</li>
@@ -231,7 +230,8 @@
       <input type="checkbox" id="save"> この機器に画面を保存する
     </label>
     <p class="hint">
-      チェックを入れると、<b>この画面の状態が保存されます</b>。外すと消えます。外部には出ません。<br>
+      チェックを入れると、<b>この画面の状態が保存されます</b>。<br>
+      ⚠<b>共用の機器で使ったときは、このチェックを外して、この画面を閉じてください。</b><br>
       ⭐<b>写真が残るのは、画面の保存のみです。</b>
     </p>
     <p><span class="saving" id="savingLabel"></span></p>
@@ -252,11 +252,9 @@
       </ul>
     </div>
 
-    <p class="hint">保存したデータは、<b>さくらツール上で利用できます</b>。保存できるのは<b>文字情報のみ</b>です。</p>
+    <p class="hint">保存したデータは、<b>さくらツール上で利用できます</b>。</p>
 
     <p class="safe">🔒 <strong>保存したものは、使ってる機器の中だけに残ります。</strong></p>
-
-    <p class="hint">⚠ <strong>共用の機器で使ったときは、④のチェックを外して、ブラウザを閉じてください。</strong></p>
 
     <div class="cls-box">
       <h3>名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
@@ -265,7 +263,7 @@
       <!-- 🔴 説明はこの1行だけ（2026-09-06 本人「⑤の説明が長いね…だけでいいんじゃないかな？
            だって、名前を付けて保存だからさ、仕事してたらわかると思う」）。
            ⚠くわしい話（上書き・削除が①のえらびに従うこと）は「？」の中に置いてある -->
-      <p class="hint">いま、<b>②に入っているもの</b>を保存します。</p>
+      <p class="hint">いま、<b>②に入っているもの</b>を保存します。<br>保存できるのは<b>文字情報のみ</b>です。</p>
       <p class="btn-row">
         <button class="mini" id="clsNew" type="button">新しい名前で保存</button>
         <button class="mini" id="clsSave" type="button">上書き</button>
@@ -402,6 +400,6 @@
   </div>
 </div>
 
-<script src="slide.js?v=78"></script>
+<script src="slide.js?v=79"></script>
 </body>
 </html>

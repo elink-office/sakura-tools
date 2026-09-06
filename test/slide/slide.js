@@ -1391,13 +1391,25 @@
     if ($('show').classList.contains('on')) fitBox();
   });
 
+  /* 🔴 マウスを止めたらボタンを薄くする。⚠**指で使う機器ではやらない**（2026-09-06 本人
+     「下に押しながらスワイプすると消えて、出てこないから焦る。軽くタップしたら出てくる」）。
+     ⚠原因＝指の操作でも mousemove が出ることがあり、そのあと動かないので**消えたまま**になる。
+     ⭐マウスがある機器（hover できる機器）だけにした。念のため、指がふれたら必ず出す */
   var hideTimer = null;
-  document.addEventListener('mousemove', function(){
-    if (!$('show').classList.contains('on')) return;
-    document.body.classList.remove('hidebar');
+  var canHover = false;
+  try{ canHover = window.matchMedia('(hover:hover) and (pointer:fine)').matches; }catch(e){}
+  if (canHover){
+    document.addEventListener('mousemove', function(){
+      if (!$('show').classList.contains('on')) return;
+      document.body.classList.remove('hidebar');
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(function(){ document.body.classList.add('hidebar'); }, 2500);
+    });
+  }
+  document.addEventListener('touchstart', function(){
     clearTimeout(hideTimer);
-    hideTimer = setTimeout(function(){ document.body.classList.add('hidebar'); }, 2500);
-  });
+    document.body.classList.remove('hidebar');
+  }, true);
 
   // 🔴 保存のチェックだけ先に読む（load より前。読まないと save() が消しに行く）
   try{

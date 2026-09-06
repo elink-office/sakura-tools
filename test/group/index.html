@@ -37,7 +37,7 @@
 </style>
 </head>
 <body>
-<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/06 17:00</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/06 18:53</div>
 
 <header class="site-head noprint">
   <div class="wrap">
@@ -150,7 +150,7 @@
              ⚠名簿の★の読み取りは残してあるが、画面では案内しない -->
         <h3 style="margin-top:16px">班に1人ずつにする人&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h3>
         <div class="tip-body" hidden>
-          <p>班長・リーダー・声かけ役など、<strong>班に1人配置したいとき</strong>に設定します。なんのために使うかは、自由に決めましょう。</p>
+          <p>班長・リーダー・声かけ役など、<strong>班に1人ずつ置きたい人</strong>を決められます。使い道は自由です。</p>
           <p>★を表に出すかどうかは、下の「見た目」で選べます。人数が班の数より少ないときは、いない班をお知らせします。</p>
         </div>
         <div id="leadList"></div>
@@ -294,7 +294,8 @@
     <label style="font-weight:normal">
       <input type="checkbox" id="save"> この機器に画面を保存する
     </label>
-    <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。外すと消えます。外部には出ません。</p>
+    <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。<br>
+      ⚠<b>共用の機器で使ったときは、このチェックを外して、この画面を閉じてください。</b></p>
     <p><span class="saving" id="savingLabel"></span></p>
   </section>
 
@@ -304,23 +305,19 @@
     <h2><span class="step">7</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
     <div class="tip-body" hidden>
       <ul>
-        <li><strong>名前を付けて、いくつも保存できます。</strong>ボタンを押したときだけ増えます。</li>
-        <li>残るのは使ってる機器のブラウザの中だけです。どこにも送信されません。</li>
-      </ul>
-      <p class="tip-h">さくらツールの中で共通です</p>
-      <ul>
-        <li><strong>ほかの道具で保存したデータも、ここに出ます。</strong>逆もできます。同じ機器なら、名簿を貼り直す必要はありません。</li>
-        <li>データは共通ですが、部屋の形や班の設定は<strong>ツールごと</strong>に覚えます。混ざることはありません。</li>
+        <li><strong>名前を付けて、いくつも保存できます。</strong>残るのは<strong>使ってる機器の中だけ</strong>です。</li>
+        <li><strong>さくらツールの中で共通です。</strong>ほかの道具で保存したデータもここに出ますし、逆もできます（部屋の形や班の設定はツールごとに覚えます）。</li>
+        <li>呼び出すのは①の<strong>「このデータを自動入力」</strong>から。</li>
       </ul>
     </div>
 
-    <p class="hint">保存したデータは、<b>さくらツール上で利用できます</b>。保存できるのは<b>文字情報のみ</b>です（写真や画像は残りません）。</p>
+    <p class="hint">保存したデータは、<b>さくらツール上で利用できます</b>。</p>
 
     <p class="safe">🔒 <strong>保存したものは、使ってる機器の中だけに残ります。</strong></p>
 
     <div class="cls-box">
       <h3>データに名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
-      <p class="hint">名簿・部屋の形・条件・男女の指定を、まとめて残すときに使います。<strong>「上書き」は、転入・転出で名簿が変わったとき</strong>に使ってください。</p>
+      <p class="hint">名簿・部屋の形・条件・男女の指定を、まとめて残すときに使います。<strong>「上書き」は、転入・転出で名簿が変わったとき</strong>に使ってください。<br>保存できるのは<b>文字情報のみ</b>です（写真や画像は残りません）。</p>
       <p class="btn-row">
         <button class="mini" id="clsNew" type="button">新しい名前で保存</button>
         <button class="mini" id="clsSave" type="button">上書き</button>
@@ -328,7 +325,6 @@
       </p>
       <div class="pick"><label for="clsSel">さくらツールで保存済のデータ</label>
         <select id="clsSel"><option value="">－</option></select></div>
-      <p class="hint" style="margin-top:14px">⚠ <strong>共用の機器で使ったときは、⑥のチェックを外して、ブラウザを閉じてください。</strong></p>
     </div>
 
   </section>
