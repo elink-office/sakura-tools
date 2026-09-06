@@ -6,8 +6,9 @@
      色は「面で塗らない」。枠の上の線だけを色にする。 */
 
 :root{
-  --midori:#3f7a68;        /* 右＝仕事 */
-  --midori-pale:#eef4f2;   /* 薄いほうのボタン（完成サンプルを見る） */
+  /* ⭐2026-09-06 さくら色に統一（本人）。緑は使わない */
+  --midori:#c86a8e;
+  --midori-pale:#fbf1f4;   /* 薄いほうのボタン */
   --pink-deep:#a84a72;     /* ⚠薄いピンクの上に --pink をのせると薄すぎる（読みやすさ 3.2 → 4.9） */
 }
 /* ⚠ トップだけ薄くしていたが、2026-08-30 に全ページへ広げた（本人の希望）。
@@ -22,7 +23,8 @@
 /* ⚠ スマホでも1行に収める。画面幅から逆算した大きさにする */
 .t-hero h1{
   font-size:clamp(12px,4vw,22px);font-weight:700;margin:0 0 18px;
-  line-height:1.5;white-space:nowrap;color:var(--ink-soft);
+  /* 🔴 さくら色にする（2026-09-06 本人「色がグレーなんだけど、ピンク系にしてみて」） */
+  line-height:1.5;white-space:nowrap;color:var(--pink);
 }
 .t-catch{
   font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;line-height:1.45;
@@ -46,9 +48,23 @@
    原因＝説明文の行数がカードごとに違うこと。⭐空白でごまかさず、
      ①カードを同じ高さに伸ばす ②説明の高さを3行ぶん確保する ③ボタンを下端にそろえる、で直す */
 .t-cards{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:34px;align-items:stretch}
+/* 🔴 2026-09-06 カードごと押せるようにした（本人）。「使ってみる」ボタンは廃止。
+   ⚠押せることは**浮く見た目**で伝える（マウスのある機器は hover、スマホは最初から影） */
 .t-card{
+  display:block;text-decoration:none;color:var(--ink);cursor:pointer;
   background:#fff;border:1px solid var(--line);border-radius:var(--radius);
   padding:22px 22px 20px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+  transition:box-shadow .18s ease, transform .18s ease;
+}
+@media (hover:hover){
+  .t-card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(0,0,0,.14), 0 2px 6px rgba(0,0,0,.08)}
+}
+.t-card:active{transform:translateY(1px);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.t-card:focus-visible{outline:3px solid var(--pink);outline-offset:3px}
+/* ⚠スマホは「触った時点で押した後」なので、最初から少し浮かせておく */
+@media (hover:none){
+  .t-card{box-shadow:0 4px 14px rgba(0,0,0,.10)}
 }
 .t-card.school{border-top:3px solid var(--pink)}
 .t-card.work{border-top:3px solid var(--midori)}
@@ -113,7 +129,9 @@
      だから**触る前から押せる板に見せる**。常に影を敷いて浮かせておく。
      ⚠ 線は付けない（本人「ピンクの線（緑の線）はなしにしてみて」）。
        輪郭は影だけで出す＝そのぶん影は強めにする */
-  box-shadow:0 5px 16px rgba(0,0,0,.17), 0 1px 3px rgba(0,0,0,.10);
+  /* ⚠2026-09-06 本人：絵の影をやめて、グレーの線にした（カード全体が押せる形になり、
+     絵まで浮くと押す場所が2つあるように見えるため） */
+  border:1px solid var(--line);
 }
 /* 🔴 2026-09-06 本人：名前と説明を絵の上に。絵は説明の下、ボタンはその下 */
 /* ⚠絵とボタンが近すぎた（2026-09-06 本人）。絵の下に間を取る */

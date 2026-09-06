@@ -33,22 +33,35 @@ body{
 .site-head a{color:var(--ink);text-decoration:none;font-weight:bold}
 .site-head .logo{font-size:1.1rem}
 .site-head nav{margin-left:auto;font-size:.9rem}
-/* 🔴 ヘッダーはツールへの入口。トップ・座席表・席次表の3つ。
-   ⚠ 色は付けない。3つ並んでいれば「押せば飛ぶ」と分かる（本人の判断）。
-     見分けは太字だけでつける */
+/* 🔴 ヘッダーはツールへの入口＝⭐**道具の名前だけを並べる**（2026-09-06 本人）。
+   ⭐「トップ」は置かない。左のロゴ（🌸 SAKURA TOOLS）がトップへの戻り道。
+   ⭐**見ているページ自身へのリンクは出さない**ので、道具のページでは2つ、それ以外は3つ並ぶ。
+   ⚠ 理由＝スマホ（375px）で4つ並べるとヘッダーが2行になり、貼り付いたまま場所を取る。
+   ⚠ 色は付けない。並んでいれば「押せば飛ぶ」と分かる（本人の判断） */
 .site-head nav{display:flex;gap:16px}
 .site-head nav a{
   margin-left:0;font-weight:normal;color:var(--ink-soft);
   /* ⚠ 太字にしたときに幅が動かないよう、あらかじめ場所を取っておく */
   min-width:3.2em;text-align:center;
 }
+/* ⚠ いまは自分のページを出さないので出番はないが、残しておく */
 .site-head nav a[aria-current="page"]{font-weight:bold;color:var(--ink)}
 .site-head nav a:hover{font-weight:bold}
-/* ⚠ 3つ並ぶと、狭い画面でヘッダーがあふれる。ロゴと間隔を詰める */
+/* ⚠ 3つ並ぶと、狭い画面でヘッダーがあふれる。ロゴと間隔を詰める（330px以下は2行になる） */
 @media(max-width:430px){
   .site-head .logo{font-size:.95rem}
   .site-head nav{gap:11px}
   .site-head nav a{min-width:2.9em;font-size:.85rem}
+}
+/* 🔴 「このサイトについて」など道具ではないページは、トップ＋道具3つで**4つ**並ぶ。
+   ⚠そのままだとスマホでヘッダーが2行（62px）になり、貼り付いたまま場所を取る。
+   ⭐4つ目がある時だけ、もう一段詰めて1行に収める（37px）。3つのページは今までの大きさのまま。
+   ⚠`:has()` が効かない古い機器では2行になるだけ＝押せなくなるわけではない */
+@media(max-width:430px){
+  .site-head .wrap:has(nav a:nth-child(4)){padding:7px 8px;gap:6px}
+  .site-head .wrap:has(nav a:nth-child(4)) .logo{font-size:.88rem}
+  .site-head .wrap:has(nav a:nth-child(4)) nav{gap:7px}
+  .site-head .wrap:has(nav a:nth-child(4)) nav a{min-width:0;font-size:.76rem}
 }
 
 h1{font-size:1.5rem;margin:24px 0 4px}

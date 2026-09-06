@@ -191,9 +191,16 @@ h3.sub{font-size:1.02rem;margin:0 0 12px;display:flex;align-items:center}
   display:block;font-size:.44em;color:var(--ink-soft);
   font-weight:700;letter-spacing:.06em;margin-bottom:.35em;line-height:1.3;
 }
+/* 🔴 「/ で改行した行」のかたまり。ふだんは中央のまま（2026-09-06 本人
+   「下の3行を右揃えにしたいという要望あり」）。
+   ⚠かたまりの幅はいちばん長い行の幅なので、画面のまん中に置いたまま行どうしがそろう */
+#title .bd{display:block}
+#title[data-al="left"]  .bd{text-align:left}
+#title[data-al="right"] .bd{text-align:right}
 #title[data-len="m"]{font-size:clamp(40px,8vw,140px)}
 #title[data-len="l"]{font-size:clamp(34px,6vw,104px)}
 #title[data-len="xl"]{font-size:clamp(28px,4.4vw,78px)}
+#title[data-len="xxl"]{font-size:clamp(22px,3.2vw,56px)}
 /* 🔴 1枚ごとに大きさを決めたときはこちらが勝つ（2026-09-05 本人）。
    ⚠詳細度が同じなので、必ず data-len のあとに書く */
 #title[data-size="xs"]{font-size:clamp(20px,3.1vw,54px)}
@@ -251,6 +258,10 @@ body.hidebar #bar .row{opacity:0}
    書体は全体で決めることが多く、1枚ずつ変えるのは例外のため。 */
 @media (max-width:700px){
   #sheets th.sel:nth-of-type(5), #sheets td.sel:nth-of-type(5){display:none}
+  /* 🔴 「そろえ」の列が増えたぶん、せまい画面では選ぶところを詰める（2026-09-06）。
+     ⚠残る選択肢は「中央／下」「自動／小」「中央／左／右」と短いので、この幅で入る */
+  .tbl td.sel{width:56px}
+  .mini-sel{font-size:.74rem;padding:3px 2px}
   .tbl input.ttl{min-width:84px}
   .tbl th,.tbl td{padding:5px 4px}
   .tbl td.pic{width:58px}

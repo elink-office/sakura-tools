@@ -31,6 +31,7 @@
   var SAMPLE_TEXT =
     "つぎの議題//会計の報告\n" +
     "今日のめあて//分数のたし算ができる\n" +
+    "教室に戻ったらすること//①着替え/②プリントの直し/③読書\n" +
     "教科書 42ページ\n" +
     "のこり 5分";
 
@@ -449,7 +450,7 @@
         if (sh.off) return;
         slides.push({
           group:'', title:(sh.text||'').trim(), names:[], pic:(sh.url||''),
-          pos:(sh.pos||''), size:(sh.size||''), font:(sh.font||'')
+          pos:(sh.pos||''), size:(sh.size||''), font:(sh.font||''), al:(sh.al||'')
         });
       });
       return;
@@ -499,11 +500,15 @@
     var POS  = [['mid','中央'],['bottom','下']];
     var SIZE = [['','自動'],['xs','最小'],['s','小'],['m','中'],['l','大']];
     var FONT = [['gothic','ゴシック'],['maru','丸文字'],['mincho','明朝']];
+    // 🔴 改行した行のそろえ方（2026-09-06 本人「下の3行を右揃えにしたいという要望あり」）。
+    //    ⭐見出し（// の前）は中央のまま。そろうのは「/ で改行した行どうし」
+    var ALIGN = [['','中央'],['left','左'],['right','右']];
 
     var h = '<table><tr><th class="chk">映す</th>'+HEAD_IDX
           + '<th class="pic">写真</th>'
           + '<th>文字（/ で改行・// で見出し）</th>'
           + '<th class="sel">書体</th><th class="sel">位置</th><th class="sel">大きさ</th>'
+          + '<th class="sel">そろえ</th>'
           + '<th class="mv">順番</th><th class="del">消す</th></tr>';
     sheets.forEach(function(sh,i){
       h += '<tr draggable="true" data-row="'+i+'" class="'+(sh.off?'off':'')+'">'
@@ -519,6 +524,7 @@
         +  '<td class="sel">'+sel('sfont', i, sh.font||'gothic', FONT)+'</td>'
         +  '<td class="sel">'+sel('spos', i, (sh.pos==='top'?'bottom':(sh.pos||'mid')), POS)+'</td>'
         +  '<td class="sel">'+sel('ssize', i, sh.size||'', SIZE)+'</td>'
+        +  '<td class="sel">'+sel('sal', i, sh.al||'', ALIGN)+'</td>'
         +  '<td class="mv">'
         +    '<button class="mvbtn" data-smv="'+i+'" data-d="-1"'+(i===0?' disabled':'')+'>▲</button> '
         +    '<button class="mvbtn" data-smv="'+i+'" data-d="1"'+(i===sheets.length-1?' disabled':'')+'>▼</button>'
@@ -533,7 +539,7 @@
   function addLines(text){
     String(text).replace(/\r/g,'').split('\n').forEach(function(line){
       if (line.trim()==='') return;
-      sheets.push({ text:line.trim(), url:'', name:'', pos:'', size:'', font:'', off:false });
+      sheets.push({ text:line.trim(), url:'', name:'', pos:'', size:'', font:'', al:'', off:false });
     });
     $('lines').value = '';
     drawSheets();
@@ -600,7 +606,7 @@
     var msg;
     if (kind()==='text'){
       if (!slides.length){
-        msg = 'まだ何もありません。上の枠に文字を打って「入れる」を押すか、写真をえらんでください。';
+        msg = 'まだ何もありません。①で文字を入れると、②に1枚ずつ並びます。';
       } else {
         var np = sheets.filter(function(s){ return !s.off && s.url; }).length;
         var noff = sheets.filter(function(s){ return s.off; }).length;
@@ -736,14 +742,30 @@
       box.appendChild(hd);
     }
     var parts = body.split('/'), longest = 0;
+    /* 🔴 改行した行は「ひとかたまり」にして、そこだけ左右にそろえる（2026-09-06 本人
+       「下の3行を右揃えにしたい」）。⚠見出し（// の前）は中央のまま。
+       ⭐かたまりの幅＝いちばん長い行の幅。まん中に置いたまま、行どうしの頭やお尻がそろう */
+    var bd = document.createElement('span');
+    bd.className = 'bd';
     parts.forEach(function(p,i){
       // ⚠額縁のときは改行せず、全角スペースでつなぐ（1行に収める）
-      if (i>0) box.appendChild(band ? document.createTextNode('　') : document.createElement('br'));
-      box.appendChild(document.createTextNode(p.trim()));
+      if (i>0) bd.appendChild(band ? document.createTextNode('　') : document.createElement('br'));
+      bd.appendChild(document.createTextNode(p.trim()));
       longest = Math.max(longest, p.trim().length);
     });
-    // 文字の大きさは「いちばん長い行」で決める（改行しても小さくなりすぎない）
-    box.setAttribute('data-len', longest<=8?'s':longest<=14?'m':longest<=24?'l':'xl');
+    box.appendChild(bd);
+    // ⚠額縁（写真＋上下）のときは文字をフッターに出すので、そろえは効かせない
+    if (s.al && !band) box.setAttribute('data-al', s.al); else box.removeAttribute('data-al');
+    /* 文字の大きさは「いちばん長い行」で決める（改行しても小さくなりすぎない）。
+       🔴 さらに行数でも1段ずつ下げる（2026-09-06 本人「こんな使い方したい（改行たくさん）」）。
+       ⚠長さだけで決めていたので、3行4行にすると下の行が画面からはみ出していた。
+       ⭐1枚ごとに「大きさ」を選んであれば、そちらが勝つ（CSSの並び順で決まる） */
+    var STEP = ['s','m','l','xl','xxl'];
+    var step = longest<=8?0 : longest<=14?1 : longest<=24?2 : 3;
+    var nline = band ? 1 : parts.length;      // ⚠額縁のときは1行につないでいる
+    if (nline >= 2) step++;
+    if (nline >= 4) step++;
+    box.setAttribute('data-len', STEP[Math.min(step, 4)]);
     // 🔴 その1枚だけ大きさを決めてあれば、そちらを優先（2026-09-05 本人）
     if (s.size) box.setAttribute('data-size', s.size); else box.removeAttribute('data-size');
     // 🔴 その1枚だけ位置を決めてあれば、そちらを優先
@@ -824,7 +846,7 @@
         // 写真そのものは IndexedDB に置く。ここには番号だけ残す
         sheets: sheets.map(function(s){
                   return { text:s.text||'', url:'', name:s.name||'', picId:s.picId||'',
-                           pos:s.pos||'', size:s.size||'', font:s.font||'', off:!!s.off };
+                           pos:s.pos||'', size:s.size||'', font:s.font||'', al:s.al||'', off:!!s.off };
                 }).filter(function(s){ return s.text.trim() !== '' || s.picId; }),
         editMode: $('editMode').checked,
         rows: rows, groupOrder: groupOrder, groupOff: groupOff,
@@ -851,7 +873,7 @@
       if (Array.isArray(d.sheets)){
         sheets = d.sheets.map(function(x){
           return { text:x.text||'', url:'', name:x.name||'', picId:x.picId||'', blob:null,
-                   pos:x.pos||'', size:x.size||'', font:x.font||'', off:!!x.off };
+                   pos:x.pos||'', size:x.size||'', font:x.font||'', al:x.al||'', off:!!x.off };
         });
       }
       if (Array.isArray(d.rows) && d.rows.length){
@@ -951,7 +973,7 @@
         picTarget = -1;                       // 2枚目からは末尾に足す
       } else {
         var nid = newPicId();
-        sheets.push({ text:'', url:url, name:f.name, pos:'bottom', size:'s', font:'', off:false,
+        sheets.push({ text:'', url:url, name:f.name, pos:'bottom', size:'s', font:'', al:'', off:false,
                       blob:f, picId:nid });
         picPut(nid, f);
       }
@@ -1063,6 +1085,7 @@
       if (el.hasAttribute('data-sfont')) sheets[parseInt(el.getAttribute('data-sfont'),10)].font = el.value;
       if (el.hasAttribute('data-spos'))  sheets[parseInt(el.getAttribute('data-spos'),10)].pos  = el.value;
       if (el.hasAttribute('data-ssize')) sheets[parseInt(el.getAttribute('data-ssize'),10)].size = el.value;
+      if (el.hasAttribute('data-sal'))   sheets[parseInt(el.getAttribute('data-sal'),10)].al   = el.value;
       updateCount(); save();
     }
   });

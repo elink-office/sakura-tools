@@ -6,9 +6,9 @@
 :root{
   /* 冠婚葬祭・会社の場面なので、席次表と同じ緑にそろえる。
      ⚠ 変数名は --pink のまま（style.css を全部直さないため） */
-  --pink:#3f7a68;
-  --pink-light:#e4efeb;
-  --pink-pale:#f1f7f4;
+  --pink:#c86a8e;   /* ⭐2026-09-06 さくら色に統一（本人）。前は葉の緑 #3f7a68 */
+  --pink-light:#f3e2e8;
+  --pink-pale:#fbf1f4;
 }
 
 /* ---- いちばん上の断り書き（枠は付けない）---- */
@@ -98,7 +98,7 @@
   .fig-note{font-size:9pt;color:#333;margin:0 0 4mm}
   .k-hit,.e-inner{display:none}
   .e-seat.picked{stroke:#b9c4c0 !important;stroke-width:2 !important}
-  .v-table.on{fill:#fff !important;stroke:#3f7a68 !important;stroke-width:3 !important}
+  .v-table.on{fill:#fff !important;stroke:#c86a8e !important;stroke-width:3 !important}
   .e-table,.e-seat,.e-no,.v-room,.v-table,.v-no,.v-door,.v-door-label,.v-main,.v-main-label,.v-side{
     -webkit-print-color-adjust:exact;print-color-adjust:exact;
   }

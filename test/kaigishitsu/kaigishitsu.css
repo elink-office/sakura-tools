@@ -5,9 +5,9 @@
 :root{
   /* 冠婚葬祭・会社の場面なので、席次表と同じ緑にそろえる。
      ⚠ 変数名は --pink のまま（style.css を全部直さないため） */
-  --pink:#3f7a68;
-  --pink-light:#e4efeb;
-  --pink-pale:#f1f7f4;
+  --pink:#c86a8e;   /* ⭐2026-09-06 さくら色に統一（本人）。前は葉の緑 #3f7a68 */
+  --pink-light:#f3e2e8;
+  --pink-pale:#fbf1f4;
 }
 
 /* ---- いちばん上の断り書き ---- */
@@ -164,7 +164,7 @@
   /* ⚠ 入れ替えで選んでいる印は紙に出さない（本人の指摘） */
   .e-seat.picked{stroke:#b9c4c0 !important;stroke-width:2 !important}
   /* ⚠ ①はもう塗らない。前の指定が残っていて紙だけ緑になっていた */
-  .e-seat.top{fill:#fff !important;stroke:#3f7a68 !important;stroke-width:3 !important}
+  .e-seat.top{fill:#fff !important;stroke:#c86a8e !important;stroke-width:3 !important}
   .e-no{fill:#222 !important}
 }
 
@@ -204,7 +204,7 @@
   /* ⚠ 入れ替えで選んでいる印は紙に出さない */
   .e-seat.picked{stroke:#b9c4c0 !important;stroke-width:2 !important}
   /* ⚠ ①はもう塗らない */
-  .e-seat.top{fill:#fff !important;stroke:#3f7a68 !important;stroke-width:3 !important}
+  .e-seat.top{fill:#fff !important;stroke:#c86a8e !important;stroke-width:3 !important}
   .e-no{fill:#222 !important}
   .k-hit,.k-inner{display:none}
   .e-table,.e-seat,.e-no,.v-room,.v-door,.v-door-label,.k-front,.k-front-label,.k-desk{
