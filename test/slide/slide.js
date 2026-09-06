@@ -893,7 +893,7 @@
         origRows: origRows, origGroups: origGroups,
         mode: (document.querySelector('input[name=mode]:checked')||{}).value || 'one'
       }));
-      showSaving('この機器に保存しました');
+      showSaving('このパソコンに保存しました');
     }catch(e){}
   }
 
@@ -1211,7 +1211,7 @@
       // 🔴 外したら、この機器に残していたものを消す
       try{ localStorage.removeItem(KEY); }catch(e){}
       picClear();
-      showSaving('この機器の保存を消しました');
+      showSaving('このパソコンの保存を消しました');
     }
   });
 

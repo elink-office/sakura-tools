@@ -30,6 +30,12 @@
   font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;line-height:1.45;
   margin:0 0 18px;letter-spacing:-.01em;
 }
+/* 🔴 スマホでは画面の幅から字の大きさを決める（2026-09-06）。
+   ⚠1行が長くなると「完結」だけが次の行に落ちる。⭐幅に合わせて縮めれば、
+     文はそのままで2行に収まる（360pxの機種でも入る） */
+@media(max-width:430px){
+  .t-catch{font-size:clamp(18px,5.4vw,24px)}
+}
 /* ⚠ 直下の span だけブロックにする。中に入れた span まで改行させないため */
 .t-catch > span{display:block}
 .t-hero .lead{font-size:.88rem;margin:0 0 30px;max-width:44em}

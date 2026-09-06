@@ -1781,7 +1781,7 @@
   function clearSaved() {
     try { localStorage.removeItem(KEY); } catch (e) { }
     $('save').checked = false; showSaving();
-    $('msg').innerHTML = '<div class="notice">この機器に保存していたデータを消しました。</div>';
+    $('msg').innerHTML = '<div class="notice">このパソコンに保存していたデータを消しました。</div>';
   }
 
   // ---- 起動 ----

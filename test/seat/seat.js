@@ -1825,7 +1825,7 @@
   function clearSaved() {
     try { localStorage.removeItem(KEY); } catch (e) { }
     $('save').checked = false; showSaving();
-    ($('msg2') || $('msg')).innerHTML = '<div class="notice">この機器に保存していた画面を消しました。</div>';
+    ($('msg2') || $('msg')).innerHTML = '<div class="notice">このパソコンに保存していた画面を消しました。</div>';
   }
 
   // ---- クラスと記録の画面まわり ----
