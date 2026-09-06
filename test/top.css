@@ -216,3 +216,13 @@
   .t-hero{padding:18px 0 4px}
   .t-col{padding:22px 18px 18px}
 }
+/* 🔴 スマホで「2枚目のカードがギリギリ見えない」（2026-09-06 本人・iPhone13）。
+   ⭐絵を少し小さくし、上下の余白を詰めて、2枚目を画面に入れる。
+   ⚠絵は中央に置く（幅を縮めると左に寄ってしまうため） */
+@media(max-width:430px){
+  .t-card{padding:16px 16px 14px}
+  .t-cards{gap:16px;margin-bottom:26px}
+  .t-card .t-shot{max-width:86%;margin:10px auto 12px}
+  .t-hero .lead{margin-bottom:22px}
+  .t-catch{margin-bottom:14px}
+}
