@@ -73,6 +73,10 @@ h3.sub{font-size:1.02rem;margin:0 0 12px;display:flex;align-items:center}
   border-radius:6px;cursor:pointer;
 }
 .picadd:hover{background:var(--pink-pale);color:var(--pink);border-color:var(--pink-light)}
+/* 🔴 写真の欄は2段（1枚目の下に「＋比べる」または2枚目の小さい絵）。1枚目が無い行は今までどおり */
+.piccell{display:flex;flex-direction:column;gap:4px;align-items:center}
+.picadd.second{height:22px;font-size:11px;line-height:1;padding:0 4px;white-space:nowrap}
+.thumb.second{height:30px;cursor:default}
 .tbl td.pic{width:66px}
 .tbl td.sel{width:74px}
 .tbl td.grp{width:78px}
@@ -159,11 +163,19 @@ h3.sub{font-size:1.02rem;margin:0 0 12px;display:flex;align-items:center}
   flex:1;position:relative;display:flex;width:100%;overflow:hidden;
   justify-content:center;
 }
-/* 写真。⚠切らずに全部見せる（contain）。作品の写真なので端を落とさない */
-#pic{
-  position:absolute;inset:0;width:100%;height:100%;
+/* 写真。⚠切らずに全部見せる（contain）。作品の写真なので端を落とさない
+   🔴 2枚まで入る（2026-09-07 本人・知り合いの先生「写真を比べることがある。春の写真と秋の写真」）。
+      2枚あれば横に並ぶ。片方を押すとそちらが約3/4に広がり、もう一度押すと半々に戻る */
+#pics{position:absolute;inset:0;display:flex;background:#fff}
+#pic,#pic2{
+  flex:1 1 50%;min-width:0;height:100%;
   object-fit:contain;background:#fff;
+  transition:flex .28s ease;
 }
+#pic[hidden],#pic2[hidden]{display:none}
+#stage.two #pic,#stage.two #pic2{cursor:zoom-in}
+#pics.bigL #pic ,#pics.bigR #pic2{flex:3 1 0;cursor:zoom-out}
+#pics.bigL #pic2,#pics.bigR #pic {flex:1 1 0}
 /* 文字の置き場。写真の上に重なる */
 #box{
   position:relative;z-index:1;

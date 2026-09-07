@@ -97,7 +97,10 @@
       if (!db) return;
       try{
         var st = db.transaction(STORE,'readwrite').objectStore(STORE);
-        sheets.forEach(function(sh){ if (sh.picId && sh.blob) st.put(sh.blob, sh.picId); });
+        sheets.forEach(function(sh){
+          if (sh.picId  && sh.blob)  st.put(sh.blob,  sh.picId);
+          if (sh.picId2 && sh.blob2) st.put(sh.blob2, sh.picId2);   // 2枚目（比べる用）
+        });
       }catch(e){}
     });
   }
@@ -108,16 +111,21 @@
       function fin(){ if (done && left === 0) cb(); }
       try{
         var st = db.transaction(STORE,'readonly').objectStore(STORE);
-        sheets.forEach(function(sh){
-          if (!sh.picId) return;
+        // ⭐1枚目と2枚目（比べる用）を同じ手順で戻す
+        function pull(sh, idKey, blobKey, urlKey){
+          if (!sh[idKey]) return;
           left++;
-          var r = st.get(sh.picId);
+          var r = st.get(sh[idKey]);
           r.onsuccess = function(){
             var b = r.result;
-            if (b){ sh.blob = b; sh.url = URL.createObjectURL(b); }
+            if (b){ sh[blobKey] = b; sh[urlKey] = URL.createObjectURL(b); }
             left--; fin();
           };
           r.onerror = function(){ left--; fin(); };
+        }
+        sheets.forEach(function(sh){
+          pull(sh, 'picId',  'blob',  'url');
+          pull(sh, 'picId2', 'blob2', 'url2');
         });
       }catch(e){}
       done = true; fin();
@@ -474,7 +482,7 @@
       sheets.forEach(function(sh){
         if (sh.off) return;
         slides.push({
-          group:'', title:(sh.text||'').trim(), names:[], pic:(sh.url||''),
+          group:'', title:(sh.text||'').trim(), names:[], pic:(sh.url||''), pic2:(sh.url2||''),
           pos:(sh.pos||''), size:(sh.size||''), font:(sh.font||''), al:(sh.al||'')
         });
       });
@@ -520,9 +528,10 @@
     }
     // 🔴「そのまま」ではなく、はじめの値をそのまま見せる（2026-09-05 本人
     //    「文字の大きさ、位置ともに、デフォルトを表示しておいて、下の文字の位置は削除でいい」）
-    // 🔴「上」はやめた（2026-09-05 本人「上に表示やめて、下に表示だけにして」）。
-    //    ⚠前に「上」で作ったぶんは「下」として出す
-    var POS  = [['mid','中央'],['bottom','下']];
+    /* 🔴 位置は4つ（2026-09-07 本人「写真の文字、枠外のほかに、中央と同じ文字で上下も欲しい」）。
+         中央・上・下＝写真の上に暗い帯で重ねる（中央と同じ見た目）／外＝フッターに小さく（前の「下」）。
+       ⚠2026-09-05 に「上」をやめたが、本人の要望で戻した。前の「下」は load() で「外」に読み替える */
+    var POS  = [['mid','中央'],['top','上'],['bottom','下'],['out','外']];
     var SIZE = [['','自動'],['xs','最小'],['s','小'],['m','中'],['l','大']];
     var FONT = [['gothic','ゴシック'],['maru','丸文字'],['mincho','明朝']];
     // 🔴 改行した行のそろえ方（2026-09-06 本人「下の3行を右揃えにしたいという要望あり」）。
@@ -539,15 +548,25 @@
       h += '<tr draggable="true" data-row="'+i+'" class="'+(sh.off?'off':'')+'">'
         +  '<td class="chk"><input type="checkbox" data-soff="'+i+'"'+(sh.off?'':' checked')+'></td>'
         +  '<td class="idx">'+(i+1)+'</td>'
-        +  '<td class="pic">'
+        +  '<td class="pic"><div class="piccell">'
         +    (sh.url
               ? '<span class="picwrap"><img class="thumb" src="'+esc(sh.url)+'" alt="" draggable="true" data-pic="'+i+'" title="ドラッグでほかの行に移せます">'
                 + '<button class="picx" data-picdel="'+i+'" title="写真だけ外す">×</button></span>'
               : '<button class="picadd" data-picadd="'+i+'" title="ここに写真を入れる">＋</button>')
-        +  '</td>'
+        /* 🔴 2枚目＝横に並べて比べる（2026-09-07 本人・知り合いの先生の要望「写真を比べることがある」）。
+             ⚠1枚目が入っている行にだけ出す（写真の無い行は今までどおり） */
+        +    (sh.url
+              ? (sh.url2
+                  ? '<span class="picwrap"><img class="thumb second" src="'+esc(sh.url2)+'" alt="" data-pic2="'+i+'" title="2枚目（横に並べて比べる）">'
+                    + '<button class="picx" data-picdel2="'+i+'" title="2枚目だけ外す">×</button></span>'
+                  : '<button class="picadd second" data-picadd2="'+i+'" title="2枚目を入れて、横に並べて比べる">＋比べる</button>')
+              : '')
+        +  '</div></td>'
         +  '<td><textarea class="ttl" rows="1" data-s="'+i+'" placeholder="出す文字（写真だけでもよい）">'+esc(sh.text||'')+'</textarea></td>'
         +  '<td class="sel">'+sel('sfont', i, sh.font||'gothic', FONT)+'</td>'
-        +  '<td class="sel">'+sel('spos', i, (sh.pos==='top'?'bottom':(sh.pos||'mid')), POS)+'</td>'
+        +  '<td class="sel">'+(sh.url2
+              ? '<select class="mini-sel" data-spos="'+i+'" disabled title="写真が2枚のときは「外」だけです"><option value="out" selected>外</option></select>'
+              : sel('spos', i, sh.pos||'mid', POS))+'</td>'
         +  '<td class="sel">'+sel('ssize', i, sh.size||'', SIZE)+'</td>'
         +  '<td class="sel">'+sel('sal', i, sh.al||'', ALIGN)+'</td>'
         +  '<td class="mv">'
@@ -720,6 +739,8 @@
       return;
     }
     pic.style.height = ''; pic.style.top = '';
+    // ⭐2枚並べているときは、写真が面いっぱいなので余白の計算は要らない
+    if (stage.classList.contains('two')){ box.style.padding = ''; return; }
     if (pic.hidden || !pic.naturalWidth || !pic.naturalHeight){ box.style.padding = ''; return; }
     var sw = stage.clientWidth, sh = stage.clientHeight;
     var r  = Math.min(sw / pic.naturalWidth, sh / pic.naturalHeight);
@@ -742,11 +763,14 @@
     var s = slides[pos];
     if (!s) return;
     applyFont(s.font);
-    // 🔴 写真があって位置が上・下＝額縁。⭐そのときは基本1行（2026-09-05 本人「だから、基本は１行」）
-    var band = !!s.pic && (s.pos === 'top' || s.pos === 'bottom');
+    // 🔴 写真があって位置が「外」＝文字はフッター。⭐そのときは基本1行（2026-09-05 本人「だから、基本は１行」）
+    //    ⚠上・下は「写真の上に帯で重ねる」に変わった（2026-09-07 本人）。外だけがフッター
+    var band = !!s.pic && (s.pos === 'out' || !!s.pic2);   // ⭐2枚のときは必ず外
 
-    // 写真（あれば）
-    var pic = $('pic');
+    // 写真（あれば）。⭐2枚あれば横に並べる（2026-09-07）
+    var pic = $('pic'), pic2 = $('pic2'), two = !!(s.pic && s.pic2);
+    $('pics').classList.remove('bigL'); $('pics').classList.remove('bigR');   // 拡大は1枚ごとに戻す
+    $('stage').classList.toggle('two', two);
     if (s.pic){
       pic.hidden = false; $('stage').classList.add('hasPic');
       if (pic.getAttribute('src') !== s.pic) pic.src = s.pic;
@@ -755,6 +779,12 @@
       pic.removeAttribute('src'); pic.hidden = true;
       $('stage').classList.remove('hasPic');
       $('box').style.padding = '';
+    }
+    if (two){
+      pic2.hidden = false;
+      if (pic2.getAttribute('src') !== s.pic2) pic2.src = s.pic2;
+    } else {
+      pic2.removeAttribute('src'); pic2.hidden = true;
     }
 
     $('group').textContent = s.group || '';
@@ -813,8 +843,6 @@
     // 🔴 写真があって位置が上・下のときだけ「帯」ではなく「写真の外」に出す（2026-09-05 本人
     //    「作品に重なるのは気持ち悪くて」）
     $('stage').classList.toggle('band', band);
-    $('stage').classList.toggle('bandTop', band && s.pos === 'top');
-    $('stage').classList.toggle('bandBottom', band && s.pos === 'bottom');
     $('stage').classList.toggle('noTitle', t==='');
 
     var nb = $('name');
@@ -872,6 +900,18 @@
     var n = pos+d; if (n<0 || n>=slides.length) return;
     pos = n; render();
   }
+  /* 🔴 2枚並べたとき、片方を押すとそちらが大きくなる（約3/4）。もう一度押すと半々に戻る
+     （2026-09-07 本人「ボタンを右とか左を押すと、どんどん大きくなって、また縮んでみたいなのが
+      できればいいんじゃないか」）。⭐ボタンは足さず、写真そのものを押す（スマホで押しやすい） */
+  function bigTo(side){
+    var w = $('pics');
+    if (!$('stage').classList.contains('two')) return;
+    var cls = side === 'L' ? 'bigL' : 'bigR', other = side === 'L' ? 'bigR' : 'bigL';
+    w.classList.remove(other);
+    w.classList.toggle(cls);
+  }
+  $('pic').addEventListener('click',  function(){ bigTo('L'); });
+  $('pic2').addEventListener('click', function(){ bigTo('R'); });
 
   /* ================= 保存（この端末のブラウザだけ） ================= */
   function save(){
@@ -882,10 +922,12 @@
     }
     try{
       localStorage.setItem(KEY, JSON.stringify({
+        v: 2,   // ⭐2026-09-07：位置の意味が変わった（下＝重ねる／外＝フッター）。無印は古い形
         kind: kind(), text: $('paste').value,
         // 写真そのものは IndexedDB に置く。ここには番号だけ残す
         sheets: sheets.map(function(s){
                   return { text:s.text||'', url:'', name:s.name||'', picId:s.picId||'',
+                           picId2:s.picId2||'',
                            pos:s.pos||'', size:s.size||'', font:s.font||'', al:s.al||'', off:!!s.off };
                 }).filter(function(s){ return s.text.trim() !== '' || s.picId; }),
         editMode: $('editMode').checked,
@@ -911,9 +953,13 @@
       if (!d) return;
       if (d.text)  $('paste').value = d.text;
       if (Array.isArray(d.sheets)){
+        var oldForm = !d.v;   // ⚠前の形：上・下＝フッター（額縁）だった → いまの「外」に読み替える
         sheets = d.sheets.map(function(x){
+          var pos = x.pos||'';
+          if (oldForm && (pos==='top' || pos==='bottom')) pos = 'out';
           return { text:x.text||'', url:'', name:x.name||'', picId:x.picId||'', blob:null,
-                   pos:x.pos||'', size:x.size||'', font:x.font||'', al:x.al||'', off:!!x.off };
+                   url2:'', name2:'', picId2:x.picId2||'', blob2:null,
+                   pos:pos, size:x.size||'', font:x.font||'', al:x.al||'', off:!!x.off };
         });
       }
       if (Array.isArray(d.rows) && d.rows.length){
@@ -929,7 +975,7 @@
       switchKind();
       if (sheets.length || (Array.isArray(d.rows) && d.rows.length)){ $('d1').open = false; $('d2').open = false; }
       // 写真は非同期で戻す（読めたら一覧を描き直す）
-      if (sheets.some(function(x){ return x.picId; })){
+      if (sheets.some(function(x){ return x.picId || x.picId2; })){
         picLoadAll(function(){ drawSheets(); });
       }
     }catch(e){}
@@ -1018,7 +1064,7 @@
   });
   $('clearText').addEventListener('click', function(){
     // 写真のぶんはメモリを返してから消す
-    sheets.forEach(function(s){ if (s.url) URL.revokeObjectURL(s.url); });
+    sheets.forEach(function(s){ if (s.url) URL.revokeObjectURL(s.url); if (s.url2) URL.revokeObjectURL(s.url2); });
     picClear();
     sheets = []; $('lines').value = ''; drawSheets();
   });
@@ -1026,14 +1072,27 @@
   /* 写真を入れる。⚠どこにも送らない・保存もしない（メモリの中だけ）
      picTarget が -1 なら末尾に新しい1枚として足す。
      🔴 行の「＋」から呼んだときは、その行に入れる（文字を打ち直さなくていい） */
-  var picTarget = -1;
-  $('pics').addEventListener('change', function(e){
+  var picTarget = -1, picSlot = 1;
+  $('picfile').addEventListener('change', function(e){
     var files = e.target.files;
-    if (!files || !files.length){ picTarget = -1; return; }
+    if (!files || !files.length){ picTarget = -1; picSlot = 1; return; }
     for (var i=0;i<files.length;i++){
       var f = files[i];
       if (f.type.indexOf('image/') !== 0) continue;
       var url = URL.createObjectURL(f);
+      if (picSlot === 2 && picTarget >= 0 && sheets[picTarget]){
+        // ⭐2枚目（横に並べて比べる）。1つの行に入るのは2枚まで
+        var s2 = sheets[picTarget];
+        if (s2.url2) URL.revokeObjectURL(s2.url2);
+        if (s2.picId2) picDel(s2.picId2);
+        s2.url2 = url; s2.name2 = f.name;
+        s2.blob2 = f; s2.picId2 = newPicId(); picPut(s2.picId2, f);
+        // 🔴 2枚のときは文字を「外」に固定（2026-09-07 本人「2枚目選んだ時点でロックしたほうがいい」）。
+        //    ⚠写真の上に帯を重ねると、押して大きくする操作が帯に取られて効かない
+        s2.pos = 'out';
+        picTarget = -1; picSlot = 1;
+        break;
+      }
       if (picTarget >= 0 && sheets[picTarget]){
         var sh = sheets[picTarget];
         if (sh.url) URL.revokeObjectURL(sh.url);
@@ -1043,17 +1102,17 @@
         // 🔴 写真を入れたら「下・小」にする（2026-09-05 本人
         //    「写真を入れたら、下と小になるようにしたほうがいい」）。
         //    ⚠すでに先生が選んでいる場合は上書きしない
-        if (!sh.pos || sh.pos === 'mid') sh.pos = 'bottom';
+        if (!sh.pos || sh.pos === 'mid') sh.pos = 'out';   // ⚠「外」＝フッター（前の「下」）
         if (!sh.size) sh.size = 's';
         picTarget = -1;                       // 2枚目からは末尾に足す
       } else {
         var nid = newPicId();
-        sheets.push({ text:'', url:url, name:f.name, pos:'bottom', size:'s', font:'', al:'', off:false,
+        sheets.push({ text:'', url:url, name:f.name, pos:'out', size:'s', font:'', al:'', off:false,
                       blob:f, picId:nid });
         picPut(nid, f);
       }
     }
-    picTarget = -1;
+    picTarget = -1; picSlot = 1;
     e.target.value = '';   // 同じ写真をもう一度選べるように
     drawSheets();
   });
@@ -1062,23 +1121,44 @@
     // ＋ ＝ この行に写真を入れる（空のときは、新しい1枚を作ってそこに入れる）
     var add = e.target.closest ? e.target.closest('.picadd') : null;
     if (add){
+      picSlot = 1;
       if (add.hasAttribute('data-picnew')){
-        sheets.push({ text:'', url:'', name:'', pos:'', size:'', font:'', off:false });
+        sheets.push({ text:'', url:'', name:'', pos:'', size:'', font:'', al:'', off:false });
         picTarget = 0;
+      } else if (add.hasAttribute('data-picadd2')){
+        picTarget = parseInt(add.getAttribute('data-picadd2'),10);
+        picSlot = 2;                          // ⭐2枚目（比べる用）
       } else {
         picTarget = parseInt(add.getAttribute('data-picadd'),10);
       }
-      $('pics').click();
+      $('picfile').click();
       return;
     }
     // × ＝ 写真だけ外す（文字は残す）
     var px = e.target.closest ? e.target.closest('.picx') : null;
+    if (px && px.hasAttribute('data-picdel2')){
+      // 2枚目だけ外す
+      var p2 = parseInt(px.getAttribute('data-picdel2'),10);
+      if (sheets[p2]){
+        if (sheets[p2].url2) URL.revokeObjectURL(sheets[p2].url2);
+        if (sheets[p2].picId2) picDel(sheets[p2].picId2);
+        sheets[p2].url2 = ''; sheets[p2].name2 = ''; sheets[p2].blob2 = null; sheets[p2].picId2 = '';
+      }
+      drawSheets();
+      return;
+    }
     if (px){
       var pi = parseInt(px.getAttribute('data-picdel'),10);
       if (sheets[pi] && sheets[pi].url) URL.revokeObjectURL(sheets[pi].url);
       if (sheets[pi]){
         if (sheets[pi].picId) picDel(sheets[pi].picId);
         sheets[pi].url = ''; sheets[pi].name = ''; sheets[pi].blob = null; sheets[pi].picId = '';
+        // ⭐2枚目があれば1枚目に繰り上げる（2枚目だけ残るのは変）
+        if (sheets[pi].url2){
+          sheets[pi].url = sheets[pi].url2; sheets[pi].name = sheets[pi].name2;
+          sheets[pi].blob = sheets[pi].blob2; sheets[pi].picId = sheets[pi].picId2;
+          sheets[pi].url2 = ''; sheets[pi].name2 = ''; sheets[pi].blob2 = null; sheets[pi].picId2 = '';
+        }
       }
       drawSheets();
       return;
@@ -1092,8 +1172,10 @@
       var t = sheets[i]; sheets[i]=sheets[j]; sheets[j]=t;
     } else if (b.hasAttribute('data-sdel')){
       var k = parseInt(b.getAttribute('data-sdel'),10);
-      if (sheets[k] && sheets[k].url) URL.revokeObjectURL(sheets[k].url);
-      if (sheets[k] && sheets[k].picId) picDel(sheets[k].picId);
+      if (sheets[k] && sheets[k].url)  URL.revokeObjectURL(sheets[k].url);
+      if (sheets[k] && sheets[k].url2) URL.revokeObjectURL(sheets[k].url2);
+      if (sheets[k] && sheets[k].picId)  picDel(sheets[k].picId);
+      if (sheets[k] && sheets[k].picId2) picDel(sheets[k].picId2);
       sheets.splice(k,1);
     }
     drawSheets();

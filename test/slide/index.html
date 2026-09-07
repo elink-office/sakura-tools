@@ -26,10 +26,10 @@
 <title>【テスト】簡単スライドメーカー｜パワーポイントの代わりに、文字と写真をモニターへ｜さくらツール</title>
 <meta name="description" content="パワーポイントの代わりに、文字と写真をそのまま大きくモニターに映せる無料の道具です。今日のめあて、問題文、作品の写真、発表する子の名前に。スライドを作り込まなくていいので、思いついたその場で出せます。写真の上に文字を重ねることもできます。名簿は座席表・班分けと共通。登録なし・インストールなし・写真も名簿も外に送りません。">
 <link rel="stylesheet" href="../style.css?v=114">
-<link rel="stylesheet" href="slide.css?v=64">
+<link rel="stylesheet" href="slide.css?v=65">
 </head>
 <body>
-<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/06 19:47</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/07 10:16</div>
 
 <header class="site-head noprint">
   <div class="wrap">
@@ -159,7 +159,7 @@
         <p class="hint" style="margin-bottom:10px">並べ替え・写真・1枚ずつの設定&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></p>
         <div class="tip-body" hidden>
           <p><strong>▲▼</strong>で順番、<strong>×</strong>でその1枚を消します。<strong>左のチェックを外すと映りません。</strong></p>
-          <p>写真の欄の<strong>＋</strong>でその1枚に写真が入ります（文字はそのまま）。写真の右上の<strong>×</strong>で写真だけ外せます。<strong>写真を入れると文字は「下・小」になります。</strong></p>
+          <p>写真の欄の<strong>＋</strong>でその1枚に写真が入ります（文字はそのまま）。写真の右上の<strong>×</strong>で写真だけ外せます。<strong>写真を入れると文字は「外・小」になります。</strong></p>
           <p><strong>そろえ</strong>＝<code>/</code> で改行した行の左右をそろえます（<code>//</code> の見出しは中央のまま）。</p>
           <p>パソコンなら、行をつかんでドラッグでも動かせます（写真だけの移動もできます）。</p>
         </div>
@@ -169,7 +169,7 @@
         <div class="tbl" id="sheets"><p class="empty">①で文字を入れると、ここに1枚ずつ並びます。</p></div>
         <div class="row" style="margin-top:12px">
           <button id="addRow">＋ 行を追加</button>
-          <input type="file" id="pics" accept="image/*" multiple hidden>
+          <input type="file" id="picfile" accept="image/*" multiple hidden>
         </div>
       </div>
 
@@ -329,7 +329,7 @@
       <ul>
         <li>書体は<b>ゴシック体・丸文字・明朝体</b>から選べます（座席表と同じです）。<br>
           丸文字はWindowsとiPad・Macだけです。入っていない機種では、静かにゴシック体になります。</li>
-        <li>文字の位置と大きさは、<b>一覧で1枚ずつ</b>決めます。写真の上に文字を置くとき、写真の中身に重ならない位置にできます。</li>
+        <li>文字の位置と大きさは、<b>一覧で1枚ずつ</b>決めます。写真のときは<b>中央・上・下</b>（写真に重ねる）か<b>外</b>（下のボタンの行に小さく）を選べます。</li>
       </ul>
 
       <h3>発表者をスライドにする</h3>
@@ -375,7 +375,12 @@
 <!-- 映す画面。⚠ここには広告を絶対に置かない -->
 <div id="show">
   <div id="stage">
-    <img id="pic" alt="" hidden>
+    <!-- 🔴 写真は2枚まで（2026-09-07 本人・知り合いの先生「写真を比べることがある」）。
+         2枚あれば横に並ぶ。片方を押すとそちらが大きくなる -->
+    <div id="pics">
+      <img id="pic" alt="" hidden>
+      <img id="pic2" alt="" hidden>
+    </div>
     <div id="box">
       <div id="group"></div>
       <div id="title"></div>
@@ -399,6 +404,6 @@
   </div>
 </div>
 
-<script src="slide.js?v=80"></script>
+<script src="slide.js?v=82"></script>
 </body>
 </html>
