@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SAKURA TOOLS">
+<meta property="og:title" content="タイピング練習｜早いより、ミスがない人が仕事が早い">
+<meta property="og:description" content="ホームポジションから指ごとに練習できる無料のタイピング練習。登録もダウンロードもいりません。">
+<meta property="og:url" content="https://sakura-tools.com/typing/">
+<meta property="og:image" content="https://sakura-tools.com/ogp.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5047272666003169" crossorigin="anonymous"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GCK29PTKBG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GCK29PTKBG');
+</script>
+<title>【テスト】タイピング練習｜早いより、ミスがない人が仕事が早い</title>
+<meta name="description" content="ホームポジションから、指ごとに順番に練習できるタイピング練習です。早く打つことより、ミスをしないことを先に身につけます。登録もダウンロードもいりません。">
+<link rel="stylesheet" href="../style.css?v=114">
+<link rel="stylesheet" href="typing.css?v=8">
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-1M6ZJYQXME');
+</script>
+</head>
+<body>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/07 22:08</div>
+
+<!-- 🔴 コインの形（2026-09-07）。パワポの円柱と同じ＝「側面（まっすぐ＋下の弧）」＋「上の楕円」の2枚。
+     ⚠CSSのborder-radiusでは上の面と側面の境目が作れない。SVGなら1つ定義して使い回せる -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <!-- 側面＝円柱の光り方。横方向に「暗い→明るい→暗い」で丸みが出る -->
+  <linearGradient id="coinSide" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0"    stop-color="#a8760c"/>
+    <stop offset="0.16" stop-color="#dfab35"/>
+    <stop offset="0.32" stop-color="#ffeaa8"/>
+    <stop offset="0.50" stop-color="#e4b13b"/>
+    <stop offset="0.78" stop-color="#bf8a15"/>
+    <stop offset="1"    stop-color="#9c7210"/>
+  </linearGradient>
+  <!-- 上の面＝左上に光の中心 -->
+  <radialGradient id="coinFace" cx="0.36" cy="0.28" r="0.88">
+    <stop offset="0"    stop-color="#fff7d8"/>
+    <stop offset="0.45" stop-color="#f8d87c"/>
+    <stop offset="1"    stop-color="#deac33"/>
+  </radialGradient>
+  <g id="coinShape">
+    <path d="M1,5.5 v5 a21,4.5 0 0 0 42,0 v-5 z" fill="url(#coinSide)" stroke="#9c7210"/>
+    <ellipse cx="22" cy="5.5" rx="21" ry="4.5" fill="url(#coinFace)" stroke="#9c7210"/>
+    <!-- 面のふち（内側の輪） -->
+    <ellipse cx="22" cy="5.5" rx="17" ry="3.1" fill="none" stroke="#c79425" stroke-width="0.5" opacity=".7"/>
+    <!-- ⭐数字は「面の上に書いてある」ように置く（2026-09-07 本人）。
+         ⚠回転させると浮いて見える。縦に潰すだけ＝手前が下、奥が上 -->
+    <g transform="translate(22 6.0) scale(1 0.30)">
+      <text text-anchor="middle" dominant-baseline="central" font-size="14"
+            font-family="Arial, sans-serif" font-weight="700"
+            fill="#a0750d" opacity=".6">100</text>
+    </g>
+    <!-- 光の帯 -->
+    <ellipse cx="15.5" cy="4.1" rx="8" ry="1.3" fill="#fff" opacity=".5"/>
+  </g>
+</defs></svg>
+
+<header class="site-head noprint">
+  <div class="wrap">
+    <a class="logo" href="../"><span class="logo-mark">🌸</span><span class="logo-main">SAKURA TOOLS</span><span class="logo-sub">さくらツール</span></a>
+    <nav>
+      <a href="../">トップ</a>
+      <a href="../seat/">座席表</a>
+      <a href="../seki/">席次表</a>
+      <a href="../slide/">スライド</a>
+    </nav>
+  </div>
+</header>
+
+<div class="tpwrap">
+
+<header class="tphead">
+  <h1>タイピング練習</h1>
+  <span class="catch">早いより、ミスがない人が仕事が早い</span>
+  <div class="spacer"></div>
+  <div class="namebox">
+    <label for="uname">ニックネーム</label>
+    <input id="uname" placeholder="ニックネーム" maxlength="30">
+  </div>
+  <button id="btnLog">記録を見る</button>
+</header>
+
+<div id="imeWarn">
+  <b>日本語入力（IME）がオンになっています。</b><br>
+  半角英数モードに切り替えてください（<b>半角/全角</b>キー）。ローマ字をそのまま打つ練習です。
+</div>
+
+<div class="coinbar">
+  <div class="clabel">ためたコイン<br><b id="coinNum">0</b></div>
+  <div class="coinstacks" id="coinStacks"></div>
+  <div class="cmore" id="coinMore"></div>
+</div>
+
+<div id="menu">
+  <div class="opts">
+    <label><input type="checkbox" id="optSound" checked> 音を出す</label>
+    <span class="grp"><b class="grpttl">ステージ1〜7のみ</b>
+      <label><input type="checkbox" id="optHome" checked> 終わりに <b>&nbsp;f j&nbsp;</b> に戻る</label>
+      <span class="sep">ミスしたら</span>
+      <label title="タイルが1枚くずれるだけ。最後まで行けます"><input type="radio" name="lv" value="easy"> くずれない</label>
+      <label title="ミス10回で全部くずれて最初から"><input type="radio" name="lv" value="normal" checked> 10回でくずれる</label>
+      <label title="ミス3回で全部くずれて最初から"><input type="radio" name="lv" value="hard"> 3回でくずれる</label>
+    </span>
+    <span class="note8">ステージ8〜11は3回に固定</span>
+  </div>
+  <div class="stages" id="stages"></div>
+</div>
+
+<div id="play"><div class="stagewrap">
+  <div class="bar">
+    <button id="btnBack">← もどる</button>
+    <button id="btnRetry" title="お題を引き直して最初から">やり直し</button>
+    <b id="stName"></b>
+    <span id="stProg"></span>
+    <span id="missHint" class="misshint"></span>
+    <div class="spacer"></div>
+    <span id="hint">キーを打つとスタート（Esc でやめる）</span>
+  </div>
+
+  <div class="statsbar">
+    <div><span>時間</span><b id="sTime">0.0秒</b></div>
+    <div><span>ミス</span><b class="miss" id="sMiss">0</b></div>
+    <div><span>見かけの速さ</span><b id="sWpm">0</b></div>
+    <div><span>本当の速さ</span><b class="hl" id="sEwpm">0</b></div>
+  </div>
+
+  <div class="panel">
+    <div class="stackbg"><div class="grid" id="grid"></div></div>
+    <div class="tnum">タイル<b id="tcount">0</b><span id="ttotal"></span><div class="lives" id="lives"></div></div>
+    <div class="textwrap">
+      <div class="kana" id="kana"></div>
+      <div class="roma" id="roma"></div>
+    </div>
+    <div id="measure" style="position:absolute;visibility:hidden;white-space:nowrap;left:-9999px;top:0"></div>
+    <div class="bigmsg" id="bigmsg"><em>パーフェクト！</em><span>クリック（またはキー）で結果へ</span></div>
+  </div>
+
+  <div class="kb" id="kb"></div>
+  <div class="fingerlegend" id="legend"></div>
+</div></div>
+
+<details class="howto">
+  <summary>使い方</summary>
+  <ul>
+    <li>画面の<b>ローマ字をそのまま</b>打ちます。変換はしません。</li>
+    <li>ミスすると<b>タイルがくずれます</b>。決めた回数までまちがえると、全部くずれて最初からになります。</li>
+    <li><b>Esc</b>キーでリセット、もう一度<b>Esc</b>でステージ選択にもどります。</li>
+    <li>速さの単位は<b>文字/分</b>。<b>ひらがなの文字数</b>で数えています（打ったキーの数ではありません）。「さか」は s a k a と打ちますが、<b>2文字</b>と数えます。英字のステージは 1文字＝1キー なので同じです。</li><li>1回は30秒〜1分半ほどで終わりますが、数字は<b>1分あたりに直して</b>表示しています。</li>
+    <li>記録はこのパソコンの中に自動で残ります（右上の「記録を見る」）。</li>
+  </ul>
+</details>
+
+</div>
+
+<div class="toast" id="toast">
+  <button class="tx" id="toastX" title="閉じる">×</button>
+  <div class="tmain" id="toastMain"></div>
+  <div class="tsub" id="toastSub"></div>
+  <button class="tmore primary" id="toastAgain">もう一度</button>
+  <button class="tmore" id="toastMore">詳しく見る</button>
+</div>
+
+<div class="overlay" id="ovRes"><div class="modal">
+  <button class="xbtn" id="xRes" title="閉じる">×</button>
+  <h2 id="resTitle">おつかれさま</h2>
+  <div class="sb" id="resSub"></div>
+  <div id="resRecord" class="record" style="display:none"></div>
+  <div id="resPerfect" class="perfect" style="display:none">★ パーフェクト ★<br><span style="font-size:12px;font-weight:500">ミスゼロでタイルを全部塗りました</span></div>
+  <div id="resCoin" class="coinwin" style="display:none"></div>
+  <div class="rescard">
+    <div class="resrow"><span>打った文字</span><b id="rKeys">0</b></div>
+    <div class="resrow"><span>かかった時間</span><b id="rTime">0秒</b></div>
+    <div class="resrow"><span>ミスタッチ</span><b id="rMiss">0</b></div>
+    <div class="resrow"><span>塗れたタイル</span><b id="rTower">0</b></div>
+  </div>
+  <div class="rescard">
+    <div class="resrow"><span>見かけの速さ</span><b id="rWpm">0</b></div>
+    <div class="resrow hl"><span>本当の速さ</span><b id="rEwpm">0</b></div>
+  </div>
+  <div class="note" id="resNote"></div>
+  <div class="modalbtns">
+    <button id="btnAgain">もう一度</button>
+    <button id="btnMenu">ステージ選択へ</button>
+    <button class="primary" id="btnNext">次のステージ →</button>
+  </div>
+</div></div>
+
+<div class="overlay" id="ovLog"><div class="modal">
+  <button class="xbtn" id="xLog" title="閉じる">×</button>
+  <h2>これまでの記録</h2>
+  <div class="sb">このパソコンのブラウザの中に、自動でぜんぶ貯まっています</div>
+  <div class="modalbtns" style="margin:0 0 14px;justify-content:flex-start">
+    <button id="btnCsv">CSVで書き出す</button>
+    <button id="btnClear">記録を消す</button>
+    <button class="primary" id="btnCloseLog">閉じる</button>
+  </div>
+  <div id="logBody"></div>
+</div></div>
+
+
+<footer class="noprint">
+  <div class="wrap"><span class="fnav"><a href="../about/">運営者情報</a>　<a href="../contact/">お問い合わせ</a>　<a href="../privacy/">プライバシーポリシー</a></span>
+    <span class="copy">さくらツール　© 2026 SAKURA TOOLS</span></div>
+</footer>
+
+<script src="typing.js?v=5"></script>
+</body>
+</html>
