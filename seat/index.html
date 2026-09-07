@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SAKURA TOOLS">
-<meta property="og:title" content="教室の座席表メーカー｜席替えを簡単に・30人40人・4列〜8列対応">
-<meta property="og:description" content="名簿を貼るだけで席替えができるフリーツール。30人・35人・40人、4列〜8列の教室席配置に対応。班分け・色分け・先生の向きへの反転・印刷・PDFまでこのページで。">
+<meta property="og:title" content="教室の座席表メーカー｜エクセルテンプレート不要・30人40人">
+<meta property="og:description" content="名簿を貼るだけで席替えができる無料ツール。エクセルテンプレートは不要。30人・35人・40人、4列〜8列の教室席配置に対応。班分け・色分け・先生の向きへの反転・印刷・PDFまでこのページで。">
 <meta property="og:url" content="https://sakura-tools.com/seat/">
 <meta property="og:image" content="https://sakura-tools.com/ogp.png">
 <meta property="og:image:width" content="1200">
@@ -23,9 +23,9 @@
   gtag('config', 'G-GCK29PTKBG');
 </script>
 <meta name="google-site-verification" content="PfjmCGxUaN1hzuj_dRw3e4PTY6xepghfXM_CrU_sO-A" />
-<title>教室の座席表メーカー｜席替えを簡単に・30人40人・4列〜8列対応</title>
-<meta name="description" content="教室の座席表の作り方は簡単。名簿を貼るだけで席替えができるフリーツールです。新年度の出席番号順にも対応。小学校・中学校・高校のどのクラスでも、30人・35人・40人、4列・5列・6列・8列の教室席配置に対応。生徒に見せる向きと、先生が教卓から見る向きを切り替えられます。班分けと色分けもそのまま印刷・PDFにできます。Excelテンプレートは不要です。名簿はブラウザの中だけで処理し、AIの学習にも使われません。">
-<link rel="stylesheet" href="../style.css?v=111">
+<title>教室の座席表メーカー｜エクセルテンプレート不要・30人40人</title>
+<meta name="description" content="教室の座席表の作り方は簡単。名簿を貼るだけで席替えができる無料ツールです。エクセルテンプレートは不要。新年度の出席番号順にも対応。小学校・中学校・高校のどのクラスでも、30人・35人・40人、4列・5列・6列・8列の教室席配置に対応。生徒に見せる向きと、先生が教卓から見る向きを切り替えられます。班分けと色分けもそのまま印刷・PDFにできます。エクセルテンプレートのダウンロードも、登録もいりません。名簿はブラウザの中だけで処理し、AIの学習にも使われません。">
+<link rel="stylesheet" href="../style.css?v=114">
 <link rel="stylesheet" href="seat.css?v=1">
 <link rel="stylesheet" href="../print.css?v=54" media="print">
 <style>
@@ -88,30 +88,7 @@ body.screen .sheet.masked .grid{display:grid}
         あと幅を小さくしたときは、リード文が↓のほうがいいわ」
    ⚠狭い画面では、絵が大きいと①（名簿の欄）がうんと下に行く。
      だから狭いときは**小さくして、文章より上**に置く */
-.samp-btn{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in}
-.samp-btn img{
-  display:block;width:100%;height:auto;border-radius:10px;background:#fff;
-  box-shadow:0 5px 16px rgba(0,0,0,.17), 0 1px 3px rgba(0,0,0,.10);
-  transition:box-shadow .18s ease, transform .18s ease;
-}
-@media (hover:hover){
-  .samp-btn:hover img{box-shadow:0 14px 30px rgba(0,0,0,.22), 0 2px 5px rgba(0,0,0,.12);transform:translateY(-3px)}
-}
-.samp-btn:active img{box-shadow:0 1px 4px rgba(0,0,0,.16);transform:translateY(1px) scale(.995)}
 /* 狭い画面＝絵を小さくして、文章より上に出す */
-/* 押したときに開く大きい見本 */
-.samp-view{
-  position:fixed;inset:0;z-index:9600;background:rgba(0,0,0,.86);
-  overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px;
-}
-.samp-view .samp-head{
-  display:flex;align-items:center;gap:12px;color:#fff;font-weight:bold;flex:0 0 auto;
-}
-.samp-view .samp-head button{margin-left:auto}
-.samp-view img{
-  display:block;max-width:100%;height:auto;margin:auto;
-  background:#fff;border-radius:8px;
-}
 /* 🔴 広い画面では、文章の右に見本を置く（2026-09-04 本人）。
    ⚠クラス名を .hero にしてはいけない。共通の style.css に別物の .hero がある
      （白い箱＋桜色の枠）。名前がぶつかって枠が出た。ここは .intro を使う。
@@ -136,7 +113,11 @@ body.screen .sheet.masked .grid{display:grid}
    先に書くと margin:0 に上書きされて、絵が左に寄る（2026-09-04 実際に起きた） */
 @media (max-width:859px){
   .intro{display:flex;flex-direction:column}
-  .intro .t-sample{order:-1;max-width:220px;margin:0 auto 16px}
+  /* ⚠絵が16:9になったので、せまい画面でも小さくしない（2026-09-06 本人
+     「幅が小さくなっても、画面表示の見本サイズそのままでいい」）。前は220pxまで縮めていた */
+  /* ⚠order:-1（絵を先に出す）をやめた（2026-09-06 本人「簡単操作の下においてほしい」）
+     ＝リード → できること → 見本 → ？の説明、の順になる */
+  .intro .t-sample{max-width:396px;margin:4px auto 16px}   /* ⭐2列のときと同じ幅にそろえる（本人・2026-09-06） */
 }
 /* 🔴 できあがりの見本（2026-09-04 本人）。⚠大きくしすぎない。①が画面の外に出てしまう */
 .t-sample{margin:0 0 20px;max-width:520px}
@@ -195,8 +176,8 @@ body.screen .seat.dup .nm{text-decoration:none}
     <a class="logo" href="../"><span class="logo-mark">🌸</span><span class="logo-main">SAKURA TOOLS</span><span class="logo-sub">さくらツール</span></a>
     <nav>
       <a href="../">トップ</a>
-      <a href="../seat/" aria-current="page">座席表</a>
       <a href="../seki/">席次表</a>
+      <a href="../slide/">スライド</a>
     </nav>
   </div>
 </header>
@@ -207,46 +188,38 @@ body.screen .seat.dup .nm{text-decoration:none}
 
   <div class="intro">
     <div class="intro-txt">
-      <p class="lead">名簿を貼ってボタンひとつ。もう<strong>エクセルテンプレート</strong>は不要です。「この2人は離す」「この子は前のほうに」を入れたまま席替えできて、そのまま印刷・PDFにできます。</p>
+      <p class="lead"><strong>登録なし・全部無料。</strong>名簿のコピペで、<strong>席替えが全自動</strong>。出席番号順はもちろん、4人班など条件設定も簡単。<strong>エクセルテンプレートはもう不要！</strong></p>
       <!-- 🔴 できること（2026-09-04 本人）。
            ⚠サーチコンソールで上位に出ているのは「座席表 40人／30人／35人」＝
              人数の数字が入ると順位が上がる。その言葉をここで使う。
              ⭐32人・33人は検索されないが、**自分のクラスも大丈夫と分かる**ために書く（本人の判断） -->
       <ul class="can-do">
-        <li><strong>30人・35人・40人</strong>はもちろん、32人・33人のような数でも</li>
-        <li>4列でも8列でも。<strong>班分けと色分け</strong>もそのまま</li>
-        <li>印刷とPDFは<strong>A4の1枚</strong>に収まります</li>
+        <li><strong>30人・35人</strong>はもちろん、32人・33人クラスでも</li>
+        <li><strong>班分けも自動提案！</strong>マグネットみたいに移動も簡単！</li>
+        <li><strong>モニター表示</strong>もボタン一つの簡単操作！</li>
       </ul>
-      <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
     </div>
+    <!-- 🔴 押して大きくするのはやめた（2026-09-06 本人「見本はもういらない。画像を押さなくても
+         いいようにしよう…そのままでもちゃんと見本は見える。それより下にスクロールしてもらいたい」）-->
     <figure class="t-sample noprint">
-      <button type="button" class="samp-btn" aria-label="見本を大きく見る">
-        <img src="../img/seat-sample.png?v=2" width="980" height="758" alt="班ごとに色分けした教室の座席表の完成見本">
-      </button>
+      <img src="../img/seat-sample.png?v=9" width="1280" height="720" alt="33人・6列の教室の座席表の完成見本。3人の班やかぎ型の班も作れる">
     </figure>
   </div>
-
-  <!-- 🔴 押すと開く大きい見本（2026-09-04 本人）。⚠紙にも画像にも出さない -->
-  <div class="samp-view noprint" id="sampView" hidden>
-    <div class="samp-head">見本<button type="button" id="sampClose">✕ とじる</button></div>
-    <img src="../img/seat-sample.png?v=2" alt="班ごとに色分けした教室の座席表の完成見本">
-  </div>
+  <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
 
 
 
     <section class="card noprint">
-      <h2><span class="step">1</span>名簿を入力&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+      <h2><span class="step">1</span>名簿の入力&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
       <div class="tip-body" hidden>
         <p class="tip-h">Excelから貼るとき</p>
         <ul>
           <li><strong>名前の列をコピーして、この欄に貼るだけです。</strong></li>
-          <li><strong>出席番号や男女の列が一緒でもかまいません。</strong>読み分けます。<strong>列の順番も自由</strong>です。</li>
+          <li><strong>出席番号や男女の列が一緒でもかまいません。</strong>読み分けます。<strong>列の順番も自由</strong>で、見出しの行（番号・氏名・性別など）はとばします。</li>
           <li>手で書くときは、<strong>カンマ（,）で区切って</strong>もかまいません。<span class="hint">1,やまだ たろう,男</span></li>
-          <li><strong>見出しの行（番号・氏名・性別など）が一緒でもかまいません。</strong>とばします。</li>
-          <li>それ以外の列（住所やメモなど）が<strong>名前より左</strong>にあると、そちらが名前になります。左には置かないでください。</li>
-          <li><strong>貼ったあと、手で足したり直したりできます。</strong>転入生が来たときは1行足すだけです。</li>
-          <li>名字と名前のあいだの空白は、あってもなくてもかまいません。空白があると「姓と名で改行」が使えます。</li>
-          <li>同じ名字の子が何人かいるときは、<strong>名前まで入れておく</strong>と取りちがえません。</li>
+          <li>⚠住所やメモの列が<strong>名前より左</strong>にあると、そちらを名前と読みます。左には置かないでください。</li>
+          <li><strong>貼ったあとに手で足したり直したりできます。</strong>転入生が来たときは1行足すだけです。</li>
+          <li>名字と名前のあいだの空白は、あってもなくても大丈夫です（空白があると「姓と名で改行」が使えます）。同じ名字の子がいるときは、<strong>名前まで入れておく</strong>と取りちがえません。</li>
         </ul>
 
         <p class="tip-h">男女</p>
@@ -257,18 +230,20 @@ body.screen .seat.dup .nm{text-decoration:none}
 
         <p><strong>いま出ている座席表はサンプルです。</strong>名簿を入れると、自分のクラスに変わります。入れる前でも、席を動かしたり班に分けたりして試せます。</p>
       </div>
-      <p class="safe">🔒 <strong>使ってる機器の中だけで完結できます。</strong>名簿はネット上に流れません。外に送っていないので、AIの学習に使われることも、個人情報が漏れることもありません。安心して使えます。</p>
+      <p class="safe">🔒 <strong>使っているパソコンの中だけで完結しています。</strong>安心してご利用ください。</p>
       <!-- 🔴 次に使うとき⑧まで下がらなくていいように、呼び出しは①に置く（2026-08-31 本人）。
            ⚠残したものが1件も無いときは出さない（はじめての人には邪魔なだけ） -->
       <div class="row tight" id="quickLoad" hidden style="margin-bottom:12px">
-        <div class="pick"><label for="clsSel2">保存した名簿</label>
+        <div class="pick"><label for="clsSel2">さくらツールで保存済のデータ</label>
           <select id="clsSel2"><option value="">－</option></select></div>
         <div><label>&nbsp;</label>
-          <button class="mini" id="clsLoad2" type="button">この名簿を自動入力</button></div>
+          <button class="mini" id="clsLoad2" type="button">このデータを自動入力</button></div>
+        <div><label>&nbsp;</label>
+          <button class="mini" id="clsDel2" type="button">削除</button></div>
       </div>
       <div class="in-col">
         <div>
-      <textarea id="names" placeholder="ここをクリック → Excelからコピペ（手入力可）&#10;&#10;1,やまだ たろう,男&#10;2,さとう はなこ,女&#10;すずき いちろう（名前だけでもOK）&#10;&#10;空のままだとサンプルが出ます"></textarea>
+      <textarea id="names" placeholder="ここをクリック→エクセルデータを貼り付け（手入力可）&#10;&#10;1,やまだ たろう,男&#10;2,さとう はなこ,女&#10;すずき いちろう（名前だけでもOK）&#10;&#10;空のままだとサンプルが出ます"></textarea>
       <div class="row tight" style="margin-top:10px">
         <div><label for="nameMode">名前の見せ方</label>
           <select id="nameMode">
@@ -391,9 +366,8 @@ body.screen .seat.dup .nm{text-decoration:none}
                Excelに班長列がある先生が貼ったときに、黙って拾うためだけのもの -->
         <h3>班に1人ずつにする人&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h3>
         <div class="tip-body" hidden>
-          <p>班長・リーダー・声かけ役など、<strong>班に1人配置したいとき</strong>に設定します。なんのために使うかは、自由に決めましょう。</p>
-          <p>④の「班に分ける」を入れているときだけ有効です。また、座席表に★を表示するかどうかも④で選べます。</p>
-          <p>人数が班の数より少ないときは、★がいない班をお知らせします。</p>
+          <p>班長・リーダー・声かけ役など、<strong>班に1人ずつ置きたい人</strong>を決められます。使い道は自由です。</p>
+          <p>④で「班に分ける」を入れているときだけ効きます（★を座席表に出すかどうかも④）。★の人数が足りないときは、いない班をお知らせします。</p>
         </div>
         <div id="leadList"></div>
         <!-- 🔴 人数はボタンの右に、それだけ出す（2026-09-03 本人）。
@@ -455,7 +429,7 @@ body.screen .seat.dup .nm{text-decoration:none}
       <summary><span class="step">3</span>男女の文字色&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
       <div class="body">
       <div class="tip-body" hidden>
-        <p><strong>赤と緑は、いちばん見分けにくい組み合わせ</strong>です。教室のモニターに映して子どもが自分の席を探すことを考えて、このツールでは青系と赤紫系のように系統が離れた色を、はじめの組み合わせにしています。明るさも変えてあるので、色が分かりにくい人でも濃さで見分けられます。</p>
+        <p><strong>赤と緑は、いちばん見分けにくい組み合わせ</strong>です。はじめは青系と赤紫系にしてあり、明るさも変えてあるので、色が分かりにくい人でも濃さで見分けられます。</p>
         <p>色を付けたくないときは、両方とも「黒」を選んでください。</p>
       </div>
       <p class="note-sm">下の名前を押すたびに <b>なし → 男 → 女</b> と変わります。</p>
@@ -479,11 +453,9 @@ body.screen .seat.dup .nm{text-decoration:none}
       <div class="body">
       <div class="tip-body" hidden>
         <p>班は<strong>机のかたまり</strong>に付きます。席をドラッグして人を入れ替えると、班もそのまま入れ替わります。</p>
-        <p>机は前後2つをひと組にして数えます。4人なら2席×2段、6人なら3席×2段、<strong>3人ならかぎ型</strong>になります。</p>
-        <p>ひとりだけの班は作りません。35人を2人ずつに分けるときは、3人の班をひとつ作って、あとは2人ずつになります。</p>
-        <p><strong>班の番号を押すと、その席の班をえらべます。</strong>「この子だけ となりの班に」を手で直せます。もう一度席替えをすると、手で直したぶんは元にもどります。</p>
-        <p>「班の番号を出す」を外しても、この画面には薄く残ります。押して班を変えられます。紙・モニター・画像には出ません。</p>
-        <p>色は印刷にも画像にもそのまま出ます。色の見分けがつきにくい方にも伝わる組み合わせを選んであります。</p>
+        <p>机は前後2つでひと組。4人なら2席×2段、6人なら3席×2段、<strong>3人ならかぎ型</strong>です。ひとりだけの班は作りません（35人を2人ずつなら、3人の班が1つできます）。</p>
+        <p><strong>班の番号を押すと、その席の班を変えられます。</strong>「この子だけ となりの班に」ができます。もう一度席替えをすると、手で直したぶんは元にもどります。</p>
+        <p>「班の番号を出す」を外しても、この画面には薄く残ります（押せば変えられます）。紙・モニター・画像には出ません。色は印刷にも画像にもそのまま出ます。</p>
       </div>
       <p class="note-sm">
         席は<strong>マグネットのように、ドラッグで入れ替え</strong>ができます（スマホ・タブレットは長押ししてから）。班番号を押すと、その席の班と色を変えられます。
@@ -545,7 +517,7 @@ body.screen .seat.dup .nm{text-decoration:none}
                 </select></div>
             </div>
             <p class="hint" id="avoidNote"></p>
-            <p class="hint">下の「クラスと記録の保存」で<strong>座席を記録しておくと使えます</strong>。人数と班の数によっては、どうしても重なることがあります。そのときは<strong>重なった人を画面に出します</strong>。</p>
+            <p class="hint">下の<strong>⑧「保存したデータの利用」</strong>で座席を記録しておくと使えます。人数と班の数によっては、どうしても重なることがあります。そのときは<strong>重なった人を画面に出します</strong>。</p>
           </div>
         </div>
       </div>
@@ -556,13 +528,9 @@ body.screen .seat.dup .nm{text-decoration:none}
       <summary><span class="step">5</span>見た目&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
       <div class="body">
       <div class="tip-body" hidden>
-        <p><strong>印刷できないとき</strong></p>
-        <p>お使いの機器がプリンターとつながっているか確認してください。つながっていれば、スマホからでも印刷できます。</p>
-        <p><strong>PDFにしたいとき</strong>は、印刷画面で「送信先」を「PDFに保存」にしてください。</p>
-        <p><strong>たて向きで出てしまうとき</strong>（スマホ・タブレットに多いです）は、印刷画面の設定で用紙の向きを「横」に変えてください。機器によっては、こちらの指定より端末の設定が優先されます。</p>
-        <p><strong>タブレット・スマホで2ページに分かれてしまうとき</strong>は、印刷画面の<strong>「サイズ調整」を80%</strong>くらいにしてください。画像で保存してから、写真アプリで印刷する方法もあります。</p>
-        <p><strong>丸文字はWindowsとiPadだけ。</strong>ほかの機器ではゴシック体になりますが、崩れません。</p>
-        <p><strong>印刷（PDF）は先生の向きで出す</strong>にすると、紙は教卓から見た向きになります。生徒に見せるのは画面で足りるので、紙は先生の向きだけで済みます。</p>
+        <p><strong>丸文字はWindowsとiPadだけ。</strong>ほかの機種ではゴシック体になりますが、崩れません。</p>
+        <p><strong>「印刷（PDF）は先生の向きで出す」</strong>にすると、紙は教卓から見た向きになります。画面はそのままなので、生徒に見せるのは画面で足ります。</p>
+        <p class="hint">⚠印刷の困りごと（PDF・たて向き・2ページに分かれる）は、<strong>⑥の「？」</strong>にまとめてあります。</p>
       </div>
       <div class="row">
         <div><label for="font">書体</label>
@@ -602,7 +570,7 @@ body.screen .seat.dup .nm{text-decoration:none}
           <input type="checkbox" id="showCredit" checked> 右下にサイト名を入れる
         </label>
       </p>
-      <p class="hint" style="margin-top:6px">印刷の向きや大きさは、お使いの機器・プリンターの設定によります。うまく収まらないときは、印刷画面の<strong>拡大・縮小</strong>で調整してください。</p>
+      <p class="hint" style="margin-top:6px">印刷の向きや大きさは、お使いのパソコン・プリンターの設定によります。うまく収まらないときは、印刷画面の<strong>拡大・縮小</strong>で調整してください。</p>
       </div>
     </details>
 
@@ -610,8 +578,9 @@ body.screen .seat.dup .nm{text-decoration:none}
       <h2><span class="step">6</span>印刷・画像で保存&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
       <div class="tip-body" hidden>
         <p><strong>PDFにするとき</strong>は、印刷画面で「送信先」（または「プリンター」）を <strong>PDFに保存</strong> に変えてください。</p>
-        <p><strong>印刷できないとき</strong>は、お使いの機器がプリンターとつながっているか確認してください。つながっていれば、スマホからでも印刷できます。</p>
-        <p><strong>たて向きで出てしまうとき</strong>（スマホ・タブレットに多いです）は、印刷画面の設定で用紙の向きを「横」に変えてください。機器によっては、こちらの指定より端末の設定が優先されます。</p>
+        <p><strong>印刷できないとき</strong>は、プリンターとつながっているか確認してください。つながっていれば、スマホからでも印刷できます。</p>
+        <p><strong>たて向きで出てしまうとき</strong>（スマホ・タブレットに多いです）は、印刷画面の設定で用紙の向きを「横」に変えてください。お使いの機種によっては、端末側の設定が優先されます。</p>
+        <p><strong>2ページに分かれてしまうとき</strong>は、印刷画面の<strong>「サイズ調整」を80%</strong>くらいにしてください。画像で保存して、写真アプリから印刷する方法もあります。</p>
         <p><strong>「先生の向き」</strong>にすると、紙は教卓から見た向き（180度まわした形）で出ます。画面はそのままです。</p>
         <p><strong>「男女の色を出さない」</strong>にすると、紙だけ黒で出ます。<strong>画面は色が付いたままです。</strong>③で色を消すと画面も黒くなるので、紙だけ黒にしたいときはこちらを使ってください。</p>
       </div>
@@ -642,13 +611,14 @@ body.screen .seat.dup .nm{text-decoration:none}
         <li><strong>いま開いている画面をそのまま残します。</strong>名簿・教室の形・条件・男女の指定・座席表まで、次に開いたときそのまま出ます。</li>
         <li><strong>残るのは1つだけ</strong>です。名簿を入れかえると、前のものは上書きされます。いくつも残したいときは<strong>⑧</strong>を使ってください。</li>
         <li><strong>チェックを外すと、保存していたものは消えます。</strong>次に開いたときは最初からの設定になります。いま見ている画面はそのままです。</li>
-        <li>残るのは<strong>使ってる機器のブラウザの中だけ</strong>です。<strong>どこにも送信されません。</strong>読み込んだ画像は保存されません。</li>
+        <li>残るのは<strong>このパソコンの中だけ</strong>です。<strong>どこにも送信されません。</strong>読み込んだ画像は保存されません。</li>
       </ul>
     </div>
     <label style="font-weight:normal">
-      <input type="checkbox" id="save"> この機器に画面を保存する
+      <input type="checkbox" id="save"> この画面を保存する
     </label>
-    <p class="hint">チェックを入れると次回もこのまま表示されます。外すと次回は最初からの設定になります。サーバーには送信されません。</p>
+    <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。<br>
+      ⚠<b>共用のパソコンで使ったときは、このチェックを外して、この画面を閉じてください。</b></p>
     <p><span class="saving" id="savingLabel"></span></p>
   </section>
 
@@ -657,44 +627,31 @@ body.screen .seat.dup .nm{text-decoration:none}
   <div id="msg2" class="noprint"></div>
 
   <section class="card noprint">
-    <h2><span class="step">8</span>保存した名簿の利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+    <h2><span class="step">8</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
     <div class="tip-body" hidden>
       <ul>
-        <li><strong>名前を付けて、いくつも保存できます。</strong>ボタンを押したときだけ増えます。</li>
-        <li>残るのは<strong>使ってる機器のブラウザの中だけ</strong>です。<strong>どこにも送信されません。</strong></li>
-      </ul>
-
-      <p class="tip-h">席次表と共通です</p>
-      <ul>
-        <li><strong>「席次表メーカー」で保存した名簿も、ここに出ます。</strong>逆もできます。同じ機器なら、名簿を貼り直す必要はありません。</li>
-        <li>名簿は共通ですが、<strong>教室の形や班の設定はツールごと</strong>に覚えます。混ざることはありません。</li>
-      </ul>
-
-      <p class="tip-h">保存した名簿を使うとき</p>
-      <ul>
-        <li><strong>①の「この名簿を自動入力」</strong>から呼び出します。名簿も条件も入るので、あとは「席替えする」を押すだけです。</li>
-        <li>クラスを持ち替えるたびに、貼り直さなくてよくなります。</li>
-      </ul>
-
-      <p class="tip-h">決まった座席を使うとき</p>
-      <ul>
-        <li><strong>記録の座席を表示</strong>＝そのときの座席をそのまま出します。<strong>席替えはしません。</strong></li>
-        <li>同じ日でも<strong>案1・案2</strong>を別々に保存できます。名前は自由に付けられるので「2学期はじめ」のような書き方もできます。</li>
-        <li>同じ名前で保存したときは、<strong>差し替えるか聞きます。</strong>同じものが2件できることはありません。</li>
+        <li><strong>名前を付けて、いくつも保存できます。</strong>残るのは<strong>このパソコンの中だけ</strong>です。</li>
+        <li><strong>さくらツールの中で共通です。</strong>ほかの道具で保存したデータもここに出ますし、逆もできます（教室の形や班の設定はツールごとに覚えます）。</li>
+        <li>呼び出すのは①の<strong>「このデータを自動入力」</strong>から。名簿も条件も入るので、あとは「席替えする」を押すだけです。</li>
+        <li><strong>「記録の座席を表示」</strong>＝そのときの座席をそのまま出します（<strong>席替えはしません</strong>）。</li>
+        <li>同じ日でも<strong>案1・案2</strong>を別々に残せます。「2学期はじめ」のような名前も付けられます。</li>
+        <li>同じ名前で保存したときは<strong>差し替えるか聞きます</strong>。同じものが2件できることはありません。</li>
       </ul>
     </div>
 
-    <p class="safe">🔒 <strong>使ってる機器の中だけで完結します。</strong>保存したものはネット上に流れません。</p>
+    <p class="hint">保存したデータは、<b>さくらツール上で利用できます</b>。</p>
+
+    <p class="safe">🔒 <strong>保存したものは、このパソコンの中だけに残ります。</strong></p>
 
     <div class="cls-box">
-      <h3>名簿に名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
-      <p class="hint">名簿・教室の形・条件・男女・班の設定を、まとめて残すときに使います。<strong>「上書き」は、転入・転出で名簿が変わったとき</strong>に使ってください。</p>
+      <h3>データに名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
+      <p class="hint">名簿・教室の形・条件・男女・班の設定を、まとめて残すときに使います。<strong>「上書き」は、転入・転出で名簿が変わったとき</strong>に使ってください。<br>保存できるのは<b>文字情報のみ</b>です（写真や画像は残りません）。</p>
       <p class="btn-row">
         <button class="mini" id="clsNew" type="button">新しい名前で保存</button>
         <button class="mini" id="clsSave" type="button">上書き</button>
         <button class="mini" id="clsDel" type="button">削除</button>
       </p>
-      <div class="pick"><label for="clsSel">保存した名簿</label>
+      <div class="pick"><label for="clsSel">さくらツールで保存済のデータ</label>
         <select id="clsSel"><option value="">－</option></select></div>
 
       <h3 style="margin-top:18px">決まった座席を保存（<span id="recCount">0／20件</span>）</h3>
@@ -707,14 +664,8 @@ body.screen .seat.dup .nm{text-decoration:none}
       <div class="pick"><label for="recSel">記録</label>
         <select id="recSel"><option value="">－</option></select></div>
 
-      <p class="hint" style="margin-top:14px">⚠ <strong>共用の機器で使ったときは、使い終わったら下の「削除」を押してください。</strong></p>
     </div>
 
-    <div class="del-box">
-      <h3>削除</h3>
-      <p class="hint">ボタンを押すと、この機器から名簿と記録が消えます。<strong>もとには戻せません。</strong></p>
-      <p><button class="mini" id="clsClearAll" type="button">名簿と記録の全削除</button></p>
-    </div>
   </section>
 
   <section class="read">
@@ -740,12 +691,12 @@ body.screen .seat.dup .nm{text-decoration:none}
 
     <h2>よくある質問</h2>
     <dl>
-      <dt>ネットにつながっているのに、本当に外に出ないのですか？</dt>
-      <dd><strong>普段お使いの機器で、名簿を開くのと同じです。</strong>エクセルで名簿を開いても、書いた中身がネットに出ていかないのと同じことです。ネットにつながっていても、このページは名簿を受け取っていません。ブラウザの中だけで処理して、そのまま印刷やPDFにしています。だから、外に晒されることも、漏れることも、AIの学習に使われることもありません。<strong>いつもの仕事と同じように、安心して使えます。</strong></dd>
+      <dt>ネットにつながっているのに、本当に外部に出ないのですか？</dt>
+      <dd><strong>普段お使いのパソコンで、名簿を開くのと同じです。</strong>エクセルで名簿を開いても、書いた中身がネットに出ていかないのと同じことです。ネットにつながっていても、<strong>すべてお使いのパソコンだけで完結します</strong>。そのまま印刷やPDFにできます。だから、外に晒されることも、漏れることも、AIの学習に使われることもありません。<strong>いつもの仕事と同じように、安心して使えます。</strong></dd>
       <dt>名簿は外部に送られますか？</dt>
-      <dd>送りません。すべて使ってる機器の中だけで処理しています。<strong>外に出ていないので、AIの学習に使われることもありません。</strong></dd>
+      <dd>送りません。すべてお使いのパソコンだけで完結します。<strong>外部に出ていないので、AIの学習に使われることもありません。</strong></dd>
       <dt>入力した名簿がAIの学習に使われるか心配です</dt>
-      <dd><strong>ありません。</strong>名簿はお使いの機器の中だけで処理していて、外に送っていないためです。学習させる・させない以前に、こちらが名簿を受け取っていません。学校の機器で、生徒の個人情報をあつかうときにも、安心してお使いいただけます。</dd>
+      <dd><strong>ありません。</strong>外部には送っていないためです。学習させる・させない以前に、<strong>すべてお使いのパソコンだけで完結しています</strong>。学校のパソコンで、生徒の個人情報をあつかうときにも、安心してお使いいただけます。</dd>
       <dt>条件を入れたら「作れません」と出ました</dt>
       <dd>条件がきつすぎて、全部を満たす配置が無い状態です。どの条件を外せば作れるかを画面に出しますので、それを外すか、「隣」の決め方をゆるくしてください。</dd>
       <dt>3つの案は何が違うのですか？</dt>
@@ -790,7 +741,7 @@ body.screen .seat.dup .nm{text-decoration:none}
     </ul>
 
     <h2>このツールについて</h2>
-    <p><strong>使ってる機器の中だけで完結できます。</strong>使った名簿がネット上に流れることはありません。外に送っていないので、AIの学習に使われることも、個人情報が漏れることもありません。安心して使えます。「名簿の保存」をオンにしたときだけ、いま使っている機器の中に残ります。オフのままなら、ページを閉じた時点で消えます。インストールも会員登録もいりません。</p>
+    <p><strong>使っているパソコンの中だけで完結できます。</strong>使った名簿がネット上に流れることはありません。外部には送っていないので、AIの学習に使われることも、個人情報が漏れることもありません。安心して使えます。「画面の保存」をオンにしたときだけ、このパソコンの中に残ります。オフのままなら、ページを閉じた時点で消えます。インストールも会員登録もいりません。</p>
   </section>
 </main>
 
@@ -802,26 +753,9 @@ body.screen .seat.dup .nm{text-decoration:none}
 </footer>
 
 <script src="../seating.js?v=54"></script>
-<script src="seat.js?v=158"></script>
+<script src="seat.js?v=163"></script>
 <!-- 🔴 印刷用の1枚絵の置き場（2026-09-01）。画面には出ない。
      ⚠**body の直下に置くこと。**中に入れると、印刷のときに親ごと隠されて白紙になる -->
 <div id="printImgWrap"></div>
-<script>
-// 🔴 見本を押すと大きく出す（2026-09-04 本人）。⚠外側・✕・Esc のどれでも閉じる
-(function () {
-  var b = document.querySelector('.samp-btn'),
-      v = document.getElementById('sampView'),
-      c = document.getElementById('sampClose');
-  if (!b || !v || !c) return;
-  function open() { v.hidden = false; document.body.style.overflow = 'hidden'; c.focus(); }
-  function close() { v.hidden = true; document.body.style.overflow = ''; b.focus(); }
-  b.addEventListener('click', open);
-  c.addEventListener('click', close);
-  v.addEventListener('click', function (e) { if (e.target === v) close(); });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && !v.hidden) close();
-  });
-})();
-</script>
 </body>
 </html>

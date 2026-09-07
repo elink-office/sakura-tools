@@ -1714,7 +1714,7 @@
   function showSaving() {
     var n = state.names.length;
     $('savingLabel').textContent = $('save').checked && n
-      ? '保存中：' + (className(false) || '名簿') + ' ' + n + '人' : '';
+      ? '保存中：' + (className(false) || 'データ') + ' ' + n + '人' : '';
   }
   function load() {
     try {
@@ -1825,7 +1825,7 @@
   function clearSaved() {
     try { localStorage.removeItem(KEY); } catch (e) { }
     $('save').checked = false; showSaving();
-    ($('msg2') || $('msg')).innerHTML = '<div class="notice">この機器に保存していた画面を消しました。</div>';
+    ($('msg2') || $('msg')).innerHTML = '<div class="notice">このパソコンに保存していた画面を消しました。</div>';
   }
 
   // ---- クラスと記録の画面まわり ----
@@ -1842,7 +1842,9 @@
     [sel, $('clsSel2')].forEach(function (el) {
       if (!el) return;
       el.innerHTML = '<option value="">－</option>';
+      // 🔴 簡単スライドで作った「文字のセット」は名簿ではないので出さない（2026-09-05）
       st.classes.forEach(function (c) {
+        if (c.kind === 'slide') return;
         var o = document.createElement('option');
         o.value = c.id; o.textContent = c.label;
         el.appendChild(o);
@@ -1852,8 +1854,9 @@
     });
     // ⚠残したものが無いうちは、①の呼び出し欄を出さない
     if ($('quickLoad')) $('quickLoad').hidden = !st.classes.length;
-    $('clsCount').textContent = st.classes.length
-      ? st.classes.length + '／' + MAXC + '件'
+    var nCls = st.classes.filter(function (c) { return c.kind !== 'slide'; }).length;
+    $('clsCount').textContent = nCls
+      ? nCls + '／' + MAXC + '件'
       : '0／' + MAXC + '件・まだ保存していません';
     refreshRecUI();
   }
@@ -1901,7 +1904,7 @@
 
   function doClsNew() {
     var st = loadStore();
-    var name = prompt('名簿の名前を入れてください', className(false) || '名簿');
+    var name = prompt('データの名前を入れてください', className(false) || 'データ');
     if (name === null) return;
     name = (name || '').replace(/^\s+|\s+$/g, '');
     if (!name) return;
@@ -1921,7 +1924,7 @@
       }
     }
     if (st.classes.length >= MAXC) {
-      alert('名簿は' + MAXC + '件までです。いらないものを消してから保存してください。');
+      alert('データは' + MAXC + '件までです。いらないものを消してから保存してください。');
       return;
     }
     var id = 'c' + (new Date().getTime());
@@ -1937,7 +1940,7 @@
   }
   function doClsSave() {
     var st = loadStore(), c = curClass(st);
-    if (!c) { alert('先に、保存した名簿をえらんでください。はじめて残すときは「新しい名前で保存」です。'); return; }
+    if (!c) { alert('先に、保存したデータをえらんでください。はじめて残すときは「新しい名前で保存」です。'); return; }
     c.names = $('names').value;
     c.seat = snapshot();
     if (!saveStore(st)) return;
@@ -1945,7 +1948,7 @@
   }
   function doClsLoad() {
     var c = curClass();
-    if (!c) { alert('先に、保存した名簿をえらんでください。'); return; }
+    if (!c) { alert('先に、保存したデータをえらんでください。'); return; }
     if (!confirm('「' + c.label + '」を入れます。' +
       'いま画面にある名簿と座席表は消えます。よろしいですか。')) return;
     // ⚠席次表だけで保存したものは seat が空。そのときも名簿だけは入れる
@@ -1957,7 +1960,7 @@
   }
   function doClsDel() {
     var st = loadStore(), c = curClass(st);
-    if (!c) { alert('先に、消したい保存した名簿をえらんでください。'); return; }
+    if (!c) { alert('先に、消したい保存したデータをえらんでください。'); return; }
     if (!confirm('「' + c.label + '」を消します。' +
       'その中の記録と、席次表で使っている設定も一緒に消えます。よろしいですか。')) return;
     st.classes = st.classes.filter(function (x) { return x.id !== c.id; });
@@ -1969,7 +1972,7 @@
 
   function doRecSave() {
     var st = loadStore(), c = curClass(st);
-    if (!c) { alert('先に、保存した名簿をえらんでください。'); return; }
+    if (!c) { alert('先に、保存したデータをえらんでください。'); return; }
     if (!state.seats) { alert('先に席替えをしてください。'); return; }
     if (state.sample) { alert('サンプルは記録できません。名簿を入れてから席替えしてください。'); return; }
     c.recs = c.recs || [];
@@ -2027,6 +2030,7 @@
     refreshRecUI();
     note('「' + r.label + '」を消しました。');
   }
+  // ⚠いまはどこからも呼んでいない（2026-09-06「全削除」の枠をやめた。消すのは1件ずつ）
   function clearAllCls() {
     if (!confirm('保存したクラスと記録を全部消します。もとに戻せません。よろしいですか。')) return;
     try { localStorage.removeItem(KEYC); } catch (e) { }
@@ -2208,10 +2212,11 @@
       $('clsSave').onclick = doClsSave;
       $('clsNew').onclick = doClsNew;
       $('clsDel').onclick = doClsDel;
+      // 🔴 ①の呼び出しの横でも消せる（2026-09-06 本人「ほかの保存の場所にも…削除できるように」）
+      if ($('clsDel2')) $('clsDel2').onclick = doClsDel;
       $('recLoad').onclick = doRecLoad;
       $('recSave').onclick = doRecSave;
       $('recDel').onclick = doRecDel;
-      $('clsClearAll').onclick = clearAllCls;
       refreshClsUI();
     }
     $('kana').addEventListener('change', function () { if (state.seats) drawSheet(); });
