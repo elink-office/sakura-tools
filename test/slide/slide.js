@@ -662,6 +662,9 @@
 
   function updateCount(){
     build();
+    // ⭐比べるスライド（写真2枚）があるときだけ、「スライド表示」の下に押し方の案内を出す（2026-09-07 本人）
+    var ch = $('compareHint');
+    if (ch) ch.hidden = !(kind()==='text' && sheets.some(function(x){ return x.url2 && !x.off; }));
     var msg;
     if (kind()==='text'){
       if (!slides.length){
@@ -1073,6 +1076,7 @@
      picTarget が -1 なら末尾に新しい1枚として足す。
      🔴 行の「＋」から呼んだときは、その行に入れる（文字を打ち直さなくていい） */
   var picTarget = -1, picSlot = 1;
+  var toldCompare = false;   // ⭐「押すと大きくなる」の知らせは、開いているあいだに1回だけ
   $('picfile').addEventListener('change', function(e){
     var files = e.target.files;
     if (!files || !files.length){ picTarget = -1; picSlot = 1; return; }
@@ -1090,6 +1094,16 @@
         // 🔴 2枚のときは文字を「外」に固定（2026-09-07 本人「2枚目選んだ時点でロックしたほうがいい」）。
         //    ⚠写真の上に帯を重ねると、押して大きくする操作が帯に取られて効かない
         s2.pos = 'out';
+        /* 🔴 映したときの操作は見ただけでは分からない（2026-09-07 本人「スライド表示で選ぶと大きくなる
+           っていうの、どこかに書いておかないとわかんない。比べるボタンを押したときにポップアップで」）。
+           ⚠ボタンを押した瞬間に出すと、そのあと写真を選ぶ窓が開かない機種があるので、写真が入った直後に出す */
+        if (!toldCompare){
+          toldCompare = true;
+          setTimeout(function(){
+            alert('2枚目が入りました。映すと横に並びます。\n' +
+                  '映しているときに写真を押すと、そちらが大きくなります。もう一度押すと戻ります。');
+          }, 50);
+        }
         picTarget = -1; picSlot = 1;
         break;
       }

@@ -29,7 +29,7 @@
 <link rel="stylesheet" href="slide.css?v=65">
 </head>
 <body>
-<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/07 10:16</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/07 10:37</div>
 
 <header class="site-head noprint">
   <div class="wrap">
@@ -161,6 +161,7 @@
           <p><strong>▲▼</strong>で順番、<strong>×</strong>でその1枚を消します。<strong>左のチェックを外すと映りません。</strong></p>
           <p>写真の欄の<strong>＋</strong>でその1枚に写真が入ります（文字はそのまま）。写真の右上の<strong>×</strong>で写真だけ外せます。<strong>写真を入れると文字は「外・小」になります。</strong></p>
           <p><strong>そろえ</strong>＝<code>/</code> で改行した行の左右をそろえます（<code>//</code> の見出しは中央のまま）。</p>
+          <p><strong>写真を2枚</strong>入れた行は、映すと横に並びます。<strong>映しているときに写真を押すと、そちらが大きくなります</strong>（もう一度押すと戻ります）。文字は下の行に出ます。</p>
           <p>パソコンなら、行をつかんでドラッグでも動かせます（写真だけの移動もできます）。</p>
         </div>
         <div class="tools">
@@ -217,6 +218,9 @@
   <div class="startbox">
     <button class="primary" id="start" disabled>スライド表示</button>
     <p class="count" id="count"></p>
+    <!-- 🔴 比べるスライドがあるときだけ出す（2026-09-07 本人「スライド表示ボタンの時に出すか。
+         比べる設定になっていたらそれを表示しておくとか」）。映す画面には出さない＝映す前に、映す人にだけ見せる -->
+    <p class="hint" id="compareHint" hidden>⭐<b>比べるスライドがあります。</b>スライド表示で2つが並んだときに写真を押すと、大きく表示されます</p>
   </div>
 
   <!-- 保存 -->
@@ -404,6 +408,6 @@
   </div>
 </div>
 
-<script src="slide.js?v=82"></script>
+<script src="slide.js?v=85"></script>
 </body>
 </html>
