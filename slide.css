@@ -1,0 +1,382 @@
+/* ⭐「ゴシック」の中身を BIZ UDPゴシックに入れ替えた（2026-09-08 本人）。
+   ⚠先生に見える名前は「ゴシック」のまま。選べるものは増やしていない
+   ⭐理由＝游ゴシックは Windows で細く出る（かすれ問題）。教室の後ろから見るモニターでは不利。
+     BIZ UDPゴシックは学校向けのユニバーサルデザイン書体で、Windowsに標準で入っている
+   ⚠明朝と丸ゴシックは触っていない */
+/* 簡単スライド（/slide/）
+   ⚠ 色・ボタン・折りたたみ・カードは ../style.css が正本。ここには固有のものだけ書く。 */
+
+/* 見出しの中の小見出し（折りたたみの中に置く） */
+.sep{border:0;border-top:1px solid var(--line);margin:26px 0 20px}
+h3.sub{font-size:1.02rem;margin:0 0 12px;display:flex;align-items:center}
+
+/* ⚠切り替えはサイト共通の .radios（素のラジオ）を使う。
+   一度ここで枠と塗りつぶしを付けたが、他のページに無い仕様だったのでやめた（2026-09-05 本人の指摘） */
+.radios{margin:0 0 16px}
+
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+
+/* 写真をえらぶボタン（input[type=file] は見た目を揃えられないので label で作る） */
+.filebtn{
+  display:inline-block;font:inherit;cursor:pointer;
+  border:1px solid var(--line);background:#fff;color:var(--ink);
+  border-radius:8px;padding:8px 14px;
+}
+.filebtn:hover{background:var(--pink-pale)}
+
+/* 見た目（書体・文字の位置） */
+.look{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end}
+
+/* 作りながら 1枚だけ確かめる列 */
+.checkrow{
+  display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+  margin:14px 0 0;padding-top:14px;border-top:1px solid var(--line);
+}
+.checkrow select{max-width:220px}
+
+/* 作成中（出したあとも設定を開いたままにする） */
+/* 作成中。⚠一度下に置いたが、本人の指示で上へ戻した
+   （2026-09-05「できるだけ出す順番のウィンドウとみるボタンを近づけたい」） */
+/* ⚠細く・軽く（2026-09-05 本人「細い線に」）。一覧のじゃまをしない */
+.editmode{
+  display:inline-flex;align-items:center;gap:7px;cursor:pointer;
+  margin:0 0 14px;font-size:.84rem;color:var(--ink-soft);font-weight:normal;
+}
+.editmode input{width:17px;height:17px;cursor:pointer}
+
+/* 「1枚だけ見る」の枚数を選ぶところ */
+#checkNo{max-width:260px}
+
+/* 大きく出す：枠に入れず、ボタンと枚数だけ。中央に置く（2026-09-05 本人） */
+.startbox{margin:26px 0 30px;text-align:center}
+.startbox .count{margin-top:12px}
+
+
+/* 保存（いちばん下の枠。座席表と同じ考え方） */
+/* ⚠.saving は共通の style.css（桃色・太字）に任せる。ここで緑にしていたのをやめた
+   （2026-09-05 本人「画面の保存したら、緑色で文字が出る。これも座席表と同じにして」） */
+.look > div{display:flex;flex-direction:column;gap:4px}
+.look label{font-size:.85rem;color:var(--ink-soft)}
+
+/* 一覧のサムネイル */
+/* 🔴 どの行も写真を持てる。空の行は「＋」、写真がある行はサムネと「×」 */
+.picwrap{position:relative;display:inline-block}
+.thumb{
+  width:56px;height:40px;object-fit:cover;border-radius:6px;
+  border:1px solid var(--line);display:block;cursor:grab;
+}
+.picx{
+  position:absolute;top:-6px;right:-6px;
+  width:20px;height:20px;padding:0;line-height:1;font-size:12px;
+  border:1px solid var(--line);background:#fff;color:var(--ink-soft);
+  border-radius:50%;cursor:pointer;
+}
+.picx:hover{background:var(--pink-pale);color:var(--pink)}
+.picadd{
+  width:56px;height:40px;padding:0;line-height:1;font-size:18px;
+  border:1px dashed var(--line);background:#fff;color:var(--ink-soft);
+  border-radius:6px;cursor:pointer;
+}
+.picadd:hover{background:var(--pink-pale);color:var(--pink);border-color:var(--pink-light)}
+/* 🔴 写真の欄は2段（1枚目の下に「＋比べる」または2枚目の小さい絵）。1枚目が無い行は今までどおり */
+.piccell{display:flex;flex-direction:column;gap:4px;align-items:center}
+.picadd.second{height:22px;font-size:11px;line-height:1;padding:0 4px;white-space:nowrap}
+.thumb.second{height:30px;cursor:default}
+.tbl td.pic{width:66px}
+.tbl td.sel{width:74px}
+.tbl td.grp{width:78px}
+.tbl th.grp{width:78px}
+.mini-sel{
+  font:inherit;font-size:.82rem;padding:4px 3px;
+  border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink);
+  max-width:100%;
+}
+#sheets tr.off td:not(.chk){opacity:.32}
+/* 空のときの案内の行（中身はまだ無い） */
+#sheets tr.ghost td{background:var(--bg)}
+#sheets tr.ghost .members{color:var(--ink-soft)}
+.tbl td.del{width:46px;text-align:center}
+.count{font-size:.9rem;color:var(--ink-soft);margin:12px 0 0;font-weight:normal}
+.empty{color:var(--ink-soft);font-size:.92rem;padding:6px 0;margin:0}
+
+/* 一覧 */
+.tbl{overflow-x:auto}
+.tbl table{border-collapse:collapse;width:100%;font-size:.92rem}
+.tbl th,.tbl td{border:1px solid var(--line);padding:6px 6px;text-align:left;vertical-align:middle}
+.tbl th{background:var(--pink-pale);font-weight:bold;font-size:.82rem}
+.tbl td.idx{width:32px;color:var(--ink-soft);text-align:center;font-variant-numeric:tabular-nums}
+.tbl td.chk{width:42px;text-align:center}
+.tbl td.mv{width:70px;white-space:nowrap;text-align:center}
+.tbl tr.off td:not(.chk){opacity:.32}
+/* ⚠取り消し線はやめた（2026-09-05 本人「名前に入る取り消し線はやめて」）。うすくするだけ */
+.tbl input[type=checkbox]{width:17px;height:17px;cursor:pointer}
+.tbl input.ttl, .tbl textarea.ttl{
+  width:100%;min-width:120px;font:inherit;font-size:.92rem;
+  border:1px solid transparent;border-radius:6px;padding:4px 7px;
+  background:var(--bg);color:var(--ink);
+}
+.tbl input.ttl:focus, .tbl textarea.ttl:focus{outline:none;border-color:var(--pink);background:#fff}
+/* 🔴 長い文は1行だと直しにくい（2026-09-06 本人「長い文章だと選択しにくいよね。
+   タップ（クリック）したら枠を大きくできないのかな？」）。
+   ⭐押したら中身の高さまで広がる。離すと1行に戻る（一覧が長くならない）。
+   ⚠改行は入れさせない（1行＝1枚のため）。Enterは「決定」にしてある */
+.tbl textarea.ttl{
+  display:block;resize:none;overflow:hidden;line-height:1.5;
+  /* ⚠共通の style.css に textarea{min-height:170px} がある（貼り付け用の大きな枠）。
+     min-height は height より強いので、ここで 0 に戻さないと1行にならない */
+  min-height:0;
+  height:calc(1.5em + 10px);          /* 1行ぶん */
+  white-space:pre-wrap;word-break:break-word;
+}
+.tbl textarea.ttl:focus{white-space:pre-wrap}
+/* ⚠一度大きくして桃色にしたが、本人の指示で戻した
+   （2026-09-05「ボタンはグレーのままのほうがいい。▼も前のままでいい」）。
+   気づかれなかった問題は、見た目でなく**一覧の上の説明**で解決する */
+.mvbtn{
+  border:1px solid var(--line);background:#fff;border-radius:6px;
+  width:28px;height:26px;cursor:pointer;color:var(--ink-soft);font-size:11px;
+  line-height:1;padding:0;
+}
+.mvbtn:hover:not(:disabled){background:var(--pink-pale)}
+.mvbtn:disabled{opacity:.25;cursor:default}
+
+/* 行をつかんで上下に動かせる（パソコンのみ） */
+#sheets tr[draggable]{cursor:grab}
+#sheets tr.dragging{opacity:.4}
+#sheets tr.over td{border-top:3px solid var(--pink)}
+.members{color:var(--ink-soft);font-size:.86rem}
+
+/* ⚠折りたたみの矢印は ../style.css が出している（SVGの「⌄」・開くと回る）。ここでは足さない */
+
+.kbd{
+  display:inline-block;border:1px solid var(--line);border-bottom-width:2px;
+  border-radius:5px;padding:1px 7px;font-size:.8rem;background:#fff;margin:0 1px;
+}
+.howto ul{margin:6px 0;padding-left:20px}
+.howto li{margin:3px 0}
+.howto code{background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.9em}
+.hint code{background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.9em}
+
+/* =========================================================
+   映す画面
+   🔴 ここには広告を絶対に置かない（本人・2026-09-05「絶対に」）
+   ⚠ 参観日は保護者が並んで見ている。映す面に広告が出ると台無しになる
+   ========================================================= */
+#show{display:none;position:fixed;inset:0;background:#fff;z-index:99;flex-direction:column}
+#show.on{display:flex}
+#stage{
+  flex:1;position:relative;display:flex;width:100%;overflow:hidden;
+  justify-content:center;
+}
+/* 写真。⚠切らずに全部見せる（contain）。作品の写真なので端を落とさない
+   🔴 2枚まで入る（2026-09-07 本人・知り合いの先生「写真を比べることがある。春の写真と秋の写真」）。
+      2枚あれば横に並ぶ。片方を押すとそちらが約3/4に広がり、もう一度押すと半々に戻る */
+#pics{position:absolute;inset:0;display:flex;background:#fff}
+#pic,#pic2{
+  flex:1 1 50%;min-width:0;height:100%;
+  object-fit:contain;background:#fff;
+  transition:flex .28s ease;
+}
+#pic[hidden],#pic2[hidden]{display:none}
+#stage.two #pic,#stage.two #pic2{cursor:zoom-in}
+#pics.bigL #pic ,#pics.bigR #pic2{flex:3 1 0;cursor:zoom-out}
+#pics.bigL #pic2,#pics.bigR #pic {flex:1 1 0}
+/* 文字の置き場。写真の上に重なる */
+#box{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:2.4vh;padding:4vh 5vw;text-align:center;width:100%;
+}
+#stage[data-pos="top"]    #box{justify-content:flex-start}
+#stage[data-pos="bottom"] #box{justify-content:flex-end}
+
+/* 🔴 写真の上の文字は、暗い帯＋白文字（2026-09-05 本人の提案）。
+   ⚠作品の写真は画用紙など白っぽいことが多いので、
+     白帯＋黒文字より**暗い帯＋白文字**のほうが確実に読める */
+#stage.hasPic #box > div:not(:empty){
+  background:rgba(30,32,34,.62);
+  color:#fff;
+  border-radius:12px;padding:.12em .55em;
+}
+#stage.hasPic #group{color:#ffd9e4}
+#stage.hasPic #title .sm{color:rgba(255,255,255,.82)}
+
+/* 書体（座席表と同じ3種） */
+#show.f-gothic #box{font-family:"BIZ UDPGothic","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif}
+#show.f-mincho #box{font-family:"Yu Mincho",YuMincho,"Hiragino Mincho ProN","MS PMincho",serif}
+#show.f-maru   #box{font-family:"HG丸ｺﾞｼｯｸM-PRO",HGMaruGothicMPRO,"Hiragino Maru Gothic ProN","Yu Gothic",sans-serif}
+/* 班名（発表者のときだけ出る） */
+/* 🔴 班は大きく出す（2026-09-05 本人「班ごとにまとめて映した時は、班はもっと大きくしたい」）。
+   ⚠班が入るのは「班ごとにまとめて映す」のときだけ（1人ずつのときは空） */
+#group{font-size:clamp(30px,5.5vw,110px);color:var(--pink);font-weight:800;letter-spacing:.06em;line-height:1.15}
+
+/* 主役の文字。長さで4段階に自動で縮む（いちばん長い行で決める） */
+#title{
+  font-weight:900;letter-spacing:.03em;line-height:1.5;
+  max-width:92vw;color:var(--ink);font-size:clamp(46px,11vw,190px);
+}
+/* ⭐見出し（// の前側）は小さく、少し藄い色で。
+   発表者の「作品名＋名前」と同じ見せ方に揃える */
+/* ⚠見出しと本文が近すぎた（2026-09-06 本人「//を入れての改行の時、左と右で、行間もう少し空けて」） */
+#title .sm{
+  display:block;font-size:.44em;color:var(--ink-soft);
+  font-weight:700;letter-spacing:.06em;margin-bottom:.75em;line-height:1.3;
+}
+/* 🔴 「/ で改行した行」のかたまり。ふだんは中央のまま（2026-09-06 本人
+   「下の3行を右揃えにしたいという要望あり」）。
+   ⚠かたまりの幅はいちばん長い行の幅なので、画面のまん中に置いたまま行どうしがそろう */
+#title .bd{display:block}
+#title[data-al="left"]  .bd{text-align:left}
+#title[data-al="right"] .bd{text-align:right}
+#title[data-len="m"]{font-size:clamp(40px,8vw,140px)}
+#title[data-len="l"]{font-size:clamp(34px,6vw,104px)}
+#title[data-len="xl"]{font-size:clamp(28px,4.4vw,78px)}
+#title[data-len="xxl"]{font-size:clamp(22px,3.2vw,56px)}
+/* 🔴 1枚ごとに大きさを決めたときはこちらが勝つ（2026-09-05 本人）。
+   ⚠詳細度が同じなので、必ず data-len のあとに書く */
+#title[data-size="xs"]{font-size:clamp(20px,3.1vw,54px)}
+#title[data-size="s"]{font-size:clamp(28px,4.4vw,78px)}
+#title[data-size="m"]{font-size:clamp(38px,7.2vw,124px)}
+#title[data-size="l"]{font-size:clamp(50px,12vw,210px)}
+
+/* 名前。⚠名前は覚えているので、作品名より小さくする（本人・2026-09-05） */
+#name{
+  font-weight:700;letter-spacing:.02em;line-height:1.35;max-width:94vw;
+  color:var(--ink-soft);
+  display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;
+  column-gap:.15em;row-gap:.1em;
+}
+#name span{font-size:clamp(26px,4.6vw,76px)}
+#name[data-n="3"] span,#name[data-n="4"] span{font-size:clamp(24px,3.9vw,64px)}
+#name[data-n="5"] span{font-size:clamp(22px,3.4vw,56px)}
+#name[data-n="many"] span{font-size:clamp(20px,2.9vw,48px)}
+/* ⚠名前どうしがくっついて見えるので中黒で区切る（本人の指摘・2026-09-05） */
+#name span + span::before{content:"・";opacity:.4;font-weight:400;margin:0 .18em 0 .06em;letter-spacing:0}
+
+/* 作品名が無いときは、名前を主役に戻す */
+#stage.noTitle #name{color:var(--ink);font-weight:900;letter-spacing:.06em}
+#stage.noTitle #name span{font-size:clamp(48px,13vw,220px)}
+#stage.noTitle #name[data-n="2"] span{font-size:clamp(42px,9.5vw,164px)}
+#stage.noTitle #name[data-n="3"] span{font-size:clamp(36px,7.6vw,132px)}
+#stage.noTitle #name[data-n="4"] span{font-size:clamp(32px,6.4vw,112px)}
+#stage.noTitle #name[data-n="5"] span{font-size:clamp(30px,5.6vw,96px)}
+#stage.noTitle #name[data-n="many"] span{font-size:clamp(26px,4.6vw,80px)}
+
+/* 🔴 フッターは3つの列（2026-09-05 本人「2/5は…ボタンの近くに。文字を中央にしてほしい」）。
+   ⭐左に「ボタンと同じ幅の空き」を作ると、まん中の文字が画面のまん中に来る。
+   ⚠flex で並べると、文字はボタンをのぞいた残りのまん中になってしまう（画面の中央からずれる） */
+#bar{
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;
+  padding:10px 18px;border-top:1px solid var(--line);background:#fff;
+  flex:none;transition:opacity .3s;
+}
+#bar .pad{display:block}
+#bar .row{justify-self:end}
+#bar .row{display:flex;gap:8px;align-items:center;flex:none;flex-wrap:nowrap;white-space:nowrap}
+#bar .primary{font-size:1rem;padding:10px 24px}
+/* 「スライド表示にする」は、確かめているときだけ出す */
+#toFull{display:none}
+#show.check #toFull{display:inline-block}
+#pos{font-size:.9rem;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+/* マウスを止めるとボタンを薄くする（映している間、下の帯が目立たないように） */
+/* ⚠薄くするのは操作ボタンだけ。写真の説明（#cap）は消さない（2026-09-05） */
+body.hidebar #bar #pos,
+body.hidebar #bar .row{opacity:0}
+#bar #pos,#bar .row{transition:opacity .3s}
+
+/* 🔴 一覧を横スクロールさせない（2026-09-05 本人「横スライドかスライドバーが出てきたから嫌だった」）
+   ⚠列が9つあるので、幅は「詰める」で対応する。せまい画面（600px以下）では書体の列だけ隠す＝
+   書体は全体で決めることが多く、1枚ずつ変えるのは例外のため。 */
+@media (max-width:700px){
+  #sheets th.sel:nth-of-type(5), #sheets td.sel:nth-of-type(5){display:none}
+  /* 🔴 「そろえ」の列が増えたぶん、せまい画面では選ぶところを詰める（2026-09-06）。
+     ⚠残る選択肢は「中央／下」「自動／小」「中央／左／右」と短いので、この幅で入る */
+  .tbl td.sel{width:56px}
+  .mini-sel{font-size:.74rem;padding:3px 2px}
+  .tbl input.ttl{min-width:84px}
+  .tbl th,.tbl td{padding:5px 4px}
+  .tbl td.pic{width:58px}
+  .tbl td.mv{width:64px}
+}
+
+/* 🔴 保存まわりは座席表メーカーと同じ作りにする（2026-09-05 本人「レイアウトも一緒がいい」）。
+   ⚠これらは seat/index.html の中にしかない部品なので、同じ値をここにも置いた */
+.cls-box{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+.cls-box h3{margin:0 0 4px;font-size:1rem}
+.cls-box .mini{margin-right:6px}
+.btn-row{margin:8px 0 6px}
+.btn-row .mini{margin:0 8px 6px 0}
+.pick{max-width:24em}
+.pick select{width:100%}
+
+/* 🔴 写真＋位置が上・下のとき＝写真を一回り内側に入れて、空いた白いところに文字を置く
+   （2026-09-05 本人「一回り内側に入れて、上の白い部分、下の白い部分に文字を入れたい。
+    やっぱり作品に重なるのは気持ち悪くて」）。⚠まん中のときは今までどおり写真の上に重ねる（暗い帯） */
+/* ⚠img は絶対配置で上下左右を指定しても伸びない（もとの大きさのまま置かれる）。
+   ⭐高さは JS（fitBox）が、文字の量を測って決める。ここでは左右だけ決める */
+/* ⭐写真のときは、写真を映す面いっぱいに出して、文字はフッター（ボタンの行）に置く
+   （2026-09-05 本人「上に表示やめて、下に表示だけにしてさ、ボタンのフッターの部分に入れてはどうかな？
+    そうするとかなり画像が大きくなる」）。⚠まん中のときだけ、今までどおり写真の上に重ねる（暗い帯） */
+#stage.band #box{ display:none; }
+
+/* フッターの文字（写真の説明）。⭐控えめ・1行・はみ出しは「…」 */
+#cap{
+  min-width:0; max-width:100%; text-align:center;
+  font-weight:800; color:var(--ink); letter-spacing:.02em;
+  font-size:clamp(15px,2.2vw,34px); line-height:1.2;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  padding:0 12px;
+}
+#cap:empty{ display:block; }   /* ⚠中身が無くても場所は取る＝ボタンは右のまま */
+/* ⚠白いところに置くので、暗い帯と白文字はやめて、ふつうの色に戻す */
+#stage.band #box > div:not(:empty){ background:none; color:var(--ink); padding:0; border-radius:0; }
+#stage.band #group{ color:var(--pink); }
+#stage.band #title .sm{ color:var(--ink-soft); }
+#stage.band #name{ color:var(--ink-soft); }
+
+/* 名前の行分け（4人なら2＋2、5人なら3＋2）。⚠成り行きの折り返しだと 3＋1 のように偏る */
+#name i.nbr{ flex-basis:100%; height:0; margin:0; }
+
+/* 「できること」の箇条書き。⚠seat/index.html の中にしかない部品なので、同じ値をここにも置く */
+.can-do{margin:12px 0 10px;padding-left:1.1em;font-size:.86rem;color:var(--ink-soft);line-height:1.9}
+.can-do li{margin-bottom:2px}
+.can-do li::marker{color:var(--pink)}
+
+/* 🔴 せまい画面でフッターのボタンが折り返して、ぐちゃぐちゃに積み上がっていた（2026-09-05 本人）。
+   ⭐まずボタンを小さくして1行に収める。それでも足りない幅では、文字を上の段に分ける（2段の形にする）。
+   ⚠「折り返しにまかせる」と、段の数が中身しだいで変わってフッターがとても太くなる */
+@media (max-width:860px){
+  #bar{padding:8px 10px;gap:6px}
+  #bar .row{gap:6px}
+  #bar button{font-size:.85rem;padding:7px 10px}
+  #bar .primary{font-size:.9rem;padding:8px 14px}
+  #pos{font-size:.82rem}
+  #cap{font-size:clamp(14px,2.6vw,26px)}
+}
+@media (max-width:620px){
+  #bar{grid-template-columns:1fr;justify-items:center;gap:4px;padding:6px 8px}
+  #bar .pad{display:none}
+  #bar .row{justify-self:center}
+  #bar button{font-size:.8rem;padding:6px 9px}
+  #bar .primary{font-size:.85rem;padding:7px 12px}
+  #cap{font-size:clamp(13px,3.4vw,20px);padding:0 4px}
+}
+@media (max-width:470px){
+  #bar{padding:5px 6px;gap:3px}
+  #bar .row{gap:4px}
+  #bar button{font-size:.74rem;padding:5px 7px}
+  #bar .primary{font-size:.78rem;padding:6px 10px}
+  #pos{font-size:.74rem}
+}
+
+/* 🔴 ①の帯と補足は小さい字で（2026-09-05 本人「小さい字でいいと思う」） */
+.notice.mini{font-size:.82rem}
+.hint.mini{font-size:.82rem;color:var(--ink-soft)}
+
+/* 🔴 一覧の1列目は、幅があるときだけ「スライド」と出す（2026-09-05 本人「＃を幅が太くなったら『スライド』に」） */
+.tbl th.idx .wide{display:none}
+@media (min-width:900px){
+  .tbl th.idx .wide{display:inline}
+  .tbl th.idx .narrow{display:none}
+  .tbl td.idx,.tbl th.idx{width:66px}
+}

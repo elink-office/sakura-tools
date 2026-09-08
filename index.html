@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SAKURA TOOLS">
-<meta property="og:title" content="席次表メーカー｜無料・エクセルテンプレート不要｜会議・研修・大学">
-<meta property="og:description" content="名簿を貼るだけで席次表ができる無料ツール。エクセルテンプレートは不要。用紙に合わせて自動で調整し、A4の1枚に収めます。会社名・役職・フリガナ・名前に対応。Excelから複数の列をそのまま貼り付けられます。">
-<meta property="og:url" content="https://sakura-tools.com/seki/">
+<meta property="og:title" content="簡単スライドメーカー｜パワーポイントの代わりに、文字と写真をモニターへ">
+<meta property="og:description" content="打った文字と写真を、そのまま大きくモニターに映せます。今日のめあて、問題文、作品の写真、発表者の名前に。パワーポイントでスライドを作らなくていいので、思いついたその場で出せます。登録なし・無料。">
+<meta property="og:url" content="https://sakura-tools.com/slide/">
 <meta property="og:image" content="https://sakura-tools.com/ogp.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -22,57 +22,10 @@
   gtag('js', new Date());
   gtag('config', 'G-GCK29PTKBG');
 </script>
-<title>席次表メーカー｜無料・エクセルテンプレート不要｜会議・研修・大学</title>
-<meta name="description" content="席次表の作り方は簡単。名簿を貼るだけで、会議・研修・セミナー・大学の席次表が自動で作れる無料ツールです。前を向いて並ぶスクール形式で、席順は名簿順とランダムから選べます。用紙に合わせて自動で調整し、A4の1枚に収めるので、2ページに分かれません。会社名・役職（肩書き）・フリガナ・名前を1マスに並べ、敬称は様・さん・先生から選べます。Excelの名簿から複数の列をそのまま貼り付けでき、通し番号の向きも指定できます。エクセルテンプレートは不要です。印刷とPDFもこのページから。名簿はブラウザの中だけで処理し、AIの学習にも使われません。">
+<title>簡単スライドメーカー｜パワーポイントの代わりに、文字と写真をモニターへ｜さくらツール</title>
+<meta name="description" content="パワーポイントの代わりに、文字と写真をそのまま大きくモニターに映せる無料の道具です。今日のめあて、問題文、作品の写真、発表する子の名前に。スライドを作り込まなくていいので、思いついたその場で出せます。写真の上に文字を重ねることもできます。名簿は座席表・班分けと共通。登録なし・インストールなし・写真も名簿も外に送りません。">
 <link rel="stylesheet" href="../style.css?v=118">
-<link rel="stylesheet" href="seki.css?v=22">
-<link rel="stylesheet" href="../print.css?v=54" media="print">
-<style>
-/* 🔴 見本は押すと大きくなる（2026-09-04 本人）。
-   本人「クリックしたら大きくなって見本って表示されるようにできる？
-        で、サイズを小さくしといたほうがいいかも。
-        あと幅を小さくしたときは、リード文が↓のほうがいいわ」
-   ⚠狭い画面では、絵が大きいと①（名簿の欄）がうんと下に行く。
-     だから狭いときは**小さくして、文章より上**に置く */
-/* 狭い画面＝絵を小さくして、文章より上に出す */
-/* 🔴 広い画面では、文章の右に見本を置く（2026-09-04 本人）。
-   ⚠クラス名を .hero にしてはいけない。共通の style.css に別物の .hero がある
-     （白い箱＋桜色の枠）。名前がぶつかって枠が出た。ここは .intro を使う。
-   本人「全画面表示にした時、幅が小さいのが気になる…でも幅広げると大きすぎる」
-   ＝余白を絵で埋めつつ、①（名簿の欄）を上のほうに残す。
-   ⚠狭い画面では自動で縦に積む（絵が下）。並べるのは 860px より広いときだけ */
-/* 🔴 できること（2026-09-04 本人）。⚠ .can は共通CSSが別に使っているので .can-do にする */
-.can-do{margin:12px 0 10px;padding-left:1.1em;font-size:.86rem;color:var(--ink-soft);line-height:1.9}
-.can-do li{margin-bottom:2px}
-.can-do li::marker{color:var(--midori,#3b8f6b)}
-.intro{margin:0 0 20px}
-.intro .t-sample{margin:0}
-@media (min-width:860px){
-  .intro{display:flex;align-items:flex-start;gap:26px}
-  .intro .intro-txt{flex:1 1 0;min-width:0}
-  .intro .t-sample{flex:0 0 46%;max-width:460px}
-  /* ⚠文章の1行目と絵の上端をそろえる（見出しの行の高さぶん下げない） */
-  .intro .intro-txt > *:first-child{margin-top:0}
-}
-/* ⚠狭い画面の指定は、上の .intro .t-sample{margin:0} より**あと**に置く */
-@media (max-width:859px){
-  .intro{display:flex;flex-direction:column}
-  /* ⚠絵が16:9になったので、せまい画面でも小さくしない（2026-09-06 本人
-     「幅が小さくなっても、画面表示の見本サイズそのままでいい」）。前は220pxまで縮めていた */
-  /* ⚠order:-1（絵を先に出す）をやめた（2026-09-06 本人「簡単操作の下においてほしい」）
-     ＝リード → できること → 見本 → ？の説明、の順になる */
-  .intro .t-sample{max-width:396px;margin:4px auto 16px}   /* ⭐2列のときと同じ幅にそろえる（本人・2026-09-06） */
-}
-/* 🔴 できあがりの見本（2026-09-04 本人）。⚠大きくしすぎない。①が画面の外に出てしまう */
-.t-sample{margin:0 0 20px;max-width:520px}
-.t-sample img{
-  display:block;width:100%;height:auto;border-radius:10px;background:#fff;
-  box-shadow:0 5px 16px rgba(0,0,0,.17), 0 1px 3px rgba(0,0,0,.10);
-}
-/* 🔴「1つ戻す」とドラッグの説明を1行に（2026-09-03 本人・座席表と同じ） */
-.drag-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 10px}
-.drag-row .drag-note{margin:0;flex:1 1 260px}
-</style>
+<link rel="stylesheet" href="slide.css?v=67">
 </head>
 <body>
 
@@ -82,405 +35,221 @@
     <nav>
       <a href="../">トップ</a>
       <a href="../seat/">座席表</a>
-      <a href="../slide/">スライド</a>
+      <a href="../seki/">席次表</a>
     </nav>
   </div>
 </header>
 
 <main class="wrap">
-  <h1>席次表メーカー</h1>
-  <p class="catch">会議も研修も、名簿を貼るだけ</p>
+  <h1>簡単スライドメーカー</h1>
+  <p class="catch">パワーポイントの代わりに、文字と写真をモニターへ</p>
+  <!-- 🔴 上の文章は短く・改行を増やす（2026-09-05 本人「改行増やして、短めに。箇条書きは使ってもいい」） -->
+  <p class="lead">
+    <strong>パワーポイントのように、画面いっぱいに表示できます。</strong>ちょっと見せたいときも、<strong>時間をかけずに簡単作成！</strong>
+  </p>
+  <ul class="can-do">
+    <li>会議や集まりの議題・順番にも</li>
+    <li>今日のめあて・問題文・のこり時間</li>
+    <li>作品の写真は画面いっぱいに、名前と作品名も</li>
+    <li>班ごとにするのもボタン一つ、発表会でも使えます</li>
+  </ul>
 
-  <div class="intro">
-    <div class="intro-txt">
-      <p class="lead"><strong>登録なし・全部無料。</strong>会社名・役職・フリガナ・名前を並べた席次表を、<strong>用紙に合わせてA4の1枚に自動で収めます</strong>。名簿のコピペで、<strong>簡単作成！</strong></p>
-      <!-- 🔴 できること（2026-09-04 本人・座席表と同じ形） -->
-      <ul class="can-do">
-        <li><strong>10人でも100人でも</strong>。用紙に合わせて自動で調整</li>
-        <li><strong>会社名・役職・フリガナ・名前</strong>をひとマスに</li>
-        <li>大学なら<strong>学科・学籍番号</strong>も。<strong>色分け</strong>も一瞬で</li>
-      </ul>
-    </div>
-    <!-- 🔴 押して大きくするのはやめた（2026-09-06 本人「見本はもういらない。画像を押さなくても
-         いいようにしよう…そのままでもちゃんと見本は見える。それより下にスクロールしてもらいたい」）-->
-    <figure class="t-sample noprint">
-      <img src="../img/seki-sample.png?v=8" width="1280" height="720" alt="23人・5列の研修の席次表の完成見本。会社名・役職・フリガナ・名前を並べたもの">
-    </figure>
-  </div>
+  <!-- 準備（見せたくないものは全部この中。閉じれば一度に隠れる） -->
   <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
 
+  <details class="opt" id="d1" open>
+    <summary><span class="step">1</span>準備</summary>
+    <div class="body">
 
-
-    <section class="card noprint">
-      <h2><span class="step">1</span>名簿の入力&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
-      <div class="tip-body" hidden>
-        <p><strong>Excelから、必要な列をまとめて選んで貼り付けてください。</strong>会社名・役職・名前が並んだ範囲をそのままコピーして、この欄に貼るだけです。</p>
-        <p>貼り付けると、<strong>どの列が何なのかを自動で見分けます。</strong>数字だけの列は番号、カタカナだけの列はフリガナ、といった具合です。違っていたら、下のメニューで選び直せます。</p>
-        <p><strong>名前だけでも作れます。</strong>1行に1人ずつ書けば、そのまま席次表になります。</p>
-        <p><strong>手で書くときは、カンマ（,）で区切ってください。</strong>Excelから貼るときのタブは、この欄に打てないためです。<br>
-        <span class="hint">株式会社さくら商事,部長,山田 太郎,ヤマダ タロウ</span></p>
-        <p>⚠ <strong>空白は区切りになりません。</strong>「山田 太郎」のように名前の中に空白が入るためです。</p>
-      </div>
-      <p class="safe">🔒 <strong>使っているパソコンの中だけで完結しています。</strong>安心してご利用ください。</p>
-      <!-- 🔴 保存した名簿の呼び出しは①に置く（⑧まで下がらなくていい）。
-           ⚠1件も無いうちは出さない。座席表と共通の置き場なので、
-             /seat/ で保存したものもここに出る -->
-      <div class="row tight" id="quickLoad" hidden style="margin-bottom:12px">
-        <div class="pick"><label for="clsSel2">さくらツールで保存済のデータ</label>
-          <select id="clsSel2"><option value="">－</option></select></div>
-        <div><label>&nbsp;</label>
-          <button class="mini" id="clsLoad2" type="button">このデータを自動入力</button></div>
-        <div><label>&nbsp;</label>
-          <button class="mini" id="clsDel2" type="button">削除</button></div>
-      </div>
-      <div class="in-col">
-        <div>
-      <textarea id="names" placeholder="ここをクリック→エクセルデータを貼り付け（手入力可）&#10;&#10;会社 ▸ 株式会社さくら商事　部長　山田 太郎&#10;大学 ▸ 1001　山田 太郎　ヤマダ タロウ　経営学科&#10;個人 ▸ 山田 太郎&#10;&#10;列の順番は気にしなくて大丈夫"></textarea>
-        </div>
-        <div>
-      <div class="row tight" style="margin-top:10px">
-        <div><label>人数</label><div class="bignum" id="count">0人</div></div>
-        <div id="emptyNote" class="hint" style="align-self:flex-end;padding-bottom:6px">空の場合、サンプルで確認できます</div>
+      <div class="radios" id="kind">
+        <label><input type="radio" name="kind" value="text" checked> 文字をスライドにする</label>
+        <label><input type="radio" name="kind" value="list"> 発表者をスライドにする</label>
       </div>
 
-      <div id="colMapWrap" hidden style="margin-top:12px">
-        <label>貼り付けた列の役割&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></label>
-        <div class="tip-body" hidden>
-          <p>自動で当たりをつけています。<strong>違っていたら選び直してください。</strong>使わない列は「使わない」にします。</p>
-          <p>メニューは<strong>席次表に出てくる上からの順</strong>に並んでいます。名前は出るときも下なので、いちばん下です。</p>
-          <p>同じ役割を2つの列には選べません。選び直すと、もう一方は「使わない」に変わります。</p>
-        </div>
-        <div id="colMap" class="colmap"></div>
-      </div>
-
-      <div style="margin-top:12px">
-        <label for="clsFree">会議名・研修名（自由記入）</label>
-        <input id="clsFree" type="text" placeholder="第3回 定例会議／新任研修 A班／経営学入門 火3" style="width:100%">
-        <!-- 🔴 自由記入だけを見出しにしたいときがある（2026-09-01 本人）-->
-        <div style="margin-top:8px"><label class="chk-inline">
-          <input type="checkbox" id="kindOn" checked> 「席次表」と表示する
-        </label></div>
-      </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="card noprint">
-      <h2><span class="step">2</span>会場の形</h2>
-      <div class="row tight">
-        <div><label for="cols">横のならび</label><span class="ctl"><input id="cols" type="number" min="1" max="20" value="6"><span class="unit">席</span></span></div>
-        <div><label for="rows">縦のならび</label><span class="ctl"><input id="rows" type="number" min="1" max="20" value="5"><span class="unit">列</span></span></div>
-        <div><label>座席数</label><div class="bignum" id="seatcount">30</div></div>
-        <div id="seatinfo" class="hint" style="align-self:flex-end;padding-bottom:6px"></div>
-      </div>
-      <div class="row">
-        <div><label for="frontWord">前方にあるもの</label>
-          <select id="frontWord">
-            <option value="スクリーン">スクリーン</option>
-            <option value="ホワイトボード">ホワイトボード</option>
-            <option value="演台">演台</option>
-            <option value="上座">上座</option>
-            <option value="黒板">黒板</option>
-            <option value="">出さない</option>
-          </select>
-        </div>
-        <div><label for="board">前方の位置</label>
-          <select id="board">
-            <option value="top">上（画面の上が前）</option>
-            <option value="bottom">下（画面の下が前）</option>
-          </select>
-        </div>
-        <div class="grow"><label for="frontFree">帯の文字を自分で書く</label>
-          <input id="frontFree" type="text" placeholder="←窓　　ホワイトボード　　出入口→" style="width:100%">
-        </div>
-      </div>
-      <p class="hint">「前方にあるもの」より優先されます。</p>
-      <div class="row tight" style="margin-top:6px">
-        <div><label for="order">並べ方</label>
-          <select id="order">
-            <option value="number">名簿順</option>
-            <option value="random">ランダム（条件つき）</option>
-          </select></div>
-        <div id="dirWrap"><label for="dir">ならぶ向き&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></label>
-          <select id="dir">
-            <option value="v">縦・左の列から</option>
-            <option value="vr">縦・右の列から</option>
-            <option value="h">横・左から</option>
-            <option value="hr">横・右から</option>
-          </select></div>
-      </div>
-      <div class="tip-body" hidden>
-        <p>会場によって、受付のご案内が「前から順に」「右奥から順に」と違います。<strong>ご案内する向きに合わせてください。</strong></p>
-      </div>
-      <p class="hint" id="orderNote"></p>
-    <details class="opt sub noprint" id="condBlock">
-      <summary>詳しい条件（離す・隣にする・席を決める）</summary>
-      <div class="body">
-        <h3>「隣」の考え方&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h3>
-        <div class="tip-body" hidden>
-          <p>「離す」「隣にする」で、<strong>どこまでを“隣”とみなすか</strong>を決めます。</p>
-          <p>きつくするほど、条件を満たす配置が見つかりにくくなります。作れないときは、ここをゆるくしてみてください。</p>
-        </div>
-        <div class="radios">
-          <label><input type="radio" name="mode" value="lr"> 左右だけ</label>
-          <label><input type="radio" name="mode" value="cross" checked> 前後左右</label>
-          <label><input type="radio" name="mode" value="king"> まわり全部（ななめも）</label>
-        </div>
-
-        <h3>離す組み合わせ</h3>
-        <div id="sepList"></div>
-        <button class="mini" id="addSep" type="button">＋ 組を追加</button>
-
-        <h3>隣にする組み合わせ</h3>
-        <div id="adjList"></div>
-        <button class="mini" id="addAdj" type="button">＋ 組を追加</button>
-
-        <h3>席を決める人</h3>
-        <div id="fixList"></div>
-        <button class="mini" id="addFix" type="button">＋ 人を追加</button>
-        <p class="hint">来賓や進行役の席を先に決めておくときに使います。「前のほう」を選べば、席をぴったり決めなくても前方に配置されます。</p>
-      </div>
-    </details>
-    </section>
-
-
-  <p class="noprint" style="text-align:center;margin:24px 0">
-    <button class="primary" id="go" type="button">席次表を作る</button>
-  </p>
-  <div id="msg"></div>
-
-  <div id="result" hidden>
-    <div class="tabs-row noprint">
-      <div class="plan-tabs" id="tabs"></div>
-      <button id="again" type="button">もう一度 作り直す</button>
-      <button id="screenOn" type="button">📺 モニターに映す</button>
-    </div>
-    <!-- 🔴「1つ戻す」は案のタブと同じ行に置かない（2026-09-03 本人）。
-         本人「同じ行にあったら埋もれて気づかない」。席をさわる話と同じ行にする -->
-    <div class="drag-row noprint">
-      <button id="undo" type="button" disabled>↩ 1つ戻す</button>
-      <p class="hint drag-note">席は自由に動かせます</p>
-    </div>
-
-    <div id="sheetBox">
-    <div class="sheet" id="sheet">
-      <div class="sheet-head">
-        <span id="decoLeft" class="deco-mark"></span>
-        <div class="sheet-title" id="shTitle">席次表</div>
-        <div class="sheet-date" id="shDate"></div>
-      </div>
-      <div class="board front" id="boardTop">スクリーン</div>
-      <div class="grid" id="grid"></div>
-      <div class="board front" id="boardBottom" hidden>スクリーン</div>
-      <div class="sheet-credit" id="credit">さくらツール　sakura-tools.com</div>
-      <button type="button" id="screenOff" class="noprint">✕ とじる</button>
-    </div>
-    </div>
-
-
-
-    <p class="hint noprint">条件に反したところは赤くなりますが、そのままでも印刷できます。<strong>決めるのはあなたです。</strong></p>
-    <div id="vio" class="noprint"></div>
-
-    <details class="opt noprint" id="cellCard">
-      <summary><span class="step">3</span>1マスの中身&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
-      <div class="body">
-      <div class="tip-body" hidden>
-        <p><strong>そのままでも整って出ます。</strong>直したいところだけ触ってください。</p>
-        <p>日本の席札は<strong>名前がいちばん下で、いちばん大きい</strong>のがふつうです。この形を初期値にしてあります。</p>
-        <p>出したくない行は<strong>「なし」</strong>を選んでください。名簿に入っていない項目は、大きさを選んでも出ません。</p>
-        <p><strong>役職のある人と無い人が並んでも、名前の高さはそろいます。</strong>役職の無い人は、そこを空けたまま並べるためです。</p>
-        <p><strong>会社名が長いときは、所属の行だけが小さくなります。</strong>名前は大きいままです。</p>
-      </div>
-      <div class="row tight">
-        <div><label for="honor">敬称</label>
-          <select id="honor">
-            <option value="様">様</option>
-            <option value="さん">さん</option>
-            <option value="先生">先生</option>
-            <option value="">なし</option>
-          </select></div>
-        <div><label for="numPos">番号の位置</label>
-          <select id="numPos">
-            <option value="corner" selected>右上</option>
-            <option value="line">いちばん上の行</option>
-            <option value="none">なし</option>
-          </select></div>
-        <div id="szNoWrap"><label for="szNo">番号の大きさ</label>
-          <select id="szNo"><option value=".66">大</option><option value=".52" selected>中</option><option value=".42">小</option></select></div>
-        <div><label for="kanaStyle">フリガナの文字</label>
-          <select id="kanaStyle">
-            <option value="kata">カタカナ</option>
-            <option value="hira">ひらがな</option>
-          </select></div>
-      </div>
-      <div class="cellcfg">
-        <div class="cellcfg-set">
-          <p class="note-sm">上から <b>番号 → 会社名・大学名 → 役職・学部・学科 → フリガナ → 名前</b> の順に並びます。<b>中身のある人と無い人が並んでも、名前の高さはそろいます。</b></p>
-          <div class="lines">
-            <div class="lrow">
-              <label for="szOrg">会社名・大学名</label>
-              <select id="szOrg"><option value=".62">大</option><option value=".50" selected>中</option><option value=".40">小</option><option value="none">なし</option></select>
-            </div>
-            <div class="lrow">
-              <label for="szTtl">役職・学部・学科</label>
-              <select id="szTtl"><option value=".62">大</option><option value=".50" selected>中</option><option value=".40">小</option><option value="none">なし</option></select>
-            </div>
-            <div class="lrow">
-              <label for="szKana">フリガナ</label>
-              <select id="szKana"><option value=".56">大</option><option value=".44" selected>中</option><option value=".36">小</option><option value="none">なし</option></select>
-            </div>
+      <!-- ===== 文字を出す：入力 ===== -->
+      <div id="paneText">
+        <!-- 🔴 文字を出す側でも名簿を使える（2026-09-05 本人「さくらツールの名簿が使えるから、
+             名簿から選択できるようにしたい」）。⭐1人＝1枚の文字として入る -->
+        <div id="clsBoxT" hidden>
+          <p class="notice mini">さくらツールで利用しているデータを使うことができます。</p>
+          <div class="row" style="margin-bottom:14px">
+            <select id="clsSelT"></select>
+            <button id="clsLoadT">このデータを読み込む</button>
           </div>
         </div>
-        <div class="cellcfg-prev">
-          <div class="prevlabel">見本</div>
-          <div class="sheet" id="prevSheet">
-            <div class="seat" id="prevSeat"></div>
+
+        <p class="hint" style="margin-bottom:10px">
+          <b>1行が1枚のスライド</b>になります。<code>/</code> を入れると改行、<code>//</code> を入れると左が小さく表示されます&#8288;<button type="button" class="tip-btn" aria-label="説明"></button>
+        </p>
+        <div class="tip-body" hidden>
+          <p><strong>改行したいところに <code>/</code></strong> を入れると、そこで行が変わります。<br>
+            例：<code>海の生きものを/しらべて分かったこと</code></p>
+          <p><strong><code>//</code> にすると、前のほうが小さい文字</strong>になります。「今日のめあて」のような見出しを付けたいときに。<br>
+            例：<code>今日のめあて//分数のたし算ができる</code></p>
+        </div>
+        <textarea id="lines" placeholder="ここをクリック→エクセルデータを貼り付け（手入力可）
+
+つぎの議題//会計の報告
+今日のめあて//分数のたし算ができる
+教科書 42ページ
+のこり 5分"></textarea>
+        <div class="row" style="margin-top:12px">
+          <button id="addText">入れる</button>
+          <button id="sampleText">サンプルを入れる</button>
+          <button id="clearLines">消す</button>
+          <!-- 🔴 入れたことが分かるように、その場に出す（2026-09-06 本人） -->
+          <span class="saving" id="addMsg"></span>
+        </div>
+      </div>
+
+      <!-- ===== 発表者を出す：名簿 ===== -->
+      <div id="paneList" hidden>
+
+        <h3 class="sub">名簿の入力</h3>
+
+        <div id="clsBox" hidden>
+          <p class="notice mini">さくらツールで利用しているデータを使うことができます。</p>
+          <div class="row" style="margin-bottom:14px">
+            <select id="clsSel"></select>
+            <button id="clsLoad">このデータを読み込む</button>
           </div>
         </div>
-      </div>
-      </div>
-    </details>
 
-    <details class="opt noprint" id="grpCard">
-      <summary><span class="step">4</span>グループ分け&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
-      <div class="body">
-      <div class="tip-body" hidden>
-        <p><strong>行の中身が同じ人に、同じ色が付きます。</strong>部署ごと・学科ごとに分けたいときは、これがいちばん早いです。色は人に付くので、席を動かすと色もついて動きます。</p>
-        <p><strong>分け方は、その言葉をどの行に入れたかで選びます。</strong>学科を「役職・学部・学科」の行に入れたなら、「役職・学部・学科ごと」です。</p>
-        <p><strong>「机のかたまり」「縦の列ごと」</strong>は、席のかたまりに色が付きます。グループ討議で使うときは、こちらです。席を動かして人を入れ替えると、色はその席に残ります。</p>
-        <p><strong>グループ記号（A・B・C…）を押すと、その席のグループと色を変えられます。</strong>もう一度作り直すと、手で直したぶんは元にもどります。</p>
-        <p>色は印刷にも画像にもそのまま出ます。</p>
-      </div>
-      <p class="note-sm">
-        席は<strong>ドラッグで動かせます</strong>（スマホ・タブレットは長押ししてから）。グループ記号を押すと、その席のグループと色を変えられます。
-      </p>
-      <label class="chk-inline">
-        <input type="checkbox" id="grpOn"> グループに分ける
-      </label>
-      <label class="chk-inline gap" id="grpNumWrap" hidden>
-        <input type="checkbox" id="grpNum" checked> グループ記号を印刷する
-      </label>
-      <div id="grpOpts" hidden style="margin-top:12px">
-        <div class="row">
-          <div><label for="grpStyle">分け方</label>
-            <select id="grpStyle">
-              <option value="org">会社名・大学名ごと</option>
-              <option value="title">役職・学部・学科ごと</option>
-              <option value="block">机のかたまり</option>
-              <option value="col">縦の列ごと</option>
-            </select></div>
-          <div id="grpSizeWrap" hidden><label for="grpSize">1グループの人数</label>
-            <span class="ctl"><input id="grpSize" type="number" min="2" max="8" value="4"><span class="unit">人</span></span></div>
-          <div><label for="grpLook">色の付け方</label>
-            <select id="grpLook">
-              <option value="both">枠線＋うすい色</option>
-              <option value="edge">枠線だけ</option>
-              <option value="fill">ぬりつぶし</option>
-              <option value="none">色なし（番号だけ）</option>
-            </select></div>
+        <p class="hint" style="margin-bottom:10px">
+          <b>手入力</b>するか、<b>Excel</b>で名前の列を選んでコピーして貼り付け&#8288;<button type="button" class="tip-btn" aria-label="説明"></button>
+        </p>
+        <div class="tip-body" hidden>
+          <p>1行目が「名前」「作品名」「班」などの<strong>見出しなら、自動で読み分けます</strong>。</p>
+          <p>見出しがなければ <strong>1列目＝名前・2列目＝作品名</strong> として読みます。名前だけの1列でもかまいません。</p>
         </div>
-      </div>
-      </div>
-    </details>
+        <!-- 🔴 枠の中の案内は「貼り付け」が先（2026-09-05 本人「ここをクリック→エクセルデータを貼り付け（手入力可）
+             をデフォルトにしよう」「今時手入力する人はいないって。（学校はね。自治会とかは別だよ）」）。
+             ⚠列の見本はその下に残す。3列の形（名前・作品名・班）がここでしか分からないため -->
+        <textarea id="paste" placeholder="ここをクリック→エクセルデータを貼り付け（手入力可）
 
-    <details class="opt noprint" id="printCard">
-      <summary><span class="step">5</span>見た目と用紙&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
-      <div class="body">
-      <div class="tip-body" hidden>
-        <p><strong>丸文字はWindowsとiPadだけ。</strong>ほかの機種ではゴシック体になりますが、崩れません。</p>
-        <p class="hint">⚠印刷の困りごと（PDF・たて向き）は、<strong>⑦の「？」</strong>にまとめてあります。</p>
-      </div>
-      <div class="row">
-        <div><label for="font">書体</label>
-          <select id="font">
-            <option value="mincho">明朝体</option>
-            <option value="gothic" selected>ゴシック体</option>
-            <option value="maru">丸文字（Windows・iPadのみ）</option>
-          </select>
+名前	作品名	班
+さくら	わたしの家族	1班
+たろう	わたしの家族	1班"></textarea>
+        <div class="row" style="margin-top:12px">
+          <button id="read">入れる</button>
+          <button id="sample">サンプルを入れる</button>
+          <button id="clear">消す</button>
+          <span class="saving" id="addMsgL"></span>
         </div>
-        <div><label for="ink">文字の色</label>
-          <select id="ink"></select>
-        </div>
-        <div><label for="deco">アイコン</label>
-          <select id="deco">
-            <option value="">なし</option>
-            <option value="🌸">🌸</option>
-            <option value="⭐">⭐</option>
-            <option value="🍀">🍀</option>
-            <option value="✏️">✏️</option>
-          </select>
-        </div>
-        <div style="min-width:15em"><label for="dt">日付・自由記入</label>
-          <input id="dt" type="text" placeholder="2026年4月10日 / 第1会議室 など" style="width:100%"></div>
+        <p class="notice warn" id="warn" hidden></p>
       </div>
-      <p style="margin-top:10px">
-        <label style="font-weight:normal;display:inline;margin-right:18px">
-          <input type="checkbox" id="dtOff"> 日付・自由記入を入れない
-        </label>
-        <label style="font-weight:normal;display:inline">
-          <input type="checkbox" id="bold" checked> 名前を太く（モニター用）
-        </label>
-        <label style="font-weight:normal;display:inline;margin-left:18px">
-          <input type="checkbox" id="showCredit" checked> 右下にサイト名を入れる
-        </label>
-      </p>
-      </div>
-    </details>
 
-    <section class="card noprint">
-      <h2><span class="step">6</span>印刷・画像で保存&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
-      <div class="tip-body" hidden>
-        <p><strong>PDFにするとき</strong>は、印刷画面で「送信先」（または「プリンター」）を <strong>PDFに保存</strong> に変えてください。</p>
-        <p><strong>印刷できないとき</strong>は、プリンターとつながっているか確認してください。つながっていれば、スマホからでも印刷できます。</p>
-        <p><strong>たて向きで出てしまうとき</strong>（スマホ・タブレットに多いです）は、印刷画面の設定で用紙の向きを「横」に変えてください。お使いの機種によっては、端末側の設定が優先されます。</p>
-        <p><strong>「登壇者からの向き」</strong>にすると、紙は前に立って客席を向いた向き（180度まわした形）で出ます。画面はそのままです。受付は参加者と同じ向きで見るので、回すのは登壇者のぶんだけです。</p>
-      </div>
-      <p style="margin:0 0 10px">
-        <label class="chk-inline"><input type="checkbox" id="printStage"> 印刷（PDF）は登壇者からの向きで出す</label>
-      </p>
-      <div class="print-line">
-        <label for="paper">用紙の向き</label>
-        <select id="paper" class="narrow"><option value="landscape">横</option><option value="portrait">縦</option></select>
-        <button id="doPrint" type="button">印刷（PDF作成）</button>
-        <button id="doPng" type="button">画像で保存（PNG）</button>
-      </div>
-      <details class="opt sub noprint tips-sm" style="margin-top:14px">
-        <summary>タブレット・スマホの方へ</summary>
-        <div class="body">
-          <p>PDFで保存する場合は、用紙を横にしても1ページに収まらないことがあります。その場合、印刷画面の<strong>倍率（サイズ調整）</strong>で調節してください。（<strong>75〜80％</strong>くらいにすると1ページに収まりやすいです。）</p>
+    </div>
+  </details>
+
+  <!-- 🔴 ②は①の分岐で中身が変わる（2026-09-05 本人「①準備 ②を、①の分岐で表示変更したら？」
+       「どちらともシャッターにする」＝どちらも折りたたみ）。閉じれば見ている人に設定が見えない -->
+  <details class="opt" id="d2" open>
+    <summary><span class="step">2</span><span id="d2title">スライドにする順番</span></summary>
+    <div class="body">
+
+      <!-- 🔴 ①をたたむので、入れた知らせは②にも出す（2026-09-06 本人「入れたら、①を閉じてみたら？」） -->
+      <p><span class="saving" id="addMsg2"></span></p>
+
+      <label class="editmode"><input type="checkbox" id="editMode"> 作成中（スライド表示した後も、この設定を開いたままにする）</label>
+
+      <div id="paneText2">
+        <p class="hint" style="margin-bottom:10px">並べ替え・写真・1枚ずつの設定&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></p>
+        <div class="tip-body" hidden>
+          <p><strong>▲▼</strong>で順番、<strong>×</strong>でその1枚を消します。<strong>左のチェックを外すと映りません。</strong></p>
+          <p>写真の欄の<strong>＋</strong>でその1枚に写真が入ります（文字はそのまま）。写真の右上の<strong>×</strong>で写真だけ外せます。<strong>写真を入れると文字は「外・小」になります。</strong></p>
+          <p><strong>そろえ</strong>＝<code>/</code> で改行した行の左右をそろえます（<code>//</code> の見出しは中央のまま）。</p>
+          <p><strong>写真を2枚</strong>入れた行は、映すと横に並びます。<strong>映しているときに写真を押すと、そちらが大きくなります</strong>（もう一度押すと戻ります）。文字は下の行に出ます。</p>
+          <p>パソコンなら、行をつかんでドラッグでも動かせます（写真だけの移動もできます）。</p>
         </div>
-      </details>
-    </section>
+        <div class="tools">
+          <button id="clearText">ぜんぶ消す</button>
+        </div>
+        <div class="tbl" id="sheets"><p class="empty">①で文字を入れると、ここに1枚ずつ並びます。</p></div>
+        <div class="row" style="margin-top:12px">
+          <button id="addRow">＋ 行を追加</button>
+          <input type="file" id="picfile" accept="image/*" multiple hidden>
+        </div>
+      </div>
+
+      <div id="paneList2" hidden>
+        
+        <div class="radios" id="modes" hidden>
+          <label><input type="radio" name="mode" value="one" checked> 1人ずつ映す</label>
+          <label><input type="radio" name="mode" value="group"> 班ごとにまとめて映す</label>
+        </div>
+        <p class="hint" style="margin-bottom:10px">
+          <b>作品名と班は、ここで直せます</b>&#8288;<button type="button" class="tip-btn" aria-label="説明"></button>
+        </p>
+        <div class="tip-body" hidden>
+          <p><strong>班の欄に打つと、その人の班が変わります。</strong>名簿に班が無くても、ここで分けられます。空にすれば班なしです。</p>
+          <p>作品名はここで直せます。長いときは、<strong>改行したいところに <code>/</code></strong> を入れてください。</p>
+          <p><strong>▲▼</strong>で順番を入れ替え。<strong>チェックを外す</strong>と、その人（その班）は映りません。</p>
+        </div>
+        <div class="tools" id="tools" hidden>
+          <button id="shuffle">順番をシャッフル</button>
+          <button id="reset">読み込んだ順に戻す</button>
+          <button id="allon">ぜんぶ映す</button>
+        </div>
+        <div class="tbl" id="list"><p class="empty">まだデータを読み込んでいません。</p></div>
+      </div>
+
+    </div>
+  </details>
+
+  <!-- 1枚だけ見る（準備と本番のあいだ） -->
+  <div class="card" id="checkCard" hidden>
+    <h2><span class="step">3</span>1枚だけスライドを表示&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+    <div class="tip-body" hidden>
+      <p><strong>この画面で見る</strong>＝選んだ1枚を映します。<strong>全画面にはなりません</strong>ので、見て、直して、また見る、がすぐできます。</p>
+      <p>⚠<strong>文字の大きさと改行は、画面の広さで変わります。</strong>本番の見え方は、下の<strong>「スライド表示にする」</strong>で確かめられます。</p>
+      <p><strong>1枚だけスライド表示</strong>＝選んだ1枚から、全画面で出します。途中から出したいときや、1枚だけ出しておきたいときに。</p>
+    </div>
+    <div class="row">
+      <select id="checkNo"></select>
+      <button id="checkBtn">この画面で見る</button>
+      <button id="fromBtn">1枚だけスライド表示</button>
+    </div>
   </div>
 
+  <!-- 出す。枠に入れず、ボタンと枚数だけ -->
+  <div class="startbox">
+    <button class="primary" id="start" disabled>スライド表示</button>
+    <p class="count" id="count"></p>
+    <!-- 🔴 比べるスライドがあるときだけ出す（2026-09-07 本人「スライド表示ボタンの時に出すか。
+         比べる設定になっていたらそれを表示しておくとか」）。映す画面には出さない＝映す前に、映す人にだけ見せる -->
+    <p class="hint" id="compareHint" hidden>⭐<b>比べるスライドがあります。</b>スライド表示で2つが並んだときに写真を押すと、大きく表示されます</p>
+  </div>
 
-  <section class="card noprint">
-    <h2><span class="step">7</span>画面の保存&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+  <!-- 保存 -->
+  <section class="card">
+    <h2><span class="step">4</span>画面の保存&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
     <div class="tip-body" hidden>
-      <ul>
-        <li><strong>いま開いている画面をそのまま残します。</strong>名簿・会場の形・条件・見た目の設定・席次表まで、次に開いたときそのまま出ます。</li>
-        <li><strong>残るのは1つだけ</strong>です。名簿を入れかえると、前のものは上書きされます。</li>
-        <li><strong>チェックを外すと、保存していたものは消えます。</strong>次に開いたときは最初からの設定になります。いま見ている画面はそのままです。</li>
-        <li>残るのは<strong>このパソコンの中だけ</strong>です。<strong>どこにも送信されません。</strong></li>
-      </ul>
+      <p>残るのは<strong>このパソコンの中だけ</strong>です。<strong>どこにも送信されません。</strong>チェックを外すと、残していたものを消します。</p>
+      <p><strong>共用のパソコンでは外しておいてください。</strong>打った文字と名前、写真がこのパソコンに残ります。写真に人が写っていることがあります。</p>
     </div>
     <label style="font-weight:normal">
       <input type="checkbox" id="save"> この画面を保存する
     </label>
-    <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。<br>
-      ⚠<b>共用のパソコンで使ったときは、このチェックを外して、この画面を閉じてください。</b></p>
+    <p class="hint">
+      チェックを入れると、<b>この画面の状態が保存されます</b>。<br>
+      ⚠<b>共用のパソコンで使ったときは、このチェックを外して、この画面を閉じてください。</b>
+    </p>
     <p><span class="saving" id="savingLabel"></span></p>
   </section>
 
-  <section class="card noprint">
-    <h2><span class="step">8</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+  <!-- 🔴 名簿の保存は「画面の保存」の下（2026-09-05 本人「座席表では表示の下、画面の保存の下だった。
+       レイアウトも一緒がいい。作りは一緒にしたい」）。座席表の⑧と同じ形にしてある -->
+  <section class="card">
+    <h2><span class="step">5</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
     <div class="tip-body" hidden>
       <ul>
         <li><strong>名前を付けて、いくつも保存できます。</strong>残るのは<strong>このパソコンの中だけ</strong>です。</li>
-        <li><strong>さくらツールの中で共通です。</strong>ほかの道具で保存したデータもここに出ますし、逆もできます。</li>
-        <li>データは共通ですが、<strong>見た目や会場の形はツールごと</strong>に覚えます。席次表で決めた敬称やふりがなが、座席表に混ざることはありません。</li>
-        <li>呼び出すのは①の<strong>「このデータを自動入力」</strong>から。あとは「席次表を作る」を押すだけです。</li>
+        <li><strong>座席表メーカーと共通です。</strong>あちらで保存したデータもここに出ますし、逆もできます（教室の形や班の設定はツールごとに覚えます）。</li>
+        <li>呼び出すのは①の<strong>「このデータを読み込む」</strong>から。</li>
+        <li><b>「上書き」と「削除」は、①でえらんでいるもの</b>に効きます。上書きしても、座席表で入れた<b>番号や男女は残ります</b>。⚠名前のデータを消すと<b>座席表メーカー・席次表メーカーからも消えます</b>。</li>
+        <li>①が<b>文字</b>なら<b>文字のデータ</b>、<b>発表者</b>なら<b>名前のデータ</b>が保存されます。文字は100件まで（⚠座席表メーカーの一覧には出ません）。</li>
+        <li>⚠<b>写真・班・作品名は保存されません。</b>写真が残るのは④の「画面の保存」だけです。</li>
       </ul>
     </div>
 
@@ -489,136 +258,154 @@
     <p class="safe">🔒 <strong>保存したものは、このパソコンの中だけに残ります。</strong></p>
 
     <div class="cls-box">
-      <h3>データに名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
-      <p class="hint">名簿・会場の形・条件・見た目の設定を、まとめて残すときに使います。<strong>「上書き」は、参加者が変わったとき</strong>に使ってください。<br>保存できるのは<b>文字情報のみ</b>です（写真や画像は残りません）。</p>
+      <h3>名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
+      <!-- 🔴 上書きも置いた（2026-09-06 本人「名簿に関しては上書きできるはずだよね？」）。
+           ⭐番号・男女は namesNow() で残すので、上書きしても落ちない -->
+      <!-- 🔴 説明はこの1行だけ（2026-09-06 本人「⑤の説明が長いね…だけでいいんじゃないかな？
+           だって、名前を付けて保存だからさ、仕事してたらわかると思う」）。
+           ⚠くわしい話（上書き・削除が①のえらびに従うこと）は「？」の中に置いてある -->
+      <p class="hint">いま、<b>②に入っているもの</b>を保存します。<br>保存できるのは<b>文字情報のみ</b>です。</p>
       <p class="btn-row">
         <button class="mini" id="clsNew" type="button">新しい名前で保存</button>
         <button class="mini" id="clsSave" type="button">上書き</button>
+        <!-- 🔴 削除はここ（2026-09-06 本人「削除は⑤でしょ？」）。①には置かない -->
         <button class="mini" id="clsDel" type="button">削除</button>
       </p>
-      <div class="pick"><label for="clsSel">さくらツールで保存済のデータ</label>
-        <select id="clsSel"><option value="">－</option></select></div>
-
+      <p><span class="saving" id="clsSaved"></span></p>
     </div>
-
   </section>
 
-  <section class="read">
+  <!-- 使い方 -->
+  <details class="opt">
+    <summary>使い方</summary>
+    <div class="body howto">
+      <p>パワーポイントの代わりに、文字と写真を大きくモニターに映すための道具です。登録もインストールもいりません。このページを開くだけで使えます。作ったものは残さないので、その場で打って、その場で出せます。</p>
 
-    <!-- ⭐読みものは全部シャッター（2026-09-08 本人）。①〜⑧の道具は開いたまま -->
-    <details class="opt">
-      <summary>使い方</summary>
-      <div class="body">
-      <ol>
-      <li><strong>Excelの名簿から、必要な列をまとめてコピーして貼り付けます。</strong>会社名・役職・名前が並んだ範囲をそのまま選んで大丈夫です。</li>
-      <li>どの列が何なのかを<strong>自動で見分けます</strong>。違っていたらメニューで選び直します。</li>
-      <li>横と縦の席の数と、前方にあるもの（スクリーン・ホワイトボード・演台）を選びます。</li>
-      <li>「席次表を作る」を押すと、名簿順に並んだ席次表ができます。</li>
-      <li>気になるところは<strong>ドラッグで入れ替えて</strong>、印刷します。</li>
-    </ol>
-      <ul class="can">
-      <li><b>Excelの名簿をそのまま貼り付け</b><small>会社名・役職・フリガナ・名前を、複数の列のままコピーできます。打ち直しはいりません</small></li>
-      <li><b>スクール形式の並び</b><small>前を向いて座る形です。スクリーン・ホワイトボード・演台の位置に合わせて、前を上にも下にもできます</small></li>
-      <li><b>1マスに4つまで並ぶ</b><small>所属・役職（肩書き）・フリガナ・名前。名前がいちばん下で、いちばん大きく出ます</small></li>
-      <li><b>敬称を選べる</b><small>様・さん・先生・なし。全員にまとめて付きます</small></li>
-      <li><b>通し番号の向きを選べる</b><small>縦・横、左から・右から。受付のご案内に合わせられます</small></li>
-      <li><b>A4の1枚に自動で収まる</b><small>人数と列の数から、1マスの大きさと文字の大きさを計算します。2ページに割れません</small></li>
-      <li><b>印刷・PDF</b><small>紙にもPDFにも、このページから出せます。A4の横でも縦でも、紙いっぱいに大きく出ます</small></li>
-      <li><b>モニター表示</b><small>会場の画面に大きく映せます</small></li>
-    </ul>
-      <!-- ⭐「こんなときに」は章をやめて、使い方の中に入れた（2026-09-08 本人）-->
-      <p><b>こんなときに</b></p>
+      <h3>こんなときに</h3>
       <ul>
-      <li>社内会議・取引先との打ち合わせで、席次表を用意するとき</li>
-      <li>新任研修・社外研修で、受付に貼る座席一覧が要るとき</li>
-      <li>セミナー・説明会で、受付に貼る席順表を作るとき</li>
-      <li>大学の授業で、学籍番号順の座席表を作るとき</li>
-      <li>大学や専門学校の授業で、学生の座席を指定しておくとき</li>
-      <li>懇親会のあとの着席で、席を決めておきたいとき</li>
-    </ul>
+        <li>今日のめあて、教科書のページ、問題文、キーワードを出しておく</li>
+        <li>参観日や発表会で、発表する人の名前と作品名を出す</li>
+        <li>のこり時間や「まとめに入ります」を出す</li>
+        <li>会議や集まりで、<b>次の議題・次の順番</b>を出す（自治会・PTA・研修など）</li>
+        <li>受付やイベントで、案内をちょっと出しておく</li>
+      </ul>
+      <p class="hint">スライドを作り込む道具ではありません。<b>ひとこと大きく出したいだけ</b>のときのものです。</p>
 
-    <!-- ⚠「ほかのツール」のカードは丸ごと消した（2026-09-08 本人）。
-         中身が古くなっていた（円卓・会議室・タイピングを「準備中」と書いたまま）。
-         道具の一覧は右上のヘッダーに寄せる -->
-      </div>
-    </details>
+      <h3>文字をスライドにする</h3>
+      <ul>
+        <li>枠に打って「入れる」を押すと、<b>1行が1枚</b>になって下の一覧に並びます。何行でもまとめて入れられます（<span class="kbd">Ctrl</span>＋<span class="kbd">Enter</span> でも入ります）。</li>
+        <li>改行したいところに <code>/</code> を入れると、そこで行が変わります。<br>
+          例：<code>海の生きものを/しらべて分かったこと</code></li>
+        <li><code>//</code> にすると、<b>前のほうが小さい文字</b>になります。見出しを付けたいときに使ってください。<br>
+          例：<code>今日のめあて//分数のたし算ができる</code></li>
+        <li>文字の大きさは、長さに合わせて自動で変わります。</li>
+        <li>一覧の <b>▲▼</b> で順番を入れ替え、<b>×</b> で1枚だけ消せます。パソコンなら行をつかんでドラッグでも動かせます。</li>
+      </ul>
 
+      <h3>写真を入れる</h3>
+      <ul>
+        <li>⭐<b>一覧の「＋」を押すと、その1枚に写真が入ります。</b>すでに打った文字はそのままなので、打ち直す必要はありません。</li>
+        <li>一覧の下の<b>「＋ 行を追加」</b>で1枚ぶん増やせます。文字でも写真でも入れられます。</li>
+        <li>入れた写真は、<b>写真をつかんでドラッグ</b>すると、別の行へ移せます（パソコンのみ）。写真の右上の<b>×</b>で、写真だけ外せます。</li>
+        <li>一覧の文字の欄に打つと、<b>写真の上に文字が重なります</b>。文字の後ろには白い帯が付くので、写真の上でも読めます。</li>
+        <li>写真は切れません。画面に収まるように、全部が入る大きさで出ます。</li>
+        <li>写真は<b>「この画面を保存する」にチェックを入れておくと残ります</b>（下の「保存について」）。⭐<b>前の日に選んだ写真が、次の日もそのまま出せます。</b>チェックが外れていると、ページを閉じたときに消えます。</li>
+      </ul>
 
-    <!-- ⭐読みものは全部シャッター（2026-09-08 本人）。①〜⑧の道具は開いたまま -->
-    <details class="opt">
-      <summary>よくある質問</summary>
-      <div class="body">
-      <dl>
-      <dt>ネットにつながっているのに、本当に外部に出ないのですか？</dt>
-      <dd><strong>普段お使いのパソコンで、名簿を開くのと同じです。</strong>ネットにつながっていても、<strong>すべてお使いのパソコンだけで完結します</strong>。そのまま印刷やPDFにできます。だから、外に晒されることも、漏れることも、AIの学習に使われることもありません。<strong>いつものパソコン仕事と同じように、安心して使えます。</strong></dd>
-      <dt>名簿は外部に送られますか？</dt>
-      <dd>送りません。すべてお使いのパソコンだけで完結します。<strong>外部に出ていないので、AIの学習に使われることも、個人情報が漏れることもありません。</strong></dd>
-      <dt>個人情報が漏れないか心配です</dt>
-      <dd><strong>漏れません。</strong>貼り付けた名簿は、すべてお使いのパソコンだけで完結します。外部には送っていないので、漏れることも、AIの学習に使われることもありません。</dd>
-      <dt>社員名簿をクラウドに上げてはいけない決まりがあります</dt>
-      <dd><strong>問題ありません。</strong>貼り付けた内容は外部に送っていません。すべてお使いのパソコンだけで完結します。社外にデータを出さない決まりのある会社でもお使いいただけます。</dd>
-      <dt>席次表の作り方を教えてください</dt>
-      <dd>名簿を貼り付けて「席次表を作る」を押すだけです。会社名・役職・名前が並んだ席次表になります。<strong>Excelやパワーポイントで枠を作る必要はありません。</strong></dd>
-      <dt>敬称は「様」以外にもできますか？</dt>
-      <dd>できます。<strong>様・さん・先生・なし</strong>から選べます。全員にまとめて付きます。</dd>
-      <dt>フリガナを入れたいのですが</dt>
-      <dd>名簿にフリガナの列があれば出せます。「1マスの中身」の<strong>フリガナ</strong>で大きさを選んでください。名前の1つ上に入ります。</dd>
-      <dt>フリガナをひらがなで出せますか？</dt>
-      <dd>できます。「1マスの中身」の<strong>フリガナの文字</strong>でひらがなを選んでください。名簿がカタカナで書かれていても、ひらがなに直して出します。</dd>
-      <dt>部署ごと・学科ごとに色を分けたい</dt>
-      <dd>できます。「グループに分ける」の分け方を、<strong>その言葉を入れた行と同じ名前</strong>にしてください。学科を「会社名・大学名」の行に入れたなら「会社名・大学名ごと」、「役職・学部・学科」の行に入れたなら「役職・学部・学科ごと」です。人数を数える必要はありません。</dd>
-      <dt>学籍番号・社員番号を名前の上に出したい</dt>
-      <dd>「1マスの中身」の<strong>番号の位置</strong>を「いちばん上の行」にしてください。右上の小さなしるしではなく、会社名・大学名の上に1行として入ります。</dd>
-      <dt>通し番号を前から順に振りたい</dt>
-      <dd>「ならぶ向き」で<strong>縦・左の列から／縦・右の列から／横・左から／横・右から</strong>を選べます。受付でご案内する向きに合わせてください。</dd>
-      <dt>「前」や「入口」など、好きな言葉を入れたい</dt>
-      <dd>「会場の形」の<strong>帯の文字を自分で書く</strong>に入力してください。選んだものより優先されます。「←窓　　ホワイトボード　　出入口→」のように空白を入れれば、その間隔のまま出ます。</dd>
-      <dt>会議室・オフィスの座席表にも使えますか？</dt>
-      <dd>使えます。横と縦の数を変えるだけで、会議室・研修会場・オフィスの座席表になります。<strong>Excelのテンプレートを探して直す必要はありません。</strong></dd>
-      <dt>大学の授業でも使えますか？</dt>
-      <dd>使えます。学籍番号・氏名・フリガナ・学科の並んだ名簿をそのまま貼り付ければ、そのまま座席表になります。</dd>
-      <dt>役職だけ大きくしたいのですが</dt>
-      <dd>「1マスの中身」で、行ごとに<strong>大・中・小・なし</strong>を選べます。名前を基準にした大きさなので、役職を大きくすると名前とのバランスが変わります。出したくない行は「なし」を選んでください。</dd>
-      <dt>役職のある人と無い人で、名前の高さがずれませんか？</dt>
-      <dd><strong>ずれません。</strong>役職の無い人は、そこを空けたまま並べます。名前はどのマスでも同じ高さに出ます。</dd>
-      <dt>会社名が長くて入りきりません</dt>
-      <dd><strong>所属の行だけが自動で小さくなります。</strong>名前まで小さくなることはありません。</dd>
-      <dt>Excelの列は、並べ替えてから貼り付けるのですか？</dt>
-      <dd><strong>そのままで大丈夫です。</strong>どの列が何なのかを自動で見分けます。列の順番は自由です。違っていたときだけ、「貼り付けた列の中身」で選び直してください。</dd>
-      <dt>宴会や懇親会の席次表にも使えますか？</dt>
-      <dd>並んだ席の形であれば使えます。<strong>円卓（丸テーブル）の席次表は準備中</strong>です。</dd>
-      <dt>2ページに分かれてしまいませんか？</dt>
-      <dd><strong>分かれません。</strong>人数と列の数、用紙の向きから、1マスの大きさと文字の大きさを計算して、A4の1枚に収めます。Excelのテンプレートのように、はみ出したぶんが次のページに送られることはありません。</dd>
-      <dt>印刷したら小さくなってしまいます</dt>
-      <dd>用紙の向きを<strong>横</strong>にすると、多くの場合は大きく収まります。それでも小さいときは、印刷画面の拡大・縮小で調整してください。</dd>
-    </dl>
-      </div>
-    </details>
+      <h3>作っているとき</h3>
+      <ul>
+        <li>⭐<b>「作成中」にチェック</b>を入れておくと、出したあとも設定が開いたままです。作りながら何度も見られます。</li>
+        <li><b>枚数を選んで「この画面で見る」</b>を押すと、その1枚だけ確かめられます（全画面になりません）。</li>
+        <li>⚠<b>本番のときはチェックを外してください。</b>外しておくと、出したときに設定がたたまれて、見ている人に見えません。</li>
+      </ul>
 
+      <h3>1枚ずつ変えたいとき</h3>
+      <ul>
+        <li>一覧の<b>位置</b>と<b>大きさ</b>で、その1枚だけ変えられます。写真によって文字を置きたい場所が違うときに使ってください。</li>
+        <li>位置は「中央」、大きさは「自動」がはじめの値です。<b>自動</b>は、文字の長さに合わせて大きさが決まります。</li>
+        <li>大きさは<b>最小・小・中・大</b>から選べます。⭐<b>写真をできるだけ見せたいときは「最小」</b>にしてください。</li>
+        <li>いちばん左の<b>チェックを外す</b>と、その1枚は映りません。<b>1枚だけ映したいときは、ほかのチェックを外してください。</b></li>
+      </ul>
 
+      <h3>書体と、文字の位置</h3>
+      <ul>
+        <li>書体は<b>ゴシック体・丸文字・明朝体</b>から選べます（座席表と同じです）。<br>
+          丸文字はWindowsとiPad・Macだけです。入っていない機種では、静かにゴシック体になります。</li>
+        <li>文字の位置と大きさは、<b>一覧で1枚ずつ</b>決めます。写真のときは<b>中央・上・下</b>（写真に重ねる）か<b>外</b>（下のボタンの行に小さく）を選べます。</li>
+      </ul>
 
+      <h3>発表者をスライドにする</h3>
+      <ul>
+        <li><b>座席表メーカーで保存したデータ</b>があれば、選ぶだけで名前が入ります。班の情報があれば、班も一緒に入ります。</li>
+        <li>Excelから貼り付けることもできます。名前だけの1列でも大丈夫です。</li>
+        <li>作品名を入れると、作品名が大きく、名前が下に出ます。名前は覚えているので、作品名を主役にしてあります。</li>
+        <li>「班ごとにまとめて映す」を選ぶと、班名・その班の作品名・メンバー全員の名前が一緒に出ます。</li>
+      </ul>
 
-    <!-- ⭐読みものは全部シャッター（2026-09-08 本人）。①〜⑧の道具は開いたまま -->
-    <details class="opt">
-      <summary>データの扱い</summary>
-      <div class="body">
-      <p><strong>使っているパソコンの中だけで完結できます。</strong>使った名簿がネット上に流れることはありません。外部には送っていないので、AIの学習に使われることも、個人情報が漏れることもありません。社員名簿や学生名簿でも、安心して使えます。「画面の保存」をオンにしたときだけ、このパソコンの中に残ります。オフのままなら、ページを閉じた時点で消えます。インストールも会員登録もいりません。</p>
-      </div>
-    </details>
+      <h3>順番を変えたい・今日いない人を外したい</h3>
+      <ul>
+        <li>一覧の <b>▲▼</b> で順番を入れ替えられます。</li>
+        <li><b>チェックを外す</b>と、その人（その班）は映りません。</li>
+        <li><b>順番をシャッフル</b>で、発表の順をランダムにします。班ごとに映すときは班の順が入れ替わり、班の中はそのままです。</li>
+      </ul>
 
-  </section>
+      <h3>設定を見せたくない</h3>
+      <p>「準備」を閉じると、中身がまとめて隠れます。<b>「スライド表示」を押したときも自動で閉じます</b>ので、映し終わって戻ったときに、順番やシャッフルが見ている人に見えることはありません。</p>
+      <p>ずっと開いたままにしたいときは、<b>「作成中」にチェック</b>を入れてください。</p>
+
+      <h3>保存について</h3>
+      <ul>
+        <li>「スライド表示」の下の<b>「この画面を保存する」</b>にチェックを入れると、次に開いたときも<b>文字・順番・写真・名簿</b>がそのまま残ります。</li>
+        <li>残るのは<b>このパソコンの中だけ</b>です。<b>どこにも送信されません。</b></li>
+        <li>チェックを外すと、保存していたものを消します。</li>
+        <li>⭐<b>写真も残るのは、このページだけです。</b>ほかのページ（座席表など）は、読み込んだ画像を保存していません。</li>
+        <li>⚠<b>共用のパソコンでは外しておいてください。</b>写真に人が写っていることがあります。</li>
+      </ul>
+
+      <h3>打った文字は、どこにも送られません</h3>
+      <p>打った文字も写真も名簿も、この端末のブラウザの中だけにあります。どこかのサーバーに送ることはありません。ネットにつながっていなくても動きます。<b>映している画面には、広告は出ません。</b></p>
+    </div>
+  </details>
+
 </main>
-
-<div class="rotate-tip noprint">横向きにすると大きく見えます</div>
 
 <footer class="noprint">
   <div class="wrap"><span class="fnav"><a href="../about/">運営者情報</a>　<a href="../contact/">お問い合わせ</a>　<a href="../privacy/">プライバシーポリシー</a></span>
     <span class="copy">さくらツール　© 2026 SAKURA TOOLS</span></div>
 </footer>
 
-<script src="../seating.js?v=54"></script>
-<script src="seki.js?v=51"></script>
-<!-- 🔴 印刷用の1枚絵の置き場。⚠body の直下に置くこと -->
-<div id="printImgWrap"></div>
+<!-- 映す画面。⚠ここには広告を絶対に置かない -->
+<div id="show">
+  <div id="stage">
+    <!-- 🔴 写真は2枚まで（2026-09-07 本人・知り合いの先生「写真を比べることがある」）。
+         2枚あれば横に並ぶ。片方を押すとそちらが大きくなる -->
+    <div id="pics">
+      <img id="pic" alt="" hidden>
+      <img id="pic2" alt="" hidden>
+    </div>
+    <div id="box">
+      <div id="group"></div>
+      <div id="title"></div>
+      <div id="name"></div>
+    </div>
+  </div>
+  <div id="bar">
+    <!-- 🔴 写真のときの文字はここ（2026-09-05 本人「ボタンのフッターの部分に入れてはどうかな？
+         そうするとかなり画像が大きくなる」）。⚠操作ボタンは少し経つと薄くなるが、この文字は残る -->
+    <span class="pad"></span>
+    <span id="cap"></span>
+    <!-- 🔴 2/5 はボタンのそばに（2026-09-05 本人「2/5は中央揃えではなく、ボタンの近くに。
+         文字を中央にしてほしい」）。⚠文字（#cap）がフッターの中央に来る -->
+    <span class="row">
+      <span id="pos"></span>
+      <button id="toFull">スライド表示にする</button>
+      <button id="prev">◀ もどる</button>
+      <button class="primary" id="next">つぎへ ▶</button>
+      <button id="close">おわり</button>
+    </span>
+  </div>
+</div>
+
+<script src="slide.js?v=87"></script>
 </body>
 </html>
