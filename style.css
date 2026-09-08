@@ -55,21 +55,54 @@ body{
 .site-head nav a[aria-current="page"]{font-weight:bold;color:var(--ink)}
 .site-head nav a:hover{font-weight:bold}
 /* ⚠ 3つ並ぶと、狭い画面でヘッダーがあふれる。ロゴと間隔を詰める（330px以下は2行になる） */
-@media(max-width:430px){
+/* ⭐⭐右上のナビ＝パソコンは並べる／スマホはハンバーガー（2026-09-08 本人）。
+   ⭐JSは使わない＝チェックボックスで開け閉めする
+   ⚠<details> は閉じていると中身を描かないので使えなかった
+   ⚠道具は増える予定。横並びは4つで限界だった（詰めるとロゴにぶつかる）
+   ⚠研究＝隠されたナビは「著しく発見されにくい」（NN/g）→ ☰ に「ツール」の文字を添える */
+/* --- パソコン：ボタンを隠して、リンクをそのまま並べる --- */
+.site-head .navburger{display:none}
+/* ⚠チェックボックスはどの幅でも場所を取らない（見せないが、押せる状態は保つ）*/
+.site-head .navtoggle{position:absolute;opacity:0;width:0;height:0;margin:0;pointer-events:none}
+.site-head .navlist{display:contents}
+
+@media(max-width:640px){
   .site-head .logo{font-size:.95rem}
-  .site-head nav{gap:11px}
-  .site-head nav a{min-width:2.9em;font-size:.85rem}
+  /* ⚠nav の中のチェックボックスが場所を取って、ヘッダーが高くなっていた
+     ⭐nav を一列にして、チェックボックスは完全に場所を取らないようにする */
+  .site-head nav{position:relative;display:flex;align-items:center}
+  /* --- スマホ：☰ を出して、リンクは中にしまう --- */
+  .site-head .navburger{
+    display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;
+    font-size:.8rem;font-weight:700;color:var(--ink);
+    /* ⚠⚠label には共通の margin:10px 0 4px がかかる。消さないとヘッダーが14px高くなる
+       （→ 記憶/コード/label-margin-3px.md と同じ原因）*/
+    margin:0;
+    padding:3px 9px;border:1px solid var(--line);border-radius:7px;background:#fff;
+  }
+  .site-head .navburger::before{
+    content:"";width:14px;height:11px;flex:none;
+    background:linear-gradient(var(--ink) 0 2px,transparent 2px 4.5px,
+               var(--ink) 4.5px 6.5px,transparent 6.5px 9px,var(--ink) 9px 11px);
+  }
+  .site-head .navtoggle:checked ~ .navburger{border-color:var(--pink);color:var(--pink)}
+  .site-head .navlist{
+    display:none;position:absolute;right:0;top:calc(100% + 7px);z-index:60;
+    background:#fff;border:1px solid var(--line);border-radius:11px;
+    box-shadow:0 10px 26px rgba(0,0,0,.16);padding:6px;min-width:150px;
+  }
+  .site-head .navtoggle:checked ~ .navlist{display:block}
+  .site-head .navlist a{
+    display:block;padding:8px 12px;border-radius:8px;
+    font-size:.88rem;min-width:0;white-space:nowrap;line-height:1.4;text-align:left;
+  }
+  .site-head .navlist a:hover{background:var(--pink-pale)}
 }
 /* 🔴 「このサイトについて」など道具ではないページは、トップ＋道具3つで**4つ**並ぶ。
    ⚠そのままだとスマホでヘッダーが2行（62px）になり、貼り付いたまま場所を取る。
    ⭐4つ目がある時だけ、もう一段詰めて1行に収める（37px）。3つのページは今までの大きさのまま。
    ⚠`:has()` が効かない古い機器では2行になるだけ＝押せなくなるわけではない */
-@media(max-width:430px){
-  .site-head .wrap:has(nav a:nth-child(4)){padding:7px 8px;gap:6px}
-  .site-head .wrap:has(nav a:nth-child(4)) .logo{font-size:.88rem}
-  .site-head .wrap:has(nav a:nth-child(4)) nav{gap:7px}
-  .site-head .wrap:has(nav a:nth-child(4)) nav a{min-width:0;font-size:.76rem}
-}
+/* ⚠4つ目のときに詰める指定は消した（2026-09-08）。ハンバーガーになったので不要 */
 
 h1{font-size:1.5rem;margin:24px 0 4px}
 /* 🔴 見出しの縦棒と、開け閉めする帯の縦棒を同じにする（本人「全部そろえたほうがすっきり」）。

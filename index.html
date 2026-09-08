@@ -40,7 +40,7 @@
   "url": "https://sakura-tools.com/"
 }
 </script>
-<link rel="stylesheet" href="style.css?v=118">
+<link rel="stylesheet" href="style.css?v=128">
 <link rel="stylesheet" href="top.css?v=40">
 </head>
 <body>
@@ -49,9 +49,14 @@
   <div class="wrap">
     <a class="logo" href="./"><span class="logo-mark">🌸</span><span class="logo-main">SAKURA TOOLS</span><span class="logo-sub">さくらツール</span></a>
     <nav>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">ツール</label>
+      <div class="navlist">
       <a href="seat/">座席表</a>
       <a href="seki/">席次表</a>
       <a href="slide/">スライド</a>
+      <a href="excel-fx/">関数早見表</a>
+      </div>
     </nav>
   </div>
 </header>
@@ -77,7 +82,7 @@
            カード全体が浮く見た目で「押せる」と分かるようにする -->
     <a class="t-card school" id="seat" href="seat/">
       <div class="t-tool">
-        <span class="nm">🪑 座席表メーカー</span>
+        <span class="nm">座席表メーカー</span>
         <span class="ds">名簿のコピペで、簡単席替え。席の形、30人・40人でも思いどおり。そのうえPDFもモニター表示もボタンひとつ！</span>
         <img class="t-shot" src="img/seat-sample.png?v=10" width="1280" height="720" alt="33人・6列の教室の座席表。3人の班やかぎ型の班も作れる">
       </div>
@@ -85,7 +90,7 @@
 
     <a class="t-card work" id="seki" href="seki/">
       <div class="t-tool">
-        <span class="nm">📋 席次表メーカー</span>
+        <span class="nm">席次表メーカー</span>
         <span class="ds">会社名・役職・フリガナ・名前を並べた席次表。用紙に合わせて自動で調整し、A4の1枚に収めます。</span>
         <img class="t-shot" src="img/seki-sample.png?v=8" width="1280" height="720" alt="23人・5列の研修の席次表。会社名・役職・名前を並べたもの">
       </div>
@@ -93,8 +98,16 @@
 
     <a class="t-card school" id="slide" href="slide/">
       <div class="t-tool">
-        <span class="nm">🖥️ 簡単スライドメーカー</span>
+        <span class="nm">簡単スライドメーカー</span>
         <span class="ds">スライド作りに時間をかけない。文字も写真も、ボタンひとつでモニター表示。パワーポイントはもう不要！</span>
+      </div>
+    </a>
+
+    <!-- ⭐関数早見表（2026-09-08 公開）。⚠仕事のほうの道具なので work -->
+    <a class="t-card work" id="excel-fx" href="excel-fx/">
+      <div class="t-tool">
+        <span class="nm">Excel関数 早見表</span>
+        <span class="ds">覚える順があるから、いつの間にか覚えてる。「SUMって何？」からも「〜したい」からも探せます。</span>
       </div>
     </a>
 
