@@ -341,7 +341,67 @@ body.screen .seat .gno.dim{display:none}
    上＝⑧の箱の下の縁から棒線まで 34px
    下＝棒線から「使い方」の箱の上の縁まで 34px
    ⭐⭐そろえるのは「箱の縁同士」。字の位置ではない（目が見ているのは箱の縁）*/
-.read{border-top:1px solid var(--line);margin-top:34px;padding-top:33px}
+/* ⭐読みもののトグル（使い方・よくある質問・データの扱い）＝2026-09-08 本人。
+   ⚠⚠道具（①②③…の details.opt）と同じ見た目にしない。
+     ⭐箱を作らず、細い線と ▸ だけ。開いても字は小さいまま。
+     こうしないと「道具」と「読みもの」が同じ重さに見える */
+details.howto{
+  border-top:1px solid var(--line);
+  font-size:.8rem;color:var(--ink-soft);line-height:1.95;
+}
+/* ⚠.read の中は、上の棒線が .read 側にあるので1本目の線は消す。
+   ⭐.read が無いページ（スライド）では、1本目にも線が要る */
+.read details.howto:first-of-type{border-top:0}
+main > details.howto{margin-top:34px}
+details.howto > summary{
+  cursor:pointer;font-weight:700;letter-spacing:.06em;color:var(--ink-soft);
+  list-style:none;padding:11px 0;
+}
+details.howto > summary::-webkit-details-marker{display:none}
+/* ⭐▸ だけさくら色（2026-09-08 本人「トグルのボタンだけピンクにして」）*/
+details.howto > summary::before{
+  content:"▸";display:inline-block;margin-right:7px;transition:transform .15s;color:var(--pink);
+}
+details.howto[open] > summary::before{transform:rotate(90deg)}
+details.howto > summary:hover{color:var(--ink)}
+details.howto .body{padding:0 0 16px}
+details.howto b,details.howto strong{color:var(--ink);font-weight:700}
+details.howto ul,details.howto ol{margin:6px 0 0;padding-left:1.35em}
+details.howto li{margin-bottom:3px}
+/* ⭐番号と箇条書きの点はさくら色（2026-09-08 本人）。
+   ⚠読みものは文章だらけになるので、そのままだと画面が黒っぽくなる。
+     ⭐点と番号だけ色を入れると、行の頭が見えて読みやすくなる */
+details.howto ol > li::marker,
+details.howto ul > li::marker{color:var(--pink);font-weight:700}
+details.howto p{margin:6px 0 0}
+details.howto dt{font-weight:bold;margin-top:12px;color:var(--ink)}
+details.howto dd{margin:2px 0 0 1em}
+/* ⚠「できること」は使い方の中に入っている。共通の .can（白い箱）は使わない。
+   ⭐ただの箇条書きにして、字は読みものと同じ小ささにそろえる。
+   ⚠共通の .can b は 1.02rem あるので、必ず inherit で打ち消す（大きく見える原因） */
+details.howto .can{list-style:disc;padding-left:1.35em;margin:0}
+details.howto .can li{border:0;background:none;border-radius:0;margin:0 0 3px;padding:0}
+details.howto .can b{display:inline;font-size:inherit;color:var(--ink)}
+details.howto .can small{display:inline;font-size:inherit;margin-left:8px}
+
+/* ⭐⭐線は「かたまりの区切り」に入れる（2026-09-08 本人）。⚠項目と項目の間には入れない。
+   ＝手順（番号）／できること／こんなときに のあいだ */
+details.howto .body > .can,
+details.howto .body > p.sub{
+  border-top:1px solid var(--line);
+  margin-top:14px;padding-top:14px;
+}
+details.howto .body > p.sub,
+details.howto .body > h3{font-weight:700;color:var(--ink)}
+/* ⭐h3 の小見出しも「かたまりの区切り」として同じ形にする（スライドが h3 を使っている）*/
+details.howto .body > h3{
+  border-top:1px solid var(--line);
+  margin:14px 0 0;padding-top:14px;font-size:1em;
+}
+details.howto .body > h3:first-child{border-top:0;margin-top:0;padding-top:0}
+details.howto .body > p.sub + ul{margin-top:5px}
+
+.read{border-top:1px solid var(--line);margin-top:34px;padding-top:22px}
 .read h2{margin-top:26px}
 .read dt{font-weight:bold;margin-top:12px}
 .read dd{margin:2px 0 0 1em;color:var(--ink-soft)}
