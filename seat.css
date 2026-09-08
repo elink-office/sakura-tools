@@ -1,0 +1,21 @@
+/* ⭐「ゴシック」の中身を BIZ UDPゴシックに入れ替えた（2026-09-08 本人）。
+   ⚠先生に見える名前は「ゴシック」のまま。選べるものは増やしていない
+   ⭐理由＝游ゴシックは Windows で細く出る（かすれ問題）。教室の後ろから見るモニターでは不利。
+     BIZ UDPゴシックは学校向けのユニバーサルデザイン書体で、Windowsに標準で入っている
+   ⚠明朝と丸ゴシックは触っていない */
+/* 座席表専用の見た目
+   ⚠ 席次表（/seki/）には読み込まれない。ここを直しても席次表は影響を受けない。 */
+
+/* ---- 書体 ---- */
+/* ⚠ 丸文字はWindows（HG丸ｺﾞｼｯｸM-PRO）とiPad・Mac（ヒラギノ丸ゴ ProN）だけ。
+   AndroidとChromebookには入っていないので、静かにゴシックになる（崩れはしない） */
+.sheet.f-mincho .seat .nm{
+  font-family: "Yu Mincho", YuMincho, "Hiragino Mincho ProN", "MS PMincho", serif;
+}
+.sheet.f-gothic .seat .nm{
+  font-family: "BIZ UDPGothic","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;
+}
+.sheet.f-maru .seat .nm{
+  font-family: "HG丸ｺﾞｼｯｸM-PRO", HGMaruGothicMPRO,
+               "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif;
+}
