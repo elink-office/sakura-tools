@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- 🔴検索に出さない（2026-09-08 本人「とりあえず止めましょう」）。
+     ⚠このページは本人が公開を指示していない。公開する日にこの1行を外す -->
+<meta name="robots" content="noindex,nofollow">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SAKURA TOOLS">
 <meta property="og:title" content="会議室の上座・下座｜ロの字・コの字の席順が分かる早見表">
@@ -24,8 +27,8 @@
 </script>
 <title>会議室の上座・下座｜ロの字・コの字・対面の席順</title>
 <meta name="description" content="会議室の上座・下座がどこか、図で確かめられます。ロの字・コの字・対面の3つのレイアウトに対応。入口とスクリーン・ホワイトボードの位置を選ぶと、席の順番が①②③で出ます。社内会議・取引先との打ち合わせ・応接室に。名前の入力はいらず、そのまま印刷とPDFにできます。会社や地域によって慣習が異なるため、一般的な目安としてお使いください。">
-<link rel="stylesheet" href="../style.css?v=111">
-<link rel="stylesheet" href="kaigishitsu.css?v=15">
+<link rel="stylesheet" href="../style.css?v=118">
+<link rel="stylesheet" href="kaigishitsu.css?v=16">
 </head>
 <body>
 
@@ -36,13 +39,15 @@
       <a href="../">トップ</a>
       <a href="../seat/">座席表</a>
       <a href="../seki/">席次表</a>
+      <a href="../slide/">スライド</a>
     </nav>
   </div>
 </header>
 
 <main class="wrap">
   <h1>会議室の上座・下座</h1>
-  <p class="catch">ロの字・コの字・対面。入口を動かすと上座が変わる</p>
+  <!-- ⚠タイトルに句点は使わない（2026-09-06 本人）。句点があった位置で改行する -->
+  <p class="catch">ロの字・コの字・対面<br>入口を動かすと上座が変わる</p>
 
   <p class="notice-top">一般的な並びで上座と下座を確認できます。<strong>入口を動かすと、上座と下座が入れ替わります。</strong></p>
   <p class="notice-top">会社や地域の慣習もあるため、自由に位置を変更することができます。その場合、<strong>番号を2つ順番に押して入れ替えましょう</strong>。</p>
@@ -173,15 +178,11 @@
       <li>新入社員に席次を説明するとき</li>
     </ul>
 
-    <h2>ほかのツール</h2>
-    <ul class="tools">
-      <li><a href="../entaku/"><b>円卓の上座・下座</b><small>結婚式・宴会の円卓。卓の順番も出る</small></a></li>
-      <li><a href="../seki/"><b>席次表メーカー</b><small>名前を入れて、会議・研修の席次表を作る</small></a></li>
-      <li><a href="../seat/"><b>教室の座席表メーカー</b><small>名簿を貼るだけで席替え</small></a></li>
-    </ul>
+    <!-- ⚠「ほかのツール」は全部消した（2026-09-08 本人「ほかのツールは全部消してOK」）。
+         中身が古くなりやすい／道具の一覧は右上のヘッダーに寄せる -->
 
     <h2>このページについて</h2>
-    <p>入力した内容は、使っている機器の中だけで処理しています。外に送っていないので、個人情報が漏れることも、AIの学習に使われることもありません。登録もインストールもいりません。すべて無料です。</p>
+    <p>入力した内容は、<strong>すべてお使いのパソコンだけで完結します</strong>。外部には送っていないので、個人情報が漏れることも、AIの学習に使われることもありません。登録もインストールもいりません。すべて無料です。</p>
   </section>
 </main>
 
@@ -191,6 +192,6 @@
   </div>
 </footer>
 
-<script src="kaigishitsu.js?v=15"></script>
+<script src="kaigishitsu.js?v=16"></script>
 </body>
 </html>
