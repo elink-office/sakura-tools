@@ -22,7 +22,10 @@ input[type=checkbox],input[type=radio]{accent-color:var(--pink)}
 *{box-sizing:border-box}
 body{
   margin:0; padding:0;
-  font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif;
+  /* ⭐サイトの地の文はこの1本（2026-09-08 本人「まずはフォント変えて」）。
+     ⚠前は style.css が Yu Gothic、typing が Yu Gothic UI で、同じサイトに2種類の字が混ざっていた。
+     ⭐游ゴシックは「かすれ問題」で本文向きではない。Windowsは Noto Sans JP（2024頃から標準）→ BIZ UDPゴシック → メイリオの順で受ける */
+  font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","BIZ UDPGothic",Meiryo,sans-serif;
   color:var(--ink); background:var(--bg); line-height:1.7;
 }
 .wrap{max-width:900px;margin:0 auto;padding:20px}
@@ -334,7 +337,11 @@ body.screen .seat .gno.dim{display:none}
 /* 読み物 */
 /* 🔴 ここまでが操作、ここからは読みもの、の区切り（2026-09-01 本人）。
    ⚠タブレットは画面が縦に流れるので、線が無いとどこで終わったのか分からない */
-.read{border-top:1px solid var(--line);margin-top:34px;padding-top:6px}
+/* ⭐棒線の上と下を同じ間隔にする（2026-09-08 本人）。
+   上＝⑧の箱の下の縁から棒線まで 34px
+   下＝棒線から「使い方」の箱の上の縁まで 34px
+   ⭐⭐そろえるのは「箱の縁同士」。字の位置ではない（目が見ているのは箱の縁）*/
+.read{border-top:1px solid var(--line);margin-top:34px;padding-top:33px}
 .read h2{margin-top:26px}
 .read dt{font-weight:bold;margin-top:12px}
 .read dd{margin:2px 0 0 1em;color:var(--ink-soft)}
