@@ -2,6 +2,14 @@
    ⚠ 共通の print.css は読み込まない（あちらは A4 横向きが既定＝請求書は縦）
    色はさくら色1本（ページの型 14）*/
 
+/* 🔴⚠iPhone では `overflow-x:clip` が効かず、どこを触ってもページが横に動いた
+   （2026-09-10 本人・Safari も Chrome も同じ＝どちらも中身は WebKit）。
+   ⭐指の「横方向のスクロール」そのものを止める。
+   ⭐縦（pan-y）は通すので、⭐片手でのスクロールは今までどおり */
+body{touch-action:pan-y}
+/* ⭐横に動かしていい場所だけ、ここで許す */
+.inv-scroll,.inv-stage.big{touch-action:pan-x pan-y}
+
 /* ===== 画面 ===== */
 
 /* ⭐入力は共通の .row.tight を使う（座席表と同じ形）。
@@ -130,11 +138,8 @@ details.opt.sub[open] > summary{border-bottom:1px solid var(--line)}
 .inv-stage{
   position:relative;overflow:hidden;margin:0 auto;
   background:var(--bg);
-  /* 🔴⚠A4（794px）を縮めて出しているので、指で横に動かせてしまう（2026-09-10 本人「ふわふわする」）。
-     ⭐縦だけ通す。⭐大きくしたとき（.big）は横にも動かせる */
   touch-action:pan-y;
 }
-.inv-stage.big{touch-action:auto}
 /* ⭐紙は何枚にもなる。画面では縦に並べて、間をあける（2026-09-09 本人「2ページになるときも見たい」）*/
 /* ⚠幅をA4に合わせる。ここを広げたままにすると、縮小の計算が入れものの幅を見てしまい
    スマホでA4がはみ出したまま切れる */
