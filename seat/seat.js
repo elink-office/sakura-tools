@@ -766,11 +766,11 @@
     //   離す・隣にするの条件そのものを使わない（2026-09-03 本人）。
     //   ⚠ラジオの4つ目にしていたのをやめて、チェックの下に3つを置く形にした。
     //     本人「4つが同列だと、ボタンを変えたら設定が変わるってのが想像しにくい」
-    var off = $('modeOff') ? $('modeOff').checked : false;
-    var uiMode = (document.querySelector('input[name=mode]:checked') || {}).value || 'cross';
+    var uiMode = (document.querySelector('input[name=mode]:checked') || {}).value || 'none';
+    var off = (uiMode === 'none');
     return {
       names: state.names, cols: state.cols, rows: state.rows,
-      mode: uiMode,
+      mode: off ? 'cross' : uiMode,
       separate: off ? [] : pairs('sepList'), adjacent: off ? [] : pairs('adjList'),
       fixed: fix, zone: zone
     };
@@ -1671,8 +1671,9 @@
         month: $('month') ? $('month').value : '',
         cols: $('cols').value, rows: $('rows').value,
         board: $('board').value,
-        mode: (document.querySelector('input[name=mode]:checked') || {}).value || 'cross',
-        modeOff: $('modeOff') ? $('modeOff').checked : true,
+        mode: (document.querySelector('input[name=mode]:checked') || {}).value || 'none',
+        // ⚠ modeOff は前の版との橋渡しのために残す（今は mode==='none' が「設定なし」）
+        modeOff: ((document.querySelector('input[name=mode]:checked') || {}).value === 'none'),
         // ⚠ grp の中に入れずに、ここに置く（grp は席次表とも形をそろえてあるため）
         // 🔴 ②の条件は**ぜんぶ名簿と一緒に保存する**（2026-09-03 本人）。
         //   本人「逆にね、②を名簿と一緒に全部保存した方が、理科室と一緒だからいい」
@@ -1737,13 +1738,12 @@
       $('cols').value = clampNum(d.cols, 6); $('rows').value = clampNum(d.rows, 6);
       $('board').value = d.board || 'top';
       // ⚠前に保存した人は 'cross' などを持っている。そのままにする（勝手に外さない）。
-      //   ⚠一時期 'none' で保存していた版がある。そのときは既定（前後左右）にもどす
-      var dm = d.mode || 'cross';
-      if (dm === 'none') dm = 'cross';
+      //   🔴 'none'（設定なし）は2026-09-09にえらびとして復活した。もう 'cross' に置き換えない
+      //   ⚠チェックで「設定しない」を持っていた版は、modeOff:true → 'none' に読みかえる
+      var dm = d.mode || 'none';
+      if (d.modeOff) dm = 'none';
       var mr = document.querySelector('input[name=mode][value="' + dm + '"]');
       if (mr) mr.checked = true;
-      // ⚠この項目を持っていない人（前の版）は「設定しない」にしておく
-      if ($('modeOff')) $('modeOff').checked = (d.modeOff === undefined) ? true : !!d.modeOff;
       modeChanged();
       // 🔴 ②の条件を戻す（⚠いったん空にしてから入れ直す。二重に増えるのを防ぐ）
       var c = d.cond || {};
@@ -2071,11 +2071,19 @@
     cross: '<strong>前後左右の4つの席</strong>を「隣」とみなします。',
     king: 'ななめもふくめた<strong>まわり8つの席</strong>を「隣」とみなします。いちばんきつい決め方です。'
   };
+  // 🔴 席替え・かくす・モニターに映す のときは「詳しい条件」を閉じる（2026-09-09 本人）。
+  //   本人「先生が書いたものを生徒にちらっとでも見られたら困るから」
+  //   ⚠「座席表をかくす」も入れる（本人「そのあとでモニターに映すかもだし」）
+  function closeCond() {
+    var c = $('condBlock');
+    if (c) c.open = false;
+  }
   function modeChanged() {
-    var off = $('modeOff') ? $('modeOff').checked : false;
-    var box = $('modeBox');
-    if (box) box.hidden = off;
-    var m = (document.querySelector('input[name=mode]:checked') || {}).value || 'cross';
+    // 🔴「設定なし」は4つ目のえらび（2026-09-09）。えらんでいる間は組み合わせの箱を薄くする
+    var m = (document.querySelector('input[name=mode]:checked') || {}).value || 'none';
+    var off = (m === 'none');
+    var pb = $('pairBox');
+    if (pb) pb.classList.toggle('off', off);
     var note = $('modeNote');
     if (note) note.innerHTML = MODE_NOTE[m] || '';
   }
@@ -2128,7 +2136,7 @@
       refreshNames(); renderSexList();
       if ($('save').checked) save();
     });
-    if ($('hideSheet')) $('hideSheet').onclick = toggleMask;
+    if ($('hideSheet')) $('hideSheet').onclick = function (e) { closeCond(); toggleMask(e); };
     if ($('printScale')) $('printScale').addEventListener('change', function () {
       if (state.seats) drawSheet();
       if ($('save').checked && !state.sample) save();
@@ -2263,9 +2271,9 @@
       if ($('save').checked && !state.sample) save();
     });
     // ⚠run を直接わたさない。クリックの情報が第1引数に入って「初回」と間違われる
-    $('go').onclick = function () { run(); };
+    $('go').onclick = function () { closeCond(); run(); };
     // ⚠「べつの案を出す」は座席表を見ながら押すので、画面を動かさない
-    $('again').onclick = function () { run(true); };
+    $('again').onclick = function () { closeCond(); run(true); };
     $('doPrint').onclick = doPrint;
     if ($('printWhat')) $('printWhat').addEventListener('change', printNote);
     // 🔴 用紙の向きで1マスの高さが変わる。描き直さないと、
@@ -2298,7 +2306,7 @@
     document.addEventListener('click', function (e) {
       if (pick && !pick.contains(e.target)) closeGroupPick();
     });
-    $('screenOn').onclick = screenOn;
+    $('screenOn').onclick = function (e) { closeCond(); screenOn(e); };
     $('screenOff').onclick = screenOff;
     // 全画面から抜けたとき（Esc・ブラウザのボタン）も、画面をもとに戻す
     document.addEventListener('fullscreenchange', function () {

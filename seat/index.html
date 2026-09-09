@@ -26,7 +26,7 @@
 <title>教室の座席表メーカー｜エクセルテンプレート不要・30人40人</title>
 <meta name="description" content="教室の座席表の作り方は簡単。名簿を貼るだけで席替えができる無料ツールです。エクセルテンプレートは不要。新年度の出席番号順にも対応。小学校・中学校・高校のどのクラスでも、30人・35人・40人、4列・5列・6列・8列の教室席配置に対応。生徒に見せる向きと、先生が教卓から見る向きを切り替えられます。班分けと色分けもそのまま印刷・PDFにできます。エクセルテンプレートのダウンロードも、登録もいりません。名簿はブラウザの中だけで処理し、AIの学習にも使われません。">
 <link rel="stylesheet" href="../style.css?v=128">
-<link rel="stylesheet" href="seat.css?v=2">
+<link rel="stylesheet" href="seat.css?v=5">
 <link rel="stylesheet" href="../print.css?v=54" media="print">
 <style>
 /* 🔴 班長・前回とのくらべ・クラスの保存（2026-08-31）。
@@ -326,45 +326,59 @@ body.screen .seat.dup .nm{text-decoration:none}
     <details class="opt sub noprint" id="condBlock">
       <summary>詳しい条件（離す・隣にする・席を決める）</summary>
       <div class="body">
-        <!-- 🔴 チェックを外すと中身が出てくる形にした（2026-09-03 本人）。
-             本人「4つが同列だと、ボタンを変えたら設定が変わるってのが想像しにくい」
-             ＝「設定しない」を他の3つと並べず、上下の関係にする。
+        <!-- 🔴 チェック（隣の条件は設定しない）は外した（2026-09-09 本人）。
+             ⚠「詳しい条件」自体がすでにシャッターなので、中でもう一段隠す必要がない。
+               本人「そもそも詳しい条件自体がシャッターになってるからいらなくない？」
+             🔴きっかけ＝本人が友人に使い方を説明したとき、「離す」を探して見つけられなかった。
+               見出しには「離す」と書いてあるのに、チェックのラベルは「隣の条件は設定しない」で、
+               ⚠「離す」という言葉がどこにも出ていなかった。しかも二重否定だった
              ⚠3つの意味は言葉だけでは伝わらないので、小さな図と1行の説明を付けた -->
         <h3>離す・隣にする&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h3>
         <div class="tip-body" hidden>
-          <p>「この2人は離す」「この2人は隣にする」を決められます。<strong>使わないときは、チェックを入れたままでかまいません。</strong></p>
+          <p>「この2人は離す」「この2人は隣にする」を決められます。<strong>使わないときは、何も入れなくてかまいません。</strong></p>
           <p>使うときは、まず<strong>どこまでを“隣”とみなすか</strong>をえらびます。きつくするほど、条件を満たす配置が見つかりにくくなります。作れないときは、ここをゆるくしてみてください。</p>
         </div>
-        <label class="chk-inline"><input type="checkbox" id="modeOff" checked> 隣の条件は設定しない</label>
-
-        <div id="modeBox" hidden style="margin-top:12px">
+        <div id="modeBox" style="margin-top:12px">
           <p class="note-sm" style="margin:0 0 6px">どこまでを「隣」とみなしますか</p>
           <div class="radios mode-pick">
+            <!-- 🔴 「設定なし」を左端に戻した（2026-09-09 本人「左右だけの左に、設定なしの図とボタンを作って」）。
+                 ⚠2026-09-03に一度やめた形だが、⭐図ができたので「何も隣とみなさない」が目で分かるようになった。
+                   当時の理由「4つが同列だと、ボタンを変えたら設定が変わるってのが想像しにくい」は、図で解けている -->
+            <label><input type="radio" name="mode" value="none" checked>
+              <span class="mode-fig"><i></i><i></i><i></i><i></i><i class="me"></i><i></i><i></i><i></i><i></i></span>
+              設定なし</label>
             <label><input type="radio" name="mode" value="lr">
               <span class="mode-fig"><i></i><i></i><i></i><i class="on"></i><i class="me"></i><i class="on"></i><i></i><i></i><i></i></span>
               左右だけ</label>
-            <label><input type="radio" name="mode" value="cross" checked>
+            <label><input type="radio" name="mode" value="cross">
               <span class="mode-fig"><i></i><i class="on"></i><i></i><i class="on"></i><i class="me"></i><i class="on"></i><i></i><i class="on"></i><i></i></span>
               前後左右</label>
             <label><input type="radio" name="mode" value="king">
               <span class="mode-fig"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="me"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>
               まわり全部（ななめも）</label>
           </div>
-          <p class="hint" id="modeNote"></p>
+          <!-- 🔴 説明文（前後左右の4つの席を「隣」とみなします）は外した（2026-09-09 本人）。
+               本人「これいらないね。図になったから」＝小さな図で伝わっているので、文が重複する。
+               ⚠JS側の MODE_NOTE と modeChanged() は残してある（$('modeNote') が無ければ何もしない） -->
 
-          <h3>離す組み合わせ</h3>
-          <div id="sepList"></div>
-          <button class="mini" id="addSep" type="button">＋ 組を追加</button>
+          <!-- ⚠「設定なし」をえらんでいる間は、この箱ごと薄くして触れなくする（2026-09-09）。
+               ⭐入れたものは消さない（もどせば、そのまま効く） -->
+          <div id="pairBox">
+            <h3>離す組み合わせ</h3>
+            <div id="sepList"></div>
+            <button class="mini" id="addSep" type="button">＋ 組を追加</button>
 
-          <h3>隣にする組み合わせ</h3>
-          <div id="adjList"></div>
-          <button class="mini" id="addAdj" type="button">＋ 組を追加</button>
+            <h3>隣にする組み合わせ</h3>
+            <div id="adjList"></div>
+            <button class="mini" id="addAdj" type="button">＋ 組を追加</button>
+          </div>
         </div>
 
         <h3>席を決める人</h3>
         <div id="fixList"></div>
         <button class="mini" id="addFix" type="button">＋ 人を追加</button>
-        <p class="hint">視力などの配慮は<strong>「前のほう」がおすすめ</strong>です。席をぴったり決めると、毎回まったく同じ席になります。</p>
+        <!-- ⚠「視力などの配慮は「前のほう」がおすすめです」は削除した（2026-09-09 本人）。また足さない -->
+        <p class="hint">席をぴったり決めると、毎回まったく同じ席になります。</p>
 
         <!-- 🔴 ★はここでえらぶ形にした（2026-09-03 本人「名簿に班長とは書かない」）。
              ⚠名簿の★の読み取りは残してあるが、画面では案内しない。
@@ -773,7 +787,7 @@ body.screen .seat.dup .nm{text-decoration:none}
 </footer>
 
 <script src="../seating.js?v=54"></script>
-<script src="seat.js?v=163"></script>
+<script src="seat.js?v=165"></script>
 <!-- 🔴 印刷用の1枚絵の置き場（2026-09-01）。画面には出ない。
      ⚠**body の直下に置くこと。**中に入れると、印刷のときに親ごと隠されて白紙になる -->
 <div id="printImgWrap"></div>
