@@ -25,7 +25,7 @@
 <meta name="google-site-verification" content="PfjmCGxUaN1hzuj_dRw3e4PTY6xepghfXM_CrU_sO-A" />
 <title>教室の座席表メーカー｜エクセルテンプレート不要・30人40人</title>
 <meta name="description" content="教室の座席表の作り方は簡単。名簿を貼るだけで席替えができる無料ツールです。エクセルテンプレートは不要。新年度の出席番号順にも対応。小学校・中学校・高校のどのクラスでも、30人・35人・40人、4列・5列・6列・8列の教室席配置に対応。生徒に見せる向きと、先生が教卓から見る向きを切り替えられます。班分けと色分けもそのまま印刷・PDFにできます。エクセルテンプレートのダウンロードも、登録もいりません。名簿はブラウザの中だけで処理し、AIの学習にも使われません。">
-<link rel="stylesheet" href="../style.css?v=128">
+<link rel="stylesheet" href="../style.css?v=133">
 <link rel="stylesheet" href="seat.css?v=5">
 <link rel="stylesheet" href="../print.css?v=54" media="print">
 <style>
@@ -97,9 +97,6 @@ body.screen .sheet.masked .grid{display:grid}
    ⚠狭い画面では自動で縦に積む（絵が下）。並べるのは 860px より広いときだけ */
 /* 🔴 できること（2026-09-04 本人）。左の高さを埋めつつ、中身も増やす */
 /* ⚠ .can は下の「できること」の節がもう使っている（白い箱）。ここは別名にする */
-.can-do{margin:12px 0 10px;padding-left:1.1em;font-size:.86rem;color:var(--ink-soft);line-height:1.9}
-.can-do li{margin-bottom:2px}
-.can-do li::marker{color:var(--pink)}
 .intro{margin:0 0 20px}
 .intro .t-sample{margin:0}
 @media (min-width:860px){
@@ -217,6 +214,10 @@ body.screen .seat.dup .nm{text-decoration:none}
     <section class="card noprint">
       <h2><span class="step">1</span>名簿の入力&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
       <div class="tip-body" hidden>
+        <!-- 🔴 ①の？の一番上に置く（2026-09-09 本人）。⚠端末の種類まで書く
+             本人「使っている端末の中だけは、タブレットスマホでも同様という内容も入れたい」
+             ⭐事実で止めない。「だから、そのまま貼って大丈夫」まで書く -->
+        <p>🔒 <strong>名簿はインターネットに送りません。</strong>使っている端末のブラウザの中だけで計算しているので、名前がどこかに保存されることも、AIの学習に使われることもありません。パソコン・タブレット・スマホ、どれでも同じです。</p>
         <p class="tip-h">Excelから貼るとき</p>
         <ul>
           <li><strong>名前の列をコピーして、この欄に貼るだけです。</strong></li>
@@ -235,7 +236,7 @@ body.screen .seat.dup .nm{text-decoration:none}
 
         <p><strong>いま出ている座席表はサンプルです。</strong>名簿を入れると、自分のクラスに変わります。入れる前でも、席を動かしたり班に分けたりして試せます。</p>
       </div>
-      <p class="safe">🔒 <strong>使っているパソコンの中だけで完結しています。</strong>安心してご利用ください。</p>
+      <p class="safe">🔒 <strong>使っている端末の中だけで完結しています。</strong>安心してご利用ください。</p>
       <!-- 🔴 次に使うとき⑧まで下がらなくていいように、呼び出しは①に置く（2026-08-31 本人）。
            ⚠残したものが1件も無いときは出さない（はじめての人には邪魔なだけ） -->
       <div class="row tight" id="quickLoad" hidden style="margin-bottom:12px">
@@ -589,7 +590,7 @@ body.screen .seat.dup .nm{text-decoration:none}
           <input type="checkbox" id="showCredit" checked> 右下にサイト名を入れる
         </label>
       </p>
-      <p class="hint" style="margin-top:6px">印刷の向きや大きさは、お使いのパソコン・プリンターの設定によります。うまく収まらないときは、印刷画面の<strong>拡大・縮小</strong>で調整してください。</p>
+      <p class="hint" style="margin-top:6px">印刷の向きや大きさは、使っている端末・プリンターの設定によります。うまく収まらないときは、印刷画面の<strong>拡大・縮小</strong>で調整してください。</p>
       </div>
     </details>
 
@@ -630,14 +631,14 @@ body.screen .seat.dup .nm{text-decoration:none}
         <li><strong>いま開いている画面をそのまま残します。</strong>名簿・教室の形・条件・男女の指定・座席表まで、次に開いたときそのまま出ます。</li>
         <li><strong>残るのは1つだけ</strong>です。名簿を入れかえると、前のものは上書きされます。いくつも残したいときは<strong>⑧</strong>を使ってください。</li>
         <li><strong>チェックを外すと、保存していたものは消えます。</strong>次に開いたときは最初からの設定になります。いま見ている画面はそのままです。</li>
-        <li>残るのは<strong>このパソコンの中だけ</strong>です。<strong>どこにも送信されません。</strong>読み込んだ画像は保存されません。</li>
+        <li>残るのは<strong>この端末の中だけ</strong>です。<strong>どこにも送信されません。</strong>読み込んだ画像は保存されません。</li>
       </ul>
     </div>
     <label style="font-weight:normal">
       <input type="checkbox" id="save"> この画面を保存する
     </label>
     <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。<br>
-      ⚠<b>共用のパソコンで使ったときは、このチェックを外して、この画面を閉じてください。</b></p>
+      ⚠<b>共用の端末で使ったときは、このチェックを外して、この画面を閉じてください。</b></p>
     <p><span class="saving" id="savingLabel"></span></p>
   </section>
 
@@ -648,8 +649,10 @@ body.screen .seat.dup .nm{text-decoration:none}
   <section class="card noprint">
     <h2><span class="step">8</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
     <div class="tip-body" hidden>
+      <!-- 🔴 ⑧の？の一番上にも置く（2026-09-09 本人）。①と同じ考え方 -->
+      <p>🔒 <strong>保存先もインターネットではありません。</strong>使っている端末のブラウザの中だけに残るので、ほかの人からは見えません。パソコン・タブレット・スマホ、どれでも同じです。</p>
       <ul>
-        <li><strong>名前を付けて、いくつも保存できます。</strong>残るのは<strong>このパソコンの中だけ</strong>です。</li>
+        <li><strong>名前を付けて、いくつも保存できます。</strong>残るのは<strong>この端末の中だけ</strong>です。</li>
         <li><strong>さくらツールの中で共通です。</strong>ほかの道具で保存したデータもここに出ますし、逆もできます（教室の形や班の設定はツールごとに覚えます）。</li>
         <li>呼び出すのは①の<strong>「このデータを自動入力」</strong>から。名簿も条件も入るので、あとは「席替えする」を押すだけです。</li>
         <li><strong>「記録の座席を表示」</strong>＝そのときの座席をそのまま出します（<strong>席替えはしません</strong>）。</li>
@@ -660,7 +663,7 @@ body.screen .seat.dup .nm{text-decoration:none}
 
     <p class="hint">保存したデータは、<b>さくらツール上で利用できます</b>。</p>
 
-    <p class="safe">🔒 <strong>保存したものは、このパソコンの中だけに残ります。</strong></p>
+    <p class="safe">🔒 <strong>保存したものは、使っている端末の中だけに残ります。</strong></p>
 
     <div class="cls-box">
       <h3>データに名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
@@ -732,11 +735,11 @@ body.screen .seat.dup .nm{text-decoration:none}
       <div class="body">
       <dl>
       <dt>ネットにつながっているのに、本当に外部に出ないのですか？</dt>
-      <dd><strong>普段お使いのパソコンで、名簿を開くのと同じです。</strong>エクセルで名簿を開いても、書いた中身がネットに出ていかないのと同じことです。ネットにつながっていても、<strong>すべてお使いのパソコンだけで完結します</strong>。そのまま印刷やPDFにできます。だから、外に晒されることも、漏れることも、AIの学習に使われることもありません。<strong>いつもの仕事と同じように、安心して使えます。</strong></dd>
+      <dd><strong>普段使っている端末で、名簿を開くのと同じです。</strong>エクセルで名簿を開いても、書いた中身がネットに出ていかないのと同じことです。ネットにつながっていても、<strong>すべて使っている端末だけで完結します</strong>。そのまま印刷やPDFにできます。だから、外に晒されることも、漏れることも、AIの学習に使われることもありません。<strong>いつもの仕事と同じように、安心して使えます。</strong></dd>
       <dt>名簿は外部に送られますか？</dt>
-      <dd>送りません。すべてお使いのパソコンだけで完結します。<strong>外部に出ていないので、AIの学習に使われることもありません。</strong></dd>
+      <dd>送りません。すべて使っている端末だけで完結します。<strong>外部に出ていないので、AIの学習に使われることもありません。</strong></dd>
       <dt>入力した名簿がAIの学習に使われるか心配です</dt>
-      <dd><strong>ありません。</strong>外部には送っていないためです。学習させる・させない以前に、<strong>すべてお使いのパソコンだけで完結しています</strong>。学校のパソコンで、生徒の個人情報をあつかうときにも、安心してお使いいただけます。</dd>
+      <dd><strong>ありません。</strong>外部には送っていないためです。学習させる・させない以前に、<strong>すべて使っている端末だけで完結しています</strong>。学校の端末で、生徒の個人情報をあつかうときにも、安心してお使いいただけます。</dd>
       <dt>条件を入れたら「作れません」と出ました</dt>
       <dd>条件がきつすぎて、全部を満たす配置が無い状態です。どの条件を外せば作れるかを画面に出しますので、それを外すか、「隣」の決め方をゆるくしてください。</dd>
       <dt>3つの案は何が違うのですか？</dt>
@@ -772,7 +775,7 @@ body.screen .seat.dup .nm{text-decoration:none}
     <details class="howto">
       <summary>データの扱い</summary>
       <div class="body">
-      <p><strong>使っているパソコンの中だけで完結できます。</strong>使った名簿がネット上に流れることはありません。外部には送っていないので、AIの学習に使われることも、個人情報が漏れることもありません。安心して使えます。「画面の保存」をオンにしたときだけ、このパソコンの中に残ります。オフのままなら、ページを閉じた時点で消えます。インストールも会員登録もいりません。</p>
+      <p><strong>使っている端末の中だけで完結できます。</strong>使った名簿がネット上に流れることはありません。外部には送っていないので、AIの学習に使われることも、個人情報が漏れることもありません。安心して使えます。「画面の保存」をオンにしたときだけ、この端末の中に残ります。オフのままなら、ページを閉じた時点で消えます。インストールも会員登録もいりません。</p>
       </div>
     </details>
 
@@ -786,10 +789,11 @@ body.screen .seat.dup .nm{text-decoration:none}
     <span class="copy">さくらツール　© 2026 SAKURA TOOLS</span></div>
 </footer>
 
-<script src="../seating.js?v=54"></script>
+<script src="../seating.js?v=57"></script>
 <script src="seat.js?v=165"></script>
 <!-- 🔴 印刷用の1枚絵の置き場（2026-09-01）。画面には出ない。
      ⚠**body の直下に置くこと。**中に入れると、印刷のときに親ごと隠されて白紙になる -->
 <div id="printImgWrap"></div>
+<script src="../tip.js?v=3"></script>
 </body>
 </html>

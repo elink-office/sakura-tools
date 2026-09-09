@@ -143,9 +143,20 @@ textarea::placeholder{font-size:.8em;line-height:1.7}
 
 /* 入力 */
 label{display:block;font-size:.9rem;margin:10px 0 4px;font-weight:bold}
-input[type=text],input[type=number],textarea,select{
+/* ⚠ date と file が抜けていて、そこだけ素の見た目（角丸なし・細い枠）だった
+     （2026-09-09 本人がスクショで発見。請求書メーカーで気づいた）。
+   ⭐ file はスライドでも使っているので、共通に置くのが正しい（→ ページの型 16-a） */
+input[type=text],input[type=number],input[type=date],input[type=file],textarea,select{
   font:inherit;padding:8px 10px;border:1px solid var(--line);
   border-radius:8px;background:#fff;color:var(--ink);
+}
+/* ⚠ファイル選択だけ、中のボタンのぶん詰める */
+input[type=file]{padding:6px 8px}
+/* ⭐「ファイルを選択」のボタン。ブラウザが描くので、ここでしか色を変えられない */
+input[type=file]::file-selector-button{
+  font:inherit;font-size:.85rem;padding:4px 10px;margin-right:10px;
+  border:1px solid var(--line);border-radius:8px;
+  background:#fff;color:var(--ink);cursor:pointer;
 }
 /* 🔴 マウスを乗せたら枠が色づく（2026-09-04 本人）。
    本人「ちょっと色がつくのはとても分かりやすくていいなと思って」
@@ -154,7 +165,8 @@ input[type=text],input[type=number],textarea,select{
    ⚠ hover:hover ＝マウスがある機器だけ。付けないとスマホで触ったあと色が残る。
    ⚠色は変数を通す＝席次表（seki.css で --pink を緑に上書き）では緑になる */
 @media (hover:hover){
-  input[type=text]:hover,input[type=number]:hover,textarea:hover,select:hover{
+  input[type=file]::file-selector-button:hover{border-color:var(--pink);color:var(--pink)}
+  input[type=text]:hover,input[type=number]:hover,input[type=date]:hover,textarea:hover,select:hover{
     /* ⚠乗せたときは**細い線の色だけ**（2026-09-04 本人）。
        うすく塗るのはボタンだけにする＝入力欄とボタンの役割を見た目で分ける */
     border-color:var(--pink);
@@ -162,7 +174,7 @@ input[type=text],input[type=number],textarea,select{
 }
 /* 選んでいるあいだ＝枠だけ色づけて、中は白にもどす（打っている字が読みやすいように）。
    ⚠ :focus-visible の枠（キーボード操作の目印）は消さない */
-input[type=text]:focus,input[type=number]:focus,textarea:focus,select:focus{
+input[type=text]:focus,input[type=number]:focus,input[type=date]:focus,input[type=file]:focus,textarea:focus,select:focus{
   border-color:var(--pink);background:#fff;
 }
 textarea{width:100%;min-height:170px;resize:vertical;line-height:1.6}
@@ -471,6 +483,14 @@ body.screen .sheet{width:auto !important;transform:none !important}
 .nb{display:inline-block}
 
 /* できること */
+/* 🔴「できること」の3項目（リードの下）。⭐共通に置く（2026-09-09 本人）
+   ⚠これまで seat / seki / slide の index.html にバラバラに書いてあり、
+     請求書メーカーだけ指定が無くて 16px の黒になっていた（本人が発見）。
+   ⭐ここに置けば、新しい道具でも自動でそろう */
+.can-do{margin:12px 0 10px;padding-left:1.1em;font-size:.86rem;color:var(--ink-soft);line-height:1.9}
+.can-do li{margin-bottom:2px}
+.can-do li::marker{color:var(--pink)}
+
 .can{list-style:none;padding:0;margin:10px 0 0}
 .can li{
   border:1px solid var(--line);border-radius:12px;background:#fff;
@@ -554,12 +574,25 @@ select.ph option{color:var(--ink)}
 .tip-btn:hover::before,.tip-btn[aria-expanded="true"]::before{background:var(--pink-pale)}
 .tip-btn::after{content:"";position:absolute;inset:-8px}  /* 見えないが押せる範囲 */
 .tip-btn:hover,.tip-btn[aria-expanded="true"]{color:var(--ink)}
+/* 🔴「？」の中は説明が多くなる（2026-09-09 本人「文字が多すぎるから」）。
+   ⭐字を少し小さく＋段落と段落のあいだを開けて、かたまりを見せる。
+   🚫色は薄くしない（本人「濃くてもいいんだよ」）。⚠小さい字ほど濃さが要る（基準は4.5:1） */
 .tip-body{
   background:var(--pink-pale);border:1px solid var(--pink-light);
-  border-radius:8px;padding:10px 14px;margin:8px 0 12px;font-size:.84rem;
+  border-radius:8px;padding:12px 14px;margin:8px 0 12px;font-size:.8rem;
+  line-height:1.75;
+  /* 🔴 幅いっぱいだと1行が長すぎて読みにくい（2026-09-09 本人「これ全画面。読みにくいよね」）。
+     ⭐日本語は1行35〜45文字あたりが読みやすい。0.8rem×38em ≒ 38文字で止める。
+     ⚠スマホは画面のほうが狭いので、この指定は効かない（＝今までどおり） */
+  max-width:38em;
 }
-.tip-body p{margin:0 0 6px}
+.tip-body p{margin:0 0 11px}
 .tip-body p:last-child{margin:0}
+.tip-body ul{margin:0 0 11px;padding-left:1.3em}
+.tip-body ul:last-child{margin:0}
+.tip-body li{margin:0 0 7px}
+.tip-body li:last-child{margin:0}
+.tip-body .tip-h{margin:0 0 7px}
 
 /* 男女のチップ */
 .chips{display:flex;flex-wrap:wrap;gap:6px}
@@ -724,3 +757,44 @@ body.screen .seat.empty{
    （2026-09-05 本人「2026　文学部英語学科　名簿 とかでも、ボタン、表示される？」）。
    ⭐えらぶ欄は入れ物より広くしない。中身は自動で「…」に切れる */
 select{max-width:100%}
+
+/* ============================================================
+   🔴 長い「？」はポップアップにする（2026-09-09 本人）
+   本人「これ、とじなかったら下に続きが流れるし、邪魔なんだよね。
+        浮いて必ず閉じて次に行く感じにしてはどうか」
+   ⭐しきい値は250文字（seating.js が数えて data-pop を付ける）。
+     ⚠短い？は今までどおりその場に開く（本人「短いのはそのままでいいよ」）
+   ⚠戻す可能性あり＝この節と seating.js の同じ見出しの節を消せば元どおり
+   ============================================================ */
+.tip-mask{position:fixed;inset:0;background:rgba(40,32,38,.40);z-index:80}
+html.tip-open{overflow:hidden}          /* 後ろが動かない＝閉じてから次に行く */
+
+.tip-body[data-pop]:not([hidden]){
+  position:fixed;z-index:81;
+  left:50%;top:50%;transform:translate(-50%,-50%);
+  /* ⭐幅は決め打ち。文章が短くても細長い箱にならない（本人「最低のサイズを決めといて」） */
+  width:min(480px, calc(100vw - 32px));
+  max-width:none;
+  max-height:calc(100vh - 72px);overflow:auto;
+  box-shadow:0 12px 44px rgba(70,50,60,.30);
+  border-color:var(--pink-light);
+  /* ⭐浮いているときは中身を白に（2026-09-09 本人「この部分だけピンクで、あとは白かグレー」）。
+     ⚠グレー(--bg)はページの地の色と同じで、カードに見えなくなる。
+       ⭐白＝文字が一番読みやすく、暗い背景の上でカードが浮いて見える。
+       ⭐その場に開くほうはピンクのまま＝「浮いている／その場」の区別にもなる */
+  background:#fff;
+}
+/* 見出し（何の説明か）と ✕。ポップアップのときだけ出す */
+.tip-pop-head{display:none}
+.tip-body[data-pop]:not([hidden]) .tip-pop-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  position:sticky;top:-12px;
+  margin:-12px -14px 11px;padding:11px 10px 10px 14px;
+  background:var(--pink-pale);border-bottom:1px solid var(--pink-light);
+  font-weight:700;font-size:.86rem;
+}
+.tip-x{
+  border:0;background:none;cursor:pointer;color:var(--ink-soft);
+  font-size:1rem;line-height:1;padding:4px 8px;border-radius:6px;
+}
+.tip-x:hover{color:var(--ink);background:#fff}

@@ -338,9 +338,6 @@ body.hidebar #bar .row{opacity:0}
 #name i.nbr{ flex-basis:100%; height:0; margin:0; }
 
 /* 「できること」の箇条書き。⚠seat/index.html の中にしかない部品なので、同じ値をここにも置く */
-.can-do{margin:12px 0 10px;padding-left:1.1em;font-size:.86rem;color:var(--ink-soft);line-height:1.9}
-.can-do li{margin-bottom:2px}
-.can-do li::marker{color:var(--pink)}
 
 /* 🔴 せまい画面でフッターのボタンが折り返して、ぐちゃぐちゃに積み上がっていた（2026-09-05 本人）。
    ⭐まずボタンを小さくして1行に収める。それでも足りない幅では、文字を上の段に分ける（2段の形にする）。

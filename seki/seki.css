@@ -258,3 +258,21 @@ body.screen #prevSheet{ display: none !important; }
   /* ⚠絵のほうを紙の形に合わせてあるので、ここは幅に合わせるだけでよい */
   body.print-img #printImgWrap canvas{display:block;width:100%;max-width:100%;height:auto;margin:0}
 }
+
+/* 🔴 座席表と同じ「離す・隣にする」の形にそろえた（2026-09-09 本人「席次も同じ設定にして」）。
+   ⭐3×3のマスで、桜色が“隣”とみなす場所。⚠うすい色だとこの大きさでは白と見分けがつかない */
+.mode-fig{display:inline-grid;grid-template-columns:repeat(3,7px);grid-template-rows:repeat(3,7px);
+  gap:2px;margin-right:2px}
+.mode-fig i{background:#e4e7e9;border-radius:1px}
+.mode-fig i.on{background:#eaa8c0}
+.mode-fig i.me{background:var(--pink)}
+.mode-pick label{gap:6px}
+
+/* ⭐「離す・隣にする」の中身は、その見出しにぶら下がるもの。インデントだけで見せる
+   （⚠縦線は座席表で試して外した。線が重なって見にくい） */
+#modeBox{ padding-left:12px }
+#modeBox h3{ font-size:.92rem }
+
+/* ⚠「設定なし」のあいだは、組み合わせの箱を薄くして触れなくする。
+   ⭐入れたものは消さない。もどせば、そのまま効く */
+#pairBox.off{ pointer-events:none }

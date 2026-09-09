@@ -24,8 +24,8 @@
 </script>
 <title>席次表メーカー｜無料・エクセルテンプレート不要｜会議・研修・大学</title>
 <meta name="description" content="席次表の作り方は簡単。名簿を貼るだけで、会議・研修・セミナー・大学の席次表が自動で作れる無料ツールです。前を向いて並ぶスクール形式で、席順は名簿順とランダムから選べます。用紙に合わせて自動で調整し、A4の1枚に収めるので、2ページに分かれません。会社名・役職（肩書き）・フリガナ・名前を1マスに並べ、敬称は様・さん・先生から選べます。Excelの名簿から複数の列をそのまま貼り付けでき、通し番号の向きも指定できます。エクセルテンプレートは不要です。印刷とPDFもこのページから。名簿はブラウザの中だけで処理し、AIの学習にも使われません。">
-<link rel="stylesheet" href="../style.css?v=128">
-<link rel="stylesheet" href="seki.css?v=22">
+<link rel="stylesheet" href="../style.css?v=133">
+<link rel="stylesheet" href="seki.css?v=23">
 <link rel="stylesheet" href="../print.css?v=54" media="print">
 <style>
 /* 🔴 見本は押すと大きくなる（2026-09-04 本人）。
@@ -42,9 +42,6 @@
    ＝余白を絵で埋めつつ、①（名簿の欄）を上のほうに残す。
    ⚠狭い画面では自動で縦に積む（絵が下）。並べるのは 860px より広いときだけ */
 /* 🔴 できること（2026-09-04 本人）。⚠ .can は共通CSSが別に使っているので .can-do にする */
-.can-do{margin:12px 0 10px;padding-left:1.1em;font-size:.86rem;color:var(--ink-soft);line-height:1.9}
-.can-do li{margin-bottom:2px}
-.can-do li::marker{color:var(--midori,#3b8f6b)}
 .intro{margin:0 0 20px}
 .intro .t-sample{margin:0}
 @media (min-width:860px){
@@ -119,6 +116,10 @@
     <section class="card noprint">
       <h2><span class="step">1</span>名簿の入力&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
       <div class="tip-body" hidden>
+        <!-- 🔴 ①の？の一番上に置く（2026-09-09 本人）。⚠端末の種類まで書く
+             本人「使っている端末の中だけは、タブレットスマホでも同様という内容も入れたい」
+             ⭐事実で止めない。「だから、そのまま貼って大丈夫」まで書く -->
+        <p>🔒 <strong>名簿はインターネットに送りません。</strong>使っている端末のブラウザの中だけで計算しているので、名前がどこかに保存されることも、AIの学習に使われることもありません。パソコン・タブレット・スマホ、どれでも同じです。</p>
         <p><strong>Excelから、必要な列をまとめて選んで貼り付けてください。</strong>会社名・役職・名前が並んだ範囲をそのままコピーして、この欄に貼るだけです。</p>
         <p>貼り付けると、<strong>どの列が何なのかを自動で見分けます。</strong>数字だけの列は番号、カタカナだけの列はフリガナ、といった具合です。違っていたら、下のメニューで選び直せます。</p>
         <p><strong>名前だけでも作れます。</strong>1行に1人ずつ書けば、そのまま席次表になります。</p>
@@ -126,7 +127,7 @@
         <span class="hint">株式会社さくら商事,部長,山田 太郎,ヤマダ タロウ</span></p>
         <p>⚠ <strong>空白は区切りになりません。</strong>「山田 太郎」のように名前の中に空白が入るためです。</p>
       </div>
-      <p class="safe">🔒 <strong>使っているパソコンの中だけで完結しています。</strong>安心してご利用ください。</p>
+      <p class="safe">🔒 <strong>使っている端末の中だけで完結しています。</strong>安心してご利用ください。</p>
       <!-- 🔴 保存した名簿の呼び出しは①に置く（⑧まで下がらなくていい）。
            ⚠1件も無いうちは出さない。座席表と共通の置き場なので、
              /seat/ で保存したものもここに出る -->
@@ -221,24 +222,43 @@
     <details class="opt sub noprint" id="condBlock">
       <summary>詳しい条件（離す・隣にする・席を決める）</summary>
       <div class="body">
-        <h3>「隣」の考え方&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h3>
+        <!-- 🔴 座席表と同じ形にそろえた（2026-09-09 本人「席次も同じ設定にして」）。
+             ⭐図つきの4つ（設定なし・左右だけ・前後左右・まわり全部）。初期は「設定なし」
+             ⚠見出しも座席表と同じ「離す・隣にする」にした（前は「「隣」の考え方」） -->
+        <h3>離す・隣にする&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h3>
         <div class="tip-body" hidden>
           <p>「離す」「隣にする」で、<strong>どこまでを“隣”とみなすか</strong>を決めます。</p>
           <p>きつくするほど、条件を満たす配置が見つかりにくくなります。作れないときは、ここをゆるくしてみてください。</p>
         </div>
-        <div class="radios">
-          <label><input type="radio" name="mode" value="lr"> 左右だけ</label>
-          <label><input type="radio" name="mode" value="cross" checked> 前後左右</label>
-          <label><input type="radio" name="mode" value="king"> まわり全部（ななめも）</label>
+
+        <div id="modeBox">
+          <p class="note-sm">どこまでを「隣」とみなしますか</p>
+          <div class="radios mode-pick">
+            <label><input type="radio" name="mode" value="none" checked>
+              <span class="mode-fig"><i></i><i></i><i></i><i></i><i class="me"></i><i></i><i></i><i></i><i></i></span>
+              設定なし</label>
+            <label><input type="radio" name="mode" value="lr">
+              <span class="mode-fig"><i></i><i></i><i></i><i class="on"></i><i class="me"></i><i class="on"></i><i></i><i></i><i></i></span>
+              左右だけ</label>
+            <label><input type="radio" name="mode" value="cross">
+              <span class="mode-fig"><i></i><i class="on"></i><i></i><i class="on"></i><i class="me"></i><i class="on"></i><i></i><i class="on"></i><i></i></span>
+              前後左右</label>
+            <label><input type="radio" name="mode" value="king">
+              <span class="mode-fig"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="me"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>
+              まわり全部（ななめも）</label>
+          </div>
+
+          <!-- ⚠「設定なし」をえらんでいる間は、この箱ごと薄くして触れなくする -->
+          <div id="pairBox">
+            <h3>離す組み合わせ</h3>
+            <div id="sepList"></div>
+            <button class="mini" id="addSep" type="button">＋ 組を追加</button>
+
+            <h3>隣にする組み合わせ</h3>
+            <div id="adjList"></div>
+            <button class="mini" id="addAdj" type="button">＋ 組を追加</button>
+          </div>
         </div>
-
-        <h3>離す組み合わせ</h3>
-        <div id="sepList"></div>
-        <button class="mini" id="addSep" type="button">＋ 組を追加</button>
-
-        <h3>隣にする組み合わせ</h3>
-        <div id="adjList"></div>
-        <button class="mini" id="addAdj" type="button">＋ 組を追加</button>
 
         <h3>席を決める人</h3>
         <div id="fixList"></div>
@@ -467,22 +487,24 @@
         <li><strong>いま開いている画面をそのまま残します。</strong>名簿・会場の形・条件・見た目の設定・席次表まで、次に開いたときそのまま出ます。</li>
         <li><strong>残るのは1つだけ</strong>です。名簿を入れかえると、前のものは上書きされます。</li>
         <li><strong>チェックを外すと、保存していたものは消えます。</strong>次に開いたときは最初からの設定になります。いま見ている画面はそのままです。</li>
-        <li>残るのは<strong>このパソコンの中だけ</strong>です。<strong>どこにも送信されません。</strong></li>
+        <li>残るのは<strong>この端末の中だけ</strong>です。<strong>どこにも送信されません。</strong></li>
       </ul>
     </div>
     <label style="font-weight:normal">
       <input type="checkbox" id="save"> この画面を保存する
     </label>
     <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。<br>
-      ⚠<b>共用のパソコンで使ったときは、このチェックを外して、この画面を閉じてください。</b></p>
+      ⚠<b>共用の端末で使ったときは、このチェックを外して、この画面を閉じてください。</b></p>
     <p><span class="saving" id="savingLabel"></span></p>
   </section>
 
   <section class="card noprint">
     <h2><span class="step">8</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
     <div class="tip-body" hidden>
+      <!-- 🔴 ⑧の？の一番上にも置く（2026-09-09 本人）。①と同じ考え方 -->
+      <p>🔒 <strong>保存先もインターネットではありません。</strong>使っている端末のブラウザの中だけに残るので、ほかの人からは見えません。パソコン・タブレット・スマホ、どれでも同じです。</p>
       <ul>
-        <li><strong>名前を付けて、いくつも保存できます。</strong>残るのは<strong>このパソコンの中だけ</strong>です。</li>
+        <li><strong>名前を付けて、いくつも保存できます。</strong>残るのは<strong>この端末の中だけ</strong>です。</li>
         <li><strong>さくらツールの中で共通です。</strong>ほかの道具で保存したデータもここに出ますし、逆もできます。</li>
         <li>データは共通ですが、<strong>見た目や会場の形はツールごと</strong>に覚えます。席次表で決めた敬称やふりがなが、座席表に混ざることはありません。</li>
         <li>呼び出すのは①の<strong>「このデータを自動入力」</strong>から。あとは「席次表を作る」を押すだけです。</li>
@@ -491,7 +513,7 @@
 
     <p class="hint">保存したデータは、<b>さくらツール上で利用できます</b>。</p>
 
-    <p class="safe">🔒 <strong>保存したものは、このパソコンの中だけに残ります。</strong></p>
+    <p class="safe">🔒 <strong>保存したものは、使っている端末の中だけに残ります。</strong></p>
 
     <div class="cls-box">
       <h3>データに名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
@@ -555,13 +577,13 @@
       <div class="body">
       <dl>
       <dt>ネットにつながっているのに、本当に外部に出ないのですか？</dt>
-      <dd><strong>普段お使いのパソコンで、名簿を開くのと同じです。</strong>ネットにつながっていても、<strong>すべてお使いのパソコンだけで完結します</strong>。そのまま印刷やPDFにできます。だから、外に晒されることも、漏れることも、AIの学習に使われることもありません。<strong>いつものパソコン仕事と同じように、安心して使えます。</strong></dd>
+      <dd><strong>普段使っている端末で、名簿を開くのと同じです。</strong>ネットにつながっていても、<strong>すべて使っている端末だけで完結します</strong>。そのまま印刷やPDFにできます。だから、外に晒されることも、漏れることも、AIの学習に使われることもありません。<strong>いつものパソコン仕事と同じように、安心して使えます。</strong></dd>
       <dt>名簿は外部に送られますか？</dt>
-      <dd>送りません。すべてお使いのパソコンだけで完結します。<strong>外部に出ていないので、AIの学習に使われることも、個人情報が漏れることもありません。</strong></dd>
+      <dd>送りません。すべて使っている端末だけで完結します。<strong>外部に出ていないので、AIの学習に使われることも、個人情報が漏れることもありません。</strong></dd>
       <dt>個人情報が漏れないか心配です</dt>
-      <dd><strong>漏れません。</strong>貼り付けた名簿は、すべてお使いのパソコンだけで完結します。外部には送っていないので、漏れることも、AIの学習に使われることもありません。</dd>
+      <dd><strong>漏れません。</strong>貼り付けた名簿は、すべて使っている端末だけで完結します。外部には送っていないので、漏れることも、AIの学習に使われることもありません。</dd>
       <dt>社員名簿をクラウドに上げてはいけない決まりがあります</dt>
-      <dd><strong>問題ありません。</strong>貼り付けた内容は外部に送っていません。すべてお使いのパソコンだけで完結します。社外にデータを出さない決まりのある会社でもお使いいただけます。</dd>
+      <dd><strong>問題ありません。</strong>貼り付けた内容は外部に送っていません。すべて使っている端末だけで完結します。社外にデータを出さない決まりのある会社でもお使いいただけます。</dd>
       <dt>席次表の作り方を教えてください</dt>
       <dd>名簿を貼り付けて「席次表を作る」を押すだけです。会社名・役職・名前が並んだ席次表になります。<strong>Excelやパワーポイントで枠を作る必要はありません。</strong></dd>
       <dt>敬称は「様」以外にもできますか？</dt>
@@ -607,7 +629,7 @@
     <details class="howto">
       <summary>データの扱い</summary>
       <div class="body">
-      <p><strong>使っているパソコンの中だけで完結できます。</strong>使った名簿がネット上に流れることはありません。外部には送っていないので、AIの学習に使われることも、個人情報が漏れることもありません。社員名簿や学生名簿でも、安心して使えます。「画面の保存」をオンにしたときだけ、このパソコンの中に残ります。オフのままなら、ページを閉じた時点で消えます。インストールも会員登録もいりません。</p>
+      <p><strong>使っている端末の中だけで完結できます。</strong>使った名簿がネット上に流れることはありません。外部には送っていないので、AIの学習に使われることも、個人情報が漏れることもありません。社員名簿や学生名簿でも、安心して使えます。「画面の保存」をオンにしたときだけ、この端末の中に残ります。オフのままなら、ページを閉じた時点で消えます。インストールも会員登録もいりません。</p>
       </div>
     </details>
 
@@ -621,9 +643,10 @@
     <span class="copy">さくらツール　© 2026 SAKURA TOOLS</span></div>
 </footer>
 
-<script src="../seating.js?v=54"></script>
-<script src="seki.js?v=51"></script>
+<script src="../seating.js?v=57"></script>
+<script src="seki.js?v=52"></script>
 <!-- 🔴 印刷用の1枚絵の置き場。⚠body の直下に置くこと -->
 <div id="printImgWrap"></div>
+<script src="../tip.js?v=3"></script>
 </body>
 </html>
