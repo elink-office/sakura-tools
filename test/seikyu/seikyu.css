@@ -99,7 +99,8 @@ details.opt.sub[open] > summary{border-bottom:1px solid var(--line)}
   color:var(--ink-soft);cursor:pointer;line-height:1.4;
 }
 .inv-items .c-del button:hover{color:var(--bad);border-color:var(--bad)}
-.inv-scroll{overflow-x:auto}
+/* ⭐明細の表だけは横に動かす（ここは意図した動き） */
+.inv-scroll{overflow-x:auto;touch-action:pan-x pan-y;overscroll-behavior-x:contain}
 .inv-items{min-width:560px}
 
 /* 合計 */
@@ -129,7 +130,11 @@ details.opt.sub[open] > summary{border-bottom:1px solid var(--line)}
 .inv-stage{
   position:relative;overflow:hidden;margin:0 auto;
   background:var(--bg);
+  /* 🔴⚠A4（794px）を縮めて出しているので、指で横に動かせてしまう（2026-09-10 本人「ふわふわする」）。
+     ⭐縦だけ通す。⭐大きくしたとき（.big）は横にも動かせる */
+  touch-action:pan-y;
 }
+.inv-stage.big{touch-action:auto}
 /* ⭐紙は何枚にもなる。画面では縦に並べて、間をあける（2026-09-09 本人「2ページになるときも見たい」）*/
 /* ⚠幅をA4に合わせる。ここを広げたままにすると、縮小の計算が入れものの幅を見てしまい
    スマホでA4がはみ出したまま切れる */

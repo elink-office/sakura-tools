@@ -20,6 +20,10 @@
 }
 input[type=checkbox],input[type=radio]{accent-color:var(--pink)}
 *{box-sizing:border-box}
+/* 🔴⭐ページ全体が横に動くのを止める（2026-09-10 本人「触ってたら横にずれる」「ふわふわする」）。
+   ⚠overflow-x:hidden は position:sticky（ヘッダー）を壊すことがあるので clip を使う。
+   ⭐横に動かしたい場所（明細の表など）は、その要素に overflow-x:auto を付ける */
+html{overflow-x:clip}
 body{
   margin:0; padding:0;
   /* ⭐サイトの地の文はこの1本（2026-09-08 本人「まずはフォント変えて」）。
