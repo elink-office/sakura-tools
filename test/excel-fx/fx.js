@@ -72,18 +72,23 @@ const LV = {
   3: ["SUMIFS","COUNTIFS","IFS","AND","OR","INDEX","MATCH","HLOOKUP","EOMONTH","DATEDIF",
       "LARGE","SMALL","FILTER","SORT","UNIQUE"]
 };
-const LVNAME = { 1:"まず覚えたい　1 → 12", 2:"つぎに覚えたい　13 → 31", 3:"慣れてきたら　32 → 46" };
+/* ⭐番号のところだけグレーにする（2026-09-08 本人「まず覚えたい、の番号はグレーで」）*/
+const LVNAME = {
+  1:'まず覚えたい<span class="gnum">1 → 12</span>',
+  2:'つぎに覚えたい<span class="gnum">13 → 31</span>',
+  3:'慣れてきたら<span class="gnum">32 → 46</span>'
+};
 const ORDER = [...LV[1], ...LV[2], ...LV[3]];   // これが「覚える順」の通し番号
 DATA.forEach(d => {
   d.lv = LV[1].includes(d.n) ? 1 : LV[2].includes(d.n) ? 2 : 3;
   d.no = ORDER.indexOf(d.n) + 1;
 });
 
-let state = { q: "", cat: "すべて", sort: "idx", detail: null };
+/* ⭐はじめは「覚える順」（2026-09-08 本人）。⚠前は「やりたいこと順」だった */
+let state = { q: "", cat: "すべて", sort: "lv", detail: null };
 
 const $q = document.getElementById("q");
 const $clear = document.getElementById("clear");
-const $sbtn = document.getElementById("sbtn");
 const $sbox = document.getElementById("sbox");
 const $cat = document.getElementById("cat");
 const $sort = document.getElementById("sort");
@@ -120,14 +125,7 @@ $sort.addEventListener("change", () => {
   state.sort = $sort.value; state.detail = null; render();
 });
 
-// 検索の開け閉め
-$sbtn.addEventListener("click", () => {
-  const open = $sbox.hidden;
-  $sbox.hidden = !open;
-  $sbtn.setAttribute("aria-expanded", open ? "true" : "false");
-  if (open) { $q.focus(); }
-  else if (state.q) { $q.value = ""; state.q = ""; $clear.style.display = "none"; render(); }
-});
+// ⚠検索の開け閉めはやめた（窓を常に出したため・2026-09-08 本人「三分割して、大きくして」）
 $q.addEventListener("input", () => {
   state.q = $q.value.trim().toLowerCase();
   $clear.style.display = $q.value ? "block" : "none";
@@ -182,7 +180,7 @@ function render() {
     if (g && g !== lastGroup) {
       const h = document.createElement("div");
       h.className = "groupname";
-      h.textContent = g;
+      h.innerHTML = g;   /* ⚠見出しに <span> を入れたので innerHTML（中身はこちらで作った文字だけ）*/
       $list.appendChild(h);
       lastGroup = g;
     }

@@ -14,7 +14,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5047272666003169" crossorigin="anonymous"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9296990556079874" crossorigin="anonymous"></script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-GCK29PTKBG"></script>
 <script>
@@ -25,21 +25,27 @@
 </script>
 <title>【テスト】簡単スライドメーカー｜パワーポイントの代わりに、文字と写真をモニターへ｜さくらツール</title>
 <meta name="description" content="パワーポイントの代わりに、文字と写真をそのまま大きくモニターに映せる無料の道具です。今日のめあて、問題文、作品の写真、発表する子の名前に。スライドを作り込まなくていいので、思いついたその場で出せます。写真の上に文字を重ねることもできます。名簿は座席表・班分けと共通。登録なし・インストールなし・写真も名簿も外に送りません。">
-<link rel="stylesheet" href="../style.css?v=114">
-<link rel="stylesheet" href="slide.css?v=66">
+<link rel="stylesheet" href="../style.css?v=133">
+<link rel="stylesheet" href="slide.css?v=67">
 </head>
 <body>
-<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/07 22:08</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/10 01:00</div>
 
 <header class="site-head noprint">
   <div class="wrap">
     <a class="logo" href="../"><span class="logo-mark">🌸</span><span class="logo-main">SAKURA TOOLS</span><span class="logo-sub">さくらツール</span></a>
     <nav>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">ツール</label>
+      <div class="navlist">
       <a href="../">トップ</a>
       <a href="../seat/">座席表</a>
       <a href="../seki/">席次表</a>
+      <a href="../excel-fx/">関数早見表</a>
+      </div>
     </nav>
   </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">簡単スライドメーカー</span><span class="now-short">スライド</span></div></div>
 </header>
 
 <main class="wrap">
@@ -73,7 +79,7 @@
         <!-- 🔴 文字を出す側でも名簿を使える（2026-09-05 本人「さくらツールの名簿が使えるから、
              名簿から選択できるようにしたい」）。⭐1人＝1枚の文字として入る -->
         <div id="clsBoxT" hidden>
-          <p class="notice mini">さくらツールで利用しているデータを使うことができます。</p>
+          <p class="notice mini">座席表・席次表・班分けで保存したデータを使えます。</p>
           <div class="row" style="margin-bottom:14px">
             <select id="clsSelT"></select>
             <button id="clsLoadT">このデータを読み込む</button>
@@ -110,7 +116,7 @@
         <h3 class="sub">名簿の入力</h3>
 
         <div id="clsBox" hidden>
-          <p class="notice mini">さくらツールで利用しているデータを使うことができます。</p>
+          <p class="notice mini">座席表・席次表・班分けで保存したデータを使えます。</p>
           <div class="row" style="margin-bottom:14px">
             <select id="clsSel"></select>
             <button id="clsLoad">このデータを読み込む</button>
@@ -227,15 +233,15 @@
   <section class="card">
     <h2><span class="step">4</span>画面の保存&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
     <div class="tip-body" hidden>
-      <p>残るのは<strong>このパソコンの中だけ</strong>です。<strong>どこにも送信されません。</strong>チェックを外すと、残していたものを消します。</p>
-      <p><strong>共用のパソコンでは外しておいてください。</strong>打った文字と名前、写真がこのパソコンに残ります。写真に人が写っていることがあります。</p>
+      <p>残るのは<strong>この端末の中だけ</strong>です。<strong>どこにも送信されません。</strong>チェックを外すと、残していたものを消します。</p>
+      <p><strong>共用の端末では外しておいてください。</strong>打った文字と名前、写真がこの端末に残ります。写真に人が写っていることがあります。</p>
     </div>
     <label style="font-weight:normal">
       <input type="checkbox" id="save"> この画面を保存する
     </label>
     <p class="hint">
       チェックを入れると、<b>この画面の状態が保存されます</b>。<br>
-      ⚠<b>共用のパソコンで使ったときは、このチェックを外して、この画面を閉じてください。</b>
+      ⚠<b>共用の端末で使ったときは、このチェックを外して、この画面を閉じてください。</b>
     </p>
     <p><span class="saving" id="savingLabel"></span></p>
   </section>
@@ -246,7 +252,7 @@
     <h2><span class="step">5</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
     <div class="tip-body" hidden>
       <ul>
-        <li><strong>名前を付けて、いくつも保存できます。</strong>残るのは<strong>このパソコンの中だけ</strong>です。</li>
+        <li><strong>名前を付けて、いくつも保存できます。</strong>残るのは<strong>この端末の中だけ</strong>です。</li>
         <li><strong>座席表メーカーと共通です。</strong>あちらで保存したデータもここに出ますし、逆もできます（教室の形や班の設定はツールごとに覚えます）。</li>
         <li>呼び出すのは①の<strong>「このデータを読み込む」</strong>から。</li>
         <li><b>「上書き」と「削除」は、①でえらんでいるもの</b>に効きます。上書きしても、座席表で入れた<b>番号や男女は残ります</b>。⚠名前のデータを消すと<b>座席表メーカー・席次表メーカーからも消えます</b>。</li>
@@ -255,12 +261,12 @@
       </ul>
     </div>
 
-    <p class="hint">保存したデータは、<b>さくらツール上で利用できます</b>。</p>
+    <p class="hint">保存したデータは、<b>座席表・席次表・班分け・スライド</b>で使えます。</p>
 
-    <p class="safe">🔒 <strong>保存したものは、このパソコンの中だけに残ります。</strong></p>
+    <p class="safe">🔒 <strong>保存したものは、使っている端末の中だけに残ります。</strong></p>
 
     <div class="cls-box">
-      <h3>名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
+      <h3>データに名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
       <!-- 🔴 上書きも置いた（2026-09-06 本人「名簿に関しては上書きできるはずだよね？」）。
            ⭐番号・男女は namesNow() で残すので、上書きしても落ちない -->
       <!-- 🔴 説明はこの1行だけ（2026-09-06 本人「⑤の説明が長いね…だけでいいんじゃないかな？
@@ -277,10 +283,10 @@
     </div>
   </section>
 
-  <!-- 使い方 -->
-  <details class="opt">
+  <!-- 使い方 ⭐読みものは details.howto（2026-09-08）。⚠details.opt は①②③の道具の部品 -->
+  <details class="howto">
     <summary>使い方</summary>
-    <div class="body howto">
+    <div class="body">
       <p>パワーポイントの代わりに、文字と写真を大きくモニターに映すための道具です。登録もインストールもいりません。このページを開くだけで使えます。作ったものは残さないので、その場で打って、その場で出せます。</p>
 
       <h3>こんなときに</h3>
@@ -358,10 +364,10 @@
       <h3>保存について</h3>
       <ul>
         <li>「スライド表示」の下の<b>「この画面を保存する」</b>にチェックを入れると、次に開いたときも<b>文字・順番・写真・名簿</b>がそのまま残ります。</li>
-        <li>残るのは<b>このパソコンの中だけ</b>です。<b>どこにも送信されません。</b></li>
+        <li>残るのは<b>この端末の中だけ</b>です。<b>どこにも送信されません。</b></li>
         <li>チェックを外すと、保存していたものを消します。</li>
         <li>⭐<b>写真も残るのは、このページだけです。</b>ほかのページ（座席表など）は、読み込んだ画像を保存していません。</li>
-        <li>⚠<b>共用のパソコンでは外しておいてください。</b>写真に人が写っていることがあります。</li>
+        <li>⚠<b>共用の端末では外しておいてください。</b>写真に人が写っていることがあります。</li>
       </ul>
 
       <h3>打った文字は、どこにも送られません</h3>
@@ -409,5 +415,6 @@
 </div>
 
 <script src="slide.js?v=87"></script>
+<script src="../tip.js?v=3"></script>
 </body>
 </html>

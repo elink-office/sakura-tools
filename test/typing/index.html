@@ -14,7 +14,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5047272666003169" crossorigin="anonymous"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9296990556079874" crossorigin="anonymous"></script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-GCK29PTKBG"></script>
 <script>
@@ -23,10 +23,10 @@
   gtag('js', new Date());
   gtag('config', 'G-GCK29PTKBG');
 </script>
-<title>【テスト】タイピング練習｜早いより、ミスがない人が仕事が早い</title>
-<meta name="description" content="ホームポジションから、指ごとに順番に練習できるタイピング練習です。早く打つことより、ミスをしないことを先に身につけます。登録もダウンロードもいりません。">
-<link rel="stylesheet" href="../style.css?v=114">
-<link rel="stylesheet" href="typing.css?v=8">
+<title>【テスト】無料のタイピング練習｜早いより、ミスがない人が仕事が早い</title>
+<meta name="description" content="登録なし・全部無料のタイピング練習です。ホームポジションから指ごとに順番に、ローマ字入力を11ステージで練習できます。早く打つことより、ミスをしないことを先に。">
+<link rel="stylesheet" href="../style.css?v=133">
+<link rel="stylesheet" href="typing.css?v=64">
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -35,12 +35,14 @@
 </script>
 </head>
 <body>
-<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/07 22:08</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/10 01:00</div>
 
 <!-- 🔴 コインの形（2026-09-07）。パワポの円柱と同じ＝「側面（まっすぐ＋下の弧）」＋「上の楕円」の2枚。
      ⚠CSSのborder-radiusでは上の面と側面の境目が作れない。SVGなら1つ定義して使い回せる -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-  <!-- 側面＝円柱の光り方。横方向に「暗い→明るい→暗い」で丸みが出る -->
+  <!-- 🔴 コインの形。パワポの円柱と同じ＝「側面（まっすぐ＋下の弧）」＋「上の楕円」の2枚。
+       ⚠平らな色にしたら「コインではない何か」になったので金に戻した（2026-09-08 本人「金気に入ったから戻しておいて」） -->
+  <!-- 側面＝横方向に「暗い→明るい→暗い」で丸みが出る -->
   <linearGradient id="coinSide" x1="0" y1="0" x2="1" y2="0">
     <stop offset="0"    stop-color="#a8760c"/>
     <stop offset="0.16" stop-color="#dfab35"/>
@@ -58,16 +60,13 @@
   <g id="coinShape">
     <path d="M1,5.5 v5 a21,4.5 0 0 0 42,0 v-5 z" fill="url(#coinSide)" stroke="#9c7210"/>
     <ellipse cx="22" cy="5.5" rx="21" ry="4.5" fill="url(#coinFace)" stroke="#9c7210"/>
-    <!-- 面のふち（内側の輪） -->
     <ellipse cx="22" cy="5.5" rx="17" ry="3.1" fill="none" stroke="#c79425" stroke-width="0.5" opacity=".7"/>
-    <!-- ⭐数字は「面の上に書いてある」ように置く（2026-09-07 本人）。
-         ⚠回転させると浮いて見える。縦に潰すだけ＝手前が下、奥が上 -->
+    <!-- 数字は回転させず、縦に潰すだけ＝手前が下、奥が上 -->
     <g transform="translate(22 6.0) scale(1 0.30)">
       <text text-anchor="middle" dominant-baseline="central" font-size="14"
             font-family="Arial, sans-serif" font-weight="700"
             fill="#a0750d" opacity=".6">100</text>
     </g>
-    <!-- 光の帯 -->
     <ellipse cx="15.5" cy="4.1" rx="8" ry="1.3" fill="#fff" opacity=".5"/>
   </g>
 </defs></svg>
@@ -76,26 +75,26 @@
   <div class="wrap">
     <a class="logo" href="../"><span class="logo-mark">🌸</span><span class="logo-main">SAKURA TOOLS</span><span class="logo-sub">さくらツール</span></a>
     <nav>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">ツール</label>
+      <div class="navlist">
       <a href="../">トップ</a>
       <a href="../seat/">座席表</a>
       <a href="../seki/">席次表</a>
       <a href="../slide/">スライド</a>
+      <a href="../excel-fx/">関数早見表</a>
+      </div>
     </nav>
   </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">タイピング練習</span><span class="now-short">タイピング</span></div></div>
 </header>
 
 <div class="tpwrap">
 
-<header class="tphead">
-  <h1>タイピング練習</h1>
-  <span class="catch">早いより、ミスがない人が仕事が早い</span>
-  <div class="spacer"></div>
-  <div class="namebox">
-    <label for="uname">ニックネーム</label>
-    <input id="uname" placeholder="ニックネーム" maxlength="30">
-  </div>
-  <button id="btnLog">記録を見る</button>
-</header>
+<!-- ⭐座席表と同じ形にした（2026-09-08 本人「座席表のタイトル、リード文と同じ形にして」）。
+     h1 の下にキャッチ（さくら色の太字）、その下にリード。⚠ニックネームは下の行へ移した -->
+<h1>タイピング練習</h1>
+<p class="catch">早いより、ミスがない人が仕事が早い</p>
 
 <div id="imeWarn">
   <b>日本語入力（IME）がオンになっています。</b><br>
@@ -109,16 +108,42 @@
 </div>
 
 <div id="menu">
+  <!-- ⭐リードと見本の2段組み（2026-09-08）。ページの型 6・7 のとおり＝
+       900px以上では文章の右／859px以下は文章の下に回す（幅396px・中央）。
+       ⚠文章はコードの原案。本人が自分の言葉に直す前提 -->
+  <div class="intro">
+    <div class="introtext">
+      <!-- ⚠座席表と同じ仕様＝要所を <strong> で太字にする。
+           🔴文は本人が書いた（2026-09-08）。⭐入れる言葉は「ホームポジション」で実際に出てくるもの
+           ＝練習・キーボード・覚え方・ゲーム。
+           🚫「ローマ字」と「11ステージ」は入れない（本人判断＝そもそも検索されない）-->
+      <p class="lead"><strong>登録なし・全部無料。ホームポジション練習</strong>がいつでもできる！<strong>キーボードの指もわかる</strong>し覚え方も考える必要なし！<strong>ゲーム感覚でタイルを塗って楽しもう！</strong></p>
+      <ul class="can">
+        <li>初心者でもステージ１から。順番どおりの練習で、いつの間にか上達できる</li>
+        <li>早くなるコツは、速さより正確さ。焦らず自分のペースで練習しよう</li>
+        <li>ミスタッチでタイルが崩れるから、長文はドキドキ！ゲーム感覚で楽しめる</li>
+      </ul>
+    </div>
+    <img class="introimg" src="../img/typing-sample.png?v=2" width="1280" height="720"
+         alt="タイルが全部塗られた練習の画面">
+  </div>
+
+  <!-- ⭐設定は1行・上下中央揃えに戻した（2026-09-08 本人「1行にしても良い（初期値の、1行で上下中央揃え）」）。
+       ⚠2段に組んだのは一度やめた。音を出すのまわりに補足を足す余地を残すため -->
+  <!-- ⭐ニックネームと記録は、設定の行の上に移した（頭をタイトルとリードだけにするため）-->
+  <div class="namerow">
+    <div class="namebox">
+      <label for="uname">ニックネーム<span class="tip-wrap"><button type="button" class="tip-btn" aria-label="説明"></button><span class="tip-pop">入れた名前は、記録といっしょに<b>この端末の中だけ</b>に残ります。どこにも送られません。<br>入れなくても練習できます。</span></span></label>
+      <input id="uname" placeholder="ニックネーム" maxlength="30">
+    </div>
+    <button id="btnLog">今までの記録を見る</button>
+  </div>
+
+  <!-- ⭐残っているのは「音を出す」だけ（サイト全体に効く設定）。
+       ⭐ステージごとの設定は、そのステージの画面へ移した（2026-09-08 本人）-->
   <div class="opts">
-    <label><input type="checkbox" id="optSound" checked> 音を出す</label>
-    <span class="grp"><b class="grpttl">ステージ1〜7のみ</b>
-      <label><input type="checkbox" id="optHome" checked> 終わりに <b>&nbsp;f j&nbsp;</b> に戻る</label>
-      <span class="sep">ミスしたら</span>
-      <label title="タイルが1枚くずれるだけ。最後まで行けます"><input type="radio" name="lv" value="easy"> くずれない</label>
-      <label title="ミス10回で全部くずれて最初から"><input type="radio" name="lv" value="normal" checked> 10回でくずれる</label>
-      <label title="ミス3回で全部くずれて最初から"><input type="radio" name="lv" value="hard"> 3回でくずれる</label>
-    </span>
-    <span class="note8">ステージ8〜11は3回に固定</span>
+    <!-- ⭐はじめはオフ（2026-09-08 本人）。⚠教室でも職場でも、いきなり音が鳴らないように -->
+    <label class="optsound"><input type="checkbox" id="optSound"> 音を出す</label>
   </div>
   <div class="stages" id="stages"></div>
 </div>
@@ -132,6 +157,17 @@
     <span id="missHint" class="misshint"></span>
     <div class="spacer"></div>
     <span id="hint">キーを打つとスタート（Esc でやめる）</span>
+  </div>
+
+  <!-- ⭐設定は「それが効く場所」に置く（2026-09-08 本人）。
+       ⚠ステージ8〜11には出さない（JSが自動で3回に固定するため）。
+       ⭐これで「ステージ1〜7のみ」「ステージ8〜11は3回に固定」の但し書きが要らなくなった -->
+  <div class="playopts" id="playOpts">
+    <label><input type="checkbox" id="optHome" checked> 終わりに <b class="k">&nbsp;f j&nbsp;</b> に戻る</label>
+    <span class="oglabel">ミスしたら</span>
+    <label title="タイルが1枚くずれるだけ。最後まで行けます"><input type="radio" name="lv" value="easy"> くずれない</label>
+    <label title="ミス10回で全部くずれて最初から"><input type="radio" name="lv" value="normal" checked> 10回でくずれる</label>
+    <label title="ミス3回で全部くずれて最初から"><input type="radio" name="lv" value="hard"> 3回でくずれる</label>
   </div>
 
   <div class="statsbar">
@@ -163,7 +199,7 @@
     <li>ミスすると<b>タイルがくずれます</b>。決めた回数までまちがえると、全部くずれて最初からになります。</li>
     <li><b>Esc</b>キーでリセット、もう一度<b>Esc</b>でステージ選択にもどります。</li>
     <li>速さの単位は<b>文字/分</b>。<b>ひらがなの文字数</b>で数えています（打ったキーの数ではありません）。「さか」は s a k a と打ちますが、<b>2文字</b>と数えます。英字のステージは 1文字＝1キー なので同じです。</li><li>1回は30秒〜1分半ほどで終わりますが、数字は<b>1分あたりに直して</b>表示しています。</li>
-    <li>記録はこのパソコンの中に自動で残ります（右上の「記録を見る」）。</li>
+    <li>記録はこの端末の中に自動で残ります（右上の「記録を見る」）。</li>
   </ul>
 </details>
 
@@ -179,7 +215,7 @@
 
 <div class="overlay" id="ovRes"><div class="modal">
   <button class="xbtn" id="xRes" title="閉じる">×</button>
-  <h2 id="resTitle">おつかれさま</h2>
+  <h2 id="resTitle">いまの記録</h2>
   <div class="sb" id="resSub"></div>
   <div id="resRecord" class="record" style="display:none"></div>
   <div id="resPerfect" class="perfect" style="display:none">★ パーフェクト ★<br><span style="font-size:12px;font-weight:500">ミスゼロでタイルを全部塗りました</span></div>
@@ -195,21 +231,25 @@
     <div class="resrow hl"><span>本当の速さ</span><b id="rEwpm">0</b></div>
   </div>
   <div class="note" id="resNote"></div>
+  <!-- ⭐閉じるだけ（2026-09-08 本人「進まなくていい。基本的には同じものを何度も繰り返して練習。
+       進むのはトップから」）。⚠「もう一度」「次のステージ」は消した -->
   <div class="modalbtns">
-    <button id="btnAgain">もう一度</button>
-    <button id="btnMenu">ステージ選択へ</button>
-    <button class="primary" id="btnNext">次のステージ →</button>
+    <button id="btnCloseRes">閉じる</button>
+    <!-- ⭐閉じるの横にひとこと（2026-09-08 本人「頑張って、応援してる、じょうずになってるよ」）-->
+    <span class="cheer" id="resCheer"></span>
   </div>
 </div></div>
 
 <div class="overlay" id="ovLog"><div class="modal">
   <button class="xbtn" id="xLog" title="閉じる">×</button>
-  <h2>これまでの記録</h2>
-  <div class="sb">このパソコンのブラウザの中に、自動でぜんぶ貯まっています</div>
+  <h2>今までの記録</h2>
+  <div class="sb"><b>この記録は、いま使っているこの端末にだけ残ります。</b><br>職場や学校で練習した記録は、家の端末には表示されません。</div>
   <div class="modalbtns" style="margin:0 0 14px;justify-content:flex-start">
     <button id="btnCsv">CSVで書き出す</button>
     <button id="btnClear">記録を消す</button>
-    <button class="primary" id="btnCloseLog">閉じる</button>
+    <!-- ⚠「閉じる」は右上の×と同じ役目だが、×は小さくて押しにくい人がいるので残す。
+         ⭐ただし左の2つと同じ見た目にする（primary をやめた・2026-09-08 本人）-->
+    <button id="btnCloseLog">閉じる</button>
   </div>
   <div id="logBody"></div>
 </div></div>
@@ -220,6 +260,6 @@
     <span class="copy">さくらツール　© 2026 SAKURA TOOLS</span></div>
 </footer>
 
-<script src="typing.js?v=5"></script>
+<script src="typing.js?v=19"></script>
 </body>
 </html>

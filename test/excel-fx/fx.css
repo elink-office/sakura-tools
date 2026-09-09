@@ -6,7 +6,9 @@
     --ink-faint:  #9aa0a6;
     /* 色は共通の style.css を借りる。サイトの色を変えたらここも一緒に変わる */
     --sakura:      var(--pink);
-    --sakura-deep: #a85473;
+    /* ⭐明るくした（2026-09-08 本人「関数の文字の色が気に入らない。もう少し明るい色がいい」）。
+       ⚠前は #a85473 で、分類の見出し（#c86a8e）より暗かった */
+    --sakura-deep: #c86a8e;
     --sakura-tint: var(--pink-pale);
     --sakura-line: var(--pink-light);
     --rule:       #e3e5e8;
@@ -28,8 +30,7 @@
     margin: 0;
     background: var(--paper);
     color: var(--ink);
-    font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic UI", "Yu Gothic",
-                 "Noto Sans JP", "Meiryo", system-ui, sans-serif;
+    font-family: "Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","BIZ UDPGothic",Meiryo,sans-serif;
     font-size: 16px;
     line-height: 1.7;
     -webkit-text-size-adjust: 100%;
@@ -100,35 +101,54 @@
   .searchbox[hidden] { display: none; }
   #q {
     width: 100%;
-    padding: 11px 44px 11px 14px;
+    /* ⭐3つの高さをそろえる（2026-09-08 本人「サイズが大きくなった、そろえて」）。
+       ⚠font-size は16pxのまま＝スマホで勝手に拡大されないため。padding で高さを合わせる
+       ⭐左は虫めがねのぶんを空ける。角は分類・並び順と同じ 8px（2026-09-08 本人）*/
+    padding: 7px 36px 7px 36px;
     font: inherit;
     font-size: 16px;
     color: var(--ink);
     background: var(--card);
     border: 1.5px solid var(--rule);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
+    border-radius: 8px;
+    box-shadow: none;
+  }
+  /* ⭐検索の窓の中に虫めがね（2026-09-08 本人「検索窓、左に虫眼鏡マーク欲しい」）*/
+  .searchbox::before {
+    content: "";
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    width: 15px; height: 15px; pointer-events: none; z-index: 1;
+    background: var(--ink-faint);
+    -webkit-mask: no-repeat center/contain url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round'><circle cx='11' cy='11' r='7'/><path d='m20 20-3.5-3.5'/></svg>");
+    mask: no-repeat center/contain url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round'><circle cx='11' cy='11' r='7'/><path d='m20 20-3.5-3.5'/></svg>");
   }
   #q::placeholder { color: var(--ink-faint); }
   #q:focus { outline: 2px solid var(--sakura); outline-offset: 1px; border-color: transparent; }
 
   #clear {
-    position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
-    width: 32px; height: 32px; border: 0; border-radius: 8px;
+    position: absolute; right: 5px; top: 50%; transform: translateY(-50%);
+    width: 28px; height: 28px; border: 0; border-radius: 8px;
     background: transparent; color: var(--ink-faint);
     font-size: 18px; line-height: 1; cursor: pointer; display: none;
   }
   #clear:hover { background: var(--sakura-tint); color: var(--ink); }
   #clear:focus-visible { outline: 2px solid var(--sakura); }
 
+  /* ⭐3つを横に並べる。⚠検索の窓をいちばん広く（「〜したい」を打つ場所なので）
+     （2026-09-08 本人「三分割して、大きくして」）*/
   .row2 {
     display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
   }
+  .row2 .searchbox { flex: 2 1 260px; }
+  .row2 #cat, .row2 #sort { flex: 1 1 150px; }
+  /* ⭐高さを直接そろえる（入力欄と選択欄で内側の作りが違うため）*/
+  .row2 #q, .row2 #cat, .row2 #sort { height: 40px; box-sizing: border-box; }
   #cat, #sort {
     flex: 1 1 auto;
     min-width: 0;
     font: inherit; font-size: 13.5px;
     padding: 7px 30px 7px 11px;
+    border-width: 1.5px;
     color: var(--ink);
     background: var(--card);
     background-image: linear-gradient(45deg, transparent 50%, var(--ink-sub) 50%),
@@ -143,7 +163,8 @@
   }
   #cat:focus-visible, #sort:focus-visible { outline: 2px solid var(--sakura); outline-offset: 1px; }
   #cat.on { border-color: var(--sakura); color: var(--sakura-deep); font-weight: 700; }
-  #sort { border-color: var(--sakura-line); color: var(--sakura-deep); font-weight: 700; }
+  /* ⭐並び順の文字はグレー（2026-09-08 本人「やりたいこと順、とかは、グレーでいい」）*/
+  #sort { border-color: var(--rule); color: var(--ink-sub); font-weight: 600; }
 
   .metarow {
     margin: 12px 2px 0;
@@ -174,6 +195,8 @@
     color: var(--sakura); text-transform: uppercase;
     padding: 14px 2px 2px;
   }
+  /* ⚠見出しの番号は色を変えない（2026-09-08 本人が言っていたのは行の番号のほうだった）*/
+  .gnum { margin-left: .7em; letter-spacing: .04em; }
 
   .item {
     background: var(--card);
@@ -291,7 +314,8 @@
   .idxrow .ino {
     order: -2; flex: 0 0 auto;
     min-width: 1.8em; text-align: right;
-    font-size: 12px; font-weight: 700; color: var(--accent-ink);
+    /* ⭐行の番号はグレー（2026-09-08 本人「１ SUM ２ average の番号のこと」）*/
+    font-size: 12px; font-weight: 700; color: var(--ink-sub);
     font-variant-numeric: tabular-nums;
   }
   .idxhint {

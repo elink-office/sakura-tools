@@ -22,7 +22,10 @@ input[type=checkbox],input[type=radio]{accent-color:var(--pink)}
 *{box-sizing:border-box}
 body{
   margin:0; padding:0;
-  font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif;
+  /* ⭐サイトの地の文はこの1本（2026-09-08 本人「まずはフォント変えて」）。
+     ⚠前は style.css が Yu Gothic、typing が Yu Gothic UI で、同じサイトに2種類の字が混ざっていた。
+     ⭐游ゴシックは「かすれ問題」で本文向きではない。Windowsは Noto Sans JP（2024頃から標準）→ BIZ UDPゴシック → メイリオの順で受ける */
+  font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","BIZ UDPGothic",Meiryo,sans-serif;
   color:var(--ink); background:var(--bg); line-height:1.7;
 }
 .wrap{max-width:900px;margin:0 auto;padding:20px}
@@ -42,6 +45,26 @@ body{
    ⭐**見ているページ自身へのリンクは出さない**ので、道具のページでは2つ、それ以外は3つ並ぶ。
    ⚠ 理由＝スマホ（375px）で4つ並べるとヘッダーが2行になり、貼り付いたまま場所を取る。
    ⚠ 色は付けない。並んでいれば「押せば飛ぶ」と分かる（本人の判断） */
+/* 🔴⭐ロゴの右に「いま開いている道具の名前」を出す（2026-09-09 本人
+   「全部見た目が同じようになってきて、どれを開いているのかが分からなくなってきた」）。
+   ⚠型1で「見ているページ自身へのリンクは出さない」と決めているので、ヘッダーに名前が無かった
+   ⭐入れるのは make_test.py（各ページの h1 から自動で取る）。ここは見た目だけ */
+/* ⭐ヘッダーの下の細い帯。⚠ヘッダーの中に入れると幅を取り合って2行になった（2026-09-10 本人） */
+.site-sub{background:var(--pink-pale);border-top:1px solid var(--pink-light)}
+.site-sub .wrap{
+  padding:3px 16px;font-size:.78rem;font-weight:bold;color:var(--pink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  /* ⚠.site-head .wrap が display:flex なので、text-align だけでは効かない（2026-09-10） */
+  display:block;text-align:center;
+}
+/* ⭐パソコンは長い名前、スマホは短い名前（2026-09-09 本人）
+   ⚠パソコンは幅に余裕がある。スマホのヘッダーに入るのは約6文字 */
+.site-sub .now-short{display:none}
+@media(max-width:640px){
+  .site-sub .now-long{display:none}
+  .site-sub .now-short{display:inline}
+}
+
 .site-head nav{display:flex;gap:16px}
 .site-head nav a{
   margin-left:0;font-weight:normal;color:var(--ink-soft);
@@ -52,21 +75,54 @@ body{
 .site-head nav a[aria-current="page"]{font-weight:bold;color:var(--ink)}
 .site-head nav a:hover{font-weight:bold}
 /* ⚠ 3つ並ぶと、狭い画面でヘッダーがあふれる。ロゴと間隔を詰める（330px以下は2行になる） */
-@media(max-width:430px){
+/* ⭐⭐右上のナビ＝パソコンは並べる／スマホはハンバーガー（2026-09-08 本人）。
+   ⭐JSは使わない＝チェックボックスで開け閉めする
+   ⚠<details> は閉じていると中身を描かないので使えなかった
+   ⚠道具は増える予定。横並びは4つで限界だった（詰めるとロゴにぶつかる）
+   ⚠研究＝隠されたナビは「著しく発見されにくい」（NN/g）→ ☰ に「ツール」の文字を添える */
+/* --- パソコン：ボタンを隠して、リンクをそのまま並べる --- */
+.site-head .navburger{display:none}
+/* ⚠チェックボックスはどの幅でも場所を取らない（見せないが、押せる状態は保つ）*/
+.site-head .navtoggle{position:absolute;opacity:0;width:0;height:0;margin:0;pointer-events:none}
+.site-head .navlist{display:contents}
+
+@media(max-width:640px){
   .site-head .logo{font-size:.95rem}
-  .site-head nav{gap:11px}
-  .site-head nav a{min-width:2.9em;font-size:.85rem}
+  /* ⚠nav の中のチェックボックスが場所を取って、ヘッダーが高くなっていた
+     ⭐nav を一列にして、チェックボックスは完全に場所を取らないようにする */
+  .site-head nav{position:relative;display:flex;align-items:center}
+  /* --- スマホ：☰ を出して、リンクは中にしまう --- */
+  .site-head .navburger{
+    display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;
+    font-size:.8rem;font-weight:700;color:var(--ink);
+    /* ⚠⚠label には共通の margin:10px 0 4px がかかる。消さないとヘッダーが14px高くなる
+       （→ 記憶/コード/label-margin-3px.md と同じ原因）*/
+    margin:0;
+    padding:3px 9px;border:1px solid var(--line);border-radius:7px;background:#fff;
+  }
+  .site-head .navburger::before{
+    content:"";width:14px;height:11px;flex:none;
+    background:linear-gradient(var(--ink) 0 2px,transparent 2px 4.5px,
+               var(--ink) 4.5px 6.5px,transparent 6.5px 9px,var(--ink) 9px 11px);
+  }
+  .site-head .navtoggle:checked ~ .navburger{border-color:var(--pink);color:var(--pink)}
+  .site-head .navlist{
+    display:none;position:absolute;right:0;top:calc(100% + 7px);z-index:60;
+    background:#fff;border:1px solid var(--line);border-radius:11px;
+    box-shadow:0 10px 26px rgba(0,0,0,.16);padding:6px;min-width:150px;
+  }
+  .site-head .navtoggle:checked ~ .navlist{display:block}
+  .site-head .navlist a{
+    display:block;padding:8px 12px;border-radius:8px;
+    font-size:.88rem;min-width:0;white-space:nowrap;line-height:1.4;text-align:left;
+  }
+  .site-head .navlist a:hover{background:var(--pink-pale)}
 }
 /* 🔴 「このサイトについて」など道具ではないページは、トップ＋道具3つで**4つ**並ぶ。
    ⚠そのままだとスマホでヘッダーが2行（62px）になり、貼り付いたまま場所を取る。
    ⭐4つ目がある時だけ、もう一段詰めて1行に収める（37px）。3つのページは今までの大きさのまま。
    ⚠`:has()` が効かない古い機器では2行になるだけ＝押せなくなるわけではない */
-@media(max-width:430px){
-  .site-head .wrap:has(nav a:nth-child(4)){padding:7px 8px;gap:6px}
-  .site-head .wrap:has(nav a:nth-child(4)) .logo{font-size:.88rem}
-  .site-head .wrap:has(nav a:nth-child(4)) nav{gap:7px}
-  .site-head .wrap:has(nav a:nth-child(4)) nav a{min-width:0;font-size:.76rem}
-}
+/* ⚠4つ目のときに詰める指定は消した（2026-09-08）。ハンバーガーになったので不要 */
 
 h1{font-size:1.5rem;margin:24px 0 4px}
 /* 🔴 見出しの縦棒と、開け閉めする帯の縦棒を同じにする（本人「全部そろえたほうがすっきり」）。
@@ -107,9 +163,20 @@ textarea::placeholder{font-size:.8em;line-height:1.7}
 
 /* 入力 */
 label{display:block;font-size:.9rem;margin:10px 0 4px;font-weight:bold}
-input[type=text],input[type=number],textarea,select{
+/* ⚠ date と file が抜けていて、そこだけ素の見た目（角丸なし・細い枠）だった
+     （2026-09-09 本人がスクショで発見。請求書メーカーで気づいた）。
+   ⭐ file はスライドでも使っているので、共通に置くのが正しい（→ ページの型 16-a） */
+input[type=text],input[type=number],input[type=date],input[type=file],textarea,select{
   font:inherit;padding:8px 10px;border:1px solid var(--line);
   border-radius:8px;background:#fff;color:var(--ink);
+}
+/* ⚠ファイル選択だけ、中のボタンのぶん詰める */
+input[type=file]{padding:6px 8px}
+/* ⭐「ファイルを選択」のボタン。ブラウザが描くので、ここでしか色を変えられない */
+input[type=file]::file-selector-button{
+  font:inherit;font-size:.85rem;padding:4px 10px;margin-right:10px;
+  border:1px solid var(--line);border-radius:8px;
+  background:#fff;color:var(--ink);cursor:pointer;
 }
 /* 🔴 マウスを乗せたら枠が色づく（2026-09-04 本人）。
    本人「ちょっと色がつくのはとても分かりやすくていいなと思って」
@@ -118,7 +185,8 @@ input[type=text],input[type=number],textarea,select{
    ⚠ hover:hover ＝マウスがある機器だけ。付けないとスマホで触ったあと色が残る。
    ⚠色は変数を通す＝席次表（seki.css で --pink を緑に上書き）では緑になる */
 @media (hover:hover){
-  input[type=text]:hover,input[type=number]:hover,textarea:hover,select:hover{
+  input[type=file]::file-selector-button:hover{border-color:var(--pink);color:var(--pink)}
+  input[type=text]:hover,input[type=number]:hover,input[type=date]:hover,textarea:hover,select:hover{
     /* ⚠乗せたときは**細い線の色だけ**（2026-09-04 本人）。
        うすく塗るのはボタンだけにする＝入力欄とボタンの役割を見た目で分ける */
     border-color:var(--pink);
@@ -126,7 +194,7 @@ input[type=text],input[type=number],textarea,select{
 }
 /* 選んでいるあいだ＝枠だけ色づけて、中は白にもどす（打っている字が読みやすいように）。
    ⚠ :focus-visible の枠（キーボード操作の目印）は消さない */
-input[type=text]:focus,input[type=number]:focus,textarea:focus,select:focus{
+input[type=text]:focus,input[type=number]:focus,input[type=date]:focus,input[type=file]:focus,textarea:focus,select:focus{
   border-color:var(--pink);background:#fff;
 }
 textarea{width:100%;min-height:170px;resize:vertical;line-height:1.6}
@@ -334,7 +402,71 @@ body.screen .seat .gno.dim{display:none}
 /* 読み物 */
 /* 🔴 ここまでが操作、ここからは読みもの、の区切り（2026-09-01 本人）。
    ⚠タブレットは画面が縦に流れるので、線が無いとどこで終わったのか分からない */
-.read{border-top:1px solid var(--line);margin-top:34px;padding-top:6px}
+/* ⭐棒線の上と下を同じ間隔にする（2026-09-08 本人）。
+   上＝⑧の箱の下の縁から棒線まで 34px
+   下＝棒線から「使い方」の箱の上の縁まで 34px
+   ⭐⭐そろえるのは「箱の縁同士」。字の位置ではない（目が見ているのは箱の縁）*/
+/* ⭐読みもののトグル（使い方・よくある質問・データの扱い）＝2026-09-08 本人。
+   ⚠⚠道具（①②③…の details.opt）と同じ見た目にしない。
+     ⭐箱を作らず、細い線と ▸ だけ。開いても字は小さいまま。
+     こうしないと「道具」と「読みもの」が同じ重さに見える */
+details.howto{
+  border-top:1px solid var(--line);
+  font-size:.8rem;color:var(--ink-soft);line-height:1.95;
+}
+/* ⚠.read の中は、上の棒線が .read 側にあるので1本目の線は消す。
+   ⭐.read が無いページ（スライド）では、1本目にも線が要る */
+.read details.howto:first-of-type{border-top:0}
+main > details.howto{margin-top:34px}
+details.howto > summary{
+  cursor:pointer;font-weight:700;letter-spacing:.06em;color:var(--ink-soft);
+  list-style:none;padding:11px 0;
+}
+details.howto > summary::-webkit-details-marker{display:none}
+/* ⭐▸ だけさくら色（2026-09-08 本人「トグルのボタンだけピンクにして」）*/
+details.howto > summary::before{
+  content:"▸";display:inline-block;margin-right:7px;transition:transform .15s;color:var(--pink);
+}
+details.howto[open] > summary::before{transform:rotate(90deg)}
+details.howto > summary:hover{color:var(--ink)}
+details.howto .body{padding:0 0 16px}
+details.howto b,details.howto strong{color:var(--ink);font-weight:700}
+details.howto ul,details.howto ol{margin:6px 0 0;padding-left:1.35em}
+details.howto li{margin-bottom:3px}
+/* ⭐番号と箇条書きの点はさくら色（2026-09-08 本人）。
+   ⚠読みものは文章だらけになるので、そのままだと画面が黒っぽくなる。
+     ⭐点と番号だけ色を入れると、行の頭が見えて読みやすくなる */
+details.howto ol > li::marker,
+details.howto ul > li::marker{color:var(--pink);font-weight:700}
+details.howto p{margin:6px 0 0}
+details.howto dt{font-weight:bold;margin-top:12px;color:var(--ink)}
+details.howto dd{margin:2px 0 0 1em}
+/* ⚠「できること」は使い方の中に入っている。共通の .can（白い箱）は使わない。
+   ⭐ただの箇条書きにして、字は読みものと同じ小ささにそろえる。
+   ⚠共通の .can b は 1.02rem あるので、必ず inherit で打ち消す（大きく見える原因） */
+details.howto .can{list-style:disc;padding-left:1.35em;margin:0}
+details.howto .can li{border:0;background:none;border-radius:0;margin:0 0 3px;padding:0}
+details.howto .can b{display:inline;font-size:inherit;color:var(--ink)}
+details.howto .can small{display:inline;font-size:inherit;margin-left:8px}
+
+/* ⭐⭐線は「かたまりの区切り」に入れる（2026-09-08 本人）。⚠項目と項目の間には入れない。
+   ＝手順（番号）／できること／こんなときに のあいだ */
+details.howto .body > .can,
+details.howto .body > p.sub{
+  border-top:1px solid var(--line);
+  margin-top:14px;padding-top:14px;
+}
+details.howto .body > p.sub,
+details.howto .body > h3{font-weight:700;color:var(--ink)}
+/* ⭐h3 の小見出しも「かたまりの区切り」として同じ形にする（スライドが h3 を使っている）*/
+details.howto .body > h3{
+  border-top:1px solid var(--line);
+  margin:14px 0 0;padding-top:14px;font-size:1em;
+}
+details.howto .body > h3:first-child{border-top:0;margin-top:0;padding-top:0}
+details.howto .body > p.sub + ul{margin-top:5px}
+
+.read{border-top:1px solid var(--line);margin-top:34px;padding-top:22px}
 .read h2{margin-top:26px}
 .read dt{font-weight:bold;margin-top:12px}
 .read dd{margin:2px 0 0 1em;color:var(--ink-soft)}
@@ -371,6 +503,14 @@ body.screen .sheet{width:auto !important;transform:none !important}
 .nb{display:inline-block}
 
 /* できること */
+/* 🔴「できること」の3項目（リードの下）。⭐共通に置く（2026-09-09 本人）
+   ⚠これまで seat / seki / slide の index.html にバラバラに書いてあり、
+     請求書メーカーだけ指定が無くて 16px の黒になっていた（本人が発見）。
+   ⭐ここに置けば、新しい道具でも自動でそろう */
+.can-do{margin:12px 0 10px;padding-left:1.1em;font-size:.86rem;color:var(--ink-soft);line-height:1.9}
+.can-do li{margin-bottom:2px}
+.can-do li::marker{color:var(--pink)}
+
 .can{list-style:none;padding:0;margin:10px 0 0}
 .can li{
   border:1px solid var(--line);border-radius:12px;background:#fff;
@@ -454,12 +594,25 @@ select.ph option{color:var(--ink)}
 .tip-btn:hover::before,.tip-btn[aria-expanded="true"]::before{background:var(--pink-pale)}
 .tip-btn::after{content:"";position:absolute;inset:-8px}  /* 見えないが押せる範囲 */
 .tip-btn:hover,.tip-btn[aria-expanded="true"]{color:var(--ink)}
+/* 🔴「？」の中は説明が多くなる（2026-09-09 本人「文字が多すぎるから」）。
+   ⭐字を少し小さく＋段落と段落のあいだを開けて、かたまりを見せる。
+   🚫色は薄くしない（本人「濃くてもいいんだよ」）。⚠小さい字ほど濃さが要る（基準は4.5:1） */
 .tip-body{
   background:var(--pink-pale);border:1px solid var(--pink-light);
-  border-radius:8px;padding:10px 14px;margin:8px 0 12px;font-size:.84rem;
+  border-radius:8px;padding:12px 14px;margin:8px 0 12px;font-size:.8rem;
+  line-height:1.75;
+  /* 🔴 幅いっぱいだと1行が長すぎて読みにくい（2026-09-09 本人「これ全画面。読みにくいよね」）。
+     ⭐日本語は1行35〜45文字あたりが読みやすい。0.8rem×38em ≒ 38文字で止める。
+     ⚠スマホは画面のほうが狭いので、この指定は効かない（＝今までどおり） */
+  max-width:38em;
 }
-.tip-body p{margin:0 0 6px}
+.tip-body p{margin:0 0 11px}
 .tip-body p:last-child{margin:0}
+.tip-body ul{margin:0 0 11px;padding-left:1.3em}
+.tip-body ul:last-child{margin:0}
+.tip-body li{margin:0 0 7px}
+.tip-body li:last-child{margin:0}
+.tip-body .tip-h{margin:0 0 7px}
 
 /* 男女のチップ */
 .chips{display:flex;flex-wrap:wrap;gap:6px}
@@ -624,3 +777,44 @@ body.screen .seat.empty{
    （2026-09-05 本人「2026　文学部英語学科　名簿 とかでも、ボタン、表示される？」）。
    ⭐えらぶ欄は入れ物より広くしない。中身は自動で「…」に切れる */
 select{max-width:100%}
+
+/* ============================================================
+   🔴 長い「？」はポップアップにする（2026-09-09 本人）
+   本人「これ、とじなかったら下に続きが流れるし、邪魔なんだよね。
+        浮いて必ず閉じて次に行く感じにしてはどうか」
+   ⭐しきい値は250文字（seating.js が数えて data-pop を付ける）。
+     ⚠短い？は今までどおりその場に開く（本人「短いのはそのままでいいよ」）
+   ⚠戻す可能性あり＝この節と seating.js の同じ見出しの節を消せば元どおり
+   ============================================================ */
+.tip-mask{position:fixed;inset:0;background:rgba(40,32,38,.40);z-index:80}
+html.tip-open{overflow:hidden}          /* 後ろが動かない＝閉じてから次に行く */
+
+.tip-body[data-pop]:not([hidden]){
+  position:fixed;z-index:81;
+  left:50%;top:50%;transform:translate(-50%,-50%);
+  /* ⭐幅は決め打ち。文章が短くても細長い箱にならない（本人「最低のサイズを決めといて」） */
+  width:min(480px, calc(100vw - 32px));
+  max-width:none;
+  max-height:calc(100vh - 72px);overflow:auto;
+  box-shadow:0 12px 44px rgba(70,50,60,.30);
+  border-color:var(--pink-light);
+  /* ⭐浮いているときは中身を白に（2026-09-09 本人「この部分だけピンクで、あとは白かグレー」）。
+     ⚠グレー(--bg)はページの地の色と同じで、カードに見えなくなる。
+       ⭐白＝文字が一番読みやすく、暗い背景の上でカードが浮いて見える。
+       ⭐その場に開くほうはピンクのまま＝「浮いている／その場」の区別にもなる */
+  background:#fff;
+}
+/* 見出し（何の説明か）と ✕。ポップアップのときだけ出す */
+.tip-pop-head{display:none}
+.tip-body[data-pop]:not([hidden]) .tip-pop-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  position:sticky;top:-12px;
+  margin:-12px -14px 11px;padding:11px 10px 10px 14px;
+  background:var(--pink-pale);border-bottom:1px solid var(--pink-light);
+  font-weight:700;font-size:.86rem;
+}
+.tip-x{
+  border:0;background:none;cursor:pointer;color:var(--ink-soft);
+  font-size:1rem;line-height:1;padding:4px 8px;border-radius:6px;
+}
+.tip-x:hover{color:var(--ink);background:#fff}

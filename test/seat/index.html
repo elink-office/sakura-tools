@@ -14,7 +14,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5047272666003169" crossorigin="anonymous"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9296990556079874" crossorigin="anonymous"></script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-GCK29PTKBG"></script>
 <script>
@@ -26,8 +26,8 @@
 <meta name="google-site-verification" content="PfjmCGxUaN1hzuj_dRw3e4PTY6xepghfXM_CrU_sO-A" />
 <title>【テスト】教室の座席表メーカー｜エクセルテンプレート不要・30人40人</title>
 <meta name="description" content="教室の座席表の作り方は簡単。名簿を貼るだけで席替えができる無料ツールです。エクセルテンプレートは不要。新年度の出席番号順にも対応。小学校・中学校・高校のどのクラスでも、30人・35人・40人、4列・5列・6列・8列の教室席配置に対応。生徒に見せる向きと、先生が教卓から見る向きを切り替えられます。班分けと色分けもそのまま印刷・PDFにできます。エクセルテンプレートのダウンロードも、登録もいりません。名簿はブラウザの中だけで処理し、AIの学習にも使われません。">
-<link rel="stylesheet" href="../style.css?v=114">
-<link rel="stylesheet" href="seat.css?v=1">
+<link rel="stylesheet" href="../style.css?v=133">
+<link rel="stylesheet" href="seat.css?v=5">
 <link rel="stylesheet" href="../print.css?v=54" media="print">
 <style>
 /* 🔴 班長・前回とのくらべ・クラスの保存（2026-08-31）。
@@ -98,9 +98,6 @@ body.screen .sheet.masked .grid{display:grid}
    ⚠狭い画面では自動で縦に積む（絵が下）。並べるのは 860px より広いときだけ */
 /* 🔴 できること（2026-09-04 本人）。左の高さを埋めつつ、中身も増やす */
 /* ⚠ .can は下の「できること」の節がもう使っている（白い箱）。ここは別名にする */
-.can-do{margin:12px 0 10px;padding-left:1.1em;font-size:.86rem;color:var(--ink-soft);line-height:1.9}
-.can-do li{margin-bottom:2px}
-.can-do li::marker{color:var(--pink)}
 .intro{margin:0 0 20px}
 .intro .t-sample{margin:0}
 @media (min-width:860px){
@@ -171,17 +168,23 @@ body.screen .seat.dup .nm{text-decoration:none}
 </style>
 </head>
 <body>
-<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/07 22:08</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/10 01:00</div>
 
 <header class="site-head noprint">
   <div class="wrap">
     <a class="logo" href="../"><span class="logo-mark">🌸</span><span class="logo-main">SAKURA TOOLS</span><span class="logo-sub">さくらツール</span></a>
     <nav>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">ツール</label>
+      <div class="navlist">
       <a href="../">トップ</a>
       <a href="../seki/">席次表</a>
       <a href="../slide/">スライド</a>
+      <a href="../excel-fx/">関数早見表</a>
+      </div>
     </nav>
   </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">座席表メーカー</span><span class="now-short">座席表</span></div></div>
 </header>
 
 <main class="wrap">
@@ -204,7 +207,7 @@ body.screen .seat.dup .nm{text-decoration:none}
     <!-- 🔴 押して大きくするのはやめた（2026-09-06 本人「見本はもういらない。画像を押さなくても
          いいようにしよう…そのままでもちゃんと見本は見える。それより下にスクロールしてもらいたい」）-->
     <figure class="t-sample noprint">
-      <img src="../img/seat-sample.png?v=9" width="1280" height="720" alt="33人・6列の教室の座席表の完成見本。3人の班やかぎ型の班も作れる">
+      <img src="../img/seat-sample.png?v=10" width="1280" height="720" alt="33人・6列の教室の座席表の完成見本。3人の班やかぎ型の班も作れる">
     </figure>
   </div>
   <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
@@ -214,6 +217,10 @@ body.screen .seat.dup .nm{text-decoration:none}
     <section class="card noprint">
       <h2><span class="step">1</span>名簿の入力&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
       <div class="tip-body" hidden>
+        <!-- 🔴 ①の？の一番上に置く（2026-09-09 本人）。⚠端末の種類まで書く
+             本人「使っている端末の中だけは、タブレットスマホでも同様という内容も入れたい」
+             ⭐事実で止めない。「だから、そのまま貼って大丈夫」まで書く -->
+        <p>🔒 <strong>名簿はインターネットに送りません。</strong>使っている端末のブラウザの中だけで計算しているので、名前がどこかに保存されることも、AIの学習に使われることもありません。パソコン・タブレット・スマホ、どれでも同じです。</p>
         <p class="tip-h">Excelから貼るとき</p>
         <ul>
           <li><strong>名前の列をコピーして、この欄に貼るだけです。</strong></li>
@@ -232,11 +239,11 @@ body.screen .seat.dup .nm{text-decoration:none}
 
         <p><strong>いま出ている座席表はサンプルです。</strong>名簿を入れると、自分のクラスに変わります。入れる前でも、席を動かしたり班に分けたりして試せます。</p>
       </div>
-      <p class="safe">🔒 <strong>使っているパソコンの中だけで完結しています。</strong>安心してご利用ください。</p>
+      <p class="safe">🔒 <strong>使っている端末の中だけで完結しています。</strong>安心してご利用ください。</p>
       <!-- 🔴 次に使うとき⑧まで下がらなくていいように、呼び出しは①に置く（2026-08-31 本人）。
            ⚠残したものが1件も無いときは出さない（はじめての人には邪魔なだけ） -->
       <div class="row tight" id="quickLoad" hidden style="margin-bottom:12px">
-        <div class="pick"><label for="clsSel2">さくらツールで保存済のデータ</label>
+        <div class="pick"><label for="clsSel2">保存済のデータ</label>
           <select id="clsSel2"><option value="">－</option></select></div>
         <div><label>&nbsp;</label>
           <button class="mini" id="clsLoad2" type="button">このデータを自動入力</button></div>
@@ -323,45 +330,59 @@ body.screen .seat.dup .nm{text-decoration:none}
     <details class="opt sub noprint" id="condBlock">
       <summary>詳しい条件（離す・隣にする・席を決める）</summary>
       <div class="body">
-        <!-- 🔴 チェックを外すと中身が出てくる形にした（2026-09-03 本人）。
-             本人「4つが同列だと、ボタンを変えたら設定が変わるってのが想像しにくい」
-             ＝「設定しない」を他の3つと並べず、上下の関係にする。
+        <!-- 🔴 チェック（隣の条件は設定しない）は外した（2026-09-09 本人）。
+             ⚠「詳しい条件」自体がすでにシャッターなので、中でもう一段隠す必要がない。
+               本人「そもそも詳しい条件自体がシャッターになってるからいらなくない？」
+             🔴きっかけ＝本人が友人に使い方を説明したとき、「離す」を探して見つけられなかった。
+               見出しには「離す」と書いてあるのに、チェックのラベルは「隣の条件は設定しない」で、
+               ⚠「離す」という言葉がどこにも出ていなかった。しかも二重否定だった
              ⚠3つの意味は言葉だけでは伝わらないので、小さな図と1行の説明を付けた -->
         <h3>離す・隣にする&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h3>
         <div class="tip-body" hidden>
-          <p>「この2人は離す」「この2人は隣にする」を決められます。<strong>使わないときは、チェックを入れたままでかまいません。</strong></p>
+          <p>「この2人は離す」「この2人は隣にする」を決められます。<strong>使わないときは、何も入れなくてかまいません。</strong></p>
           <p>使うときは、まず<strong>どこまでを“隣”とみなすか</strong>をえらびます。きつくするほど、条件を満たす配置が見つかりにくくなります。作れないときは、ここをゆるくしてみてください。</p>
         </div>
-        <label class="chk-inline"><input type="checkbox" id="modeOff" checked> 隣の条件は設定しない</label>
-
-        <div id="modeBox" hidden style="margin-top:12px">
+        <div id="modeBox" style="margin-top:12px">
           <p class="note-sm" style="margin:0 0 6px">どこまでを「隣」とみなしますか</p>
           <div class="radios mode-pick">
+            <!-- 🔴 「設定なし」を左端に戻した（2026-09-09 本人「左右だけの左に、設定なしの図とボタンを作って」）。
+                 ⚠2026-09-03に一度やめた形だが、⭐図ができたので「何も隣とみなさない」が目で分かるようになった。
+                   当時の理由「4つが同列だと、ボタンを変えたら設定が変わるってのが想像しにくい」は、図で解けている -->
+            <label><input type="radio" name="mode" value="none" checked>
+              <span class="mode-fig"><i></i><i></i><i></i><i></i><i class="me"></i><i></i><i></i><i></i><i></i></span>
+              設定なし</label>
             <label><input type="radio" name="mode" value="lr">
               <span class="mode-fig"><i></i><i></i><i></i><i class="on"></i><i class="me"></i><i class="on"></i><i></i><i></i><i></i></span>
               左右だけ</label>
-            <label><input type="radio" name="mode" value="cross" checked>
+            <label><input type="radio" name="mode" value="cross">
               <span class="mode-fig"><i></i><i class="on"></i><i></i><i class="on"></i><i class="me"></i><i class="on"></i><i></i><i class="on"></i><i></i></span>
               前後左右</label>
             <label><input type="radio" name="mode" value="king">
               <span class="mode-fig"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="me"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>
               まわり全部（ななめも）</label>
           </div>
-          <p class="hint" id="modeNote"></p>
+          <!-- 🔴 説明文（前後左右の4つの席を「隣」とみなします）は外した（2026-09-09 本人）。
+               本人「これいらないね。図になったから」＝小さな図で伝わっているので、文が重複する。
+               ⚠JS側の MODE_NOTE と modeChanged() は残してある（$('modeNote') が無ければ何もしない） -->
 
-          <h3>離す組み合わせ</h3>
-          <div id="sepList"></div>
-          <button class="mini" id="addSep" type="button">＋ 組を追加</button>
+          <!-- ⚠「設定なし」をえらんでいる間は、この箱ごと薄くして触れなくする（2026-09-09）。
+               ⭐入れたものは消さない（もどせば、そのまま効く） -->
+          <div id="pairBox">
+            <h3>離す組み合わせ</h3>
+            <div id="sepList"></div>
+            <button class="mini" id="addSep" type="button">＋ 組を追加</button>
 
-          <h3>隣にする組み合わせ</h3>
-          <div id="adjList"></div>
-          <button class="mini" id="addAdj" type="button">＋ 組を追加</button>
+            <h3>隣にする組み合わせ</h3>
+            <div id="adjList"></div>
+            <button class="mini" id="addAdj" type="button">＋ 組を追加</button>
+          </div>
         </div>
 
         <h3>席を決める人</h3>
         <div id="fixList"></div>
         <button class="mini" id="addFix" type="button">＋ 人を追加</button>
-        <p class="hint">視力などの配慮は<strong>「前のほう」がおすすめ</strong>です。席をぴったり決めると、毎回まったく同じ席になります。</p>
+        <!-- ⚠「視力などの配慮は「前のほう」がおすすめです」は削除した（2026-09-09 本人）。また足さない -->
+        <p class="hint">席をぴったり決めると、毎回まったく同じ席になります。</p>
 
         <!-- 🔴 ★はここでえらぶ形にした（2026-09-03 本人「名簿に班長とは書かない」）。
              ⚠名簿の★の読み取りは残してあるが、画面では案内しない。
@@ -572,7 +593,7 @@ body.screen .seat.dup .nm{text-decoration:none}
           <input type="checkbox" id="showCredit" checked> 右下にサイト名を入れる
         </label>
       </p>
-      <p class="hint" style="margin-top:6px">印刷の向きや大きさは、お使いのパソコン・プリンターの設定によります。うまく収まらないときは、印刷画面の<strong>拡大・縮小</strong>で調整してください。</p>
+      <p class="hint" style="margin-top:6px">印刷の向きや大きさは、使っている端末・プリンターの設定によります。うまく収まらないときは、印刷画面の<strong>拡大・縮小</strong>で調整してください。</p>
       </div>
     </details>
 
@@ -613,14 +634,14 @@ body.screen .seat.dup .nm{text-decoration:none}
         <li><strong>いま開いている画面をそのまま残します。</strong>名簿・教室の形・条件・男女の指定・座席表まで、次に開いたときそのまま出ます。</li>
         <li><strong>残るのは1つだけ</strong>です。名簿を入れかえると、前のものは上書きされます。いくつも残したいときは<strong>⑧</strong>を使ってください。</li>
         <li><strong>チェックを外すと、保存していたものは消えます。</strong>次に開いたときは最初からの設定になります。いま見ている画面はそのままです。</li>
-        <li>残るのは<strong>このパソコンの中だけ</strong>です。<strong>どこにも送信されません。</strong>読み込んだ画像は保存されません。</li>
+        <li>残るのは<strong>この端末の中だけ</strong>です。<strong>どこにも送信されません。</strong>読み込んだ画像は保存されません。</li>
       </ul>
     </div>
     <label style="font-weight:normal">
       <input type="checkbox" id="save"> この画面を保存する
     </label>
     <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。<br>
-      ⚠<b>共用のパソコンで使ったときは、このチェックを外して、この画面を閉じてください。</b></p>
+      ⚠<b>共用の端末で使ったときは、このチェックを外して、この画面を閉じてください。</b></p>
     <p><span class="saving" id="savingLabel"></span></p>
   </section>
 
@@ -631,8 +652,10 @@ body.screen .seat.dup .nm{text-decoration:none}
   <section class="card noprint">
     <h2><span class="step">8</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
     <div class="tip-body" hidden>
+      <!-- 🔴 ⑧の？の一番上にも置く（2026-09-09 本人）。①と同じ考え方 -->
+      <p>🔒 <strong>保存先もインターネットではありません。</strong>使っている端末のブラウザの中だけに残るので、ほかの人からは見えません。パソコン・タブレット・スマホ、どれでも同じです。</p>
       <ul>
-        <li><strong>名前を付けて、いくつも保存できます。</strong>残るのは<strong>このパソコンの中だけ</strong>です。</li>
+        <li><strong>名前を付けて、いくつも保存できます。</strong>残るのは<strong>この端末の中だけ</strong>です。</li>
         <li><strong>さくらツールの中で共通です。</strong>ほかの道具で保存したデータもここに出ますし、逆もできます（教室の形や班の設定はツールごとに覚えます）。</li>
         <li>呼び出すのは①の<strong>「このデータを自動入力」</strong>から。名簿も条件も入るので、あとは「席替えする」を押すだけです。</li>
         <li><strong>「記録の座席を表示」</strong>＝そのときの座席をそのまま出します（<strong>席替えはしません</strong>）。</li>
@@ -641,9 +664,9 @@ body.screen .seat.dup .nm{text-decoration:none}
       </ul>
     </div>
 
-    <p class="hint">保存したデータは、<b>さくらツール上で利用できます</b>。</p>
+    <p class="hint">保存したデータは、<b>座席表・席次表・班分け・スライド</b>で使えます。</p>
 
-    <p class="safe">🔒 <strong>保存したものは、このパソコンの中だけに残ります。</strong></p>
+    <p class="safe">🔒 <strong>保存したものは、使っている端末の中だけに残ります。</strong></p>
 
     <div class="cls-box">
       <h3>データに名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
@@ -653,7 +676,7 @@ body.screen .seat.dup .nm{text-decoration:none}
         <button class="mini" id="clsSave" type="button">上書き</button>
         <button class="mini" id="clsDel" type="button">削除</button>
       </p>
-      <div class="pick"><label for="clsSel">さくらツールで保存済のデータ</label>
+      <div class="pick"><label for="clsSel">保存済のデータ</label>
         <select id="clsSel"><option value="">－</option></select></div>
 
       <h3 style="margin-top:18px">決まった座席を保存（<span id="recCount">0／20件</span>）</h3>
@@ -671,8 +694,12 @@ body.screen .seat.dup .nm{text-decoration:none}
   </section>
 
   <section class="read">
-    <h2>使い方</h2>
-    <ol>
+
+    <!-- ⭐読みものは全部シャッター（2026-09-08 本人）。①〜⑧の道具は開いたまま -->
+    <details class="howto">
+      <summary>使い方</summary>
+      <div class="body">
+      <ol>
       <li><strong>名簿をExcelからコピーして貼り付けます</strong>（1行に1人）。手で打ってもかまいません。</li>
       <li>横と縦の席の数、黒板の位置を選びます。</li>
       <li>必要に応じて「詳しい条件」で、離す組・隣にする組・席を決める人を指定します。</li>
@@ -681,24 +708,41 @@ body.screen .seat.dup .nm{text-decoration:none}
       <li>気になるところは<strong>マグネットのように入れ替え</strong>られます。マウスでも指でも同じように動きます。</li>
       <li>印刷やPDFで保存して、<strong>1年を通して座席を管理する</strong>こともできます。</li>
     </ol>
-
-    <h2>できること</h2>
-    <ul class="can">
+      <ul class="can">
       <li><b>マグネットのように入れ替えも自由自在</b><small>席をつまんで動かすだけ。マウスでも指でも同じように動きます</small></li>
       <li><b>班分け</b><small>1班の人数を決めるだけ。<b>30人なら3人班で10班、4人班で8班</b>に分かれます。3人のときは前後をふくむかぎ型に組みます</small></li>
       <li><b>色分け</b><small>班ごとに色が付きます。印刷にもそのまま出ます</small></li>
       <li><b>印刷・PDF</b><small>紙にもPDFにも、このページから出せます。A4の横でも縦でも、紙いっぱいに大きく出ます</small></li>
       <li><b>モニター表示</b><small>教室の画面に大きく映せます。映したまま席替えもできます</small></li>
     </ul>
+      <!-- ⭐「こんなときに」は章をやめて、使い方の中に入れた（2026-09-08 本人）-->
+      <p class="sub"><b>こんなときに</b></p>
+      <ul>
+      <li>学期はじめ・月はじめの席替え</li>
+      <li>小学校・中学校・高校で、学校の座席表を簡単に作成したいとき</li>
+      <li>視力や聞こえ方に配慮が必要な子がいるとき（「前のほう」で指定）</li>
+      <li>おしゃべりが増えてきた組み合わせを離したいとき</li>
+      <li>面倒見のいい子を隣にしてあげたいとき（「隣にする」で指定）</li>
+    </ul>
 
-    <h2>よくある質問</h2>
-    <dl>
+    <!-- ⚠「ほかのツール」のカードは丸ごと消した（2026-09-08 本人）。
+         中身が古くなっていた（円卓・会議室・タイピングを「準備中」と書いたまま）。
+         道具の一覧は右上のヘッダーに寄せる -->
+      </div>
+    </details>
+
+
+    <!-- ⭐読みものは全部シャッター（2026-09-08 本人）。①〜⑧の道具は開いたまま -->
+    <details class="howto">
+      <summary>よくある質問</summary>
+      <div class="body">
+      <dl>
       <dt>ネットにつながっているのに、本当に外部に出ないのですか？</dt>
-      <dd><strong>普段お使いのパソコンで、名簿を開くのと同じです。</strong>エクセルで名簿を開いても、書いた中身がネットに出ていかないのと同じことです。ネットにつながっていても、<strong>すべてお使いのパソコンだけで完結します</strong>。そのまま印刷やPDFにできます。だから、外に晒されることも、漏れることも、AIの学習に使われることもありません。<strong>いつもの仕事と同じように、安心して使えます。</strong></dd>
+      <dd><strong>普段使っている端末で、名簿を開くのと同じです。</strong>エクセルで名簿を開いても、書いた中身がネットに出ていかないのと同じことです。ネットにつながっていても、<strong>すべて使っている端末だけで完結します</strong>。そのまま印刷やPDFにできます。だから、外に晒されることも、漏れることも、AIの学習に使われることもありません。<strong>いつもの仕事と同じように、安心して使えます。</strong></dd>
       <dt>名簿は外部に送られますか？</dt>
-      <dd>送りません。すべてお使いのパソコンだけで完結します。<strong>外部に出ていないので、AIの学習に使われることもありません。</strong></dd>
+      <dd>送りません。すべて使っている端末だけで完結します。<strong>外部に出ていないので、AIの学習に使われることもありません。</strong></dd>
       <dt>入力した名簿がAIの学習に使われるか心配です</dt>
-      <dd><strong>ありません。</strong>外部には送っていないためです。学習させる・させない以前に、<strong>すべてお使いのパソコンだけで完結しています</strong>。学校のパソコンで、生徒の個人情報をあつかうときにも、安心してお使いいただけます。</dd>
+      <dd><strong>ありません。</strong>外部には送っていないためです。学習させる・させない以前に、<strong>すべて使っている端末だけで完結しています</strong>。学校の端末で、生徒の個人情報をあつかうときにも、安心してお使いいただけます。</dd>
       <dt>条件を入れたら「作れません」と出ました</dt>
       <dd>条件がきつすぎて、全部を満たす配置が無い状態です。どの条件を外せば作れるかを画面に出しますので、それを外すか、「隣」の決め方をゆるくしてください。</dd>
       <dt>3つの案は何が違うのですか？</dt>
@@ -724,26 +768,20 @@ body.screen .seat.dup .nm{text-decoration:none}
       <dt>座席表のテンプレートはありますか？</dt>
       <dd><strong>テンプレートはいりません。</strong>Excelのファイルをダウンロードして編集する必要がなく、このページで名簿を貼り付ければ、そのまま座席表になります。印刷とPDFもこのページからできます。</dd>
     </dl>
+      </div>
+    </details>
 
-    <h2>こんなときに</h2>
-    <ul>
-      <li>学期はじめ・月はじめの席替え</li>
-      <li>小学校・中学校・高校で、学校の座席表を簡単に作成したいとき</li>
-      <li>視力や聞こえ方に配慮が必要な子がいるとき（「前のほう」で指定）</li>
-      <li>おしゃべりが増えてきた組み合わせを離したいとき</li>
-      <li>面倒見のいい子を隣にしてあげたいとき（「隣にする」で指定）</li>
-    </ul>
 
-    <h2>ほかのツール</h2>
-    <ul class="tools">
-      <li><a href="../seki/"><b>📋 席次表メーカー</b><small>会議・研修・大学の授業に。会社名・役職・フリガナ・名前を並べて、A4の1枚に収めます</small></a></li>
-      <li><span class="soon"><b>タイピング練習</b><small>ミスを減らす練習。ステージ1はホームポジション（準備中）</small></span></li>
-      <li><span class="soon"><b>当番表</b><small>掃除・給食の当番を割り振り（準備中）</small></span></li>
-      <li><span class="soon"><b>席替えルーレット</b><small>その場で発表する席替え（準備中）</small></span></li>
-    </ul>
 
-    <h2>このツールについて</h2>
-    <p><strong>使っているパソコンの中だけで完結できます。</strong>使った名簿がネット上に流れることはありません。外部には送っていないので、AIの学習に使われることも、個人情報が漏れることもありません。安心して使えます。「画面の保存」をオンにしたときだけ、このパソコンの中に残ります。オフのままなら、ページを閉じた時点で消えます。インストールも会員登録もいりません。</p>
+
+    <!-- ⭐読みものは全部シャッター（2026-09-08 本人）。①〜⑧の道具は開いたまま -->
+    <details class="howto">
+      <summary>データの扱い</summary>
+      <div class="body">
+      <p><strong>使っている端末の中だけで完結できます。</strong>使った名簿がネット上に流れることはありません。外部には送っていないので、AIの学習に使われることも、個人情報が漏れることもありません。安心して使えます。「画面の保存」をオンにしたときだけ、この端末の中に残ります。オフのままなら、ページを閉じた時点で消えます。インストールも会員登録もいりません。</p>
+      </div>
+    </details>
+
   </section>
 </main>
 
@@ -754,10 +792,11 @@ body.screen .seat.dup .nm{text-decoration:none}
     <span class="copy">さくらツール　© 2026 SAKURA TOOLS</span></div>
 </footer>
 
-<script src="../seating.js?v=54"></script>
-<script src="seat.js?v=163"></script>
+<script src="../seating.js?v=57"></script>
+<script src="seat.js?v=165"></script>
 <!-- 🔴 印刷用の1枚絵の置き場（2026-09-01）。画面には出ない。
      ⚠**body の直下に置くこと。**中に入れると、印刷のときに親ごと隠されて白紙になる -->
 <div id="printImgWrap"></div>
+<script src="../tip.js?v=3"></script>
 </body>
 </html>

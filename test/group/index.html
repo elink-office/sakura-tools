@@ -1,12 +1,14 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta name="robots" content="noindex,nofollow">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- 🔴検索に出さない（2026-09-08 本人「とりあえず止めましょう」）。
+     ⚠このページは本人が公開を指示していない。公開する日にこの1行を外す -->
+<meta name="robots" content="noindex,nofollow">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SAKURA TOOLS">
-<meta property="og:title" content="理科室の座席表メーカー｜図工室・家庭科室の班の席をA4の1枚に">
+<meta property="og:title" content="特別教室の座席表メーカー｜理科室・図工室・家庭科室の班の席をA4の1枚に">
 <meta property="og:description" content="理科室・図工室・家庭科室の座席表を無料で作成。名簿を貼るだけで、実験台ごとの班と、台のどこに座るかまで決まります。1台4〜6人、台は2列でも3列でも。印刷とPDFはA4の1枚に収まります。">
 <meta property="og:url" content="https://sakura-tools.com/group/">
 <meta property="og:image" content="https://sakura-tools.com/ogp.png">
@@ -14,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5047272666003169" crossorigin="anonymous"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9296990556079874" crossorigin="anonymous"></script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-GCK29PTKBG"></script>
 <script>
@@ -23,10 +25,10 @@
   gtag('js', new Date());
   gtag('config', 'G-GCK29PTKBG');
 </script>
-<title>【テスト】理科室の座席表メーカー｜図工室・家庭科室の班の席をA4の1枚に｜さくらツール</title>
+<title>【テスト】特別教室の座席表メーカー｜理科室・図工室・家庭科室｜さくらツール</title>
 <meta name="description" content="理科室・図工室・家庭科室の座席表を無料で作成。名簿を貼るだけで、実験台ごとの班分けと、台のどこに座るかまで決まります。1台4〜6人、台は2列でも3列でも。男女を均す・この2人は離す、も指定できます。名簿は20クラスまで残せるので、専科の先生でも貼り直しが要りません。印刷とPDFはA4の1枚に収まります。">
-<link rel="stylesheet" href="../style.css?v=114">
-<link rel="stylesheet" href="group.css?v=1">
+<link rel="stylesheet" href="../style.css?v=133">
+<link rel="stylesheet" href="group.css?v=2">
 <style>
 /* 🔴「＋人を追加」と人数を1行に（2026-09-03 本人・座席表と同じ） */
 .lead-add{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -37,24 +39,30 @@
 </style>
 </head>
 <body>
-<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/07 22:08</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/10 01:00</div>
 
 <header class="site-head noprint">
   <div class="wrap">
     <a class="logo" href="../"><span class="logo-mark">🌸</span><span class="logo-main">SAKURA TOOLS</span><span class="logo-sub">さくらツール</span></a>
     <nav>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">ツール</label>
+      <div class="navlist">
       <a href="../">トップ</a>
       <a href="../seat/">座席表</a>
       <a href="../seki/">席次表</a>
       <a href="../slide/">スライド</a>
+      <a href="../excel-fx/">関数早見表</a>
+      </div>
     </nav>
   </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">特別教室の座席表</span><span class="now-short">特別教室</span></div></div>
 </header>
 
 <main class="wrap">
-  <h1>理科室・図工室の座席表メーカー</h1>
+  <h1>特別教室の座席表メーカー</h1>
   <p class="catch">班も、台のどこに座るかも、A4の1枚に</p>
-  <p class="lead">名簿を貼るだけ。理科室・図工室・家庭科室のように、大きな台をかこんで座る教室のための座席表です。名簿は20クラスまで残せるので、いくつも受け持つ先生でも貼り直しが要りません。使った名簿は外部には送っていないので、<strong>AIの学習に使われることもありません</strong>。<br>名簿は、<strong>さくらツールで利用しているデータ</strong>がそのまま使えます。</p>
+  <p class="lead">名簿を貼るだけ。理科室・図工室・家庭科室のように、大きな台をかこんで座る教室のための座席表です。名簿は20クラスまで残せるので、いくつも受け持つ先生でも貼り直しが要りません。使った名簿は外部には送っていないので、<strong>AIの学習に使われることもありません</strong>。<br>名簿は、<strong>座席表・席次表・スライドで保存したデータ</strong>がそのまま使えます。</p>
   <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
 
 
@@ -68,7 +76,7 @@
     </div>
 
     <div class="row tight" id="quickLoad" hidden style="margin-bottom:12px">
-      <div><label for="clsSel2">さくらツールで保存済のデータ</label>
+      <div><label for="clsSel2">保存済のデータ</label>
         <select id="clsSel2"><option value="">－</option></select></div>
       <div><label>&nbsp;</label>
         <button class="mini" id="clsLoad2" type="button">このデータを自動入力</button></div>
@@ -288,14 +296,14 @@
       <ul>
         <li><strong>いま開いている画面をそのまま残します。</strong>名簿・部屋の形・条件・男女の指定・座席まで、次に開いたときそのまま出ます。</li>
         <li>残るのは1つだけです。いくつも残したいときは⑦を使ってください。</li>
-        <li>残るのはこのパソコンの中だけです。どこにも送信されません。</li>
+        <li>残るのはこの端末の中だけです。どこにも送信されません。</li>
       </ul>
     </div>
     <label style="font-weight:normal">
       <input type="checkbox" id="save"> この画面を保存する
     </label>
     <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。<br>
-      ⚠<b>共用のパソコンで使ったときは、このチェックを外して、この画面を閉じてください。</b></p>
+      ⚠<b>共用の端末で使ったときは、このチェックを外して、この画面を閉じてください。</b></p>
     <p><span class="saving" id="savingLabel"></span></p>
   </section>
 
@@ -305,15 +313,15 @@
     <h2><span class="step">7</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
     <div class="tip-body" hidden>
       <ul>
-        <li><strong>名前を付けて、いくつも保存できます。</strong>残るのは<strong>このパソコンの中だけ</strong>です。</li>
+        <li><strong>名前を付けて、いくつも保存できます。</strong>残るのは<strong>この端末の中だけ</strong>です。</li>
         <li><strong>さくらツールの中で共通です。</strong>ほかの道具で保存したデータもここに出ますし、逆もできます（部屋の形や班の設定はツールごとに覚えます）。</li>
         <li>呼び出すのは①の<strong>「このデータを自動入力」</strong>から。</li>
       </ul>
     </div>
 
-    <p class="hint">保存したデータは、<b>さくらツール上で利用できます</b>。</p>
+    <p class="hint">保存したデータは、<b>座席表・席次表・班分け・スライド</b>で使えます。</p>
 
-    <p class="safe">🔒 <strong>保存したものは、このパソコンの中だけに残ります。</strong></p>
+    <p class="safe">🔒 <strong>保存したものは、この端末の中だけに残ります。</strong></p>
 
     <div class="cls-box">
       <h3>データに名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
@@ -323,35 +331,43 @@
         <button class="mini" id="clsSave" type="button">上書き</button>
         <button class="mini" id="clsDel" type="button">削除</button>
       </p>
-      <div class="pick"><label for="clsSel">さくらツールで保存済のデータ</label>
+      <div class="pick"><label for="clsSel">保存済のデータ</label>
         <select id="clsSel"><option value="">－</option></select></div>
     </div>
 
   </section>
 
   <section class="read">
-    <h2>使い方</h2>
-    <ol>
+
+    <!-- ⭐読みものは全部シャッター（2026-09-08 本人）。①〜⑧の道具は開いたまま -->
+    <details class="howto">
+      <summary>使い方</summary>
+      <div class="body">
+      <ol>
       <li><strong>名簿をExcelからコピーして貼り付けます</strong>（1行に1人）。手で打ってもかまいません。</li>
       <li>台のならび（2列か3列）と、1台の人数を選びます。台の数は人数から自動で決まります。</li>
       <li>「班を作る」を押すと<strong>3つの案</strong>が出るので、見比べて選びます。</li>
       <li>気になるところは<strong>つまんで入れかえ</strong>られます。マウスでも指でも同じように動きます。</li>
       <li>印刷かPDFで、A4の1枚に出します。</li>
     </ol>
-
-    <h2>できること</h2>
-    <ul class="can">
+      <ul class="can">
       <li><b>班分けと座席をいっぺんに</b><small>誰と誰が同じ台か、だけでなく、台のどこに座るかまで決まります</small></li>
       <li><b>1台4〜6人</b><small>5人ずつに分けて、あまりが出た台だけ6人になります。5人に足りないときだけ4人の台ができます</small></li>
       <li><b>男女を均す</b><small>ひとつの台に男女が片寄らないように分けます</small></li>
       <li><b>離す・同じ班にする</b><small>「この2人は同じ台にしない」を入れたまま分けられます</small></li>
       <li><b>印刷・PDF</b><small>A4の1枚に収まります。台の絵のまま出るので、そのまま貼り出せます</small></li>
     </ul>
+      </div>
+    </details>
 
-    <h2>よくある質問</h2>
-    <dl>
+
+    <!-- ⭐読みものは全部シャッター（2026-09-08 本人）。①〜⑧の道具は開いたまま -->
+    <details class="howto">
+      <summary>よくある質問</summary>
+      <div class="body">
+      <dl>
       <dt>ネットにつながっているのに、本当に外部に出ないのですか？</dt>
-      <dd><strong>普段お使いのパソコンで、名簿を開くのと同じです。</strong>ネットにつながっていても、<strong>すべてお使いのパソコンだけで完結します</strong>。そのまま印刷やPDFにできます。だから、外に晒されることも、漏れることも、AIの学習に使われることもありません。<strong>いつもの仕事と同じように、安心して使えます。</strong></dd>
+      <dd><strong>普段使っている端末で、名簿を開くのと同じです。</strong>ネットにつながっていても、<strong>すべて使っている端末だけで完結します</strong>。そのまま印刷やPDFにできます。だから、外に晒されることも、漏れることも、AIの学習に使われることもありません。<strong>いつもの仕事と同じように、安心して使えます。</strong></dd>
       <dt>理科室の座席表を作りたい</dt>
       <dd>このページがそのまま使えます。実験台の短い辺が黒板を向いた形で、1台に4〜6人を割り振ります。台は2列でも3列でも選べます。</dd>
       <dt>図工室・家庭科室でも使えますか？</dt>
@@ -365,15 +381,22 @@
       <dt>1台に7人以上座らせたいのですが</dt>
       <dd>いまは6人までです。台の短い辺に回り込むところまでが、無理なく座れる形だからです。</dd>
     </dl>
+      </div>
+    </details>
 
-    <h2>ほかのツール</h2>
-    <ul class="tools">
-      <li><a href="../seat/"><b>🪑 座席表メーカー</b><small>教室の席替えに。名簿を貼るだけで、30人でも40人でも並びます</small></a></li>
-      <li><a href="../seki/"><b>📋 席次表メーカー</b><small>会議・研修・大学の授業に。会社名・役職・名前を並べてA4の1枚に</small></a></li>
-    </ul>
 
-    <h2>このツールについて</h2>
-    <p><strong>使っているパソコンの中だけで完結できます。</strong>使った名簿がネット上に流れることはありません。外部には送っていないので、AIの学習に使われることも、個人情報が漏れることもありません。安心して使えます。「画面の保存」をオンにしたときだけ、このパソコンの中に残ります。オフのままなら、ページを閉じた時点で消えます。インストールも会員登録もいりません。</p>
+    <!-- ⚠「ほかのツール」は全部消した（2026-09-08 本人「ほかのツールは全部消してOK」）。
+         中身が古くなりやすい／道具の一覧は右上のヘッダーに寄せる -->
+
+
+    <!-- ⭐読みものは全部シャッター（2026-09-08 本人）。①〜⑧の道具は開いたまま -->
+    <details class="howto">
+      <summary>データの扱い</summary>
+      <div class="body">
+      <p><strong>使っている端末の中だけで完結できます。</strong>使った名簿がネット上に流れることはありません。外部には送っていないので、AIの学習に使われることも、個人情報が漏れることもありません。安心して使えます。「画面の保存」をオンにしたときだけ、この端末の中に残ります。オフのままなら、ページを閉じた時点で消えます。インストールも会員登録もいりません。</p>
+      </div>
+    </details>
+
   </section>
 </main>
 
@@ -386,5 +409,6 @@
 <!-- 🔴 印刷用の1枚絵の置き場。画面には出ない。
      ⚠body の直下に置くこと。中に入れると、印刷のときに親ごと隠されて白紙になる -->
 <div id="printImgWrap"></div>
+<script src="../tip.js?v=3"></script>
 </body>
 </html>

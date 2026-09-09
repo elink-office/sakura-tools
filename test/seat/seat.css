@@ -1,3 +1,8 @@
+/* ⭐「ゴシック」の中身を BIZ UDPゴシックに入れ替えた（2026-09-08 本人）。
+   ⚠先生に見える名前は「ゴシック」のまま。選べるものは増やしていない
+   ⭐理由＝游ゴシックは Windows で細く出る（かすれ問題）。教室の後ろから見るモニターでは不利。
+     BIZ UDPゴシックは学校向けのユニバーサルデザイン書体で、Windowsに標準で入っている
+   ⚠明朝と丸ゴシックは触っていない */
 /* 座席表専用の見た目
    ⚠ 席次表（/seki/）には読み込まれない。ここを直しても席次表は影響を受けない。 */
 
@@ -8,9 +13,29 @@
   font-family: "Yu Mincho", YuMincho, "Hiragino Mincho ProN", "MS PMincho", serif;
 }
 .sheet.f-gothic .seat .nm{
-  font-family: "Yu Gothic", YuGothic, "Hiragino Sans", "Meiryo", sans-serif;
+  font-family: "BIZ UDPGothic","Hiragino Sans","Noto Sans JP",Meiryo,sans-serif;
 }
 .sheet.f-maru .seat .nm{
   font-family: "HG丸ｺﾞｼｯｸM-PRO", HGMaruGothicMPRO,
                "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif;
 }
+
+/* 🔴 「離す・隣にする」の中身は、その見出しにぶら下がるもの（2026-09-09 本人）。
+   本人「離す・隣にする／離す組み合わせ／隣にする組み合わせ／席を決める人／班に1人ずつにする人、
+        これ全部が同列。組み合わせは文字を小さくしよう。それかインデント付ける、細い線を入れる」
+   ⭐3つとも軽く効かせる＝細い線＋インデント＋見出しを少し小さく。
+   ⚠#modeBox の中身（隣の範囲・離す組・隣にする組）は、ぜんぶ「離す・隣にする」の子。
+     だから箱ごと下げる */
+/* ⚠縦線は入れてみたが外した（2026-09-09 本人「線が重なって見にくい。いらないと思う」）。
+   ⭐インデントと見出しの大きさだけで、ぶら下がりは伝わる */
+#modeBox{
+  padding-left: 12px;
+}
+#modeBox h3{
+  font-size: .92rem;
+}
+
+/* ⚠「設定なし」をえらんでいる間は、組み合わせの箱を薄くして触れなくする（2026-09-09）。
+   ⭐入れたものは消さない。もどせば、そのまま効く
+   （.off の薄さは style.css の .off{opacity:.45} を使う） */
+#pairBox.off{ pointer-events:none; }

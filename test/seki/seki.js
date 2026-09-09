@@ -597,13 +597,29 @@
         fix[name] = (r - 1) * state.cols + (c - 1);
       } else zone[name] = kind;
     });
+    var uiMode = (document.querySelector('input[name=mode]:checked') || {}).value || 'none';
     return {
       names: state.names, cols: state.cols, rows: state.rows,
-      mode: (document.querySelector('input[name=mode]:checked') || {}).value || 'cross',
-      separate: pairs('sepList'), adjacent: pairs('adjList'),
+      // 🔴 'none'（設定なし）は条件そのものを使わない（2026-09-09・座席表と同じ）
+      mode: (uiMode === 'none') ? 'cross' : uiMode,
+      separate: (uiMode === 'none') ? [] : pairs('sepList'),
+      adjacent: (uiMode === 'none') ? [] : pairs('adjList'),
       fixed: fix, zone: zone
     };
   }
+  // 🔴 席替え・モニターに映す のときは「詳しい条件」を閉じる（2026-09-09 本人）。
+  //   本人「先生が書いたものを生徒にちらっとでも見られたら困るから」
+  function closeCond() {
+    var c = $('condBlock');
+    if (c) c.open = false;
+  }
+  // 🔴「設定なし」をえらんでいる間は、組み合わせの箱を薄くする（2026-09-09・座席表と同じ）
+  function modeChanged() {
+    var m = (document.querySelector('input[name=mode]:checked') || {}).value || 'none';
+    var pb = $('pairBox');
+    if (pb) pb.classList.toggle('off', m === 'none');
+  }
+
   window.__seatCollect = collect;
   window.__seatState = state;
 
@@ -1683,7 +1699,7 @@
         board: $('board').value, frontWord: $('frontWord').value,
         paper: $('paper').value,
         frontFree: $('frontFree').value,
-        mode: (document.querySelector('input[name=mode]:checked') || {}).value || 'cross',
+        mode: (document.querySelector('input[name=mode]:checked') || {}).value || 'none',
         bold: $('bold').checked, showCredit: $('showCredit').checked,
         order: $('order').value, dir: $('dir').value,
         honor: $('honor').value, numPos: $('numPos').value,
@@ -1732,8 +1748,10 @@
       if (d.frontWord !== undefined) $('frontWord').value = d.frontWord;
       if (d.paper) $('paper').value = d.paper;
       if (d.frontFree) $('frontFree').value = d.frontFree;
-      var mr = document.querySelector('input[name=mode][value="' + (d.mode || 'cross') + '"]');
+      // 🔴 前の版は「設定なし」を持っていない（いつも条件が効いていた）。そのままの値を使う
+      var mr = document.querySelector('input[name=mode][value="' + (d.mode || 'none') + '"]');
       if (mr) mr.checked = true;
+      modeChanged();
       $('bold').checked = !!d.bold;
       if (d.showCredit !== undefined) $('showCredit').checked = !!d.showCredit;
       if (d.order) $('order').value = d.order;
@@ -1909,13 +1927,14 @@
       state.board = $('board').value;
       if (state.seats) drawSheet();
     });
+    modeChanged();
     $('addSep').onclick = function () { addPairRow('sepList'); };
     $('addAdj').onclick = function () { addPairRow('adjList'); };
     $('addFix').onclick = addFixRow;
     // ⚠run を直接わたさない。クリックの情報が第1引数に入って「初回」と間違われる
-    $('go').onclick = function () { run(); };
+    $('go').onclick = function () { closeCond(); run(); };
     // ⚠「べつの案を出す」は座席表を見ながら押すので、画面を動かさない
-    $('again').onclick = function () { run(true); };
+    $('again').onclick = function () { closeCond(); run(true); };
     $('doPrint').onclick = doPrint;
     // 🔴 用紙の向きで1マスの高さが変わる。描き直さないと、
     //    横で計算した高さのまま縦の紙に刷られて、半分ほどで終わってしまう（本人の指摘）
@@ -1948,7 +1967,7 @@
       if (pick && !pick.contains(e.target)) closeGroupPick();
     });
     if ($('undo')) $('undo').onclick = undoOnce;
-    $('screenOn').onclick = screenOn;
+    $('screenOn').onclick = function (e) { closeCond(); screenOn(e); };
     $('screenOff').onclick = screenOff;
     // 全画面から抜けたとき（Esc・ブラウザのボタン）も、画面をもとに戻す
     document.addEventListener('fullscreenchange', function () {
@@ -1985,7 +2004,7 @@
       });
     });
     document.querySelectorAll('input[name=mode]').forEach(function (r) {
-      r.addEventListener('change', function () { if ($('save').checked) save(); });
+      r.addEventListener('change', function () { modeChanged(); if ($('save').checked) save(); });
     });
     showSaving();
 

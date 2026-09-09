@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5047272666003169" crossorigin="anonymous"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9296990556079874" crossorigin="anonymous"></script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-GCK29PTKBG"></script>
 <script>
@@ -41,19 +41,24 @@
   "url": "https://sakura-tools.com/"
 }
 </script>
-<link rel="stylesheet" href="style.css?v=114">
+<link rel="stylesheet" href="style.css?v=133">
 <link rel="stylesheet" href="top.css?v=40">
 </head>
 <body>
-<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/07 22:08</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/10 01:00</div>
 
 <header class="site-head">
   <div class="wrap">
     <a class="logo" href="./"><span class="logo-mark">🌸</span><span class="logo-main">SAKURA TOOLS</span><span class="logo-sub">さくらツール</span></a>
     <nav>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">ツール</label>
+      <div class="navlist">
       <a href="seat/">座席表</a>
       <a href="seki/">席次表</a>
       <a href="slide/">スライド</a>
+      <a href="excel-fx/">関数早見表</a>
+      </div>
     </nav>
   </div>
 </header>
@@ -62,7 +67,7 @@
   <div class="t-hero">
     <h1>仕事を徹底的に時短したい人のための道具箱</h1>
     <p class="t-catch">
-      <span>今使っているパソコンで仕事を完結<span class="nl">データは漏れない、だから安心</span></span>
+      <span>今使っている端末で仕事を完結<span class="nl">データは漏れない、だから安心</span></span>
     </p>
     <p class="lead">「同じことの繰り返しはもうイヤ」「この2つのデータ、ほぼ一緒なのにまた入力」<strong>そんな時間を減らしたい人のための道具箱</strong>。すべて無料です。<a class="more" href="#naze">くわしくは →</a></p>
   </div>
@@ -79,24 +84,32 @@
            カード全体が浮く見た目で「押せる」と分かるようにする -->
     <a class="t-card school" id="seat" href="seat/">
       <div class="t-tool">
-        <span class="nm">🪑 座席表メーカー</span>
+        <span class="nm">座席表メーカー</span>
         <span class="ds">名簿のコピペで、簡単席替え。席の形、30人・40人でも思いどおり。そのうえPDFもモニター表示もボタンひとつ！</span>
-        <img class="t-shot" src="img/seat-sample.png?v=9" width="1280" height="720" alt="33人・6列の教室の座席表。3人の班やかぎ型の班も作れる">
+        <img class="t-shot" src="img/seat-sample.png?v=10" width="1280" height="720" alt="33人・6列の教室の座席表。3人の班やかぎ型の班も作れる">
       </div>
     </a>
 
     <a class="t-card work" id="seki" href="seki/">
       <div class="t-tool">
-        <span class="nm">📋 席次表メーカー</span>
+        <span class="nm">席次表メーカー</span>
         <span class="ds">会社名・役職・フリガナ・名前を並べた席次表。用紙に合わせて自動で調整し、A4の1枚に収めます。</span>
-        <img class="t-shot" src="img/seki-sample.png?v=7" width="1280" height="720" alt="23人・5列の研修の席次表。会社名・役職・名前を並べたもの">
+        <img class="t-shot" src="img/seki-sample.png?v=8" width="1280" height="720" alt="23人・5列の研修の席次表。会社名・役職・名前を並べたもの">
       </div>
     </a>
 
     <a class="t-card school" id="slide" href="slide/">
       <div class="t-tool">
-        <span class="nm">🖥️ 簡単スライドメーカー</span>
+        <span class="nm">簡単スライドメーカー</span>
         <span class="ds">スライド作りに時間をかけない。文字も写真も、ボタンひとつでモニター表示。パワーポイントはもう不要！</span>
+      </div>
+    </a>
+
+    <!-- ⭐関数早見表（2026-09-08 公開）。⚠仕事のほうの道具なので work -->
+    <a class="t-card work" id="excel-fx" href="excel-fx/">
+      <div class="t-tool">
+        <span class="nm">Excel関数 早見表</span>
+        <span class="ds">覚える順があるから、いつの間にか覚えてる。「SUMって何？」からも「〜したい」からも探せます。</span>
       </div>
     </a>
 
@@ -105,13 +118,13 @@
 
   <section class="t-about" id="naze">
     <h2>ネットにつながっているのに、外部に出ないの？</h2>
-    <p><strong>普段お使いのパソコンで、ファイルを開くのと同じです。</strong>ネットにつながっていても、<strong>すべてお使いのパソコンだけで完結します</strong>。だから、外に晒されることも、漏れることも、AIの学習に使われることもありません。いつもの作業と同じように、安心してお使いいただけます。また、そのままモニターに映したり、印刷やPDFにしたりできる作りです。</p>
+    <p><strong>普段使っている端末で、ファイルを開くのと同じです。</strong>ネットにつながっていても、<strong>すべて使っている端末だけで完結します</strong>。だから、外に晒されることも、漏れることも、AIの学習に使われることもありません。いつもの作業と同じように、安心してお使いいただけます。また、そのままモニターに映したり、印刷やPDFにしたりできる作りです。</p>
     <p>⭐<strong>タブレットでもスマホでも同じです。</strong>どの機械で開いても、入れたデータは<strong>使っているタブレットやスマホの中だけ</strong>で完結します。</p>
   </section>
 
   <section class="t-about">
     <h2>このサイトについて</h2>
-    <p>使ったデータが外部に送られることはなく、<strong>すべてお使いのパソコンだけで完結します</strong>。AIの学習に使われることも、個人情報が漏れることもありません。</p>
+    <p>使ったデータが外部に送られることはなく、<strong>すべて使っている端末だけで完結します</strong>。AIの学習に使われることも、個人情報が漏れることもありません。</p>
     <!-- 🔴 2026-09-06 本人：準備中の一覧はやめて、ここに「これから増える」と「データが共通で使える」を書く -->
     <p><strong>ツールはこれから増やしていく予定です。</strong>保存したデータは、<strong>サイトの中のどのツールでも使えます</strong>。名簿やよく使う言葉など、同じものを何度も作らずに済むので、仕事の時短に直結します。</p>
   </section>

@@ -296,7 +296,9 @@ function buildKeyboard(){
     for(var i=0;i<rowChars.length;i++){
       var c=rowChars.charAt(i);
       var k=document.createElement("div");
-      k.className="key"+(HOMEKEYS[c]?" hp":"");
+      /* ⭐棒線は F と J だけ（2026-09-08 本人）。
+         四本指のホーム（asdf jkl;）は枠線だけで囲む */
+      k.className="key"+(HOMEKEYS[c]?" hp":"")+((c==="f"||c==="j")?" fj":"");
       k.setAttribute("data-k",c);
       k.textContent=c;
       var f=FINGER[c];
@@ -635,6 +637,9 @@ function openStage(idx){
   $("menu").style.display="none";
   $("play").classList.add("on");
   $("stName").textContent=st.name;
+  /* ⭐ステージごとの設定は、効くステージにだけ出す（2026-09-08 本人）。
+     ⚠ステージ8以降（basic なし）は、この下で自動的に「3回でくずれる」に固定されるので出さない */
+  if($("playOpts")) $("playOpts").style.display = st.basic ? "flex" : "none";
   if(document.activeElement===$("uname")) $("uname").blur();   // 名前欄にカーソルが残っていると打てないので外す
   buildKeyboard();
   cancelCelebrate(); stopFireworks(); hideToast(); $("bigmsg").classList.remove("on");
@@ -706,6 +711,9 @@ var COINKEY="typingCoins_v1", STREAKKEY="typingStreak_v1";
 function getCoins(){ return parseInt(localStorage.getItem(COINKEY)||"0",10)||0; }
 function getStreak(){ return parseInt(localStorage.getItem(STREAKKEY)||"0",10)||0; }
 function award(missCount){
+  /* ⭐コインは こども用（?kids=1）だけ。大人用では貯めない（2026-09-08 本人）。
+     ⚠これまで大人用でも中で貯まっていた（箱が見えないだけだった） */
+  if(!KIDS) return null;
   var base = (missCount===0) ? 10 : (missCount<=2 ? 7 : 5);
   var bonus = 0, st = getStreak();
   if(missCount===0){
@@ -717,8 +725,17 @@ function award(missCount){
     localStorage.setItem(STREAKKEY, String(st));
     localStorage.setItem(COINKEY, String(getCoins()+base+bonus));
   }catch(err){}
-  drawCoins(base+bonus);
+  /* ⭐最後の1文字と同時だと急かされる（2026-09-08 本人「最後の文字の後、もう少し間があって落ちてくるといいね」）。
+     ⚠保存はすぐ、絵だけ少し待つ */
+  setTimeout(function(){ drawCoins(base+bonus); }, 800);
   return {base:base, bonus:bonus, total:base+bonus, streak:st, miss:missCount};
+}
+/* ⭐タイルと同じ7色を使う。1列ごとに色が変わる（2026-09-08 本人 A＋B）
+     face=明るく／side=そのまま／line=暗く */
+function shade(hex, pct){
+  var n=parseInt(hex.slice(1),16), r=(n>>16)&255, g=(n>>8)&255, b=n&255;
+  function f(v){ return Math.max(0,Math.min(255, Math.round(v + (pct>0 ? (255-v)*pct : v*pct)))); }
+  return "#"+((1<<24)+(f(r)<<16)+(f(g)<<8)+f(b)).toString(16).slice(1);
 }
 function drawCoins(newCount){
   var host=$("coinStacks"); if(!host || !KIDS) return;
@@ -799,7 +816,9 @@ function showToast(){
 function hideToast(){ clearTimeout(toastTimer); $("toast").classList.remove("on"); }
 function showResult(){
   var r=lastResult; if(!r) return;
-  $("resTitle").textContent = r.perfect ? "パーフェクト！" : "おつかれさま";
+  /* ⭐どちらも「いまの記録」（2026-09-08 本人「お疲れ様いらない、いまの記録」）。
+     ⚠ほめる・励ますのは下のひとことでやる */
+  $("resTitle").textContent = "いまの記録";
   $("resSub").textContent = r.stage + " をクリアしました";
   if(r.isRecord){
     $("resRecord").innerHTML='最高記録が出ました ✨'+
@@ -828,16 +847,69 @@ function showResult(){
   $("rTower").textContent=r.tower+" / "+(r.total||r.tower)+" タイル";
   $("rWpm").textContent=r.w+" 文字/分";
   $("rEwpm").textContent=r.e+" 文字/分";
+  /* 🔴文は本人が書いた（2026-09-08）。
+     ⚠「タイルが◯つ残ったのは…」の行は消した＝上のカードに数字が出ているので二度手間 */
   $("resNote").innerHTML = r.perfect
     ? "ミスがゼロなので、見かけの速さと本当の速さが同じです。<b>これがいちばん強い状態</b>です。"
-    : ((r.total&&r.tower<r.total) ? "タイルが "+(r.total-r.tower)+" つ残ったのは、ミスでくずれた分です。<br>" : "")+
-      "ミス"+r.miss+"回で、打ち直しに <b>およそ"+Math.round(r.miss*MISS_PENALTY)+"秒</b>かかっています。<br>"+
-      "見かけは "+r.w+" 文字/分でも、本当の速さは <b>"+r.e+" 文字/分</b>。<br>"+
-      "<b>ゆっくりでもミスをしない人のほうが、結果的に速く終わります。</b>";
-  $("btnNext").style.display = (stageIdx+1<STAGES.length) ? "" : "none";
+    : "ミス"+r.miss+"回の場合、打ち直しに <b>およそ"+Math.round(r.miss*MISS_PENALTY)+"秒</b>かかります。<br>"+
+      "見かけは "+r.w+" 文字/分、本当の速さは <b>"+r.e+" 文字/分</b>に。<br>"+
+      "<b>ゆっくりでもミスをしない人のほうが、長文にも有利で結果的に速く終わります。</b>";
+  /* ⭐閉じるの行に、ひとこと（2026-09-08 本人）。ミスなしはほめる／ミスありは励ます */
+  $("resCheer").textContent = pick(r.perfect ? CHEER_PERFECT : CHEER_TRY);
   $("ovRes").classList.add("on");
   if(!r.perfect) tone(784,0.16,0.07);
 }
+/* ⭐打ち終わりのひとこと（2026-09-08 本人）。⚠煽らない・比べない・数字を出さない */
+/* ⭐ミスがあったときのひとこと（30個）。⚠立場は「応援する人」にそろえてある。
+   ⚠「自分の声（気持ちいい！）」や「コーチの声（見ちゃだめだぞ）」を混ぜない
+   ⭐ミスがある人のほうが多いので、こちらを厚くする（2026-09-08 本人） */
+var CHEER_TRY=[
+  "その調子！つづければ必ず変わります",
+  "きょうも練習できました。それがいちばん大事です",
+  "ミスは絶対に減らせます。あせらなくて大丈夫",
+  "手が覚えるまで、あと少しです",
+  "このまま続ければ、間違いなくうまくなります",
+  "コツコツ続けられるのが、いちばんの才能です",
+  "ゆっくりで大丈夫。このまま練習していきましょう",
+  "タイルがたくさん埋まりました。その調子です",
+  "集中できましたね。タッチタイピングまであと少し",
+  "キーボードを見ないで打てたら、もっと速くなります",
+  "きのうより今日、今日より明日",
+  "指がつりそう？分かります。でも確実に上達しています",
+  "苦手な指が見つかったら、そこが伸びしろです",
+  "ホームポジションに戻れていれば大丈夫です",
+  "打ち直しが減ると、ぐっと速くなります",
+  "続けた人だけが、見ないで打てるようになります",
+  "きょうの1回が、明日の指をつくります",
+  "うまくいかない日もあります。それでも指は覚えています",
+  "あせらなくていいです。正確さが先です",
+  "ミスの数より、続けた回数です",
+  "ここまでやれたら十分です",
+  "また来てくださいね。待っています",
+  "少しずつで大丈夫。それがいちばんの近道です",
+  "指が迷うところが、練習しどころです",
+  "練習した時間は、ぜんぶ残ります",
+  "手元を見ないで、あと1回いってみましょう",
+  "その1回が、上達の1歩です",
+  "落ち着いて打てば、必ず届きます",
+  "きょうの分、しっかり進みました",
+  "ホームポジションが身についてきています"
+];
+/* ⭐ミスなしのときのひとこと（10個） */
+var CHEER_PERFECT=[
+  "ノーミス！おめでとうございます✨",
+  "すごい！指がちゃんと覚えています👏",
+  "おぉ〜完璧です！その調子！",
+  "タイルが全部埋まりました。気持ちいいですね",
+  "ノーミスは気持ちいいですね！",
+  "この正確さ、いちばん欲しいテクニックです！",
+  "文句なし！できた自分をほめてください",
+  "キーボードを見ていないなら、タイピングマスターです！",
+  "やりました！次のステップに進めます",
+  "おめでとうございます！この1回を積み重ねましょう"
+];
+function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+
 function backToMenu(){
   clearInterval(timer); running=false;
   cancelCelebrate(); stopFireworks(); hideToast(); $("bigmsg").classList.remove("on");
@@ -854,15 +926,38 @@ function saveLog(rec){
   if(a.length>500) a=a.slice(a.length-500);
   try{ localStorage.setItem(LOGKEY,JSON.stringify(a)); }catch(e){}
 }
+/* ⭐ステージ名 → 番号。⚠見つからない古い記録は名前のまま出す */
+function stageNo(name){
+  for(var i=0;i<STAGES.length;i++){ if(STAGES[i].name===name) return (i+1); }
+  return esc(name);
+}
 function renderLogs(){
   var a=getLogs().slice().reverse();
-  if(!a.length){ $("logBody").innerHTML='<div class="empty">まだ記録がありません</div>'; return; }
-  var h='<table><tr><th>日時</th><th>ニックネーム</th><th>ステージ</th><th>ミス</th><th>タイル</th><th>埋まった率</th><th>本当</th></tr>';
+  if(!a.length){
+    $("logBody").innerHTML='<div class="empty">まだ記録がありません。<br>'+
+      '打ち終わるたびに、ここへ自動でたまっていきます。</div>';
+    return;
+  }
+  /* ⭐ステージは番号だけ（2026-09-08 本人「ステージは１２３４で表示。横スクロールなし」）。
+     ⚠名前のままだと「日常のことば（ながめ）」で横に伸びていた */
+  var h='<table class="logtbl"><tr>'+
+        '<th>日</th>'+
+        '<th>ニックネーム<span class="tip-wrap"><button type="button" class="tip-btn" aria-label="説明"></button>'+
+          '<span class="tip-pop">トップ画面で入れたニックネームが、そのまま出ます。<br>'+
+          'お使いのパソコンの中だけに残ります。どこにも送られません。</span></span></th>'+
+        '<th>ステージ</th><th>ミス</th>'+
+        '<th>タイル<span class="tip-wrap right"><button type="button" class="tip-btn" aria-label="説明"></button>'+
+          '<span class="tip-pop">タイルの数は、そのステージで打つ<b>文字の数</b>です。<br>'+
+          '⚠<b>打つキーの数ではありません。</b>「さ」は s a と2回打ちますが、タイルは1枚です。<br>'+
+          'ミスをするとタイルが崩れるので、最後の数は減ることがあります。</span></span></th>'+
+        '<th>埋まった率</th><th>本当</th></tr>';
   for(var i=0;i<a.length && i<60;i++){
     var r=a[i], d=new Date(r.date);
-    var ds=(d.getMonth()+1)+"/"+d.getDate()+" "+("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2);
+    /* ⭐時刻は出さない（日付だけ）。2026-09-08 本人「正確すぎて嫌だ。
+       （授業中にやったとか気になる）」。⚠見られると困る情報は持たない */
+    var ds=isNaN(d.getTime()) ? "" : ((d.getMonth()+1)+"/"+d.getDate());
     h+="<tr><td>"+ds+(r.perfect?' <span style="color:#c99a2e">★</span>':"")+"</td><td>"+esc(r.name||"")+
-       "</td><td>"+esc(r.stage)+"</td><td>"+r.miss+"</td><td>"+
+       "</td><td>"+stageNo(r.stage)+"</td><td>"+r.miss+"</td><td>"+
        (r.tower||0)+(r.total?(" / "+r.total):"")+"</td><td>"+
        (r.total?(Math.round((r.tower||0)/r.total*100)+"%"):"-")+"</td><td><b>"+r.ewpm+"</b></td></tr>";
   }
@@ -878,8 +973,9 @@ function exportCsv(){
              "見かけの速さ(文字/分)","本当の速さ(文字/分)","パーフェクト"]];
   a.forEach(function(r){
     var d=new Date(r.date);
-    var ds=d.getFullYear()+"/"+(d.getMonth()+1)+"/"+d.getDate()+" "+
-           ("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2);
+    /* ⭐CSV も日付だけ（2026-09-08 本人）。
+       ⚠先生が集めて見るものなので、何時にやったかは残さない */
+    var ds=isNaN(d.getTime()) ? "" : (d.getFullYear()+"/"+(d.getMonth()+1)+"/"+d.getDate());
     var tw=r.tower||0, tt=r.total||0;
     var allKeys=(r.keys||0)+(r.miss||0);                       // 打った回数（ミス含む）
     var missRate = allKeys ? Math.round(r.miss/allKeys*1000)/10 : "";
@@ -905,6 +1001,16 @@ function exportCsv(){
   setTimeout(function(){ URL.revokeObjectURL(url); },1000);
 }
 
+/* ⭐STAGE の番号の色＝さくら色の濃さの階段（薄い→濃い）。
+   ⚠白の上で読める濃さから始める（これより薄いと 11px の文字が消える）*/
+function stageColor(i){
+  var n=Math.max(1,STAGES.length-1);
+  var t=Math.min(1,i/n);
+  var a=[0xdd,0x7f,0xa2], b=[0x8e,0x3d,0x66];      // 薄いさくら → 濃い梅
+  function ch(k){ return Math.round(a[k]+(b[k]-a[k])*t); }
+  return "rgb("+ch(0)+","+ch(1)+","+ch(2)+")";
+}
+
 /* ---------- ステージカード ---------- */
 function renderStageCards(){
   var logs=getLogs(), best={};
@@ -914,8 +1020,11 @@ function renderStageCards(){
   STAGES.forEach(function(s,i){
     var d=document.createElement("button");
     d.className="stage";
-    var stock = s.shuffle ? '<div class="no" style="margin-top:6px">'+s.items.length+'問から毎回'+(s.pick||s.items.length)+'問</div>' : '';
-    d.innerHTML='<div class="no">STAGE '+(i+1)+'</div><div class="nm">'+esc(s.name)+
+    var stock = s.shuffle ? '<div class="no" style="margin-top:6px;color:var(--sub);font-weight:400">'+s.items.length+'問から毎回'+(s.pick||s.items.length)+'問</div>' : '';
+    /* ⭐STAGE の番号に色を付ける。⚠虹色はやめて、ピンク系でそろえた
+       （2026-09-08 本人「カラフルなstageはかわいいね。これでも、ピンク系でそろえよう」）
+       ⭐薄い→濃いの階段にしてある＝進むほど濃くなる */
+    d.innerHTML='<div class="no" style="color:'+stageColor(i)+'">STAGE '+(i+1)+'</div><div class="nm">'+esc(s.name)+
                 '</div><div class="ds">'+esc(s.desc)+'</div>'+stock+
                 '<div class="best">'+(best[s.name]?("自己ベスト "+best[s.name]+" 文字/分"+
                   (s.name===lastRec?'<span class="rec">★ 記録更新</span>':"")):"")+'</div>';
@@ -953,9 +1062,8 @@ document.addEventListener("keydown",function(e){
 /* ---------- ボタン ---------- */
 $("btnBack").onclick=backToMenu;
 $("btnRetry").onclick=function(){ cancelCelebrate(); restartStage(); };
-$("btnMenu").onclick=backToMenu;
-$("btnAgain").onclick=function(){ $("ovRes").classList.remove("on"); hideToast(); restartStage(); };
-$("btnNext").onclick=function(){ $("ovRes").classList.remove("on"); openStage(Math.min(stageIdx+1,STAGES.length-1)); };
+/* ⚠「もう一度」「次のステージ」は消した（2026-09-08 本人）。閉じるだけ */
+$("btnCloseRes").onclick=function(){ $("ovRes").classList.remove("on"); };
 $("btnLog").onclick=function(){ renderLogs(); $("ovLog").classList.add("on"); };
 $("btnCloseLog").onclick=function(){ $("ovLog").classList.remove("on"); };
 $("xLog").onclick=function(){ $("ovLog").classList.remove("on"); };
@@ -971,6 +1079,19 @@ $("btnClear").onclick=function(){
 };
 $("ovLog").onclick=function(e){ if(e.target===this) this.classList.remove("on"); };
 $("ovRes").onclick=function(e){ if(e.target===this) this.classList.remove("on"); };
+
+/* ⭐？のしるし＝ポインタを合わせると出る（2026-09-08 本人）。
+   ⚠指で使う機器にはホバーが無いので、押しても出るようにしておく。
+   ⚠表の中の？は毎回作り直されるので、document で受ける */
+document.addEventListener("click",function(e){
+  var b=e.target;
+  while(b && b!==document.body && !(b.classList && b.classList.contains("tip-btn"))) b=b.parentElement;
+  var wraps=document.querySelectorAll(".tip-wrap.on");
+  for(var i=0;i<wraps.length;i++) wraps[i].classList.remove("on");
+  if(!b || !b.classList || !b.classList.contains("tip-btn")) return;
+  e.preventDefault(); e.stopPropagation();
+  b.parentElement.classList.add("on");
+});
 
 $("uname").value=localStorage.getItem("typingName")||"";
 $("uname").oninput=function(){ localStorage.setItem("typingName",this.value); };

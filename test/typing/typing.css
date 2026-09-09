@@ -2,40 +2,75 @@
 :root{
   --bg:#f8f9fa; --card:#ffffff; --text:#2c2e30; --sub:#82868c;
   --line:#e3e5e8; --accent:#c86a8e; --accent-dim:#fbf1f4;
-  --miss:#d8453f; --gold:#c99a2e;
+  --miss:#d8453f;
+  /* ⚠--gold はもう使っていない（金メダルをやめた・2026-09-08）*/
+  /* ⭐記録更新だけに使う「メダルの金」（2026-09-08 本人）。
+     色はコインのSVG（index.html の #coinFace）と同じ系統にそろえてある */
+  --medal-lt:#f6d980; --medal:#d9a52c; --medal-ink:#846508;
+  /* 金メダルはやめた（2026-09-08 本人「記録更新はピンクでいい。金メダルは忘れよう」）*/
+  --medal-solid:#c86a8e;
+  --accent-deep:#a84a72;   /* 薄いピンクの上にのせる文字（読みやすさのため濃いほう）*/
   --stagew:664px;
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
 body{
   background:var(--bg); color:var(--text);
-  font-family:"Hiragino Kaku Gothic ProN","Yu Gothic UI","Meiryo",system-ui,sans-serif;
+  /* ⭐サイトの地の文はこの1本（2026-09-08 本人「まずはフォント変えて」）。
+     ⚠前は style.css が Yu Gothic、typing が Yu Gothic UI で、同じサイトに2種類の字が混ざっていた。
+     ⭐游ゴシックは「かすれ問題」で本文向きではない。Windowsは Noto Sans JP（2024頃から標準）→ BIZ UDPゴシック → メイリオの順で受ける */
+  font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","BIZ UDPGothic",Meiryo,sans-serif;
   -webkit-font-smoothing:antialiased;
 }
-.tpwrap{max-width:1060px;margin:0 auto;padding:18px 20px 60px}
+/* ⚠下の空きを詰めた（2026-09-08 本人「使い方の下、開けなくていい」）。60px → 20px */
+.tpwrap{max-width:1060px;margin:0 auto;padding:14px 20px 20px}
 
-.tphead{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px}
-h1{font-size:19px;margin:0;letter-spacing:.02em;font-weight:700}
+/* ⚠h1 と .catch は サイト共通（style.css）のものを使う＝座席表と同じ形（2026-09-08 本人）。
+   ここで作り直さない。h1＝1.5rem／.catch＝さくら色の太字 1.2rem */
+h1{margin:14px 0 4px}
 h1 small{font-size:12px;color:var(--sub);font-weight:500;margin-left:8px}
 .picon{
   width:38px;height:38px;border-radius:50%;object-fit:cover;flex:0 0 auto;
   box-shadow:0 1px 3px rgba(0,0,0,.13);margin-left:2px;
 }
-.catch{font-size:12.5px;color:var(--sub);font-weight:600;line-height:1.5;margin-left:-4px}
+/* ⭐ニックネームと記録の行（設定の行の上）。
+   ⚠ラベル・入力欄・ボタンの高さをそろえて、上下中央にそろえる（2026-09-08 本人）*/
+.namerow{display:flex;align-items:center;gap:10px;margin:0 0 12px;flex-wrap:wrap}
+/* 🔴🔴 3px のずれの正体（2026-09-08にやっと見つけた）
+   サイト共通の style.css に `label{margin:10px 0 4px}` がある。
+   ⭐上10px・下4px の差の半分＝**3px だけ下にずれる**。
+   ⚠align-items:center をいくら入れても直らないのはこれが理由。
+   ⭐横に並べる行では label の margin を 0 にする */
+.namerow label,.opts label,.playopts label{margin:0}
+.namerow>*{display:flex;align-items:center;height:34px;box-sizing:border-box}
+.namerow .namebox{gap:8px}
+.namerow input,.namerow button{height:34px;box-sizing:border-box;padding-top:0;padding-bottom:0}
+
+/* ⭐ステージの画面の設定（そのステージに効くものだけ）*/
+.playopts{
+  display:flex;align-items:center;gap:13px;flex-wrap:wrap;
+  margin:0 0 10px;font-size:12px;color:var(--sub);
+}
+.playopts>*{display:flex;align-items:center;height:20px}
+.playopts label{gap:5px;cursor:pointer}
+.playopts input{margin:0}
+.playopts .oglabel{margin-left:19px}
 .spacer{flex:1}
-.namebox{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--sub)}
+.namebox{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--sub);white-space:nowrap}
+/* ⚠枠が大きすぎた（2026-09-08 本人）。名前は短いので、入る長さだけにする */
 .namebox input{
   border:1px solid var(--line);border-radius:7px;padding:6px 10px;font-size:13px;
-  width:232px;background:var(--card);color:var(--text);font-family:inherit;
+  width:150px;background:var(--card);color:var(--text);font-family:inherit;
 }
 button{
   font-family:inherit;font-size:13px;cursor:pointer;border-radius:8px;
   border:1px solid var(--line);background:var(--card);color:var(--text);
   padding:7px 13px;transition:.15s;
 }
-button:hover{background:#f0ece3}
+/* ⚠ステージのカードも <button>。ここをグレーにするとカードを選んだときグレーになる（2026-09-08 本人） */
+button:hover{background:var(--accent-dim)}
 button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
-button.primary:hover{background:#2c6656}
+button.primary:hover{background:#a84a72}
 
 #imeWarn{
   display:none;background:#fdf0ee;border:1px solid #f0c9c4;color:#a8433c;
@@ -49,11 +84,70 @@ button.primary:hover{background:#2c6656}
   background:var(--card);border:1px solid var(--line);border-radius:11px;
   padding:14px 15px;cursor:pointer;transition:.15s;text-align:left;
 }
-.stage:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 5px 14px rgba(0,0,0,.06)}
-.stage .no{font-size:11px;color:var(--sub);letter-spacing:.08em}
+/* ⭐ホバー＝枠線だけ（2026-09-08 本人・実物を見て変更）。
+   ⚠薄いピンクの塗りは、薄いグレーの地の上でぼんやりする＝塗らずに線で示す */
+.stage:hover{
+  background:var(--card);            /* button:hover のピンクの塗りを打ち消す */
+  border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 5px 14px rgba(0,0,0,.06);
+  transform:translateY(-2px);
+}
+/* ⭐タイルが寂しいので STAGE の番号にタイルの7色を付ける（2026-09-08 本人）。色は JS が入れる */
+.stage .no{font-size:11px;color:var(--sub);letter-spacing:.08em;font-weight:700}
 .stage .nm{font-size:15px;font-weight:700;margin:3px 0 5px}
 .stage .ds{font-size:12px;color:var(--sub);line-height:1.55}
-.stage .best{font-size:11px;color:var(--gold);margin-top:8px;font-weight:600;min-height:14px}
+/* ⚠グレー→さくら色に戻した（2026-09-08 本人「自己ベストの文字がグレー→ピンクに」）。
+   ⚠金をやめて記録更新もさくら色になったので、ここを控える理由がなくなった */
+.stage .best{font-size:11px;color:#dd7fa2;margin-top:8px;font-weight:600;min-height:14px}
+
+
+/* ---- リードと見本（ページの型 6・7）---- */
+.intro{display:flex;gap:24px;align-items:flex-start;margin:0 0 12px}
+.introtext{flex:1 1 320px;min-width:0}
+/* ⚠.lead はサイト共通（style.css）のものを使う＝座席表と同じ仕様。
+   ここで作り直さない（字の大きさ・色・下の余白が変わってしまう）*/
+/* ⚠黒は却下（2026-09-08 本人「黒にすると説明臭いからうっとうしかった」）。グレーのまま */
+/* ⚠.can の形（箱・b＋small）はサイト共通（style.css）のまま。
+   ⭐ここでは詰めるだけ（2026-09-08 本人「説明をそんな大きく取る必要なし」「縦はばとってる」）。
+   ⚠タイピングの項目は他の道具より短いので、共通の大きさだと箱ばかりが目立つ */
+.introtext .can{margin:0;padding-left:1.15em;list-style:disc}
+/* ⚠黒い項目（b）をやめたので、大きさは li に付ける（2026-09-08）。
+   ⚠以前は .can b と .can small に付けていたので、中身を文だけにしたら本文の16pxになった */
+.introtext .can li{
+  border:none;background:none;padding:0;margin-bottom:2px;
+  font-size:12.8px;line-height:1.85;color:var(--sub);
+}
+.introtext .can li::marker{color:var(--accent)}
+.introtext .can b{display:inline;font-size:13px;font-weight:700}
+.introtext .can small{display:inline;font-size:12px;margin-left:6px;color:var(--sub)}
+/* ⭐画像は線・影は使わない（ページの型 14）。押しても何も起きない。
+   ⭐⭐座席表と同じ「半分ずつ」にする（2026-09-08 本人「文字とカード、逆だよ。座席表のように半分に」）。
+     座席表＝文章49% : 画像44%。⚠文章の幅が狭くなるぶん行が増えるので、下の間延びも消える */
+.introimg{
+  flex:0 0 44%;width:44%;height:auto;display:block;
+  border:1px solid var(--line);border-radius:10px;
+}
+/* ⭐2段のまま持たせる幅を広げた（2026-09-08 本人）。
+   ⚠縦に積むと縦幅を食う＝この道具は「タブレットかPCで使うもの」なので、2段を優先する */
+@media(max-width:900px){ .introimg{flex:0 1 42%;width:42%} }
+@media(max-width:759px){
+  .intro{flex-direction:column;align-items:center}
+  .introtext{flex:1 1 auto;width:100%}
+  /* ⚠縦並びにすると flex-basis が「高さ」になって画像がつぶれる。auto に戻す */
+  .introimg{flex:0 0 auto;width:360px;margin:0 auto}
+  /* ⭐縦に積んだときは説明を1項目1行にして、縦幅を半分にする（2026-09-08 本人「縦はばとってる」）*/
+  .introtext .can li{padding:7px 11px;margin-bottom:6px}
+  .introtext .can b{display:inline}
+  .introtext .can small{display:inline;margin:0 0 0 7px}
+}
+@media(max-width:430px){ .introimg{width:86%} }
+
+/* ⭐上の行を1行に収める（2026-09-08 本人「崩れてる」）。
+   ⚠あいだの空き（.spacer）が先に幅を取るので、狭いときは消してニックネーム欄を縮める */
+@media(max-width:1000px){
+  .namebox{flex:0 1 auto;min-width:0}
+  .namebox input{width:130px;min-width:0}
+}
+
 
 /* ---- プレイ画面 ---- */
 #play{display:none}
@@ -123,7 +217,7 @@ button.primary:hover{background:#2c6656}
 }
 .bigmsg.on{display:flex}
 .bigmsg em{
-  font-style:normal;font-size:46px;font-weight:800;color:var(--gold);letter-spacing:.04em;
+  font-style:normal;font-size:46px;font-weight:800;color:var(--accent-deep);letter-spacing:.04em;
   text-shadow:0 0 14px #fff,0 0 7px #fff,0 0 3px #fff;
 }
 .bigmsg span{font-size:13px;font-weight:600;color:var(--sub);margin-top:12px;text-shadow:0 0 6px #fff}
@@ -136,7 +230,7 @@ button.primary:hover{background:#2c6656}
 .tnum #ttotal{margin-left:2px;font-variant-numeric:tabular-nums}
 .lives{margin-top:2px;font-size:14px;letter-spacing:3px;text-align:right;line-height:1.2}
 .lives i{font-style:normal;color:var(--accent);transition:color .2s}
-.lives i.gone{color:#ddd6ca}
+.lives i.gone{color:#dcdfe3}
 .lives i.warn{color:#e0a41f}
 .lives i.last{color:var(--miss)}
 
@@ -159,15 +253,15 @@ button.primary:hover{background:#2c6656}
   font-size:31px;line-height:1.7;letter-spacing:.04em;word-break:break-all;
   text-shadow:0 0 6px rgba(255,255,255,.95),0 0 3px rgba(255,255,255,.9);
 }
-.kana .done{color:#bdb6aa}
+.kana .done{color:#b9bec4}
 .kana .cur{background:var(--accent-dim);border-radius:5px;padding:1px 3px;color:var(--accent);font-weight:700}
-.kana .home{color:var(--gold)}
+.kana .home{color:var(--accent-deep)}
 .roma{
   font-family:"SFMono-Regular",Consolas,monospace;font-size:17px;color:var(--sub);
   margin-top:13px;word-break:break-all;line-height:1.9;letter-spacing:.02em;
   text-shadow:0 0 6px rgba(255,255,255,.95),0 0 3px rgba(255,255,255,.9);
 }
-.roma .done,.roma .typed{color:#cdc6b9}
+.roma .done,.roma .typed{color:#c8ccd1}
 .roma .cur{color:var(--accent);font-weight:700}
 .shake{animation:sh .3s}
 @keyframes sh{
@@ -184,12 +278,29 @@ button.primary:hover{background:#2c6656}
 .kbrow:nth-child(4){padding-left:62px}
 .key{
   width:46px;height:44px;border-radius:7px;border:1px solid var(--line);
+  /* ⚠ベージュのままでいい（2026-09-08 本人「違和感なかったからもう一度戻して」）。
+     ⭐キーボードは「紙のような地」のほうが合う */
   background:#fbf9f5;display:flex;align-items:center;justify-content:center;
   font-size:14px;color:var(--sub);position:relative;transition:.1s;flex:none;
 }
 .key .fg{position:absolute;top:0;left:0;right:0;height:4px;border-radius:7px 7px 0 0}
-.key.hp{box-shadow:inset 0 0 0 1.5px #b6ada0}
-.key.hp::after{content:"";position:absolute;bottom:6px;width:14px;height:2px;background:#b6ada0;border-radius:2px}
+/* ⭐四本指のホーム（asdf jkl;）＝枠線で囲む。
+   ⚠影は使わない＝キーボードは全部のキーが押せるのに、8個だけ浮くと不自然。
+   ⭐太さではなく色を濃くして強めた（字に近づかない）*/
+.key.hp{box-shadow:inset 0 0 0 1.5px #9c9184}
+/* ⭐⭐F と J の突起（2026-09-08 本人「キーボードに突起がついてるんだよ。リアルに」）。
+   ⭐影の意味が「押せる」ではなく「出っぱっている」なので、ここだけは影を使う。
+   作り＝上が明るく（内側の白い線）、下に影が落ちる。幅は小さめ */
+.key.fj::after{
+  content:"";position:absolute;bottom:6px;width:13px;height:2px;   /* ⭐細く（2026-09-08 本人）*/
+  border-radius:999px;                       /* ⭐左右を丸く（本物の突起と同じ）*/
+  /* ⭐色はキーのベージュ（#fbf9f5）の廆。
+     ⚠光（白い線）はやめた（2026-09-08 本人「光なしのほうがいいかも。ほかが平坦だから」）。
+     ⭐影だけで出っぱらせる。キーボード全体が平らなので、ここだけ光ると浮く */
+  background:#e9e1d4;
+  /* ⭐光ありで決定（2026-09-08 本人「これがいい！」）。⚠細い（2px）ままで光を戻すのが正解だった */
+  box-shadow:0 1px 1.5px rgba(120,108,92,.34),inset 0 .5px 0 rgba(255,255,255,.95);
+}
 .key.next{background:var(--accent);color:#fff;border-color:var(--accent);transform:translateY(1px);font-weight:700;font-size:15px}
 .key.next .fg{opacity:0}
 .key.next.hp{box-shadow:none}
@@ -212,45 +323,64 @@ button.primary:hover{background:#2c6656}
   border-radius:8px;border:1px solid var(--line);background:var(--card);
   font-size:18px;line-height:1;color:var(--sub);display:flex;align-items:center;justify-content:center;
 }
-.xbtn:hover{background:#f0ece3;color:var(--text)}
-.modal h2{margin:0 0 4px;font-size:21px;padding-right:38px}
+.xbtn:hover{background:var(--accent-dim);color:var(--text)}
+/* ⭐結果の画面は小さめに（2026-09-08 本人「全体的に大きくて、小さくしたい」）*/
+.modal h2{margin:0 0 4px;font-size:18px;padding-right:38px}
 .modal .sb{color:var(--sub);font-size:13px;margin-bottom:18px}
-.rescard{background:#faf8f4;border:1px solid var(--line);border-radius:11px;padding:15px 17px;margin-bottom:13px}
-.resrow{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;font-size:14px}
+.rescard{background:#faf8f4;border:1px solid var(--line);border-radius:10px;padding:10px 13px;margin-bottom:9px}
+.resrow{display:flex;justify-content:space-between;align-items:baseline;padding:3.5px 0;font-size:12.5px}
 .resrow span{color:var(--sub)}
-.resrow b{font-size:17px;font-variant-numeric:tabular-nums}
-.resrow.hl b{color:var(--accent);font-size:21px}
+.resrow b{font-size:14.5px;font-variant-numeric:tabular-nums}
+.resrow.hl b{color:var(--accent);font-size:17px}
 .note{font-size:12px;color:var(--sub);line-height:1.7;background:var(--accent-dim);padding:11px 13px;border-radius:9px;margin-bottom:15px}
-.perfect{text-align:center;color:var(--gold);font-weight:700;font-size:16px;margin-bottom:12px;line-height:1.6}
+.perfect{text-align:center;color:var(--accent-deep);font-weight:700;font-size:16px;margin-bottom:12px;line-height:1.6}
+/* 🔴金メダルはやめた（2026-09-08 本人）。バッジと同じさくら色にそろえる。
+   ⚠ここだけ金のまま残っていた＝バッジはピンク、帯は金でちぐはぐだった */
 .record{
   text-align:center;font-weight:800;font-size:17px;line-height:1.6;margin-bottom:12px;
   padding:12px 14px;border-radius:11px;color:#fff;
-  background:linear-gradient(135deg,#357a68,#2ea9bd);
-  box-shadow:0 4px 14px rgba(46,169,189,.3);
+  background:linear-gradient(150deg,#d98aa9,var(--accent));
+  box-shadow:0 3px 12px rgba(200,106,142,.28);
 }
-.record small{display:block;font-size:12px;font-weight:600;opacity:.92;margin-top:5px}
+.record small{display:block;font-size:12px;font-weight:600;opacity:.9;margin-top:5px}
+/* ⭐記録更新はたまにしか出ない＝金メダルの色にする（2026-09-08 本人） */
 .stage .rec{
   display:inline-block;margin-left:6px;padding:1px 7px;border-radius:9px;
-  background:#2ea9bd;color:#fff;font-size:10px;font-weight:700;vertical-align:1px;
+  /* ⭐白抜き文字・影なし（2026-09-08 本人）。
+     ⚠白い文字を読ませるには地を濃くするしかない＝薄い黄色では白が溶ける */
+  background:var(--medal-solid);
+  color:#fff;font-size:10px;font-weight:700;vertical-align:1px;
 }
 .modalbtns{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end}
 
+/* ⭐閉じるの行のひとこと（2026-09-08 本人）。
+   ⭐左に置く（ボタンは右）＝閉じる前に目に入る */
+.cheer{
+  order:-1;margin-right:auto;align-self:center;
+  font-size:12.5px;color:var(--accent-deep);font-weight:600;line-height:1.5;
+}
+
+
 /* 結果はまず小さくだけ出す（余韻を邪魔しない） */
 .toast{
-  position:fixed;right:22px;bottom:22px;z-index:60;
+  /* ⭐右下はやめた（2026-09-08 本人「右下読まない。自分が入力する場所に近くないと見れない」）。
+     ⭐キーボードの上に重ねる＝打ち終わった目線のすぐそば */
+  position:fixed;left:50%;transform:translateX(-50%) translateY(16px);
+  bottom:210px;z-index:60;
   background:var(--card);border:1px solid var(--line);border-radius:13px;
   padding:14px 17px 13px;box-shadow:0 12px 34px rgba(0,0,0,.17);
   min-width:236px;max-width:310px;
-  opacity:0;transform:translateY(16px);pointer-events:none;
+  opacity:0;pointer-events:none;   /* ⚠transform は上に1つだけ。ここに書くと translateX が消える */
   transition:opacity .28s,transform .28s;
 }
-.toast.on{opacity:1;transform:translateY(0);pointer-events:auto}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
 .toast .tmain{font-size:15px;font-weight:700;padding-right:26px}
 .toast .tsub{font-size:12px;color:var(--sub);margin-top:5px;line-height:1.7}
 .toast .tsub b{color:var(--accent);font-size:14px}
 .toast .trec{
   display:inline-block;margin-left:6px;padding:1px 7px;border-radius:9px;
-  background:#2ea9bd;color:#fff;font-size:10px;font-weight:700;vertical-align:2px;
+  background:var(--medal-solid);
+  color:#fff;font-size:10px;font-weight:700;vertical-align:2px;
 }
 .toast .tmore{margin-top:10px;margin-right:6px;padding:5px 11px;font-size:12px}
 .toast .tx{
@@ -259,41 +389,95 @@ button.primary:hover{background:#2c6656}
 }
 .toast .tx:hover{background:none;color:var(--text)}
 
-table{width:100%;border-collapse:collapse;font-size:12px}
-th,td{padding:6px 7px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
+th,td{padding:6px 5px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+/* ⚠overflow:hidden は td だけ。th に掛けると ？ の吹き出しが切られる（2026-09-08） */
+td{overflow:hidden;text-overflow:ellipsis}
+th{overflow:visible;position:relative}
+/* ⭐ステージを番号にしたので、横に伸びる列がなくなった（2026-09-08 本人「横スクロールなし」）*/
+.logtbl th:nth-child(1),.logtbl td:nth-child(1){width:12%}
+.logtbl th:nth-child(2),.logtbl td:nth-child(2){width:24%}
+.logtbl th:nth-child(3),.logtbl td:nth-child(3){width:13%}
+.logtbl th:nth-child(4),.logtbl td:nth-child(4){width:10%}
+.logtbl th:nth-child(5),.logtbl td:nth-child(5){width:16%}
+.logtbl th:nth-child(6),.logtbl td:nth-child(6){width:13%}
+.logtbl th:nth-child(7),.logtbl td:nth-child(7){width:12%}
+
+/* ⭐？のしるし（2026-09-08 本人）。押すと下に説明が開く。座席表と同じ考え方 */
+.tip-btn{
+  width:15px;height:15px;padding:0;margin-left:4px;border-radius:50%;
+  border:1px solid var(--line);background:var(--card);color:var(--sub);
+  font-size:10px;line-height:1;cursor:pointer;vertical-align:1px;
+}
+.tip-btn::before{content:"?"}
+.tip-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
+.tip-btn.on{border-color:var(--accent);color:#fff;background:var(--accent)}
+/* ⭐ポインタを合わせると出る吹き出し（2026-09-08 本人「ポインタ合わせてポップアップに」）。
+   ⭐角（三角）はボタンに近いほうに付ける＝右の？は右に、左の？は左に
+     （本人「右に角があるから、左も角で」）*/
+.tip-wrap{position:relative;display:inline-block;vertical-align:middle}
+.tip-pop{
+  position:absolute;top:calc(100% + 9px);left:-8px;z-index:80;
+  width:max-content;max-width:250px;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;
+  box-shadow:0 8px 22px rgba(0,0,0,.13);
+  padding:10px 13px;font-size:12px;line-height:1.8;color:var(--text);
+  font-weight:400;text-align:left;white-space:normal;
+  opacity:0;visibility:hidden;transform:translateY(-4px);
+  transition:opacity .15s,transform .15s,visibility .15s;
+}
+.tip-wrap.right .tip-pop{left:auto;right:-8px}
+/* 角（三角）＝白い三角と、その下の線の三角を重ねる */
+.tip-pop::before,.tip-pop::after{content:"";position:absolute;bottom:100%;border:7px solid transparent}
+.tip-pop::before{left:11px;border-bottom-color:var(--line)}
+.tip-pop::after{left:11px;margin-bottom:-1px;border-bottom-color:var(--card)}
+.tip-wrap.right .tip-pop::before,.tip-wrap.right .tip-pop::after{left:auto;right:11px}
+.tip-wrap:hover .tip-pop,
+.tip-wrap:focus-within .tip-pop,
+.tip-wrap.on .tip-pop{opacity:1;visibility:visible;transform:translateY(0)}
+.tip-pop b{color:var(--accent-deep)}
 th{color:var(--sub);font-weight:600;text-align:right}
 th:first-child,td:first-child{text-align:left}
 .empty{color:var(--sub);font-size:13px;padding:22px 0;text-align:center}
-.opts{display:flex;gap:0;align-items:center;font-size:12px;color:var(--sub);margin:0 0 14px;flex-wrap:wrap;padding-bottom:12px;border-bottom:1px solid var(--line)}
-.opts>*{padding:2px 14px}
-.opts>*+*{border-left:1px solid var(--line)}
-.opts label{display:flex;align-items:center;gap:5px;cursor:pointer}
-.grp{display:flex;align-items:center;gap:8px}
-.grp label{gap:4px}
-.grpttl{
-  color:#9a9184;font-weight:700;font-size:11px;letter-spacing:.04em;
-  background:#efeae0;border-radius:5px;padding:2px 7px;white-space:nowrap;
+/* ⭐左そろえ（2026-09-08 本人）。⚠中央揃えは折り返すたびに左端も右端も動く＝これがガタガタの正体だった
+   ⭐間隔で仲間を作る＝見出しと項目は近く（6px）／グループ同士は離す（32px） */
+.opts{
+  display:flex;align-items:center;align-content:center;justify-content:flex-start;gap:13px;row-gap:7px;
+  font-size:12px;color:var(--sub);flex-wrap:wrap;
+  margin:0 0 10px;padding-bottom:8px;border-bottom:1px solid var(--line);
 }
-.sep{color:#9a9184;font-weight:700;border-left:1px solid var(--line);padding-left:14px;margin-left:10px}
-.note8{color:#b3aa9c;font-size:11px}
+/* ⭐上下中央揃え（2026-09-08 本人「上下中央揃え。今の文字も上下中央揃えになってない」）。
+   ⚠行の高さ（line-height）が字ごとに違うと、箱の高さが変わって中心がずれる。
+     この行の中だけ line-height を1にそろえて、箱＝字の高さにする */
+/* ⭐字の大きさと行の高さを、この行の中で完全にそろえる。
+   ⚠ラベルだけサイト共通の指定で14.4pxになっていて、箱の高さが違っていた＝これが3pxのずれの正体 */
+.opts,.opts *{line-height:1;font-size:12px}
+.opts input{margin:0}
+/* ⭐上下中央揃えの作り方＝**入れ子をやめて、全部この行の直接の子にする**（2026-09-08）。
+   ⚠入れ子にすると、中の箱が親の高さに引き伸ばされて、字だけ3px下にずれる。
+     親が1段なら `align-items:center` がそのまま全部に効く。
+   ⭐まとまりは「間隔」で作る＝項目どうし13px／見出しの前だけ32px */
+/* ⭐この行の子は、ぜんぶ同じ高さ（20px）にする。
+   ⚠高さが違うと、そろえ方が何であれ位置がずれる。**同じ高さなら必ずそろう** */
+.opts>*{display:flex;align-items:center;align-self:center;flex:0 0 auto;height:20px}
+.opts label{gap:5px;cursor:pointer}
+.oglabel{margin-left:19px}          /* 13 + 19 = 32px（グループの区切り）*/
+.opts>.oglabel:first-child,.opts>*:first-child+.oglabel{margin-left:19px}
+/* ⚠字の大きさが違うと箱の高さも変わって、中心が数pxずれる。
+   ⭐この行の字はぜんぶ12pxにそろえる（見出しは色と太さで分ける）*/
+.oglabel{
+  color:var(--accent-deep);font-weight:700;font-size:12px;letter-spacing:.04em;white-space:nowrap;
+}
+/* ⚠ここのベージュは前のサイト（E Link）の色だった。さくらツールの配色にそろえた（2026-09-08） */
+/* ⚠旧：1行に並べていたころの見出し。今は .oghead を使う（2026-09-08） */
+/* ⚠.note8（ステージ8〜11は3回に固定）は、設定をステージの画面へ移したので不要になった */
+@media(max-width:860px){ .oglabel{margin-left:11px} }
 
 /* ページ下部の使い方（控えめに） */
-.howto{
-  margin-top:38px;padding-top:18px;border-top:1px solid var(--line);
-  font-size:12px;color:#aaa294;line-height:1.95;
-}
-/* summary に display を指定すると折りたたみが壊れるので触らない */
-.howto>summary{
-  cursor:pointer;font-weight:700;letter-spacing:.06em;color:#9a9184;
-  list-style:none;padding:3px 0;
-}
-.howto>summary::-webkit-details-marker{display:none}
-.howto>summary::before{content:"▸";display:inline-block;margin-right:6px;transition:transform .15s}
-.howto[open]>summary::before{transform:rotate(90deg)}
-.howto>summary:hover{color:var(--text)}
-.howto ul{margin:7px 0 0;padding-left:1.25em}
-.howto li{margin-bottom:2px}
-.howto b{color:#8b8377;font-weight:700}
+/* ⭐使い方のトグルの形はサイト共通（style.css の details.howto）に移した（2026-09-08）。
+   ⚠ここにあった色 #aaa294 は前のサイトのベージュ。共通のグレーに直してある。
+   ここでは上のあきだけ持つ */
+.howto{margin-top:30px}
 /* ---------- コイン（2026-09-07）：横から見たコインを積み上げる ----------
    ⚠1枚＝1ポイント（本人決定）。10枚で1列。多い子は列が増える */
 /* ⭐コインは「こども用（?kids=1）」だけのもの。大人用には出さない（2026-09-07 本人）*/

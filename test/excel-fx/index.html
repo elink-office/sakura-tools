@@ -14,7 +14,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5047272666003169" crossorigin="anonymous"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9296990556079874" crossorigin="anonymous"></script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-GCK29PTKBG"></script>
 <script>
@@ -25,45 +25,48 @@
 </script>
 <title>【テスト】Excel関数 早見表｜事務職がよく使う46個</title>
 <meta name="description" content="事務職がよく使うExcel関数46個をまとめた早見表です。「SUMって何？」からも「〜したい」からも引けるので、関数名を知らなくても大丈夫。登録もダウンロードもいりません。">
-<link rel="stylesheet" href="../style.css?v=114">
-<link rel="stylesheet" href="fx.css?v=1">
+<link rel="stylesheet" href="../style.css?v=133">
+<link rel="stylesheet" href="fx.css?v=7">
 </head>
 <body>
-<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/07 22:08</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/10 01:00</div>
 
 <header class="site-head noprint">
   <div class="wrap">
     <a class="logo" href="../"><span class="logo-mark">🌸</span><span class="logo-main">SAKURA TOOLS</span><span class="logo-sub">さくらツール</span></a>
     <nav>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">ツール</label>
+      <div class="navlist">
       <a href="../">トップ</a>
       <a href="../seat/">座席表</a>
       <a href="../seki/">席次表</a>
       <a href="../slide/">スライド</a>
+      </div>
     </nav>
   </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">Excel関数 早見表</span><span class="now-short">関数早見表</span></div></div>
 </header>
 
 <div class="fxwrap">
 
   <header class="fxhead">
     <h1>関数 早見表</h1>
-    <p class="catch">関数名を知らなくても引けます</p>
+    <p class="catch">覚える順があるから、いつの間にか覚えてる</p>
     <p class="lede">「SUMって何？」からも、「〜したい」からも探せる46個の早見表です。登録もダウンロードもいりません。</p>
   </header>
 
   <div class="controls">
     <div class="row2">
-      <button class="iconbtn" id="sbtn" type="button" aria-label="関数をさがす" aria-expanded="false">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path>
-        </svg>
-      </button>
+      <!-- ⚠虫めがねのボタンは消した（検索の窓を常に出したため・2026-09-08）-->
+      <!-- ⭐検索の窓・分類・並び順の3つを横に並べる（2026-09-08 本人「三分割して、大きくして」）。
+           ⚠検索はいちばん広く＝「〜したい」を打つ場所 -->
+      <div class="searchbox" id="sbox">
+        <input id="q" type="search" placeholder="〜したい ／ 合計 ／ SUM" autocomplete="off" aria-label="関数をさがす">
+        <button id="clear" type="button" aria-label="入力を消す">✕</button>
+      </div>
       <select id="cat" aria-label="分類でしぼる"></select>
       <select id="sort" aria-label="並び順"></select>
-    </div>
-    <div class="searchbox" id="sbox" hidden>
-      <input id="q" type="search" placeholder="合計 / さがす / SUM …" autocomplete="off" aria-label="関数をさがす">
-      <button id="clear" type="button" aria-label="入力を消す">✕</button>
     </div>
   </div>
 
@@ -79,6 +82,6 @@
     <span class="copy">さくらツール　© 2026 SAKURA TOOLS</span></div>
 </footer>
 
-<script src="fx.js?v=1"></script>
+<script src="fx.js?v=3"></script>
 </body>
 </html>
