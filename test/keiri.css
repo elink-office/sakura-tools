@@ -274,6 +274,10 @@ details.opt.sub[open] > summary{border-bottom:1px solid var(--line)}
   /* ⚠入力の章は .card。ここを入れ忘れると、打ち込む欄まで紙に出る */
   .site-head,footer,.noprint,.read,.card,h1,.catch,.lead,.can-do,
   .inv-sample,.notice-top{display:none !important}
+  /* 🔴⭐①〜⑤は details.opt で、.card ではない（クラス指定だけでは消えない）。
+     ⚠開いている章が紙に出ていた（2026-09-10 本人「請求書、PDFにしたら、その画面になったよ」）。
+     ⭐IDで消す＝⑥（確認）も details.opt だが、中身が紙そのものなので残す */
+  #meBox,#s2Box,#s3Box,#s4Box,#s5Box,.intro{display:none !important}
   .wrap{max-width:none;padding:0;margin:0}
   /* ⭐画面では縮めて見せているので、紙では必ず戻す */
   .inv-stage{overflow:visible;height:auto !important;background:#fff}
