@@ -489,7 +489,50 @@ function footHtml(sub, base, tax10, tax8, total){
    ⭐画面の見本を「長い1枚」にしない。⭐A4に入らなくなったら次の紙へ送る（2026-09-09 本人）
    ⚠1mm = 3.7795px（ブラウザは96dpiで数える）。A4のたては 297mm */
 var MM = 3.779527559;
-var PAGE_H = 297 * MM;
+/* 🔴⭐紙は297mmだが、分割は⭐291mmで打ち切る（2026-09-10）。
+   ⚠画面では入っていた最後の1行が、印刷だと次の紙に落ちていた
+     （本人のPDFで確認。画面は18行、紙は17行）。
+   ⭐印刷は文字の丸め方が少し違うので、6mm の逃げを作る。
+   ⚠こうすれば⑥確認と紙が同じ行数になる */
+/* ⭐紙は297mm。⚠1mm だけ逃げる（丸めで割れないように）。
+   ⚠以前は6mm逃げていたが、それは印刷が縮んでいたための応急処置だった。
+   ⭐余白を20mmにして縮まなくなったので、逃げを戻す（2026-09-10） */
+var PAGE_H = 296 * MM;
+/* ⭐紙そのものの高さ（印刷の .inv-sheet と同じ）。⚠分割は291mmで安全に切るので、
+   ⭐そのままだと紙との差（5mm）が下に残る。→ fillToBottom で最後の行を伸ばして埋める */
+var SHEET_H = 296 * MM;
+
+/* 🔴⭐表を紙の底まで伸ばす（2026-09-10 本人「見本は用紙いっぱいにデザインされているのに、
+   PDFにすると下がすごく開く」）。
+   ⚠空の行を足す方法だと、1行（約7.8mm）ずつしか埋まらず、端数が必ず残る。
+   ⭐最後の1行の高さを、余ったぶんだけ mm で足す＝印刷でも同じ高さになる */
+function fillToBottom(page){
+  var t = page.querySelector('table.det');
+  if(!t || !t.tBodies[0]) return;
+  var rows = t.tBodies[0].rows;
+  if(!rows.length) return;
+  var last = rows[rows.length - 1];
+  last.style.height = '';
+  /* ⚠ページ番号は浮かせてあるので、高さの計算から外す */
+  var lastEl = null;
+  for(var i=0;i<page.children.length;i++){
+    if(getComputedStyle(page.children[i]).position !== 'absolute') lastEl = page.children[i];
+  }
+  if(!lastEl) return;
+  var pb = parseFloat(getComputedStyle(page).paddingBottom) || 0;
+  var used = lastEl.getBoundingClientRect().bottom - page.getBoundingClientRect().top + pb;
+  var rest = SHEET_H - used;
+  if(rest > 2){
+    /* ⚠最後の1行だけを伸ばすと、その行だけ太くなって目立つ
+       （2026-09-10 本人「今回は十八行目が太くなってる」）。
+       ⭐余った分を全部の行に均等に分ける＝1行あたりはわずか */
+    var add = rest / rows.length;
+    for(var i=0;i<rows.length;i++){
+      var rh = rows[i].getBoundingClientRect().height + add;
+      rows[i].style.height = (Math.round(rh / MM * 100) / 100) + 'mm';
+    }
+  }
+}
 
 /* 2枚目からの見出し。⭐請求書番号と宛先だけを小さく出す */
 function contHtml(){
@@ -608,6 +651,8 @@ function buildPages(list, sub, base, tax10, tax8, total){
   }
   /* 下限を戻す＝どの紙もA4の高さになる */
   for(var j=0;j<pages.length;j++) pages[j].style.minHeight = '';
+  /* ⭐そのうえで、表を紙の底まで伸ばす（下が中途半端に空かないように） */
+  for(var m=0;m<pages.length;m++) fillToBottom(pages[m]);
 }
 
 /* ========== 見本の大きさ ==========
@@ -636,11 +681,32 @@ function fitSheet(){
   }
   fitSheet.retry = 0;
   var fit = Math.min(1, avail / w);
-  SCALE = BIG ? fit : Math.min(fit, SMALL);
+  /* 🔴⭐押したときは実物大（倍率1）にする（2026-09-10 本人「同じ位置に置いてるのに
+     倍率が違う」）。⚠以前は「画面の幅に収まるまで」だったので、紙と大きさが違っていた。
+     ⭐実物大なら、PDFと並べて同じ大きさになる。⚠横にはみ出す分は横スクロール */
+  SCALE = BIG ? 1 : Math.min(fit, SMALL);
   sheet.style.transform = 'scale(' + SCALE + ')';
   stage.style.height = Math.ceil(h * SCALE) + 'px';
   /* ⚠縮めても紙は左に寄ったまま（transform は場所を取らない）。⭐左の余白で中央に寄せる */
   sheet.style.marginLeft = Math.max(0, Math.round((avail - w * SCALE) / 2)) + 'px';
+}
+
+/* 🔴⭐印刷の一瞬だけ、紙を body の直下に出す（2026-09-10）。
+   ⚠画面用の指定（章の枠・幅・余白・min-width）が紙にかかっていると、
+     ⭐ブラウザは「その幅が必要」と見て、紙に収まるまで全体を縮める。
+   ⭐body 直下に出せば、どの指定もかからない＝帳票CSSの定石（paper-css）と同じ条件になる。
+   ⚠印刷が終わったら必ず元の場所へ戻す */
+function liftPages(){
+  var pages = $('pages');
+  if(!pages) return function(){};
+  var home = pages.parentNode, next = pages.nextSibling;
+  document.body.appendChild(pages);
+  document.body.classList.add('printing');
+  return function(){
+    document.body.classList.remove('printing');
+    if(next) home.insertBefore(pages, next); else home.appendChild(pages);
+    fitSheet();
+  };
 }
 
 /* ========== ファイル名 ========== */
@@ -950,7 +1016,8 @@ var SAMPLE_2 = [
   {name:'マニュアルの作成',                qty:1,  unit:'式',  price:22000, rate:10},
   {name:'公開後の修正対応（3か月）',       qty:3,  unit:'か月', price:10000, rate:10},
   {name:'交通費・宿泊費',                  qty:1,  unit:'式',  price:38600, rate:10},
-  {name:'', qty:0, unit:'', price:0, rate:10},
+  /* ⚠2つ目の空行は取った（2026-09-10 本人「17の下を1行空けると不細工」）。
+     ⭐空行が使えることは、上の1つで伝わる */
   {name:'名刺デザイン',                    qty:1,  unit:'式',  price:18000, rate:10},
   {name:'チラシデザイン（A4片面）',        qty:2,  unit:'点',  price:24000, rate:10},
   {name:'印刷立ち会い',                    qty:1,  unit:'式',  price:12000, rate:10},
@@ -1430,7 +1497,7 @@ function boot(){
   $('pages').onclick = function(){
     BIG = !BIG;
     $('stage').classList.toggle('big', BIG);
-    $('zoomHint').textContent = BIG ? '押すと小さくなります' : '押すと大きくなります';
+    $('zoomHint').textContent = BIG ? '押すと小さくなります' : '押すと実物大になります（紙と同じ大きさ）';
     fitSheet();
   };
 
@@ -1463,7 +1530,15 @@ function boot(){
     if($('prevBox') && !$('prevBox').open) $('prevBox').open = true;
     /* ⭐ここが肝。印刷の直前に題名を変えると、保存の名前がこれになる */
     document.title = fileName();
-    setTimeout(function(){ window.print(); setTimeout(restoreTitle, 4000); }, 30);
+    var putBack = liftPages();
+    setTimeout(function(){
+      window.print();
+      /* ⚠印刷の画面を閉じたら元に戻す。⭐onafterprint が来ない環境のために時間でも戻す */
+      var done = false;
+      var back = function(){ if(done) return; done = true; putBack(); restoreTitle(); };
+      window.addEventListener('afterprint', back, { once:true });
+      setTimeout(back, 4000);
+    }, 30);
   };
 
   /* --- 全部消す --- */

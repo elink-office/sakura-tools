@@ -190,20 +190,21 @@ body{touch-action:pan-y}
 /* 2枚目からの見出し（請求書番号と宛先） */
 .inv-cont{
   display:flex;justify-content:space-between;gap:12px;
-  font-size:.92em;color:#333;
-  border-bottom:1px solid #999;padding-bottom:5px;margin-bottom:12px;
+  font-size:.92em;color:#000;
+  border-bottom:1px solid #000;padding-bottom:5px;margin-bottom:12px;
 }
 .inv-pageno{
   position:absolute;right:16mm;bottom:8mm;
-  font-size:.85em;color:#666;
+  font-size:.85em;color:#333;
 }
-.inv-stage.big{background:var(--pink-pale)}
+/* ⭐実物大のときは横にはみ出すので、ここで横スクロールさせる */
+.inv-stage.big{background:var(--pink-pale);overflow-x:auto}
 .inv-sheet{
   cursor:zoom-in;
   position:relative;
-  width:210mm;min-height:297mm;padding:16mm;
+  width:210mm;min-height:297mm;padding:20mm;  /* ⚠中身を 170×230mm にする（印刷と揃える） */  /* ⚠余白は印刷と同じ 20mm。⭐中身は 170×257 で揃う */
   background:#fff;border:1px solid var(--line);
-  font-size:inherit;line-height:1.6;color:#111;
+  font-size:inherit;line-height:1.6;color:#000;
   box-sizing:border-box;
 }
 .inv-preview-cap{font-size:.78rem;color:var(--ink-soft);text-align:center;margin:0 0 8px}
@@ -213,8 +214,8 @@ body{touch-action:pan-y}
 .inv-sheet h3{margin:0 0 16px;text-align:center;font-size:1.7em;letter-spacing:.4em;font-weight:bold}
 .inv-head{display:flex;justify-content:space-between;gap:20px}
 .inv-to{flex:1 1 auto;min-width:0}
-.inv-to .to-name{font-size:1.25em;font-weight:bold;border-bottom:1px solid #111;padding-bottom:3px;display:inline-block;min-width:60%}
-.inv-to .to-addr{font-size:.92em;color:#333;margin-top:6px;white-space:pre-wrap}
+.inv-to .to-name{font-size:1.25em;font-weight:bold;border-bottom:1px solid #000;padding-bottom:3px;display:inline-block;min-width:60%}
+.inv-to .to-addr{font-size:.92em;color:#000;margin-top:6px;white-space:pre-wrap}
 /* ⚠住所やメールが長いと左へ伸びて、宛先を押しつぶす（2026-09-09 実測 159px→480px）。
    ⭐上限を決めて、そこから先は折り返す */
 .inv-from{
@@ -227,7 +228,7 @@ body{touch-action:pan-y}
 .inv-from .from-name.solo{font-weight:normal;font-size:1em}
 .inv-meta{text-align:right;font-size:.92em;margin-bottom:10px}
 .inv-total-box{
-  margin:16px 0 18px;padding:9px 12px;border-top:2px solid #111;border-bottom:2px solid #111;
+  margin:16px 0 18px;padding:9px 12px;border-top:2px solid #000;border-bottom:2px solid #000;
   display:flex;justify-content:space-between;align-items:baseline;
 }
 .inv-total-box .lbl{font-weight:bold}
@@ -237,35 +238,63 @@ body{touch-action:pan-y}
    ⚠auto だと「品目 99%」が強すぎて、数字の列が中身ぴったりまで潰れていた（2026-09-09） */
 .inv-sheet table.det{table-layout:fixed}
 .inv-sheet table.det td{overflow-wrap:anywhere}
-.inv-sheet table.det th{background:#f3f4f5;border:1px solid #999;padding:4px 6px;font-weight:bold;text-align:center}
+.inv-sheet table.det th{background:#f3f4f5;border:1px solid #777;padding:4px 6px;font-weight:bold;text-align:center}
 /* 中身のぶんだけ取る列（数字・日付・品番）。折り返させない */
 /* ⭐中身のぶんだけ取るが、⚠端に寄りすぎないよう最低の幅を決める
    （2026-09-09 本人「いま、端っこに寄ってる。7桁入るくらいの余裕は欲しい」）
    ⭐1,234,567 が入る幅＝およそ22mm */
-.inv-sheet table.det th.w-min{white-space:nowrap;width:9mm}
+.inv-sheet table.det th.w-min{white-space:nowrap;width:5.1%}
 /* ⚠ table-layout:auto では th の min-width が効きにくい。width で希望値を渡す */
-.inv-sheet table.det th.w-num{white-space:nowrap;width:23mm}
-.inv-sheet table.det th.w-qty{white-space:nowrap;width:17mm}
-.inv-sheet table.det th.w-date2{white-space:nowrap;width:16mm}
-.inv-sheet table.det th.w-code{white-space:nowrap;width:21mm}
+.inv-sheet table.det th.w-num{white-space:nowrap;width:13%}
+.inv-sheet table.det th.w-qty{white-space:nowrap;width:9.6%}
+.inv-sheet table.det th.w-date2{white-space:nowrap;width:9%}
+.inv-sheet table.det th.w-code{white-space:nowrap;width:11.9%}
 .inv-sheet table.det td.c,.inv-sheet table.det td.n{white-space:nowrap}
-.inv-sheet table.det td{border:1px solid #999;padding:4px 6px;height:1.9em}
+.inv-sheet table.det td{border:1px solid #777;padding:4px 6px;height:1.9em}
 .inv-sheet table.det td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .inv-sheet table.det td.c{text-align:center;white-space:nowrap}
 .inv-sheet .det-sum{margin-top:10px;display:flex;justify-content:flex-end}
 .inv-sheet .det-sum table{font-size:.94em;border-collapse:collapse}
 .inv-sheet .det-sum th{text-align:left;padding:2px 16px 2px 0;font-weight:normal}
 .inv-sheet .det-sum td{text-align:right;padding:2px 0;min-width:7em;font-variant-numeric:tabular-nums}
-.inv-sheet .det-sum tr.t th,.inv-sheet .det-sum tr.t td{font-weight:bold;border-top:1px solid #111;padding-top:5px}
+.inv-sheet .det-sum tr.t th,.inv-sheet .det-sum tr.t td{font-weight:bold;border-top:1px solid #000;padding-top:5px}
 .inv-pay{margin-top:18px;font-size:.92em}
-.inv-pay .ttl{font-weight:bold;border-bottom:1px solid #111;display:inline-block;margin-bottom:5px;padding-bottom:2px}
+.inv-pay .ttl{font-weight:bold;border-bottom:1px solid #000;display:inline-block;margin-bottom:5px;padding-bottom:2px}
 .inv-pay .body{white-space:pre-wrap}
-.inv-note{margin-top:14px;font-size:.9em;white-space:pre-wrap;color:#333}
+.inv-note{margin-top:14px;font-size:.9em;white-space:pre-wrap;color:#000}
 
 /* ===== 印刷 ===== */
-@page{size:A4 portrait;margin:16mm}
+/* 🔴⭐余白は紙（@page）ではなく、紙の中身（.inv-sheet の padding）で作る。
+   ⚠ブラウザの印刷画面の「余白」が「デフォルト」のとき、@page の margin は使われず
+     ブラウザ既定の余白になる（2026-09-10 Edgeで確認）。
+   ⭐margin:0 にしておけば、どの設定でも中身が縮むことがない */
+@page{size:A4 portrait;margin:0}
 @media print{
-  body{background:#fff}
+  /* 🔴⭐印刷のときは、紙（#pages）だけを body の直下に出している（keiri.js の liftPages）。
+     ⭐ここでその紙以外を全部消す＝画面用の指定がいっさいかからない */
+  body.printing > *{display:none !important}
+  body.printing > #pages{display:block !important}
+  body.printing{
+    width:210mm !important;min-width:0 !important;
+    margin:0 !important;padding:0 !important;background:#fff;
+  }
+  /* 🔴⚠body のはじめからある余白（8px）が残っていると、210mm の紙が
+     紙に入りきらず、⭐ブラウザが全体を縮めて左上に寄せる
+     （2026-09-10 本人「A4用紙の左上に寄ってるし、小さくなってるよ」） */
+  /* 🔴⭐印刷のとき、ブラウザは中身を広めの幅（948px）で組み立ててから
+     A4に押し込んでいた＝⚠0.63倍に縮んでいた（2026-09-10 PDFの中身を読んで確定）。
+     ⭐紙の幅そのものを210mmに固定すれば、縮まない */
+
+  /* 🔴⭐中身の幅（170mm）で組み立てて、紙の中央に置く。
+     ⚠210mm で組むと、印刷できる幅（約176mm）に入らず8%縮んでいた
+     （2026-09-10 本人のPDFを測って確定） */
+  /* 🔴⭐min-width が残っていると、ブラウザは全体を縮めて紙に収める。⭐必ず打ち消す */
+  html,body{margin:0 !important;padding:0 !important;width:210mm !important;min-width:0 !important}
+  /* ⚠紙の中身に残っている min-width も、印刷のときだけ消す */
+  .inv-sheet *{min-width:0 !important}
+  /* ⭐背景の色・罫線を紙にも出す（帳票CSSの定石）。
+     ⚠表の見出しだけに書いていたのを、紙全体に広げた（2026-09-10 リサーチ） */
+  body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   /* ⚠入力の章は .card。ここを入れ忘れると、打ち込む欄まで紙に出る */
   .site-head,footer,.noprint,.read,.card,h1,.catch,.lead,.can-do,
   .inv-sample,.notice-top{display:none !important}
@@ -278,22 +307,55 @@ body{touch-action:pan-y}
   #prevBox > summary{display:none !important}
   #prevBox{border:0 !important;background:none !important;margin:0 !important;box-shadow:none !important}
   #prevBox > .body{padding:0 !important}
-  .wrap{max-width:none;padding:0;margin:0}
+  /* ⚠max-width:none だと中身なりに広がる。⭐210mm に固定する */
+  main.wrap,.wrap{width:210mm !important;max-width:210mm !important;min-width:0 !important;padding:0 !important;margin:0 !important}
   /* ⭐画面では縮めて見せているので、紙では必ず戻す */
-  .inv-stage{overflow:visible;height:auto !important;background:#fff}
-  #pages{transform:none !important;margin-left:0 !important}
+  /* 🔴⚠.inv-stage.big （拡大中のピンクの地）のほうが指定が強く、印刷でもピンクが出ていた。
+     ⭐その地が紙より高くなり、下がはみ出して切れていた
+     （2026-09-10 本人「今回ピンクが出たからわかりやすい」） */
+  .inv-stage,.inv-stage.big{
+    overflow:visible !important;height:auto !important;min-height:0 !important;
+    background:#fff !important;padding:0 !important;margin:0 !important;
+  }
+  /* 🔴⭐紙の幅を 210mm のままにすると、印刷できる幅（210－余白32＝178mm）を
+     はみ出して、⚠ブラウザが勝手に縮める。結果、⭐紙の下が大きく空いていた
+     （2026-09-10 本人の画面写真で判明）。⭐印刷では幅を紙まかせにする */
+  /* 🔴⚠210mm と書くと、紙と同じ幅なのに1pxでも超えるとブラウザが全体を縮めて
+     左上に寄せる（2026-09-10 本人「またPDFにするとき、寄った」）。
+     ⭐100% にすれば、紙の幅を超えることがない */
+  /* 🔴⭐幅は⑥と同じ 210mm にする（2026-09-10 本人「そもそも、列幅が広がってるよね」）。
+     ⚠100% にすると「印刷できる幅」に合わせるので、ブラウザの余白設定で幅が変わる。
+     ⭐幅が変わると、mmで固定した列（数量・単価・金額）はそのままで、品目の列だけが伸び縮みする */
+  /* 🔴⚠210mm ちょうどだと、ブラウザの印刷領域に入りきらず全体が縮んで左上に寄る。
+     ⭐209mm にする（逃げ1mm）。⑥は210mmのままだが、列幅の差は品目列の1mmだけ */
+  /* ⭐170mm の中身を、紙（210mm）の中央に置く＝左右20mmずつの余白
+     （2026-09-10 本人「左余白がなくなったよ」） */
+  #pages{width:210mm !important;min-width:0 !important;transform:none !important;margin:0 !important}
+  /* 🔴⭐⑥確認で見たものを、そのまま紙にする（2026-09-10 本人
+     「⑥確認で確認したんだから、それをそのまま表示しなきゃ意味ない」）。
+     ⚠以前は印刷のときだけ min-height:0 にしていたため、⑥で埋まっていたはずの
+       紙の下が空いていた。⭐画面と同じ 210mm × 297mm のまま出す */
+  /* ⚠margin は #pages .inv-sheet（14px）のほうが強いので、!important で消す。
+     ⭐残っていると2枚目以降が少しずつ下にずれる */
+  /* 🔴⭐印刷で全体が縮む原因は min-width（2026-09-10 リサーチで判明）。
+     ⚠ブラウザは「その幅が必要」と判断して、紙に収まるまで全体を縮める。
+     ⭐紙は 210×296mm、余白は padding 20mm＝帳票CSSの定石どおり */
+  /* ⭐紙＝paper-css と同じ形。210×297mm、余白は padding 20mm、はみ出しは切る */
   .inv-sheet{
-    width:auto;min-height:0;padding:0;
-    border:none;margin:0;
+    width:210mm;height:297mm;
+    padding:20mm;
+    box-sizing:border-box;overflow:hidden;
+    border:none;margin:0 !important;
     break-after:page;page-break-after:always;
   }
   .inv-sheet:last-child{break-after:auto;page-break-after:auto}
-  /* ページ番号は紙にも出す（2枚以上のときだけ付けている） */
-  .inv-pageno{right:0;bottom:0;position:static;display:block;text-align:right;margin-top:6mm}
+  /* 🔴⚠ここを position:static にすると、ページ番号の分だけ紙が背が伸びて
+     297mm を超え、⭐ブラウザが全体を縮める。2026-09-10 に取りやめた。
+     ⭐画面と同じ absolute のまま出す（⑥と同じ見た目になる） */
   .inv-sheet table.det th{
     background:#f3f4f5 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;
   }
-  .inv-sheet.sample::after{
+    .inv-sheet.sample::after{
     -webkit-print-color-adjust:exact;print-color-adjust:exact;
   }
   .inv-sheet table.det{page-break-inside:auto}
