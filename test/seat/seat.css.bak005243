@@ -48,14 +48,9 @@
    🔴⚠必ず @media screen で囲むこと。囲まないと画面用の目盛り（3.2）が紙にも効いて、
      マスが 0.85倍に縮み、表が短くなって紙の下が空く（2026-09-10 実測）*/
 @media screen{
-  /* ⭐画面の紙にも、印刷と同じ余白を入れる（2026-09-11 本人「文字が入ってない」）。
-     ⚠余白が無いと、サイト名が紙の端に当たって切れる */
-  .sheet{padding:calc(12 * var(--pxmm, 3.7795) * 1px)}
+  .sheet{padding:0}               /* 紙の余白は @page が持つので、中には作らない */
   .seat{height:calc(var(--seatHnum, 15.3) * var(--pxmm, 3.7795) * 1px)}
   .grid{gap:calc(1.6 * var(--pxmm, 3.7795) * 1px)}
-  /* ⭐サイト名も、紙に出る大きさ（9pt＝約3.2mm）と同じにする（2026-09-11 本人）。
-     ⚠画面だけ 12.5px 固定だったので、紙より大きくなって切れていた */
-  .sheet-credit{ font-size: calc(3.2 * var(--pxmm, 3.7795) * 1px); }
   /* モニターに映すときは、紙の形にしばらない（画面いっぱいに広げる）*/
   body.screen .sheet{height:auto !important}
 }

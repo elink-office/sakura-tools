@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SAKURA TOOLS">
+<meta property="og:title" content="簡単スライドメーカー｜パワーポイントの代わりに、文字と写真をモニターへ">
+<meta property="og:description" content="打った文字と写真を、そのまま大きくモニターに映せます。今日のめあて、問題文、作品の写真、発表者の名前に。パワーポイントでスライドを作らなくていいので、思いついたその場で出せます。登録なし・無料。">
+<meta property="og:url" content="https://sakura-tools.com/slide/">
+<meta property="og:image" content="https://sakura-tools.com/ogp.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9296990556079874" crossorigin="anonymous"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GCK29PTKBG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GCK29PTKBG');
+</script>
+<title>【テスト】簡単スライドメーカー｜パワーポイントの代わりに、文字と写真をモニターへ｜さくらツール</title>
+<meta name="description" content="パワーポイントの代わりに、文字と写真をそのまま大きくモニターに映せる無料の道具です。今日のめあて、問題文、作品の写真、発表する子の名前に。スライドを作り込まなくていいので、思いついたその場で出せます。写真の上に文字を重ねることもできます。名簿は座席表・班分けと共通。登録なし・インストールなし・写真も名簿も外に送りません。">
+<link rel="stylesheet" href="../style.css?v=135">
+<link rel="stylesheet" href="slide.css?v=67">
+</head>
+<body>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/10 18:17</div>
+
+<header class="site-head noprint">
+  <div class="wrap">
+    <a class="logo" href="../"><span class="logo-mark">🌸</span><span class="logo-main">SAKURA TOOLS</span><span class="logo-sub">さくらツール</span></a>
+    <nav>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">ツール</label>
+      <div class="navlist">
+      <a href="../">トップ</a>
+      <a href="../seat/">座席表</a>
+      <a href="../seki/">席次表</a>
+      <a href="../excel-fx/">関数早見表</a>
+      </div>
+    </nav>
+  </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">簡単スライドメーカー</span><span class="now-short">簡単スライド</span></div></div>
+</header>
+
+<main class="wrap">
+  <h1>簡単スライドメーカー</h1>
+  <p class="catch">パワーポイントの代わりに、文字と写真をモニターへ</p>
+  <!-- 🔴 上の文章は短く・改行を増やす（2026-09-05 本人「改行増やして、短めに。箇条書きは使ってもいい」） -->
+  <p class="lead">
+    <strong>パワーポイントのように、画面いっぱいに表示できます。</strong>ちょっと見せたいときも、<strong>時間をかけずに簡単作成！</strong>
+  </p>
+  <ul class="can-do">
+    <li>会議や集まりの議題・順番にも</li>
+    <li>今日のめあて・問題文・のこり時間</li>
+    <li>作品の写真は画面いっぱいに、名前と作品名も</li>
+    <li>班ごとにするのもボタン一つ、発表会でも使えます</li>
+  </ul>
+
+  <!-- 準備（見せたくないものは全部この中。閉じれば一度に隠れる） -->
+  <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
+
+  <details class="opt" id="d1" open>
+    <summary><span class="step">1</span>準備</summary>
+    <div class="body">
+
+      <div class="radios" id="kind">
+        <label><input type="radio" name="kind" value="text" checked> 文字をスライドにする</label>
+        <label><input type="radio" name="kind" value="list"> 発表者をスライドにする</label>
+      </div>
+
+      <!-- ===== 文字を出す：入力 ===== -->
+      <div id="paneText">
+        <!-- 🔴 文字を出す側でも名簿を使える（2026-09-05 本人「さくらツールの名簿が使えるから、
+             名簿から選択できるようにしたい」）。⭐1人＝1枚の文字として入る -->
+        <div id="clsBoxT" hidden>
+          <p class="notice mini">座席表・席次表・班分けで保存したデータを使えます。</p>
+          <div class="row" style="margin-bottom:14px">
+            <select id="clsSelT"></select>
+            <button id="clsLoadT">このデータを読み込む</button>
+          </div>
+        </div>
+
+        <p class="hint" style="margin-bottom:10px">
+          <b>1行が1枚のスライド</b>になります。<code>/</code> を入れると改行、<code>//</code> を入れると左が小さく表示されます&#8288;<button type="button" class="tip-btn" aria-label="説明"></button>
+        </p>
+        <div class="tip-body" hidden>
+          <p><strong>改行したいところに <code>/</code></strong> を入れると、そこで行が変わります。<br>
+            例：<code>海の生きものを/しらべて分かったこと</code></p>
+          <p><strong><code>//</code> にすると、前のほうが小さい文字</strong>になります。「今日のめあて」のような見出しを付けたいときに。<br>
+            例：<code>今日のめあて//分数のたし算ができる</code></p>
+        </div>
+        <textarea id="lines" placeholder="手入力（エクセルデータの貼り付けもできます）
+
+つぎの議題//会計の報告
+今日のめあて//分数のたし算ができる
+教科書 42ページ
+のこり 5分"></textarea>
+        <div class="row" style="margin-top:12px">
+          <button id="addText">入れる</button>
+          <button id="sampleText">サンプルを入れる</button>
+          <button id="clearLines">消す</button>
+          <!-- 🔴 入れたことが分かるように、その場に出す（2026-09-06 本人） -->
+          <span class="saving" id="addMsg"></span>
+        </div>
+      </div>
+
+      <!-- ===== 発表者を出す：名簿 ===== -->
+      <div id="paneList" hidden>
+
+        <h3 class="sub">名簿の入力</h3>
+
+        <div id="clsBox" hidden>
+          <p class="notice mini">座席表・席次表・班分けで保存したデータを使えます。</p>
+          <div class="row" style="margin-bottom:14px">
+            <select id="clsSel"></select>
+            <button id="clsLoad">このデータを読み込む</button>
+          </div>
+        </div>
+
+        <!-- ⭐枠の上は「エクセルから貼り付ける」でそろえる（2026-09-10 本人）。
+             ⚠手入力もできることは、枠の中のグレーで伝える -->
+        <label for="paste">エクセルから貼り付ける&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></label>
+        <div class="tip-body" hidden>
+          <p>1行目が「名前」「作品名」「班」などの<strong>見出しなら、自動で読み分けます</strong>。</p>
+          <p>見出しがなければ <strong>1列目＝名前・2列目＝作品名</strong> として読みます。名前だけの1列でもかまいません。</p>
+        </div>
+        <!-- 🔴 枠の中の案内は「貼り付け」が先（2026-09-05 本人「今時手入力する人はいないって。（学校はね。自治会とかは別だよ）」）。
+             ⭐文言は 2026-09-10 に短くした＝枠の上のラベルと重なるため。
+             ⚠列の見本はその下に残す。3列の形（名前・作品名・班）がここでしか分からないため -->
+        <textarea id="paste" placeholder="クリックして貼り付け（手入力可）
+
+名前	作品名	班
+さくら	わたしの家族	1班
+たろう	わたしの家族	1班"></textarea>
+        <div class="row" style="margin-top:12px">
+          <button id="read">入れる</button>
+          <button id="sample">サンプルを入れる</button>
+          <button id="clear">消す</button>
+          <span class="saving" id="addMsgL"></span>
+        </div>
+        <p class="notice warn" id="warn" hidden></p>
+      </div>
+
+    </div>
+  </details>
+
+  <!-- 🔴 ②は①の分岐で中身が変わる（2026-09-05 本人「①準備 ②を、①の分岐で表示変更したら？」
+       「どちらともシャッターにする」＝どちらも折りたたみ）。閉じれば見ている人に設定が見えない -->
+  <details class="opt" id="d2" open>
+    <summary><span class="step">2</span><span id="d2title">スライドにする順番</span></summary>
+    <div class="body">
+
+      <!-- 🔴 ①をたたむので、入れた知らせは②にも出す（2026-09-06 本人「入れたら、①を閉じてみたら？」） -->
+      <p><span class="saving" id="addMsg2"></span></p>
+
+      <label class="editmode"><input type="checkbox" id="editMode"> 作成中（スライド表示した後も、この設定を開いたままにする）</label>
+
+      <div id="paneText2">
+        <p class="hint" style="margin-bottom:10px">並べ替え・写真・1枚ずつの設定&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></p>
+        <div class="tip-body" hidden>
+          <p><strong>▲▼</strong>で順番、<strong>×</strong>でその1枚を消します。<strong>左のチェックを外すと映りません。</strong></p>
+          <p>写真の欄の<strong>＋</strong>でその1枚に写真が入ります（文字はそのまま）。写真の右上の<strong>×</strong>で写真だけ外せます。<strong>写真を入れると文字は「外・小」になります。</strong></p>
+          <p><strong>そろえ</strong>＝<code>/</code> で改行した行の左右をそろえます（<code>//</code> の見出しは中央のまま）。</p>
+          <p><strong>写真を2枚</strong>入れた行は、映すと横に並びます。<strong>映しているときに写真を押すと、そちらが大きくなります</strong>（もう一度押すと戻ります）。文字は下の行に出ます。</p>
+          <p>パソコンなら、行をつかんでドラッグでも動かせます（写真だけの移動もできます）。</p>
+        </div>
+        <div class="tools">
+          <button id="clearText">ぜんぶ消す</button>
+        </div>
+        <div class="tbl" id="sheets"><p class="empty">①で文字を入れると、ここに1枚ずつ並びます。</p></div>
+        <div class="row" style="margin-top:12px">
+          <button id="addRow">＋ 行を追加</button>
+          <input type="file" id="picfile" accept="image/*" multiple hidden>
+        </div>
+      </div>
+
+      <div id="paneList2" hidden>
+        
+        <div class="radios" id="modes" hidden>
+          <label><input type="radio" name="mode" value="one" checked> 1人ずつ映す</label>
+          <label><input type="radio" name="mode" value="group"> 班ごとにまとめて映す</label>
+        </div>
+        <p class="hint" style="margin-bottom:10px">
+          <b>作品名と班は、ここで直せます</b>&#8288;<button type="button" class="tip-btn" aria-label="説明"></button>
+        </p>
+        <div class="tip-body" hidden>
+          <p><strong>班の欄に打つと、その人の班が変わります。</strong>名簿に班が無くても、ここで分けられます。空にすれば班なしです。</p>
+          <p>作品名はここで直せます。長いときは、<strong>改行したいところに <code>/</code></strong> を入れてください。</p>
+          <p><strong>▲▼</strong>で順番を入れ替え。<strong>チェックを外す</strong>と、その人（その班）は映りません。</p>
+        </div>
+        <div class="tools" id="tools" hidden>
+          <button id="shuffle">順番をシャッフル</button>
+          <button id="reset">読み込んだ順に戻す</button>
+          <button id="allon">ぜんぶ映す</button>
+        </div>
+        <div class="tbl" id="list"><p class="empty">まだデータを読み込んでいません。</p></div>
+      </div>
+
+    </div>
+  </details>
+
+  <!-- 1枚だけ見る（準備と本番のあいだ） -->
+  <div class="card" id="checkCard" hidden>
+    <h2><span class="step">3</span>1枚だけスライドを表示&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+    <div class="tip-body" hidden>
+      <p><strong>この画面で見る</strong>＝選んだ1枚を映します。<strong>全画面にはなりません</strong>ので、見て、直して、また見る、がすぐできます。</p>
+      <p>⚠<strong>文字の大きさと改行は、画面の広さで変わります。</strong>本番の見え方は、下の<strong>「スライド表示にする」</strong>で確かめられます。</p>
+      <p><strong>1枚だけスライド表示</strong>＝選んだ1枚から、全画面で出します。途中から出したいときや、1枚だけ出しておきたいときに。</p>
+    </div>
+    <div class="row">
+      <select id="checkNo"></select>
+      <button id="checkBtn">この画面で見る</button>
+      <button id="fromBtn">1枚だけスライド表示</button>
+    </div>
+  </div>
+
+  <!-- 出す。枠に入れず、ボタンと枚数だけ -->
+  <div class="startbox">
+    <button class="primary" id="start" disabled>スライド表示</button>
+    <p class="count" id="count"></p>
+    <!-- 🔴 比べるスライドがあるときだけ出す（2026-09-07 本人「スライド表示ボタンの時に出すか。
+         比べる設定になっていたらそれを表示しておくとか」）。映す画面には出さない＝映す前に、映す人にだけ見せる -->
+    <p class="hint" id="compareHint" hidden>⭐<b>比べるスライドがあります。</b>スライド表示で2つが並んだときに写真を押すと、大きく表示されます</p>
+  </div>
+
+  <!-- 保存 -->
+  <section class="card">
+    <h2><span class="step">4</span>画面の保存&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+    <div class="tip-body" hidden>
+      <p>残るのは<strong>この端末の中だけ</strong>です。<strong>どこにも送信されません。</strong>チェックを外すと、残していたものを消します。</p>
+      <p><strong>共用の端末では外しておいてください。</strong>打った文字と名前、写真がこの端末に残ります。写真に人が写っていることがあります。</p>
+    </div>
+    <label style="font-weight:normal">
+      <input type="checkbox" id="save"> この画面を保存する
+    </label>
+    <p class="hint">
+      チェックを入れると、<b>この画面の状態が保存されます</b>。<br>
+      ⚠<b>共用の端末で使ったときは、このチェックを外して、この画面を閉じてください。</b>
+    </p>
+    <p><span class="saving" id="savingLabel"></span></p>
+  </section>
+
+  <!-- 🔴 名簿の保存は「画面の保存」の下（2026-09-05 本人「座席表では表示の下、画面の保存の下だった。
+       レイアウトも一緒がいい。作りは一緒にしたい」）。座席表の⑧と同じ形にしてある -->
+  <section class="card">
+    <h2><span class="step">5</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+    <div class="tip-body" hidden>
+      <ul>
+        <li><strong>名前を付けて、<b style="font-size:inherit">20件</b>まで保存できます。</strong>残るのは<strong>この端末の中だけ</strong>です。</li>
+        <li><strong>座席表メーカーと共通です。</strong>あちらで保存したデータもここに出ますし、逆もできます（教室の形や班の設定はツールごとに覚えます）。</li>
+        <li>呼び出すのは①の<strong>「このデータを読み込む」</strong>から。</li>
+        <li><b>「上書き」と「削除」は、①でえらんでいるもの</b>に効きます。上書きしても、座席表で入れた<b>番号や男女は残ります</b>。⚠名前のデータを消すと<b>座席表メーカー・席次表メーカーからも消えます</b>。</li>
+        <li>①が<b>文字</b>なら<b>文字のデータ</b>、<b>発表者</b>なら<b>名前のデータ</b>が保存されます。文字は100件まで（⚠座席表メーカーの一覧には出ません）。</li>
+        <li>⚠<b>写真・班・作品名は保存されません。</b>写真が残るのは④の「画面の保存」だけです。</li>
+      </ul>
+    </div>
+
+    <p class="hint">保存したデータは、<b>座席表・席次表・班分け・スライド</b>で使えます。</p>
+
+    <p class="safe">🔒 <strong>保存したものは、使っている端末の中だけに残ります。</strong></p>
+
+    <div class="cls-box">
+            <details class="opt sub">
+        <summary>データに名前を付けて保存（<span id="clsCount">0／20件</span>）</summary>
+        <div class="body">
+      <!-- 🔴 上書きも置いた（2026-09-06 本人「名簿に関しては上書きできるはずだよね？」）。
+           ⭐番号・男女は namesNow() で残すので、上書きしても落ちない -->
+      <!-- 🔴 説明はこの1行だけ（2026-09-06 本人「⑤の説明が長いね…だけでいいんじゃないかな？
+           だって、名前を付けて保存だからさ、仕事してたらわかると思う」）。
+           ⚠くわしい話（上書き・削除が①のえらびに従うこと）は「？」の中に置いてある -->
+      <p class="hint">いま、<b>②に入っているもの</b>を保存します。<br>保存できるのは<b>文字情報のみ</b>です。</p>
+      <p class="btn-row">
+        <button class="mini" id="clsNew" type="button">新しい名前で保存</button>
+        <button class="mini" id="clsSave" type="button">上書き</button>
+        <!-- 🔴 削除はここ（2026-09-06 本人「削除は⑤でしょ？」）。①には置かない -->
+        <button class="mini" id="clsDel" type="button">削除</button>
+      </p>
+      <p><span class="saving" id="clsSaved"></span></p>
+        </div>
+      </details>
+</div>
+  </section>
+
+  <!-- 使い方 ⭐読みものは details.howto（2026-09-08）。⚠details.opt は①②③の道具の部品 -->
+  <details class="howto">
+    <summary>使い方</summary>
+    <div class="body">
+      <p>パワーポイントの代わりに、文字と写真を大きくモニターに映すための道具です。登録もインストールもいりません。このページを開くだけで使えます。作ったものは残さないので、その場で打って、その場で出せます。</p>
+
+      <h3>こんなときに</h3>
+      <ul>
+        <li>今日のめあて、教科書のページ、問題文、キーワードを出しておく</li>
+        <li>参観日や発表会で、発表する人の名前と作品名を出す</li>
+        <li>のこり時間や「まとめに入ります」を出す</li>
+        <li>会議や集まりで、<b>次の議題・次の順番</b>を出す（自治会・PTA・研修など）</li>
+        <li>受付やイベントで、案内をちょっと出しておく</li>
+      </ul>
+      <p class="hint">スライドを作り込む道具ではありません。<b>ひとこと大きく出したいだけ</b>のときのものです。</p>
+
+      <h3>文字をスライドにする</h3>
+      <ul>
+        <li>枠に打って「入れる」を押すと、<b>1行が1枚</b>になって下の一覧に並びます。何行でもまとめて入れられます（<span class="kbd">Ctrl</span>＋<span class="kbd">Enter</span> でも入ります）。</li>
+        <li>改行したいところに <code>/</code> を入れると、そこで行が変わります。<br>
+          例：<code>海の生きものを/しらべて分かったこと</code></li>
+        <li><code>//</code> にすると、<b>前のほうが小さい文字</b>になります。見出しを付けたいときに使ってください。<br>
+          例：<code>今日のめあて//分数のたし算ができる</code></li>
+        <li>文字の大きさは、長さに合わせて自動で変わります。</li>
+        <li>一覧の <b>▲▼</b> で順番を入れ替え、<b>×</b> で1枚だけ消せます。パソコンなら行をつかんでドラッグでも動かせます。</li>
+      </ul>
+
+      <h3>写真を入れる</h3>
+      <ul>
+        <li>⭐<b>一覧の「＋」を押すと、その1枚に写真が入ります。</b>すでに打った文字はそのままなので、打ち直す必要はありません。</li>
+        <li>一覧の下の<b>「＋ 行を追加」</b>で1枚ぶん増やせます。文字でも写真でも入れられます。</li>
+        <li>入れた写真は、<b>写真をつかんでドラッグ</b>すると、別の行へ移せます（パソコンのみ）。写真の右上の<b>×</b>で、写真だけ外せます。</li>
+        <li>一覧の文字の欄に打つと、<b>写真の上に文字が重なります</b>。文字の後ろには白い帯が付くので、写真の上でも読めます。</li>
+        <li>写真は切れません。画面に収まるように、全部が入る大きさで出ます。</li>
+        <li>写真は<b>「この画面を保存する」にチェックを入れておくと残ります</b>（下の「保存について」）。⭐<b>前の日に選んだ写真が、次の日もそのまま出せます。</b>チェックが外れていると、ページを閉じたときに消えます。</li>
+      </ul>
+
+      <h3>作っているとき</h3>
+      <ul>
+        <li>⭐<b>「作成中」にチェック</b>を入れておくと、出したあとも設定が開いたままです。作りながら何度も見られます。</li>
+        <li><b>枚数を選んで「この画面で見る」</b>を押すと、その1枚だけ確かめられます（全画面になりません）。</li>
+        <li>⚠<b>本番のときはチェックを外してください。</b>外しておくと、出したときに設定がたたまれて、見ている人に見えません。</li>
+      </ul>
+
+      <h3>1枚ずつ変えたいとき</h3>
+      <ul>
+        <li>一覧の<b>位置</b>と<b>大きさ</b>で、その1枚だけ変えられます。写真によって文字を置きたい場所が違うときに使ってください。</li>
+        <li>位置は「中央」、大きさは「自動」がはじめの値です。<b>自動</b>は、文字の長さに合わせて大きさが決まります。</li>
+        <li>大きさは<b>最小・小・中・大</b>から選べます。⭐<b>写真をできるだけ見せたいときは「最小」</b>にしてください。</li>
+        <li>いちばん左の<b>チェックを外す</b>と、その1枚は映りません。<b>1枚だけ映したいときは、ほかのチェックを外してください。</b></li>
+      </ul>
+
+      <h3>書体と、文字の位置</h3>
+      <ul>
+        <li>書体は<b>ゴシック体・丸文字・明朝体</b>から選べます（座席表と同じです）。<br>
+          丸文字はWindowsとiPad・Macだけです。入っていない機種では、静かにゴシック体になります。</li>
+        <li>文字の位置と大きさは、<b>一覧で1枚ずつ</b>決めます。写真のときは<b>中央・上・下</b>（写真に重ねる）か<b>外</b>（下のボタンの行に小さく）を選べます。</li>
+      </ul>
+
+      <h3>発表者をスライドにする</h3>
+      <ul>
+        <li><b>座席表メーカーで保存したデータ</b>があれば、選ぶだけで名前が入ります。班の情報があれば、班も一緒に入ります。</li>
+        <li>Excelから貼り付けることもできます。名前だけの1列でも大丈夫です。</li>
+        <li>作品名を入れると、作品名が大きく、名前が下に出ます。名前は覚えているので、作品名を主役にしてあります。</li>
+        <li>「班ごとにまとめて映す」を選ぶと、班名・その班の作品名・メンバー全員の名前が一緒に出ます。</li>
+      </ul>
+
+      <h3>順番を変えたい・今日いない人を外したい</h3>
+      <ul>
+        <li>一覧の <b>▲▼</b> で順番を入れ替えられます。</li>
+        <li><b>チェックを外す</b>と、その人（その班）は映りません。</li>
+        <li><b>順番をシャッフル</b>で、発表の順をランダムにします。班ごとに映すときは班の順が入れ替わり、班の中はそのままです。</li>
+      </ul>
+
+      <h3>設定を見せたくない</h3>
+      <p>「準備」を閉じると、中身がまとめて隠れます。<b>「スライド表示」を押したときも自動で閉じます</b>ので、映し終わって戻ったときに、順番やシャッフルが見ている人に見えることはありません。</p>
+      <p>ずっと開いたままにしたいときは、<b>「作成中」にチェック</b>を入れてください。</p>
+
+      <h3>保存について</h3>
+      <ul>
+        <li>「スライド表示」の下の<b>「この画面を保存する」</b>にチェックを入れると、次に開いたときも<b>文字・順番・写真・名簿</b>がそのまま残ります。</li>
+        <li>残るのは<b>この端末の中だけ</b>です。<b>どこにも送信されません。</b></li>
+        <li>チェックを外すと、保存していたものを消します。</li>
+        <li>⭐<b>写真も残るのは、このページだけです。</b>ほかのページ（座席表など）は、読み込んだ画像を保存していません。</li>
+        <li>⚠<b>共用の端末では外しておいてください。</b>写真に人が写っていることがあります。</li>
+      </ul>
+
+      <h3>打った文字は、どこにも送られません</h3>
+      <p>打った文字も写真も名簿も、この端末のブラウザの中だけにあります。どこかのサーバーに送ることはありません。ネットにつながっていなくても動きます。<b>映している画面には、広告は出ません。</b></p>
+    </div>
+  </details>
+
+</main>
+
+<footer class="noprint">
+  <div class="wrap"><span class="fnav"><a href="../about/">運営者情報</a>　<a href="../contact/">お問い合わせ</a>　<a href="../privacy/">プライバシーポリシー</a></span>
+    <span class="copy">さくらツール　© 2026 SAKURA TOOLS</span></div>
+</footer>
+
+<!-- 映す画面。⚠ここには広告を絶対に置かない -->
+<div id="show">
+  <div id="stage">
+    <!-- 🔴 写真は2枚まで（2026-09-07 本人・知り合いの先生「写真を比べることがある」）。
+         2枚あれば横に並ぶ。片方を押すとそちらが大きくなる -->
+    <div id="pics">
+      <img id="pic" alt="" hidden>
+      <img id="pic2" alt="" hidden>
+    </div>
+    <div id="box">
+      <div id="group"></div>
+      <div id="title"></div>
+      <div id="name"></div>
+    </div>
+  </div>
+  <div id="bar">
+    <!-- 🔴 写真のときの文字はここ（2026-09-05 本人「ボタンのフッターの部分に入れてはどうかな？
+         そうするとかなり画像が大きくなる」）。⚠操作ボタンは少し経つと薄くなるが、この文字は残る -->
+    <span class="pad"></span>
+    <span id="cap"></span>
+    <!-- 🔴 2/5 はボタンのそばに（2026-09-05 本人「2/5は中央揃えではなく、ボタンの近くに。
+         文字を中央にしてほしい」）。⚠文字（#cap）がフッターの中央に来る -->
+    <span class="row">
+      <span id="pos"></span>
+      <button id="toFull">スライド表示にする</button>
+      <button id="prev">◀ もどる</button>
+      <button class="primary" id="next">つぎへ ▶</button>
+      <button id="close">おわり</button>
+    </span>
+  </div>
+</div>
+
+<script src="slide.js?v=87"></script>
+<script src="../tip.js?v=3"></script>
+</body>
+</html>

@@ -1,0 +1,832 @@
+/* さくら先生の座席表 共通スタイル
+   🔴 2026-08-29 見た目を入れ替えた＝ベースは薄いグレー。
+      アクセントの色はページごとに分ける（座席表＝桜色／席次表＝緑）。
+      ⚠ 変数名は --pink のまま。名前を変えると、この下の指定を全部直すことになる。
+        席次表は seki.css で中身だけ緑に上書きしている。 */
+:root{
+  --pink:#c86a8e;        /* 座席表＝学校＝桜色 */
+  --pink-light:#f3e2e8;
+  --pink-pale:#fbf1f4;
+  --ink:#2c2e30;
+  --ink-soft:#82868c;
+  --line:#e3e5e8;
+  --bg:#f8f9fa;          /* ベース＝薄いグレー */
+  --ok:#3b8f6b;
+  --bad:#d8453f;
+  --radius:14px;
+  /* 🔴 端末がダークモードでも、スクロールバー・チェックボックス・セレクトが
+     勝手に暗く描かれるのを止める。CSSで色を指定していても起きるので、これが要る */
+  color-scheme: light;
+}
+input[type=checkbox],input[type=radio]{accent-color:var(--pink)}
+*{box-sizing:border-box}
+/* 🔴⭐ページ全体が横に動くのを止める（2026-09-10 本人「触ってたら横にずれる」「ふわふわする」）。
+   ⚠overflow-x:hidden は position:sticky（ヘッダー）を壊すことがあるので clip を使う。
+   ⭐横に動かしたい場所（明細の表など）は、その要素に overflow-x:auto を付ける */
+html{overflow-x:clip}
+body{
+  margin:0; padding:0;
+  /* ⭐サイトの地の文はこの1本（2026-09-08 本人「まずはフォント変えて」）。
+     ⚠前は style.css が Yu Gothic、typing が Yu Gothic UI で、同じサイトに2種類の字が混ざっていた。
+     ⭐游ゴシックは「かすれ問題」で本文向きではない。Windowsは Noto Sans JP（2024頃から標準）→ BIZ UDPゴシック → メイリオの順で受ける */
+  font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","BIZ UDPGothic",Meiryo,sans-serif;
+  color:var(--ink); background:var(--bg); line-height:1.7;
+}
+.wrap{max-width:900px;margin:0 auto;padding:20px}
+
+/* ヘッダー */
+.site-head{background:#fff;border-bottom:2px solid var(--pink-light);position:sticky;top:0;z-index:30}
+/* 🔴 ページの中のリンク（#…）で飛んだとき、上がヘッダーに隠れないようにする
+   （2026-09-06 本人「詳しくは押すと、スマホで上が見にくい」）。
+   ⭐ヘッダーは約40px。少し余裕を見て52px空ける＝飛び先の頭が画面の上に出る */
+[id]{scroll-margin-top:52px}
+.site-head .wrap{display:flex;align-items:center;gap:10px;padding:7px 16px}
+.site-head a{color:var(--ink);text-decoration:none;font-weight:bold}
+.site-head .logo{font-size:1.1rem}
+.site-head nav{margin-left:auto;font-size:.9rem}
+/* 🔴 ヘッダーはツールへの入口＝⭐**道具の名前だけを並べる**（2026-09-06 本人）。
+   ⭐「トップ」は置かない。左のロゴ（🌸 SAKURA TOOLS）がトップへの戻り道。
+   ⭐**見ているページ自身へのリンクは出さない**ので、道具のページでは2つ、それ以外は3つ並ぶ。
+   ⚠ 理由＝スマホ（375px）で4つ並べるとヘッダーが2行になり、貼り付いたまま場所を取る。
+   ⚠ 色は付けない。並んでいれば「押せば飛ぶ」と分かる（本人の判断） */
+/* 🔴⭐ロゴの右に「いま開いている道具の名前」を出す（2026-09-09 本人
+   「全部見た目が同じようになってきて、どれを開いているのかが分からなくなってきた」）。
+   ⚠型1で「見ているページ自身へのリンクは出さない」と決めているので、ヘッダーに名前が無かった
+   ⭐入れるのは make_test.py（各ページの h1 から自動で取る）。ここは見た目だけ */
+/* ⭐ヘッダーの下の細い帯。⚠ヘッダーの中に入れると幅を取り合って2行になった（2026-09-10 本人） */
+.site-sub{background:var(--pink-pale);border-top:1px solid var(--pink-light)}
+.site-sub .wrap{
+  padding:3px 16px;font-size:.78rem;font-weight:bold;color:var(--pink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  /* ⚠.site-head .wrap が display:flex なので、text-align だけでは効かない（2026-09-10） */
+  display:block;text-align:center;
+}
+/* ⭐パソコンは長い名前、スマホは短い名前（2026-09-09 本人）
+   ⚠パソコンは幅に余裕がある。スマホのヘッダーに入るのは約6文字 */
+.site-sub .now-short{display:none}
+@media(max-width:640px){
+  .site-sub .now-long{display:none}
+  .site-sub .now-short{display:inline}
+}
+
+.site-head nav{display:flex;gap:16px}
+.site-head nav a{
+  margin-left:0;font-weight:normal;color:var(--ink-soft);
+  /* ⚠ 太字にしたときに幅が動かないよう、あらかじめ場所を取っておく */
+  min-width:3.2em;text-align:center;
+}
+/* ⚠ いまは自分のページを出さないので出番はないが、残しておく */
+.site-head nav a[aria-current="page"]{font-weight:bold;color:var(--ink)}
+.site-head nav a:hover{font-weight:bold}
+/* ⚠ 3つ並ぶと、狭い画面でヘッダーがあふれる。ロゴと間隔を詰める（330px以下は2行になる） */
+/* ⭐⭐右上のナビ＝パソコンは並べる／スマホはハンバーガー（2026-09-08 本人）。
+   ⭐JSは使わない＝チェックボックスで開け閉めする
+   ⚠<details> は閉じていると中身を描かないので使えなかった
+   ⚠道具は増える予定。横並びは4つで限界だった（詰めるとロゴにぶつかる）
+   ⚠研究＝隠されたナビは「著しく発見されにくい」（NN/g）→ ☰ に「ツール」の文字を添える */
+/* --- パソコン：ボタンを隠して、リンクをそのまま並べる --- */
+.site-head .navburger{display:none}
+/* ⚠チェックボックスはどの幅でも場所を取らない（見せないが、押せる状態は保つ）*/
+.site-head .navtoggle{position:absolute;opacity:0;width:0;height:0;margin:0;pointer-events:none}
+.site-head .navlist{display:contents}
+
+@media(max-width:640px){
+  .site-head .logo{font-size:.95rem}
+  /* ⚠nav の中のチェックボックスが場所を取って、ヘッダーが高くなっていた
+     ⭐nav を一列にして、チェックボックスは完全に場所を取らないようにする */
+  .site-head nav{position:relative;display:flex;align-items:center}
+  /* --- スマホ：☰ を出して、リンクは中にしまう --- */
+  .site-head .navburger{
+    display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;
+    font-size:.8rem;font-weight:700;color:var(--ink);
+    /* ⚠⚠label には共通の margin:10px 0 4px がかかる。消さないとヘッダーが14px高くなる
+       （→ 記憶/コード/label-margin-3px.md と同じ原因）*/
+    margin:0;
+    padding:3px 9px;border:1px solid var(--line);border-radius:7px;background:#fff;
+  }
+  .site-head .navburger::before{
+    content:"";width:14px;height:11px;flex:none;
+    background:linear-gradient(var(--ink) 0 2px,transparent 2px 4.5px,
+               var(--ink) 4.5px 6.5px,transparent 6.5px 9px,var(--ink) 9px 11px);
+  }
+  .site-head .navtoggle:checked ~ .navburger{border-color:var(--pink);color:var(--pink)}
+  .site-head .navlist{
+    display:none;position:absolute;right:0;top:calc(100% + 7px);z-index:60;
+    background:#fff;border:1px solid var(--line);border-radius:11px;
+    box-shadow:0 10px 26px rgba(0,0,0,.16);padding:6px;min-width:150px;
+  }
+  .site-head .navtoggle:checked ~ .navlist{display:block}
+  .site-head .navlist a{
+    display:block;padding:8px 12px;border-radius:8px;
+    font-size:.88rem;min-width:0;white-space:nowrap;line-height:1.4;text-align:left;
+  }
+  .site-head .navlist a:hover{background:var(--pink-pale)}
+}
+/* 🔴 「このサイトについて」など道具ではないページは、トップ＋道具3つで**4つ**並ぶ。
+   ⚠そのままだとスマホでヘッダーが2行（62px）になり、貼り付いたまま場所を取る。
+   ⭐4つ目がある時だけ、もう一段詰めて1行に収める（37px）。3つのページは今までの大きさのまま。
+   ⚠`:has()` が効かない古い機器では2行になるだけ＝押せなくなるわけではない */
+/* ⚠4つ目のときに詰める指定は消した（2026-09-08）。ハンバーガーになったので不要 */
+
+h1{font-size:1.5rem;margin:24px 0 4px}
+/* 🔴 見出しの縦棒と、開け閉めする帯の縦棒を同じにする（本人「全部そろえたほうがすっきり」）。
+   ⚠ 縦棒は ::before で描く。box-shadow だと、帯に上下の余白を足したときに
+     棒まで伸びてしまい、見出しと形が変わる。::before なら文字の高さのまま */
+h2{font-size:1.15rem;margin:32px 0 10px}
+h2,details.opt > summary{position:relative;padding-left:15px}
+h2::before,details.opt > summary::before{
+  content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:5px;height:1.15em;background:var(--pink);border-radius:3px;
+}
+h3{font-size:1rem;margin:20px 0 6px}
+.lead{color:var(--ink-soft);margin:0 0 20px;font-size:.92rem;line-height:1.75}
+
+/* カード */
+.card{
+  background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px 18px;margin-bottom:18px;
+}
+.card > h2{margin-top:0}
+/* 🔴 ぬりつぶしの丸。⚠ 幅と高さをそろえないと、数字によって楕円になる。
+   ⚠ line-height:1 と flex で、数字を円のまん中に置く
+     （日本語フォントは行の高さに余白を持つので、指定しないと下にずれる） */
+.step{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:1.7em;height:1.7em;line-height:1;
+  background:var(--pink);color:#fff;border:0;
+  border-radius:50%;font-size:.82rem;margin-right:9px;
+  flex:0 0 auto;
+}
+
+/* 🔴 入力欄の見本（placeholder）は、小さく・薄く。
+   ⚠ 普通に入力してあるように見えると、消していいのか迷う（本人の指摘）。
+     読めなくてよい＝雰囲気が分かればいい。
+   ⚠ 座席表の中に出る「サンプル30人」は別物。ここでは触らない */
+::placeholder{color:#b6b9bf;font-size:.84em;opacity:1}
+textarea::placeholder{font-size:.8em;line-height:1.7}
+
+/* 入力 */
+label{display:block;font-size:.9rem;margin:10px 0 4px;font-weight:bold}
+/* ⚠ date と file が抜けていて、そこだけ素の見た目（角丸なし・細い枠）だった
+     （2026-09-09 本人がスクショで発見。請求書メーカーで気づいた）。
+   ⭐ file はスライドでも使っているので、共通に置くのが正しい（→ ページの型 16-a） */
+input[type=text],input[type=number],input[type=date],input[type=file],textarea,select{
+  font:inherit;padding:8px 10px;border:1px solid var(--line);
+  border-radius:8px;background:#fff;color:var(--ink);
+}
+/* ⚠ファイル選択だけ、中のボタンのぶん詰める */
+input[type=file]{padding:6px 8px}
+/* ⭐「ファイルを選択」のボタン。ブラウザが描くので、ここでしか色を変えられない */
+input[type=file]::file-selector-button{
+  font:inherit;font-size:.85rem;padding:4px 10px;margin-right:10px;
+  border:1px solid var(--line);border-radius:8px;
+  background:#fff;color:var(--ink);cursor:pointer;
+}
+/* 🔴 マウスを乗せたら枠が色づく（2026-09-04 本人）。
+   本人「ちょっと色がつくのはとても分かりやすくていいなと思って」
+   ⚠スピンボタン（数字の上下の矢印）そのものはブラウザが描いていて色を変えられない。
+     枠を色づけるほうが確実で、どの機器でも同じに見える。
+   ⚠ hover:hover ＝マウスがある機器だけ。付けないとスマホで触ったあと色が残る。
+   ⚠色は変数を通す＝席次表（seki.css で --pink を緑に上書き）では緑になる */
+@media (hover:hover){
+  input[type=file]::file-selector-button:hover{border-color:var(--pink);color:var(--pink)}
+  input[type=text]:hover,input[type=number]:hover,input[type=date]:hover,textarea:hover,select:hover{
+    /* ⚠乗せたときは**細い線の色だけ**（2026-09-04 本人）。
+       うすく塗るのはボタンだけにする＝入力欄とボタンの役割を見た目で分ける */
+    border-color:var(--pink);
+  }
+}
+/* 選んでいるあいだ＝枠だけ色づけて、中は白にもどす（打っている字が読みやすいように）。
+   ⚠ :focus-visible の枠（キーボード操作の目印）は消さない */
+input[type=text]:focus,input[type=number]:focus,input[type=date]:focus,input[type=file]:focus,textarea:focus,select:focus{
+  border-color:var(--pink);background:#fff;
+}
+textarea{width:100%;min-height:170px;resize:vertical;line-height:1.6}
+input[type=number]{width:5em}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}
+.row > div{flex:0 0 auto}
+/* 行の中で、残りの幅いっぱいに伸びるもの（帯の文字など）。狭いときは折り返して全幅になる */
+.row > div.grow{flex:1 1 260px;min-width:260px}
+.count{color:var(--pink);font-weight:bold}
+/* 🔴 補足は本文より小さく。同じ大きさだと補足に見えない */
+.hint{font-size:.78rem;color:var(--ink-soft);margin:4px 0 0;line-height:1.65}
+/* 操作の説明。読まない人がちょっと読めればいいので、小さめ */
+.note-sm{font-size:.76rem;color:var(--ink-soft);margin:0 0 10px;line-height:1.6}
+
+/* ボタン */
+button{
+  font:inherit;cursor:pointer;border:1px solid var(--line);
+  background:#fff;color:var(--ink);border-radius:8px;padding:8px 14px;
+}
+button:hover{background:var(--pink-pale)}
+.primary{
+  background:var(--pink);border-color:var(--pink);color:#fff;
+  font-size:1.1rem;font-weight:bold;padding:14px 30px;border-radius:999px;
+  /* 🔴 押せる板に見せる（2026-09-03 本人「画像のように影つけて」）。
+     ⚠影は**グレー**にする。ページごとに色が違う（座席表＝桜色／席次表＝緑）ので、
+       色つきの影にすると片方で浮く。グレーならどちらでも合う */
+  box-shadow:0 3px 10px rgba(0,0,0,.18), 0 1px 2px rgba(0,0,0,.10);
+  transition:box-shadow .16s ease, transform .16s ease, filter .16s ease;
+}
+/* ⚠ 色を直接書かない（席次表でも桜色になってしまう）。
+   ⭐ 押したときは少し濃くする＝ページの色（桜／緑）のまま暗くする。
+   ⚠ 枠線も同じ色にしないと、縁だけ元の色が残る（本人の指摘） */
+/* 🔴 マウスを乗せたときは**暗くしない**（2026-09-03 本人）。
+   本人「ボタンにマウスポインタもっていくと色が暗い。画像と同じような設定にしてほしい」
+   ＝暗くするのは「押した」の合図。乗せただけなら**浮かせて、少し明るく** */
+@media (hover:hover){
+  .primary:hover{
+    background:var(--pink);border-color:var(--pink);filter:brightness(1.04);
+    box-shadow:0 8px 18px rgba(0,0,0,.24), 0 1px 3px rgba(0,0,0,.10);
+    transform:translateY(-2px);
+  }
+}
+/* 🔴 指で使う機器では影を強くする（2026-09-03 本人「スマホ版はもう少し強いほうが浮いて見える」）。
+   ⚠ hover:none ＝マウスが無い機器（スマホ・タブレット）。
+     こちらは「乗せて浮く」が無いぶん、最初から強く浮かせておく */
+@media (hover:none){
+  .primary{box-shadow:0 6px 18px rgba(0,0,0,.28), 0 2px 4px rgba(0,0,0,.12)}
+}
+/* ⭐押した瞬間は沈ませる（指の人には、これが「押せた」の合図になる） */
+.primary:active{
+  filter:brightness(.85);
+  box-shadow:0 1px 3px rgba(0,0,0,.16);
+  transform:translateY(2px);
+}
+/* リンクをボタンと同じ見た目にする（お問い合わせのフォームボタン） */
+a.primary{display:inline-block;text-decoration:none;border:1px solid var(--pink)}
+.mini{padding:4px 10px;font-size:.85rem}
+
+/* 折りたたみ */
+/* 🔴 ①②のカードとまったく同じ形にする（本人「全部そろえたほうがすっきり」）。
+   ⚠ 前は帯がカードの外枠に貼りついていて、①②の縦棒（カードの内側）と位置がずれていた。
+     .card と同じ余白を持たせて、中の見出しを h2 と同じ形にすると、きれいにそろう */
+/* ⚠ 余白は details に付けない。帯と中身がそれぞれ持つ。
+   こうしないと、押したときの色がカードの端まで届かず、白いすき間が残る（本人の指摘） */
+details.opt{
+  border:1px solid var(--line);border-radius:var(--radius);background:#fff;
+  margin-bottom:18px;
+}
+/* 🔴 開け閉めする帯は、うすい色を敷いて「押せる」と分かるようにする。
+   中身は白のまま＝帯だけが操作するところ、と見分けられる */
+/* 見出し（h2）と同じ見た目。押せることは右端のしるしが言う。
+   🔴 上下に余白を入れて、押せる範囲を広くする。
+   ⚠ 余白が無いと文字の高さぶんしか反応せず、少し上や下を押すと開かない（本人の指摘） */
+details.opt > summary{
+  cursor:pointer;list-style:none;margin:0;
+  padding:20px 18px 20px 33px;
+  font-size:1.15rem;font-weight:bold;
+  display:flex;align-items:center;gap:8px;
+  border-radius:var(--radius);
+}
+details.opt > summary::before{left:18px}
+/* 開いたときは、見出しと中身のあいだに見切りの線を入れる（本人の希望で復活）。
+   ⚠ 見出しがカードの内側に入ったので、線も内側から内側まで */
+details.opt[open] > summary{
+  margin-bottom:0;border-bottom:1px solid var(--line);
+  border-radius:var(--radius) var(--radius) 0 0;
+}
+details.opt[open] > .body{padding-top:16px}
+/* 押したときだけ、うっすら反応させる（面はいつも出さない） */
+/* 🔴 マウスを乗せたら色を変える。押したらもう少し濃く。
+   ⚠ hover:hover ＝マウスがある機器だけ。
+     これを付けないと、スマホやタブレットで触ったあと色が残り続ける */
+@media (hover:hover){
+  details.opt > summary:hover{background:var(--pink-pale)}
+}
+details.opt > summary:active{background:var(--pink-light)}
+/* ⚠ キーボードで操作している人に「いまここ」を伝える枠線。消さない。
+   既定の黒は浮くので、色だけテーマに合わせる */
+/* ⚠ 離すと二重に見える。要素の縁にぴったり重ねる（本人の希望） */
+:focus-visible{outline:2px solid var(--pink);outline-offset:0}
+details.opt > summary::-webkit-details-marker{display:none}
+/* ⚠ ▶ は「進む」に見える。下向きのしるしのほうが「開く・閉じる」に見える。
+   🔴 文字の「⌄」は角が鋭い（本人の指摘）ので、
+     線の端が丸い形をSVGで描いて、色は --pink で塗る */
+details.opt > summary::after{
+  content:"";margin-left:auto;flex:0 0 auto;
+  width:.7em;height:.7em;background:var(--pink);
+  -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M5 9l7 7 7-7'/></svg>") center/contain no-repeat;
+  mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M5 9l7 7 7-7'/></svg>") center/contain no-repeat;
+  transition:transform .15s;
+}
+details.opt[open] > summary::after{transform:rotate(180deg)}
+details.opt > .body{padding:0 18px 20px}
+/* 🔴⭐章の中に置く小さなシャッター（2026-09-10 共通に移した）。
+   使う場所＝③の「細かい設定」／⑧の保存の欄（→ ページの型 4-d）。
+   ⚠外の章より一段軽く見せる＝薄い枠・小さめの見出し。⭐新しい見た目は作らず details.opt を細くする */
+details.opt.sub{margin:14px 0;border-color:var(--line);background:var(--bg)}
+details.opt.sub > summary{font-size:.95rem;padding:11px 14px 11px 28px}
+details.opt.sub > summary::before{left:13px}
+details.opt.sub > .body{padding:12px 14px 14px}
+details.opt.sub[open] > summary{border-bottom:1px solid var(--line)}
+
+/* 🔴 カード（②）の中に入れる「詳しい条件」＝枝なので、見出しより一段小さくする。
+   ⚠ 縦棒のしるしは消す。付いたままだと ② の見出しと同じ格に見える */
+details.opt.sub{margin:14px 0 0;border-radius:10px}
+details.opt.sub > summary{font-size:1rem;padding:12px 14px;padding-left:14px}
+details.opt.sub > summary::before{display:none}
+details.opt.sub > .body{padding:0 14px 16px}
+details.opt.sub[open] > .body{padding-top:12px}
+/* 使わない並べ方のときは薄くする。帯は押せるまま＝開いて理由を読める */
+details.opt.off > .body{pointer-events:none}
+
+.pair{display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+.pair select{max-width:11em}
+
+/* 座席表 */
+.tabs-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.plan-tabs{display:flex;gap:6px}
+.drag-note{margin:0 0 10px}
+.plan-tabs button.on{background:var(--pink);color:#fff;border-color:var(--pink)}
+
+.sheet{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.sheet-head{
+  display:grid;grid-template-columns:auto 1fr auto;
+  align-items:end;gap:10px;margin-bottom:10px;
+}
+.sheet-title{font-size:1.2rem;font-weight:bold;line-height:1.25}
+.sheet-date{
+  font-size:.85rem;color:var(--ink-soft);line-height:1.25;
+  text-align:right;white-space:nowrap;
+}
+
+.board{
+  background:#3e5c4b;color:#fff;text-align:center;
+  border-radius:6px;padding:6px;margin:10px 0;letter-spacing:.4em;font-size:.9rem;
+}
+.grid{display:grid;gap:6px}
+.seat{
+  border:1.5px solid var(--line);border-radius:8px;background:#fff;
+  height:58px;display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:3px;cursor:grab;overflow:hidden;
+}
+/* 班（色は席のかたまりに付く） */
+.seat.grp{position:relative}
+.seat.g-both{background:var(--gFill);border-color:var(--gLine);border-width:3px}
+.seat.g-edge{border-color:var(--gLine);border-width:3px}
+/* ぬりつぶしは塗りで見分けるので、枠は細いグレーにして文字を読みやすくする */
+.seat.g-fill{background:var(--gFill);border-color:#c9c9c9;border-width:1.5px}
+/* 色なし＝番号だけ（中高生のクラスなど、色分けが要らない先生むけ） */
+.seat.g-none{background:#fff;border-color:var(--line);border-width:1.5px}
+.seat.g-none .gno{color:#555}
+.seat .gno{
+  position:absolute;top:0;left:0;
+  /* 押せるように、数字のまわりに余白を持たせる（見た目は数字だけ） */
+  padding:2px 7px 4px 5px;
+  font-size:.72rem;font-weight:bold;line-height:1.3;color:var(--gLine);
+  cursor:pointer;user-select:none;-webkit-user-select:none;
+}
+.seat .gno:hover{background:rgba(0,0,0,.06);border-radius:6px}
+/* 「班の番号を出す」を外したとき＝この画面だけ薄く残す（押して班を変えられる） */
+.seat .gno.dim{color:#c4c4c4}
+body.screen .seat .gno.dim{display:none}
+
+/* 班をえらぶ小さな窓 */
+.gpick{
+  position:absolute;z-index:9500;background:#fff;
+  border:1px solid var(--line);border-radius:12px;padding:9px;
+  box-shadow:0 8px 24px rgba(0,0,0,.18);
+  display:flex;flex-wrap:wrap;gap:6px;max-width:270px;
+}
+.gpick button{
+  min-width:40px;padding:7px 9px;font:inherit;font-weight:bold;font-size:.9rem;
+  border:2px solid;border-radius:9px;cursor:pointer;
+}
+.gpick button.on{box-shadow:0 0 0 2px var(--ink) inset}
+.seat.empty{background:#f6f6f6;border-style:dashed;color:#bbb}
+.seat.bad{border-color:var(--bad);background:#fdeceb}
+.seat.drag{opacity:.4}
+.seat .nm{white-space:pre-line;line-height:1.2;display:block}
+.sheet.bold .seat .nm{font-weight:bold}
+
+.deco{position:relative}
+.sheet-foot{
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:end;
+  gap:10px;margin-top:12px;break-inside:avoid;page-break-inside:avoid;
+}
+
+.notice{background:var(--pink-light);border-radius:8px;padding:10px 12px;font-size:.9rem;margin:10px 0}
+.notice.warn{background:#fdeceb;color:#8c2b27}
+/* ⚠緑にしない。このサイトでここだけ色が浮く（2026-08-31 本人） */
+.saving{font-size:.85rem;color:var(--pink);font-weight:bold}
+
+/* 読み物 */
+/* 🔴 ここまでが操作、ここからは読みもの、の区切り（2026-09-01 本人）。
+   ⚠タブレットは画面が縦に流れるので、線が無いとどこで終わったのか分からない */
+/* ⭐棒線の上と下を同じ間隔にする（2026-09-08 本人）。
+   上＝⑧の箱の下の縁から棒線まで 34px
+   下＝棒線から「使い方」の箱の上の縁まで 34px
+   ⭐⭐そろえるのは「箱の縁同士」。字の位置ではない（目が見ているのは箱の縁）*/
+/* ⭐読みもののトグル（使い方・よくある質問・データの扱い）＝2026-09-08 本人。
+   ⚠⚠道具（①②③…の details.opt）と同じ見た目にしない。
+     ⭐箱を作らず、細い線と ▸ だけ。開いても字は小さいまま。
+     こうしないと「道具」と「読みもの」が同じ重さに見える */
+details.howto{
+  border-top:1px solid var(--line);
+  font-size:.8rem;color:var(--ink-soft);line-height:1.95;
+}
+/* ⚠.read の中は、上の棒線が .read 側にあるので1本目の線は消す。
+   ⭐.read が無いページ（スライド）では、1本目にも線が要る */
+.read details.howto:first-of-type{border-top:0}
+main > details.howto{margin-top:34px}
+details.howto > summary{
+  cursor:pointer;font-weight:700;letter-spacing:.06em;color:var(--ink-soft);
+  list-style:none;padding:11px 0;
+}
+details.howto > summary::-webkit-details-marker{display:none}
+/* ⭐▸ だけさくら色（2026-09-08 本人「トグルのボタンだけピンクにして」）*/
+details.howto > summary::before{
+  content:"▸";display:inline-block;margin-right:7px;transition:transform .15s;color:var(--pink);
+}
+details.howto[open] > summary::before{transform:rotate(90deg)}
+details.howto > summary:hover{color:var(--ink)}
+details.howto .body{padding:0 0 16px}
+details.howto b,details.howto strong{color:var(--ink);font-weight:700}
+details.howto ul,details.howto ol{margin:6px 0 0;padding-left:1.35em}
+details.howto li{margin-bottom:3px}
+/* ⭐番号と箇条書きの点はさくら色（2026-09-08 本人）。
+   ⚠読みものは文章だらけになるので、そのままだと画面が黒っぽくなる。
+     ⭐点と番号だけ色を入れると、行の頭が見えて読みやすくなる */
+details.howto ol > li::marker,
+details.howto ul > li::marker{color:var(--pink);font-weight:700}
+details.howto p{margin:6px 0 0}
+details.howto dt{font-weight:bold;margin-top:12px;color:var(--ink)}
+details.howto dd{margin:2px 0 0 1em}
+/* ⚠「できること」は使い方の中に入っている。共通の .can（白い箱）は使わない。
+   ⭐ただの箇条書きにして、字は読みものと同じ小ささにそろえる。
+   ⚠共通の .can b は 1.02rem あるので、必ず inherit で打ち消す（大きく見える原因） */
+details.howto .can{list-style:disc;padding-left:1.35em;margin:0}
+details.howto .can li{border:0;background:none;border-radius:0;margin:0 0 3px;padding:0}
+details.howto .can b{display:inline;font-size:inherit;color:var(--ink)}
+details.howto .can small{display:inline;font-size:inherit;margin-left:8px}
+
+/* ⭐⭐線は「かたまりの区切り」に入れる（2026-09-08 本人）。⚠項目と項目の間には入れない。
+   ＝手順（番号）／できること／こんなときに のあいだ */
+details.howto .body > .can,
+details.howto .body > p.sub{
+  border-top:1px solid var(--line);
+  margin-top:14px;padding-top:14px;
+}
+details.howto .body > p.sub,
+details.howto .body > h3{font-weight:700;color:var(--ink)}
+/* ⭐h3 の小見出しも「かたまりの区切り」として同じ形にする（スライドが h3 を使っている）*/
+details.howto .body > h3{
+  border-top:1px solid var(--line);
+  margin:14px 0 0;padding-top:14px;font-size:1em;
+}
+details.howto .body > h3:first-child{border-top:0;margin-top:0;padding-top:0}
+details.howto .body > p.sub + ul{margin-top:5px}
+
+.read{border-top:1px solid var(--line);margin-top:34px;padding-top:22px}
+.read h2{margin-top:26px}
+.read dt{font-weight:bold;margin-top:12px}
+.read dd{margin:2px 0 0 1em;color:var(--ink-soft)}
+.tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;list-style:none;padding:0}
+.tools a,.tools span{
+  display:block;background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px;text-decoration:none;color:var(--ink);height:100%;
+}
+.tools a:hover{border-color:var(--pink);background:var(--pink-pale)}
+.tools b{display:block;font-size:1.05rem;margin-bottom:4px}
+.tools small{color:var(--ink-soft)}
+.tools .soon{opacity:.55}
+
+/* 🔴 フッターは「終わり」の合図。中央にそろえて、閉じた感じを出す */
+/* 🔴 フッターは「終わり」の合図。中央にそろえて、行間は詰める */
+footer{
+  margin-top:28px;padding:18px 0;border-top:1px solid var(--line);
+  font-size:.85rem;color:var(--ink-soft);text-align:center;line-height:1.6;
+}
+.fnav{display:block;margin-top:4px}
+.fnav a{color:var(--ink-soft)}
+.copy{display:block;margin-top:4px;font-size:.8rem;color:#a89aa0}
+
+@media (max-width:600px){
+  .wrap{padding:12px}
+  /* ⚠マスや文字だけ小さくすると形が変わるので、座席表はまるごと縮める（seat.js の fitSheet） */
+  #sheetBox{overflow:hidden}
+}
+/* モニターに映すときは縮めない */
+body.screen #sheetBox{height:auto !important;overflow:visible}
+body.screen .sheet{width:auto !important;transform:none !important}
+
+/* 見出しの折り返しを、意味のまとまりで止める（「で」だけ次の行に落ちるのを防ぐ） */
+.nb{display:inline-block}
+
+/* できること */
+/* 🔴「できること」の3項目（リードの下）。⭐共通に置く（2026-09-09 本人）
+   ⚠これまで seat / seki / slide の index.html にバラバラに書いてあり、
+     請求書メーカーだけ指定が無くて 16px の黒になっていた（本人が発見）。
+   ⭐ここに置けば、新しい道具でも自動でそろう */
+.can-do{margin:12px 0 10px;padding-left:1.1em;font-size:.86rem;color:var(--ink-soft);line-height:1.9}
+.can-do li{margin-bottom:2px}
+.can-do li::marker{color:var(--pink)}
+
+.can{list-style:none;padding:0;margin:10px 0 0}
+.can li{
+  border:1px solid var(--line);border-radius:12px;background:#fff;
+  padding:12px 14px;margin-bottom:10px;
+}
+.can b{display:block;font-size:1.02rem}
+.can small{display:block;color:var(--ink-soft);font-size:.88rem;margin-top:3px}
+
+/* かざり（さくら） */
+.deco-mark{font-size:1.4rem;line-height:1.2}
+
+/* 2カラム（名簿 と 教室の形） */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+
+/* 🔴 カードの中を2列にする（①②）。
+   ⚠ カードを横に並べる .two-col とは別物。
+   なぜ分けたか＝.two-col は2枚のカードの高さを揃えるので、②で「詳しい条件」を開くと
+   ①まで背が伸びて、①の下に白い場所が広く残る（本人の指摘）。
+   カードを縦に積んで、中で2列にすれば、伸びるのはそのカードの中だけになる。
+   ⭐ついでに名簿欄が2倍近く広くなる＝Excelから貼る欄なので、こちらが本来正しい */
+.in-col{display:grid;grid-template-columns:1fr 1fr;gap:0 22px;align-items:start}
+@media (max-width:760px){ .in-col{grid-template-columns:1fr} }
+.two-col > .card{margin-bottom:0;height:100%}
+@media (max-width:760px){ .two-col{grid-template-columns:1fr} }
+
+/* 人数 */
+select.narrow{width:5.6em}
+
+/* ラジオ */
+.radios{display:flex;flex-wrap:wrap;gap:8px 18px;margin:6px 0 4px}
+.radios label{font-weight:normal;margin:0;display:inline-flex;align-items:center;gap:5px}
+
+/* 選ぶ前は薄く */
+select.ph{color:#a79aa0}
+select.ph option{color:var(--ink)}
+
+/* 人数・座席数 */
+.bignum{font-size:1.25rem;font-weight:bold;color:var(--pink);
+  display:flex;align-items:center;min-height:42px;padding:0 6px 0 2px;white-space:nowrap}
+.row.tight{gap:12px;align-items:flex-start}
+.row.tight > div{display:flex;flex-direction:column}
+.row.tight label{margin:0 0 4px;height:1.3em;line-height:1.3em;white-space:nowrap}
+.row.tight .ctl{display:flex;align-items:center;gap:4px}
+.row input[type=text],.row input[type=number],.row select{height:42px}
+.row.tight .unit{font-size:.9rem;color:var(--ink-soft)}
+
+/* 3案まとめて印刷（画面には出さない） */
+#printAll{display:none}
+
+/* 印刷物の右下（口コミの導線。うすく1行だけ・囲みは付けない） */
+.sheet-credit{
+  margin-top:8px;text-align:right;
+  font-size:.78rem;color:#c9b8c0;letter-spacing:.02em;
+}
+
+/* 〇に？ の説明 */
+.tip-btn{
+  position:relative;padding:0;margin-left:6px;border:0;background:none;
+  /* 🔴 桜色だと主張が強い。押せることは形（〇に？）で分かるので、色はグレーでいい */
+  color:var(--ink-soft);font-size:.78rem;line-height:1;
+  vertical-align:middle;cursor:pointer;
+}
+/* 🔴 ⓘ をやめて「〇に？」にした（2026-09-03 本人・現場の先生「押す想像をしなかった」）。
+   ⚠ ⓘ は1文字ぶんの記号なので細くて小さい。丸はこちらで描いて、押せる大きさにする */
+/* ⚠大きさは「①などの番号の丸（.step＝約22px）より小さく、もとのⓘより一回り大きく」
+   （2026-09-03 本人）。＝16px前後におさめる */
+/* ⚠ ？を丸のまんなかに置くため、line-height で寄せずに flex で中央にする。
+   大きさは 14px 固定（アイコンなので em で伸び縮みさせない）。2026-09-03 本人の指定 */
+/* 🔴 文中に「？」のしるしだけを出すための入れもの（2026-09-03 本人）。
+   本人「誰も気づかないかもって言われた」＝押せることに気づいてもらう案内に使う */
+.tip-mark{display:inline-block;line-height:1;color:var(--ink-soft);vertical-align:middle}
+.tip-guide{font-size:.84rem;color:var(--ink-soft);margin:0 0 14px}
+.tip-btn::before,.tip-mark::before{
+  content:"?";
+  display:inline-flex;align-items:center;justify-content:center;
+  box-sizing:border-box;width:14px;height:14px;
+  border:1.3px solid currentColor;border-radius:50%;
+  font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:10px;line-height:1;
+  vertical-align:middle;
+}
+.tip-btn:hover::before,.tip-btn[aria-expanded="true"]::before{background:var(--pink-pale)}
+.tip-btn::after{content:"";position:absolute;inset:-8px}  /* 見えないが押せる範囲 */
+.tip-btn:hover,.tip-btn[aria-expanded="true"]{color:var(--ink)}
+/* 🔴「？」の中は説明が多くなる（2026-09-09 本人「文字が多すぎるから」）。
+   ⭐字を少し小さく＋段落と段落のあいだを開けて、かたまりを見せる。
+   🚫色は薄くしない（本人「濃くてもいいんだよ」）。⚠小さい字ほど濃さが要る（基準は4.5:1） */
+.tip-body{
+  background:var(--pink-pale);border:1px solid var(--pink-light);
+  border-radius:8px;padding:12px 14px;margin:8px 0 12px;font-size:.8rem;
+  line-height:1.75;
+  /* 🔴 幅いっぱいだと1行が長すぎて読みにくい（2026-09-09 本人「これ全画面。読みにくいよね」）。
+     ⭐日本語は1行35〜45文字あたりが読みやすい。0.8rem×38em ≒ 38文字で止める。
+     ⚠スマホは画面のほうが狭いので、この指定は効かない（＝今までどおり） */
+  max-width:38em;
+}
+.tip-body p{margin:0 0 11px}
+.tip-body p:last-child{margin:0}
+.tip-body ul{margin:0 0 11px;padding-left:1.3em}
+.tip-body ul:last-child{margin:0}
+.tip-body li{margin:0 0 7px}
+.tip-body li:last-child{margin:0}
+.tip-body .tip-h{margin:0 0 7px}
+
+/* 男女のチップ */
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+#sexList{margin-top:14px}
+.chip{
+  font:inherit;font-size:.9rem;padding:5px 10px;cursor:pointer;
+  border:1.5px solid var(--line);border-radius:999px;background:#fff;color:var(--ink);
+}
+.chip .mk{font-size:.75rem;margin-left:4px;opacity:.7}
+.chip.m{border-color:currentColor}
+.chip.f{border-color:currentColor}
+
+/* サンプル中は座席の上に透かし文字 */
+.sheet{position:relative}
+.sheet.sample::after{
+  content:"SAMPLE";
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-weight:bold;font-size:clamp(46px,17vw,150px);letter-spacing:.14em;
+  color:rgba(229,143,174,.22);transform:rotate(-18deg);
+  pointer-events:none;
+}
+
+/* 横にならべるチェックボックス。
+   ⚠label は既定で縦積み（display:block）なので、指定しないと下にずれる */
+.chk-inline{display:inline-block;font-weight:normal;margin:0;vertical-align:middle}
+.chk-inline.gap{margin-left:18px}
+/* ⚠インラインの display があると hidden が効かなくなるので、こちらを強くしておく */
+[hidden]{display:none !important}
+
+/* 使えないときはグレーに（消さずに、あることは見せておく） */
+.off{opacity:.45}
+.off label{color:#999}
+select:disabled,input:disabled{background:#f2f2f2;color:#999;cursor:not-allowed}
+/* 「日付を入れない」のチェックだけは、薄くせずそのまま押せるように */
+.off .chk-inline{opacity:1}
+.off .chk-inline,.off .chk-inline *{color:var(--ink);cursor:pointer}
+
+/* モニターに映す（教室の大きな画面に、座席表だけを出す） */
+#screenOff{display:none}
+body.screen{overflow:hidden}
+body.screen .sheet{
+  position:fixed;inset:0;z-index:9000;margin:0;
+  border:0;border-radius:0;padding:2.5vh 2.5vw;
+  display:flex;flex-direction:column;
+}
+body.screen .sheet-head{flex:0 0 auto}
+body.screen .sheet-title{font-size:clamp(20px,3.2vh,44px)}
+body.screen .sheet-date{font-size:clamp(13px,2vh,26px)}
+body.screen .board{flex:0 0 auto;font-size:clamp(14px,2.2vh,30px);padding:1vh}
+/* ⚠ 1fr だけだと、マスの中身（縦書きの名前）の分だけ行が伸びて、画面からはみ出す。
+   スマホを縦に持つと6行×209px＝1293pxになり、画面812pxを大きく超えていた（2026-08-30）。
+   minmax(0,1fr) と min-height:0 で「入るだけ」に抑える。文字は fitText が縮める */
+body.screen .grid{flex:1 1 auto;grid-auto-rows:minmax(0,1fr);gap:1vh;min-height:0}
+body.screen .seat{height:auto;min-height:0}
+/* 🔴 映しているあいだは席を動かせないようにする（2026-08-30 本人の指摘）。
+   ⚠スマホ・タブレットは指でスクロールしようとして席をつかんでしまう。
+     しかも body.screen は overflow:hidden なので、逃げ場がない。
+   ⚠ ✕とじる（#screenOff）はシートの中にあるが席の中ではないので、押せるまま残る */
+body.screen .seat{pointer-events:none}
+
+/* 映す画面で、スマホを縦に持っているときだけ出す案内。
+   ⭐横にした瞬間に消える＝タイマーを使わずに済む（CSSだけで完結） */
+/* サンプルから来た人に出す戻り道（2026-08-30 本人「閉じるとトップ画面に戻らない」） */
+.back-top{margin:0 0 12px;font-size:.9rem}
+.back-top a{color:var(--ink-soft);text-decoration:underline;text-underline-offset:3px}
+.back-top a:hover{color:var(--ink)}
+
+.rotate-tip{display:none}
+@media (max-width:600px) and (orientation:portrait){
+  body.screen .rotate-tip{
+    display:block;position:fixed;left:50%;bottom:14px;transform:translateX(-50%);
+    z-index:9500;background:rgba(0,0,0,.72);color:#fff;   /* ⚠シートが9000なので、その上 */
+    font-size:.85rem;padding:8px 16px;border-radius:999px;pointer-events:none;white-space:nowrap;
+  }
+}
+body.screen .sheet-credit{flex:0 0 auto}
+body.screen #screenOff{
+  display:block;position:absolute;top:12px;right:14px;z-index:2;
+  font-size:.9rem;padding:6px 12px;opacity:.5;
+}
+body.screen #screenOff:hover{opacity:1}
+body.screen /* 色なし＝番号だけ（中高生のクラスなど、色分けが要らない先生むけ） */
+.seat.g-none{background:#fff;border-color:var(--line);border-width:1.5px}
+.seat.g-none .gno{color:#555}
+.seat .gno{font-size:clamp(11px,1.6vh,22px)}
+/* モニターに映すときは、紙と同じ見た目にそろえる */
+/* 男女の色は出さない（⑤のチェックで出せる） */
+body.screen .sheet:not(.sexprint) .seat .nm{color:#111 !important}
+/* 空いている席の「空」も出さない（紙と同じ。子どもに見せる画面なので） */
+body.screen .seat.empty{
+  background:#fff;border-style:solid;font-size:0;color:transparent;
+}
+
+/* ドラッグ（マウスはすぐ動く／指は長押ししてから動く） */
+/* 🔴 指のときは長押しに変えた（2026-09-03 本人・現場の先生）。
+   ⚠ touch-action:none だったので、席の上から始めたスクロールが全部ドラッグになっていた
+     ＝タブレットでスクロールしようとして席が入れ替わる、の原因。
+   ⚠ manipulation ＝ スクロールとピンチは通す／ダブルタップの拡大だけ止める。
+     長押しが決まったあとは seat.js が pointermove を止めるので、そこからはスクロールしない */
+.seat{touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-user-drag:none}
+.seat img,.seat span{-webkit-user-drag:none}
+.seat.lift{opacity:.25}
+.seat.over{border-color:var(--pink);background:var(--pink-pale);box-shadow:0 0 0 2px var(--pink-light) inset}
+.drag-ghost{
+  position:fixed;z-index:999;pointer-events:none;
+  border:2px solid var(--pink);border-radius:8px;background:#fff;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  box-shadow:0 6px 16px rgba(0,0,0,.22);
+  transform:scale(1.06);transition:transform .12s ease;
+}
+.drag-ghost.snap{transition:left .12s ease,top .12s ease,transform .12s ease;transform:scale(1)}
+
+/* キャッチ（見出し扱い・句点なし） */
+.catch{
+  font-size:1.2rem;font-weight:bold;color:var(--pink);
+  margin:6px 0 8px;line-height:1.5;
+}
+
+/* トップページ：座席表をどーんと */
+.hero{
+  display:block;text-decoration:none;color:var(--ink);
+  background:#fff;border:2px solid var(--pink);border-radius:16px;
+  padding:22px 24px;margin:0 0 16px;
+  box-shadow:0 4px 14px rgba(229,143,174,.18);
+}
+.hero:hover{background:var(--pink-pale)}
+.hero b{display:block;font-size:1.5rem;margin-bottom:8px}
+.hero small{display:block;font-size:.95rem;color:var(--ink-soft);line-height:1.7}
+.hero-go{
+  display:inline-block;margin-top:14px;
+  background:var(--pink);color:#fff;border-radius:999px;
+  padding:10px 24px;font-weight:bold;
+}
+.tools.small b{font-size:.95rem}
+.tools.small small{font-size:.85rem}
+@media (max-width:600px){
+  .hero{padding:18px}
+  .hero b{font-size:1.25rem}
+  .catch{font-size:1.05rem}
+}
+
+/* 名簿のところに出す安心の一言 */
+.safe{
+  margin:0 0 8px;font-size:.75rem;line-height:1.6;color:var(--ink-soft);
+}
+
+/* ⭐ロゴ：英字と日本語を横に並べ、上下の真ん中で揃える（2026-09-05） */
+.site-head .logo{
+  display:flex;align-items:center;
+  column-gap:.7em;line-height:1.2;white-space:nowrap;
+}
+.logo-mark{flex:0 0 auto}
+.logo-main{letter-spacing:.06em}
+.logo-sub{font-size:.72rem;font-weight:normal;color:var(--ink-soft);letter-spacing:.12em}
+/* ⭐スマホでは日本語を出さない（ロゴが幅を取りすぎてナビが崩れるため）。
+   ⭐検索には影響しない（title・構造化データ・フッターに入っている） */
+@media (max-width:560px){
+  .logo-sub{display:none}
+}
+
+/* 🔴 名簿の名前が長いと、えらぶ欄が枠からはみ出して隣のボタンが押せなくなる
+   （2026-09-05 本人「2026　文学部英語学科　名簿 とかでも、ボタン、表示される？」）。
+   ⭐えらぶ欄は入れ物より広くしない。中身は自動で「…」に切れる */
+select{max-width:100%}
+
+/* ============================================================
+   🔴 長い「？」はポップアップにする（2026-09-09 本人）
+   本人「これ、とじなかったら下に続きが流れるし、邪魔なんだよね。
+        浮いて必ず閉じて次に行く感じにしてはどうか」
+   ⭐しきい値は250文字（seating.js が数えて data-pop を付ける）。
+     ⚠短い？は今までどおりその場に開く（本人「短いのはそのままでいいよ」）
+   ⚠戻す可能性あり＝この節と seating.js の同じ見出しの節を消せば元どおり
+   ============================================================ */
+.tip-mask{position:fixed;inset:0;background:rgba(40,32,38,.40);z-index:80}
+html.tip-open{overflow:hidden}          /* 後ろが動かない＝閉じてから次に行く */
+
+.tip-body[data-pop]:not([hidden]){
+  position:fixed;z-index:81;
+  left:50%;top:50%;transform:translate(-50%,-50%);
+  /* ⭐幅は決め打ち。文章が短くても細長い箱にならない（本人「最低のサイズを決めといて」） */
+  width:min(480px, calc(100vw - 32px));
+  max-width:none;
+  max-height:calc(100vh - 72px);overflow:auto;
+  box-shadow:0 12px 44px rgba(70,50,60,.30);
+  border-color:var(--pink-light);
+  /* ⭐浮いているときは中身を白に（2026-09-09 本人「この部分だけピンクで、あとは白かグレー」）。
+     ⚠グレー(--bg)はページの地の色と同じで、カードに見えなくなる。
+       ⭐白＝文字が一番読みやすく、暗い背景の上でカードが浮いて見える。
+       ⭐その場に開くほうはピンクのまま＝「浮いている／その場」の区別にもなる */
+  background:#fff;
+}
+/* 見出し（何の説明か）と ✕。ポップアップのときだけ出す */
+.tip-pop-head{display:none}
+.tip-body[data-pop]:not([hidden]) .tip-pop-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  position:sticky;top:-12px;
+  margin:-12px -14px 11px;padding:11px 10px 10px 14px;
+  background:var(--pink-pale);border-bottom:1px solid var(--pink-light);
+  font-weight:700;font-size:.86rem;
+}
+.tip-x{
+  border:0;background:none;cursor:pointer;color:var(--ink-soft);
+  font-size:1rem;line-height:1;padding:4px 8px;border-radius:6px;
+}
+.tip-x:hover{color:var(--ink);background:#fff}

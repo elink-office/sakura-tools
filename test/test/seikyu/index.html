@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- 🔴まだ公開しない（2026-09-09 本人「まだ、つなげないでね。testだけ」）。公開する日にこの1行を外す -->
+<meta name="robots" content="noindex,nofollow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SAKURA TOOLS">
+<meta property="og:title" content="請求書メーカー｜個人事業主の請求書を無料作成・ひな形不要">
+<meta property="og:description" content="個人事業主・小規模事業者のための請求書作成ツール。ひな形はいりません。取引先を保存できるので2回目からは選ぶだけ。消費税と端数も自動で計算します。登録もインストールも不要、すべて無料です。">
+<meta property="og:url" content="https://sakura-tools.com/seikyu/">
+<meta property="og:image" content="https://sakura-tools.com/ogp.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9296990556079874" crossorigin="anonymous"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GCK29PTKBG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GCK29PTKBG');
+</script>
+<title>【テスト】請求書メーカー｜個人事業主の請求書を無料作成・ひな形不要</title>
+<meta name="description" content="個人事業主・小規模事業者のための請求書作成ツール。ひな形やエクセルのテンプレートはいりません。取引先を保存できるので、2回目からは選ぶだけ。消費税と端数の計算、インボイスの登録番号にも対応。保存するときのファイル名が「請求書_日付_取引先_金額」の形になるので、あとから探せます。登録もインストールも不要、すべて無料です。">
+<link rel="stylesheet" href="../style.css?v=135">
+<link rel="stylesheet" href="../keiri.css?v=55">
+</head>
+<body data-doc="seikyu">
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/10 18:17</div>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="logo" href="../"><span class="logo-mark">🌸</span><span class="logo-main">SAKURA TOOLS</span><span class="logo-sub">さくらツール</span></a>
+    <nav>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">ツール</label>
+      <div class="navlist">
+      <a href="../">トップ</a>
+      <a href="../seat/">座席表</a>
+      <a href="../seki/">席次表</a>
+      <a href="../slide/">スライド</a>
+      <a href="../excel-fx/">関数早見表</a>
+      </div>
+    </nav>
+  </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">請求書メーカー</span><span class="now-short">請求書</span></div></div>
+</header>
+
+<main class="wrap">
+  <h1>請求書メーカー</h1>
+  <!-- ⭐パソコンは長いほう、スマホは短いほう（2026-09-10 本人
+       「個人事業主は直接SEOだけど、小さい会社は使ってもらえるといいなと思って」）。
+       ⚠帯（.now-long / .now-short）と同じやり方 -->
+  <p class="catch"><span class="c-long">個人事業主・小規模事業者の請求書をかんたんに</span><span class="c-short">個人事業主の請求書をかんたんに</span></p>
+
+  <!-- ⭐できあがりの見本を横に置く（2026-09-10 本人「小さくていいからサンプル画像を付けたい。
+       これは、横長じゃないから、1/3くらいでいいかな」）。⚠A4の縦なので座席表より細い -->
+  <div class="intro">
+    <div class="intro-txt">
+  <p class="lead">登録なし・全部無料。入力した内容は<strong>使っている端末の中だけ</strong>で完結します。</p>
+  <ul class="can-do">
+    <li>取引先を保存できて、2回目からは選ぶだけ</li>
+    <li>ひな形不要、あとから探せるファイル名でPDFに</li>
+    <li>消費税と端数を自動で計算、インボイスにも対応</li>
+    <li>見積書メーカーと共通。見積の中身をそのまま請求書に</li>
+  </ul>
+    </div>
+    <figure class="t-sample noprint">
+      <img src="../img/seikyu-sample.png?v=1" width="800" height="1131" alt="請求書の完成見本。取引先・件名・品目・数量・単価・消費税・振込先が1枚に入ったもの">
+    </figure>
+  </div>
+
+  <!-- ⭐はじめて開いた人は、まずサンプルが入った状態を見る（2026-09-09 本人） -->
+  <div class="inv-sample noprint" id="sampleTop">
+    <select class="js-sample-sel">
+      <option value="">サンプルを見る（選ぶと⑥確認へ移動）</option>
+      <option value="1">サンプル1　基本（1ページ）</option>
+      <option value="2">サンプル2　明細が多い（2ページ）</option>
+      <option value="3">サンプル3　インボイス（登録番号あり・8%混在）</option>
+      <option value="4">サンプル4　品番と日付を入れた形</option>
+      <option value="5">サンプル5　屋号なし（個人名だけ）</option>
+    </select>
+    <button type="button" class="js-sample-del">サンプルを削除</button>
+  </div>
+
+  <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
+
+  <!-- ================= (1) 自分の情報 ================= -->
+  <p class="safe" id="handoffMsg" hidden>⭐<strong>見積書の内容を持ってきました。</strong>発行日と請求書番号は新しくしています。</p>
+
+  <details class="opt" id="meBox">
+    <summary>① 自分の情報</summary>
+    <div class="body">
+    <p class="safe">🔒 <strong>使っている端末の中だけで完結しています。</strong>安心してご利用ください。</p>
+
+    <div class="row tight">
+      <div class="grow"><label for="meName">屋号・氏名</label>
+        <input id="meName" type="text" placeholder="さくら事務所　山田花子"></div>
+      <div class="w-tel"><label for="meTel">電話番号</label>
+        <input id="meTel" type="text" placeholder="03-0000-0000"></div>
+      <div class="w-mail"><label for="meMail">メールアドレス</label>
+        <input id="meMail" type="text" placeholder="info@example.com"></div>
+    </div>
+    <div class="row tight">
+      <div class="w-zip"><label for="meZip">郵便番号</label>
+        <input id="meZip" type="text" placeholder="100-0005"></div>
+      <div class="grow"><label for="meAddr">住所</label>
+        <input id="meAddr" type="text" placeholder="東京都千代田区丸の内1-2-3"></div>
+    </div>
+
+    <div class="inv-row tightrow">
+      <label class="chk-inline"><input type="checkbox" id="useInvoice"> インボイスの登録番号を入れる</label>
+      <div id="invoiceWrap" hidden style="margin-top:6px;max-width:240px">
+        <input id="meTno" type="text" placeholder="T1234567890123">
+      </div>
+      <p class="inv-hint">登録していない方は、チェックを入れないでください。税率ごとの内訳も一緒に出ます。</p>
+    </div>
+
+    <div class="inv-row">
+      <label for="logoFile">ロゴ画像</label>
+      <input id="logoFile" type="file" accept="image/*">
+      <p class="inv-hint">ロゴが屋号の上に表示され、自動でサイズを調整します。</p>
+      <div id="logoPrev" hidden style="margin-top:10px">
+        <img id="logoImg" alt="ロゴ" style="max-width:160px;border:1px solid var(--line);border-radius:6px;vertical-align:middle">
+        <button type="button" id="logoDel" style="margin-left:10px">ロゴを消す</button>
+      </div>
+    </div>
+
+
+    <div class="tip-body" hidden>
+      <p>🔒 入れた内容はインターネットに送りません。使っている端末のブラウザの中だけで作っているので、
+        どこかに保存されることも、AIの学習に使われることもありません。パソコン・タブレット・スマホ、どれでも同じです。</p>
+      <p>⑧の「保存」を押すと、そのブラウザの中に残ります。<strong>保存したものは、見積書メーカーでも使えます。</strong></p>
+      <p>⚠ブラウザの履歴を消すと、保存したものも一緒に消えます。</p>
+      <p>⚠共用の端末で使ったときは、⑧の「保存したデータを全部消す」を押してから閉じてください。</p>
+    </div>
+    </div>
+  </details>
+
+  <!-- ================= (2) 取引先の情報 ================= -->
+  <details class="opt" id="s2Box">
+    <summary>② 取引先の情報</summary>
+    <div class="body">
+
+    <div id="quickLoad" hidden>
+      <div class="row tight">
+        <div class="grow"><label for="clientSel2">保存済の取引先</label>
+          <select id="clientSel2"><option value="">－</option></select></div>
+        <div><label>&nbsp;</label>
+          <button type="button" id="clientUse">この取引先を自動入力</button></div>
+      </div>
+      <p class="inv-hint">会社名・敬称・担当者・住所が入ります。⭐<strong>見積書メーカーで保存した取引先も、同じ一覧に並びます。</strong></p>
+      <p class="inv-hint">③の中の件名と④請求の内容は、③の<strong>「保存済のひな形」</strong>から入れます。</p>
+    </div>
+
+    <div class="row tight">
+      <div class="grow"><label for="toName">会社名・氏名</label>
+        <input id="toName" type="text" placeholder="株式会社〇〇"></div>
+      <div class="w-honor"><label for="toHonor">敬称</label>
+        <select id="toHonor">
+          <option value="御中" selected>御中</option>
+          <option value="様">様</option>
+          <option value="">（付けない）</option>
+        </select></div>
+      <div class="w-person"><label for="toPerson">担当者</label>
+        <input id="toPerson" type="text" placeholder="経理部　佐藤様"></div>
+    </div>
+    <div class="row tight">
+      <div class="grow"><label for="toAddr">住所</label>
+        <input id="toAddr" type="text" placeholder="東京都〇〇区〇〇1-1-1"></div>
+    </div>
+
+
+  </div>
+  </details>
+
+  <!-- ================= (3) 入力の準備 ================= -->
+  <details class="opt" id="s3Box">
+    <summary>③ 入力の準備</summary>
+    <div class="body">
+    <p class="safe">🔒 <strong>請求書の内容は、使っている端末には保存されません。</strong>控えはPDFで残してください。</p>
+
+    <div class="row tight">
+      <div class="w-no"><label for="invNo">請求書番号</label>
+        <input id="invNo" type="text"></div>
+      <div class="d-auto"><label for="invDate">発行日</label>
+        <input id="invDate" type="date"></div>
+      <div class="grow"><label for="subject">件名</label>
+        <input id="subject" type="text" placeholder="〇月分　〇〇制作費"></div>
+    </div>
+    <p class="inv-hint" id="noHint">自動で振っています。書き直せます。</p>
+
+    <div id="formLoad" hidden>
+      <div class="row tight">
+        <div class="grow"><label for="formSel2">保存済のひな形</label>
+          <select id="formSel2"><option value="">－</option></select></div>
+        <div><label>&nbsp;</label>
+          <button type="button" id="formUse">このひな形を入れる</button></div>
+      </div>
+      <p class="inv-hint">⭐<strong>件名と④請求の内容が入ります。</strong>見積書メーカーで保存したひな形も、同じ一覧に並びます。</p>
+    </div>
+
+    <div class="inv-row" style="margin-top:16px">
+      <label for="paste">エクセルから貼り付ける<button type="button" class="tip-btn" aria-expanded="false" aria-label="貼り付けについて"></button></label>
+      <div class="tip-body" hidden>
+        <p>見積書やエクセルの表を、そのままコピーして貼り付けます。<strong>下の表に直接貼り付けても入ります。</strong></p>
+        <p><strong>1行目に見出し（品目・数量・単価など）があれば、並び順が違っても自動で振り分けます。</strong>
+          そろえていただく必要はありません。次の言葉を見つけます。</p>
+        <p>品目／品名／項目／内容／商品名／摘要　・　品番／型番／コード　・　日付／納品日／作業日　・
+          数量／個数　・　単位　・　単価／価格</p>
+        <p>見出しがないときは<strong>品目・数量・単位・単価</strong>の順に読みます。</p>
+        <p>⚠「金額」の列は読み飛ばします。<strong>数量×単価で計算し直す</strong>ためです。</p>
+        <p>品番や日付が入っていたときは、<strong>その列を自動で表示します。</strong></p>
+        <p><strong>途中の空の行は、そのまま紙にも出ます。</strong>区切りを入れたいときにお使いください。
+          いちばん下に続く空の行は、紙には出ません。</p>
+      </div>
+      <div class="btn-row">
+        <button type="button" id="pasteIn">入れる</button>
+        <button type="button" id="pasteClear">貼り付け欄を消す</button>
+        <span class="saving" id="pasteMsg" hidden></span>
+      </div>
+      <textarea id="paste" placeholder="クリックして貼り付け（手入力可）&#10;&#10;ホームページ制作費&#9;1&#9;式&#9;120000&#10;写真の撮影&#9;2&#9;点&#9;8000"></textarea>
+
+    </div>
+
+
+    <details class="opt sub" id="setBox">
+      <summary>細かい設定</summary>
+      <div class="body">
+        <div class="row tight">
+          <div class="w-pre"><label for="noPrefix">番号の頭</label>
+            <input id="noPrefix" type="text" placeholder="2026-"></div>
+          <div class="w-dig"><label for="noDigits">末尾の桁数</label>
+            <select id="noDigits">
+              <option value="2">2桁</option>
+              <option value="3" selected>3桁</option>
+              <option value="4">4桁</option>
+            </select></div>
+          <div class="w-round"><label for="roundSel">消費税の端数</label>
+            <select id="roundSel">
+              <option value="floor" selected>切り捨て</option>
+              <option value="ceil">切り上げ</option>
+              <option value="round">四捨五入</option>
+            </select></div>
+        </div>
+        <p class="inv-hint">番号の頭は自由に決められます（例 <b>2026-</b> ／ <b>SAKURA-</b>）。<strong>末尾が1つずつ増えます。</strong>
+          端数はどれでも構いません。同じ取引先にはいつも同じものを使うと差額が出ません。</p>
+
+        <div class="inv-row">
+          <label>列や行を増やす</label>
+          <div class="inv-chks">
+            <label class="chk-inline"><input type="checkbox" id="colDate"> 日付</label>
+            <label class="chk-inline"><input type="checkbox" id="colCode"> 品番</label>
+            <label class="chk-inline"><input type="checkbox" id="fillRest" checked> 下の余白を締める（以下余白）</label>
+            <button type="button" class="tip-btn" aria-expanded="false" aria-label="以下余白について"></button>
+          </div>
+          <div class="tip-body" hidden>
+            <p>明細の下が空いたとき、<strong>空の枠で下まで埋めて「以下余白」と入れます。</strong></p>
+            <p>⚠決まりではありませんが、<strong>空いたところにあとから書き足されるのを防ぐ</strong>ための慣習です。斜線を引く書き方もあります。</p>
+          </div>
+          <p class="inv-hint">紙にも同じ列が出ます。日付は<strong>1か月ぶんをまとめて請求するとき</strong>に使います。</p>
+        </div>
+      </div>
+    </details>
+
+    </div>
+  </details>
+
+  <details class="opt" id="s4Box">
+    <summary>④ 請求の内容</summary>
+    <div class="body">
+    <p class="inv-hint">エクセルから貼り付けたあとでも、<strong>手入力や編集ができます。</strong></p>
+    <div class="inv-scroll" style="margin-top:16px">
+      <!-- ⭐単位は自由に打てるが、㎡のような打ちにくいものは候補から選べるようにする（2026-09-09 本人）
+           ⚠選択肢ではなく候補（datalist）＝ここに無いものも打てる -->
+      <datalist id="unitList">
+        <option value="式"><option value="個"><option value="本"><option value="枚"><option value="点">
+        <option value="回"><option value="時間"><option value="日"><option value="か月"><option value="人">
+        <option value="台"><option value="組"><option value="セット"><option value="件"><option value="部">
+        <option value="冊"><option value="箱"><option value="㎡"><option value="m"><option value="kg">
+      </datalist>
+      <table class="inv-items">
+        <thead><tr>
+          <th style="width:38px">No.</th>
+          <th class="col-date" style="width:82px" hidden>日付</th>
+          <th style="min-width:170px">品目</th>
+          <th class="col-code" style="width:96px" hidden>品番</th>
+          <th style="width:70px">数量</th>
+          <th style="width:70px">単位</th>
+          <th style="width:96px">単価</th>
+          <th style="width:76px">税率</th>
+          <th style="width:96px;text-align:right">金額</th>
+          <th style="width:36px"></th>
+        </tr></thead>
+        <tbody id="itemBody"></tbody>
+      </table>
+    </div>
+    <p style="margin:10px 0 0">
+      <button type="button" id="addRow">行を足す</button>
+      <button type="button" id="clearItems">全部消す</button>
+    </p>
+
+
+    <div class="inv-sum">
+      <table>
+        <tr><th>小計</th><td id="sumSub">0 円</td></tr>
+        <tr id="rowTax10"><th>消費税（10%）</th><td id="sumTax10">0 円</td></tr>
+        <tr id="rowTax8"><th>消費税（8%）</th><td id="sumTax8">0 円</td></tr>
+        <tr class="total"><th>合計</th><td id="sumTotal">0 円</td></tr>
+      </table>
+    </div>
+  </div>
+  </details>
+
+  <!-- ================= (4) 支払いのこと ================= -->
+  <details class="opt" id="s5Box">
+    <summary>⑤ 支払いのこと</summary>
+    <div class="body">
+    <div class="row tight">
+      <div class="d-auto"><label for="dueDate">お支払い期限</label>
+        <input id="dueDate" type="date"></div>
+      <div><label>&nbsp;</label>
+        <button type="button" id="dueEnd">来月末に指定</button></div>
+    </div>
+    <div class="inv-row"><label for="bank">お振込先</label>
+      <textarea id="bank" placeholder="さくら銀行　丸の内支店&#10;普通　1234567&#10;ヤマダ ハナコ"></textarea>
+      <p class="inv-hint">改行して書けます。</p></div>
+    <div class="inv-row"><label for="note">備考</label>
+      <textarea id="note" placeholder="お振込手数料は貴社にてご負担くださいますようお願いいたします。"></textarea></div>
+  </div>
+  </details>
+
+  <!-- ================= 見本 ================= -->
+  <div class="inv-sample noprint" id="sampleLow">
+    <select class="js-sample-sel">
+      <option value="">サンプルを見る（選ぶと⑥確認へ移動）</option>
+      <option value="1">サンプル1　基本（1ページ）</option>
+      <option value="2">サンプル2　明細が多い（2ページ）</option>
+      <option value="3">サンプル3　インボイス（登録番号あり・8%混在）</option>
+      <option value="4">サンプル4　品番と日付を入れた形</option>
+      <option value="5">サンプル5　屋号なし（個人名だけ）</option>
+    </select>
+    <button type="button" class="js-sample-del">サンプルを削除</button>
+    <!-- ⭐上のサンプル欄から飛んできた人だけに出す（2026-09-10 本人「①のうえから来たら、
+         ①に戻りたいね。その時だけボタン出すとか無理かな？」）。⚠普段は出さない -->
+    <button type="button" id="backToTop" hidden>① 自分の情報にもどる</button>
+  </div>
+
+  <details class="opt" id="prevBox">
+    <summary>⑥ 確認</summary>
+    <div class="body">
+      <p class="inv-hint" id="zoomHint" style="text-align:center;margin:0 0 8px">押すと実物大になります（紙と同じ大きさ）</p>
+      <div class="inv-stage" id="stage">
+        <div id="pages"></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- ================= (5) 印刷・PDF ================= -->
+  <section class="card" id="s6" style="margin-top:18px">
+    <h2>⑦ PDFで保存</h2>
+    <p class="inv-hint">印刷画面で<strong>「PDF」を選ぶと、そのまま保存できます。</strong>紙に印刷することもできます。</p>
+
+    <div class="inv-chks">
+      <label class="chk-inline"><input type="checkbox" id="fnDate" checked> 日付</label>
+      <label class="chk-inline"><input type="checkbox" id="fnClient" checked> 取引先</label>
+      <label class="chk-inline"><input type="checkbox" id="fnAmount" checked> 金額</label>
+    </div>
+    <p class="inv-hint" style="margin-top:8px">保存するときに出てくる名前です。<strong>日付・取引先・金額の3つが入っていると、あとから探せます。</strong></p>
+    <p class="inv-fname">保存される名前　<b id="fnameOut">請求書.pdf</b></p>
+
+    <p class="inv-hint" style="text-align:center;margin-top:14px">⚠印刷の画面で<strong>「余白」を「なし」</strong>にすると、<strong>⑥確認と同じ形</strong>で出ます。</p>
+    <p style="margin:14px 0 0;text-align:center"><button type="button" id="doPrint" class="primary">PDFで保存</button></p>
+  </section>
+
+  <!-- ================= (6) 保存したデータの利用 ================= -->
+  <section class="card" id="s6">
+    <h2>⑧ 保存したデータの利用</h2>
+    <p class="inv-hint">保存した<b>取引先</b>と<b>ひな形</b>は、<b>さくらツール内の請求書・見積書・領収書</b>で使えます。
+      <button type="button" class="tip-btn" aria-expanded="false" aria-label="保存について"></button></p>
+    <p class="safe">🔒 <strong>保存したものは、使っている端末の中だけに残ります。</strong></p>
+    <div class="tip-body" hidden>
+      <p>🔒 保存先もインターネットではありません。使っている端末のブラウザの中だけに残るので、
+        ほかの人からは見えません。パソコン・タブレット・スマホ、どれでも同じです。</p>
+      <ul>
+        <li>⚠<strong>作った請求書そのものは残りません。</strong>控えはPDFで保存してください。</li>
+        <li><strong>取引先は、名前を付けて<b style="font-size:inherit">20件</b>まで保存できます。</strong>名前は会社名（氏名）がそのまま付きます。</li>
+        <li>呼び出すのは②の<strong>「この取引先を自動入力」</strong>から。会社名も担当者も住所も入ります。</li>
+        <li><strong>ひな形は、③の中の件名と④請求の内容</strong>です。取引先とは別に、名前を付けて<b style="font-size:inherit">30件</b>まで残せます。</li>
+        <li><strong>自分の情報は1件だけ</strong>です。押すたびに上書きします。</li>
+      </ul>
+    </div>
+
+    <div class="cls-box">
+      <!-- ⭐3つともシャッター（2026-09-10 本人「必要なものだけ操作すればいい。
+           いらないものを見たくないんだよ」）。⚠線で区切る案はやめた＝たたむので要らない -->
+      <details class="opt sub">
+        <summary>自分の情報をこの端末に保存</summary>
+        <div class="body">
+        <p class="inv-hint">①の内容をロゴも含めて保存します。<button type="button" class="tip-btn" aria-expanded="false" aria-label="自分の情報の保存について"></button></p>
+        <div class="tip-body" hidden>
+          <p>①の中の<strong>屋号・氏名・住所・電話・メール・ロゴ</strong>と、⑤の中の<strong>お振込先・備考</strong>をまとめて残します。</p>
+          <p><strong>1件だけ</strong>なので、押すたびに上書きします。ロゴの画像も残ります。</p>
+        </div>
+        <p class="btn-row">
+          <button type="button" id="saveMe">保存</button>
+          <button type="button" id="meDel">削除</button>
+          <span class="saving" id="meMsg" hidden></span>
+        </p>
+        </div>
+      </details>
+
+      <details class="opt sub">
+        <summary>取引先データに名前を付けて保存（<span id="clientCount">0／20件</span>）</summary>
+        <div class="body">
+        <p class="inv-hint">②の中の<strong>会社名・敬称・担当者・住所</strong>を<strong>20件</strong>まで残します。⭐<strong>見積書メーカーと共通です。</strong><button type="button" class="tip-btn" aria-expanded="false" aria-label="取引先の保存について"></button></p>
+        <p class="inv-hint">⚠③の中の件名や④請求の内容は、この下の<strong>「請求の内容をひな形として保存」</strong>で保存します。</p>
+        <div class="tip-body" hidden>
+          <p>名前は、②の中に入れた<strong>会社名・氏名</strong>がそのまま付きます。<strong>「上書き」は、担当者が変わったとき</strong>に使ってください。保存できるのは<b>文字情報のみ</b>です。</p>
+          <p>⭐<strong>見積書メーカーと共通です。</strong>見積書で保存した取引先も、請求書メーカーでそのまま呼び出せます。</p>
+          <p>呼び出しは、保存した後に②に出る<strong>「この取引先を自動入力」</strong>からできます。</p>
+        </div>
+        <p class="btn-row">
+          <button type="button" id="clientNew">新しい名前で保存</button>
+          <button type="button" id="clientSave">上書き</button>
+          <button type="button" id="clientDel">削除</button>
+          <span class="saving" id="clientMsg" hidden></span>
+        </p>
+        <div class="row tight">
+          <div class="grow"><label for="clientSel">保存済の取引先</label>
+            <select id="clientSel"><option value="">－</option></select></div>
+        </div>
+        </div>
+      </details>
+
+      <details class="opt sub">
+        <summary>請求の内容をひな形として保存（<span id="formCount">0／30件</span>）</summary>
+        <div class="body">
+        <p class="inv-hint">③の中の<strong>件名</strong>と④請求の内容を<strong>30件</strong>保存できます。そのため同じ取引先で2つ以上のひな形を保存できます。<button type="button" class="tip-btn" aria-expanded="false" aria-label="ひな形について"></button></p>
+        <p class="inv-hint">⭐<strong>見積書メーカーと共通です</strong></p>
+        <div class="tip-body" hidden>
+          <p>⭐<strong>次も同じ内容を出すとき</strong>に使います。名前は「株式会社もみじ　案1」のように、自分で分かる形で付けてください。<strong>空のままなら、②の中の取引先と③の中の件名をつないで、自動で付きます。</strong></p>
+          <p><strong>見積書メーカーと共通です。</strong>見積書で保存したひな形も、請求書メーカーでそのまま呼び出せます。</p>
+          <p>⚠<strong>出した書類の控えではありません。</strong>控えはPDFで保存してください。ひな形は「次も使う内容」を残す場所です。</p>
+          <p>呼び出しは、保存した後に③に出る<strong>「このひな形を入れる」</strong>からできます。</p>
+        </div>
+        <div class="row tight">
+          <div class="grow"><label for="formName">名前</label>
+            <input id="formName" type="text" placeholder="株式会社もみじ　案1"></div>
+        </div>
+        <p class="btn-row">
+          <button type="button" id="formNew">新しい名前で保存</button>
+          <button type="button" id="formSave">上書き</button>
+          <button type="button" id="formDel">削除</button>
+          <span class="saving" id="formMsg" hidden></span>
+        </p>
+        <div class="row tight">
+          <div class="grow"><label for="formSel">保存済のひな形</label>
+            <select id="formSel"><option value="">－</option></select></div>
+        </div>
+        </div>
+      </details>
+
+    </div>
+
+    <p class="inv-hint" style="margin-top:16px">
+      ⚠<strong>作った請求書は必ずPDFで保存してください。</strong>この端末には保存されません。
+    </p>
+    <p style="margin:14px 0 0">
+      <button type="button" id="clearAll">保存したデータを全部消す</button>
+    </p>
+  </section>
+
+  <!-- ================= 読みもの ================= -->
+  <section class="read">
+    <details class="howto">
+      <summary>使い方</summary>
+      <div class="body">
+        <ol>
+          <li>①に<b>自分の情報</b>を入れて、⑧で「保存」を押します。次からは入りません。</li>
+          <li>②に<b>取引先</b>を入れます。一度保存すると、次からは選ぶだけです。</li>
+          <li>③で<b>番号と件名</b>を決めます。エクセルの表があれば、③の中の「エクセルから貼り付ける」に貼れます。</li>
+          <li>④に<b>品目と金額</b>を入れます。消費税と合計は自動で出ます。</li>
+          <li>⑤に<b>振込先</b>を書きます。ここも保存できます。</li>
+          <li>⑥で<b>紙の見た目</b>を確かめます。</li>
+          <li>⑦の<b>PDFで保存</b>を押して、出てきた画面で「PDF」を選びます。</li>
+        </ol>
+        <p class="sub">できること</p>
+        <ul class="can">
+          <li><b style="font-size:inherit">請求書番号の自動採番</b>　頭は自由に決められて、末尾が1つずつ増えます</li>
+          <li><b style="font-size:inherit">端数の選択</b>　切り捨て・切り上げ・四捨五入から選べます</li>
+          <li><b style="font-size:inherit">空の行</b>　途中に入れた空の行は、そのまま紙にも出ます</li>
+          <li><b style="font-size:inherit">インボイスの欄</b>　登録番号がある方だけ、①のチェックで出せます</li>
+          <li><b style="font-size:inherit">ひな形</b>　件名と④の内容に名前を付けて残せます。同じ取引先で2つ以上持てます</li>
+          <li><b style="font-size:inherit">エクセルからの貼り付け</b>　1行目に見出しがあれば、並び順がちがっても振り分けます</li>
+        </ul>
+        <p class="sub">こんなときに</p>
+        <ul class="can">
+          <li>副業や個人事業で、はじめて請求書を出すとき</li>
+          <li>毎月、同じ取引先に同じ内容を請求するとき</li>
+          <li>エクセルの表を毎回コピーして作り直しているとき</li>
+          <li>作った請求書がどこにあるか分からなくなるとき</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="howto">
+      <summary>よくある質問</summary>
+      <div class="body">
+        <dl class="faq">
+          <dt>ネットにつながっているのに、外に出ないのですか</dt>
+          <dd>ページを開くときだけ通信します。<strong>入力した内容は送っていません。</strong>作る処理は、すべて使っている端末の中で動いています。</dd>
+
+          <dt>入力した内容は、どこかに送られますか</dt>
+          <dd>送られません。<strong>AIの学習に使われることもありません。</strong></dd>
+
+          <dt>会社の決まりでクラウドが使えません</dt>
+          <dd>お使いいただけます。<strong>登録もインストールもいりません。</strong>データを預かる仕組みがないためです。</dd>
+
+          <dt>作った請求書は、あとから開けますか</dt>
+          <dd>開けません。<strong>このツールは請求書を保存しません。</strong>控えはPDFとして、使っている端末に保存してください。取引先・ひな形・自分の情報は保存しているので、同じ内容ならすぐ作り直せます。</dd>
+
+          <dt>請求書番号は自分で決められますか</dt>
+          <dd>決められます。③の「番号の頭」に好きな文字を入れると、<strong>末尾の番号だけが1つずつ増えます。</strong>番号そのものを書き直すこともできます。<strong>一度使った番号を入れると、赤字でお知らせします。</strong></dd>
+
+          <dt>毎月、同じ内容を出します。毎回入力するのですか</dt>
+          <dd>いりません。⑧の<strong>「請求の内容をひな形として保存」</strong>に残しておくと、③から呼び出せます。<strong>同じ取引先で2つ以上のひな形を持てます。</strong></dd>
+
+          <dt>見積書メーカーで保存したものは使えますか</dt>
+          <dd>使えます。<strong>取引先もひな形も、見積書メーカーと同じものが並びます。</strong>見積書のほうで「この内容で請求書を作る」を押すと、中身がそのまま請求書メーカーに入ります。</dd>
+
+          <dt>PDFのファイル名は変えられますか</dt>
+          <dd>保存するときに書き直せます。⑦のチェックで、入れる項目を選ぶこともできます。</dd>
+
+          <dt>消費税の端数は、切り捨てと切り上げのどちらが正しいですか</dt>
+          <dd>どちらでも構いません。決まりはなく、<strong>同じ取引先にはいつも同じものを使う</strong>ほうが、あとで差額が出ません。</dd>
+
+          <dt>インボイスの登録番号がありません</dt>
+          <dd>①のチェックを入れなければ、登録番号の欄は出ません。<strong>登録していない方は、そのままお使いください。</strong></dd>
+        </dl>
+      </div>
+    </details>
+
+    <details class="howto">
+      <summary>データの扱い</summary>
+      <div class="body">
+        <p>入力した内容は、<strong>すべて使っている端末の中だけで完結します</strong>。外部には送っていないので、個人情報が漏れることも、AIの学習に使われることもありません。登録もインストールもいりません。すべて無料です。</p>
+        <p class="sub noline">保存するもの</p>
+        <ul class="can">
+          <li>自分の情報（屋号・氏名・住所・電話・メール・登録番号）</li>
+          <li>取引先の一覧</li>
+          <li>ひな形（件名と、請求の内容）</li>
+          <li>お振込先と備考</li>
+          <li>番号の形と、最後に使った請求書番号</li>
+        </ul>
+        <p class="sub noline">保存しないもの</p>
+        <ul class="can">
+          <li><b style="font-size:inherit">作った請求書そのもの</b>（品目・数量・金額）</li>
+          <li>作りかけの下書き</li>
+          <li>過去に出した請求書の一覧</li>
+        </ul>
+        <p class="sub noline">気をつけること</p>
+        <ul class="can">
+          <li>⚠共用の端末で使ったときは、⑧の「保存したデータを全部消す」を押してから閉じてください</li>
+          <li>⚠ブラウザの履歴を消すと、保存したものも一緒に消えます</li>
+          <li>⚠<b style="font-size:inherit">控えはPDFです。</b>このツールは保存の場所ではありません</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+</main>
+
+<footer class="noprint">
+  <div class="wrap"><span class="fnav"><a href="../about/">運営者情報</a>　<a href="../contact/">お問い合わせ</a>　<a href="../privacy/">プライバシーポリシー</a></span>
+    <span class="copy">さくらツール　© 2026 SAKURA TOOLS</span>
+  </div>
+</footer>
+
+<script src="../keiri.js?v=28"></script>
+<script src="../tip.js?v=3"></script>
+</body>
+</html>
