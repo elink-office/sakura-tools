@@ -1055,14 +1055,7 @@
         note.className = 'hint noprint';
         note.style.marginTop = '8px';
         note.textContent = '上の欄に名簿を貼り付けてください。サンプルは消えます。';
-        ($('sheetBox') || $('sheet')).parentNode.insertBefore(note, ($('sheetBox') || $('sheet')).nextSibling);
-      }
-      /* ⭐いつでも「紙の入れ物」のすぐ下に置き直す（2026-09-11 本人）。
-         ⚠入れ物（#sheetBox）の中に入れると、入れ物の高さは紙のぶんしかないので、
-           案内が下にはみ出して次の章に重なる */
-      var box = $('sheetBox');
-      if (box && note.previousElementSibling !== box) {
-        box.parentNode.insertBefore(note, box.nextSibling);
+        $('sheet').parentNode.insertBefore(note, $('sheet').nextSibling);
       }
     } else if (note) {
       note.parentNode.removeChild(note);

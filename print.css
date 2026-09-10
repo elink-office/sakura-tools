@@ -1,5 +1,30 @@
 /* 印刷専用。先生が一番見るのは印刷結果 */
-@page{size:A4 landscape;margin:12mm}
+/* 🔴⭐紙の余白は @page ではなく、紙（.sheet）の padding で作る。
+   ⚠@page に余白を持たせると、ブラウザは「入りきらないかも」と判断して
+     全体を勝手に縮める（2026-09-10、席次表が 85% に縮んでいた）。
+   ⭐帳票CSSの定石（請求書メーカーと同じ形）：
+     @page は margin:0、紙は width / height を mm で固定、余白は padding */
+@page{size:A4 landscape;margin:0}
+@media print{
+  /* ⭐紙の大きさを mm で固定する。高さは 0.5mm だけ余らせる（端数で2ページになるのを防ぐ）*/
+  body.print-sheet{width:210mm;margin:0 !important;padding:0 !important}
+  /* ⚠高さは 3mm 余らせる。ぎりぎりにすると、わずかなはみ出しで
+       ブラウザが全体を縮める（2026-09-10 席次表が 85% に縮んでいた）*/
+  body.print-sheet #sheet{
+    width:210mm !important;height:294mm !important;padding:12mm !important;
+    box-sizing:border-box;
+  }
+  body.landscape.print-sheet{width:297mm}
+  body.landscape.print-sheet #sheet{width:297mm !important;height:207mm !important}
+}
+@media print{
+  /* 🔴⭐画面用の目盛りを、紙では「1mm ＝ 3.7795点」に戻す（2026-09-10）。
+     ⚠画面のマスは --seatHnum × --pxmm で描いている。--pxmm は画面用の 3.2 なので、
+       そのまま紙に持ちこむと 24.8mm のはずのマスが 21mm に縮み、表が短くなって
+       紙の下が大きく空いていた（本人「まだ空いてるね」）。
+     ⭐ここを直すと、マスも すき間 も紙のミリ数どおりになる */
+  .sheet{--pxmm:3.7795 !important}
+}
 body.landscape{}
 @media print{
   /* 🔴⭐印刷のときは、紙（#sheet）だけを body の直下に出している（seat.js の liftSheet）。
@@ -13,13 +38,22 @@ body.landscape{}
     width:auto !important;min-width:0 !important;background:#fff;
   }
   body.print-sheet #sheet,body.print-sheet #sheet *{min-width:0 !important}
+  /* 🔴⭐紙が印刷できる幅を絶対に超えないようにする（2026-09-10）。
+     ⚠1mm でもはみ出すと、ブラウザは黙って全体を縮める。
+       今日の請求書メーカーは 83.8%、席次表は 85% に縮んでいた */
+  body.print-sheet #sheet{max-width:100% !important}
+  body.print-sheet #sheet .grid{max-width:100% !important}
   body{background:#fff}
   /* スマホ用の縮小は紙には持ちこまない */
   #sheetBox{height:auto !important;overflow:visible !important}
   /* ⭐画面用の大きさは紙に持ちこまない。
      ⚠height を残すと、画面の px がそのまま紙の高さになって 2ページになる
        （2026-09-10 画面の紙をA4の形にしたときに気づいた）*/
-  .sheet{width:auto !important;height:auto !important;transform:none !important}
+  /* 🔴⭐width / height をここで auto にしない（2026-09-11）。
+     ⚠この !important が、下の「紙は 210mm×294mm」に勝ってしまい、
+       紙が中身なりの 259mm に広がって、A4たてに収めるため 0.84倍に縮んでいた。
+     ⭐画面用の大きさは liftSheet が JS ではがしているので、ここでは要らない */
+  .sheet{transform:none !important}
   .noprint,.site-head,.read,footer,.plan-tabs,.card,details.opt,.notice,
   h1,.catch,.lead,.two-col{display:none !important}
   .wrap{max-width:none;padding:0;margin:0}

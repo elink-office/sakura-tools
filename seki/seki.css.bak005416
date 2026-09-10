@@ -89,9 +89,6 @@
      ⚠余白が無いと、サイト名が紙の端に当たって切れる */
   .sheet{ padding: calc(12 * var(--pxmm, 3.7795) * 1px); }
   .grid{ gap: calc(1.6 * var(--pxmm, 3.7795) * 1px); }
-  /* ⭐サイト名も、紙に出る大きさ（9pt＝約3.2mm）と同じにする（2026-09-11 本人）。
-     ⚠画面だけ 12.5px 固定だったので、紙より大きくなって切れていた */
-  .sheet-credit{ font-size: calc(3.2 * var(--pxmm, 3.7795) * 1px); }
   body.screen .sheet{ height: auto !important; }
 }
 

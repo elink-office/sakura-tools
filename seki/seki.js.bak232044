@@ -1010,8 +1010,7 @@
   /* ⭐紙に出る大きさ（余白をのぞいた中身）。A4よこ 273×186mm、A4たて 186×273mm */
   function paperMM() {
     var wide = $('paper') && $('paper').value === 'landscape';
-    /* ⭐紙の外形（余白 12mm をふくむ）。中の余白は .sheet の padding で作る */
-    return wide ? { w: 297, h: 207 } : { w: 210, h: 294 };
+    return wide ? { w: 273, h: 186 } : { w: 186, h: 273 };
   }
   /* ⭐画面の紙を、えらんだ用紙の向きと同じ形にする
      （2026-09-10 本人「Aがいい！」「私は席次で使いたい」。座席表と同じやり方）。
@@ -1032,9 +1031,7 @@
     var pp = paperMM();
     var K = 3.2;
     var w = pp.w * K, h = pp.h * K;
-    /* ⭐画面では紙を縮めて見せる（1画面に収めるため）。
-       ⭐印刷のときは liftSheet がその縮小をはがして、実寸に戻す
-         （2026-09-10 本人の案：「縮小の前を拾って、紙だけを取り出す」）*/
+    // ⚠画面で紙に使える高さ。これがないと、たての紙が画面からはみ出す
     var maxH = Math.max(360, window.innerHeight * 0.72);
     var scale = Math.min(1, room / w, maxH / h);
     sh.style.width = Math.round(w) + 'px';
@@ -1055,14 +1052,7 @@
         note.className = 'hint noprint';
         note.style.marginTop = '8px';
         note.textContent = '上の欄に名簿を貼り付けてください。サンプルは消えます。';
-        ($('sheetBox') || $('sheet')).parentNode.insertBefore(note, ($('sheetBox') || $('sheet')).nextSibling);
-      }
-      /* ⭐いつでも「紙の入れ物」のすぐ下に置き直す（2026-09-11 本人）。
-         ⚠入れ物（#sheetBox）の中に入れると、入れ物の高さは紙のぶんしかないので、
-           案内が下にはみ出して次の章に重なる */
-      var box = $('sheetBox');
-      if (box && note.previousElementSibling !== box) {
-        box.parentNode.insertBefore(note, box.nextSibling);
+        $('sheet').parentNode.insertBefore(note, $('sheet').nextSibling);
       }
     } else if (note) {
       note.parentNode.removeChild(note);
@@ -1366,37 +1356,10 @@
        ブラウザは紙に収まるまで全体を縮める。
      ⭐印刷が終わったら必ず元の場所へ戻す（afterprint）*/
   var sheetHome = null;
-  var keepStyle = null;
   function liftSheet() {
     var el = $('sheet');
     if (!el || sheetHome) return;
     sheetHome = { parent: el.parentNode, next: el.nextSibling };
-    /* 🔴⭐画面用の大きさを、印刷の前に自分ではがす（2026-09-10）。
-       ⚠画面では紙を縮めて見せている（たての紙は 0.68倍ほど）。
-         その縮小が紙に残ると、印刷まで小さくなる。
-       ⚠CSS の transform:none だけに頼ると、効いていないことがある。
-         ここで直接消せば、優先順位の争いに巻きこまれない。
-       ⭐印刷が終わったら元に戻す（dropSheet）*/
-    keepStyle = {
-      width: el.style.width, height: el.style.height,
-      transform: el.style.transform, origin: el.style.transformOrigin,
-      padding: el.style.padding, boxSizing: el.style.boxSizing,
-      pxmm: el.style.getPropertyValue('--pxmm')
-    };
-    el.style.transform = 'none'; el.style.transformOrigin = '';
-    el.style.removeProperty('--pxmm');
-    /* 🔴⭐紙の大きさを、ここで直接書きこむ（2026-09-11）。
-       ⚠CSS に書いた width / height は、ほかの指定に負けて効かないことがあった。
-         その結果、紙が中身なりの大きさ（画面の幅ぶん）に広がり、
-         用紙に収めるためブラウザが縮めていた。
-         実測：たて 0.839倍、よこ 0.924倍（100mm の線が 83.9mm / 92.4mm で刷られていた）。
-       ⭐ここで入れる指定は、CSS のどれよりも強い。
-       ⭐高さは 3mm 余らせる（ぎりぎりだと、わずかなはみ出しで縮む）*/
-    var wideP = $('paper') && $('paper').value === 'landscape';
-    el.style.width = (wideP ? 297 : 210) + 'mm';
-    el.style.height = (wideP ? 207 : 294) + 'mm';
-    el.style.padding = '12mm';
-    el.style.boxSizing = 'border-box';
     document.body.appendChild(el);
     document.body.classList.add('print-sheet');
   }
@@ -1407,15 +1370,7 @@
       if (sheetHome.next) sheetHome.parent.insertBefore(el, sheetHome.next);
       else sheetHome.parent.appendChild(el);
     }
-    if (el && keepStyle) {
-      el.style.width = keepStyle.width; el.style.height = keepStyle.height;
-      el.style.transform = keepStyle.transform; el.style.transformOrigin = keepStyle.origin;
-      el.style.padding = keepStyle.padding; el.style.boxSizing = keepStyle.boxSizing;
-      if (keepStyle.pxmm) el.style.setProperty('--pxmm', keepStyle.pxmm);
-      keepStyle = null;
-    }
     sheetHome = null;
-    if (typeof fitSheet === 'function') fitSheet();
   }
 
   var printKeepBoard = null;
