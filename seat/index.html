@@ -25,7 +25,7 @@
 <meta name="google-site-verification" content="PfjmCGxUaN1hzuj_dRw3e4PTY6xepghfXM_CrU_sO-A" />
 <title>教室の座席表メーカー｜エクセルテンプレート不要・30人40人</title>
 <meta name="description" content="教室の座席表の作り方は簡単。名簿を貼るだけで席替えができる無料ツールです。エクセルテンプレートは不要。新年度の出席番号順にも対応。小学校・中学校・高校のどのクラスでも、30人・35人・40人、4列・5列・6列・8列の教室席配置に対応。生徒に見せる向きと、先生が教卓から見る向きを切り替えられます。班分けと色分けもそのまま印刷・PDFにできます。エクセルテンプレートのダウンロードも、登録もいりません。名簿はブラウザの中だけで処理し、AIの学習にも使われません。">
-<link rel="stylesheet" href="../style.css?v=133">
+<link rel="stylesheet" href="../style.css?v=134">
 <link rel="stylesheet" href="seat.css?v=5">
 <link rel="stylesheet" href="../print.css?v=54" media="print">
 <style>
@@ -182,6 +182,7 @@ body.screen .seat.dup .nm{text-decoration:none}
       </div>
     </nav>
   </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">座席表メーカー</span><span class="now-short">座席表</span></div></div>
 </header>
 
 <main class="wrap">
@@ -240,7 +241,7 @@ body.screen .seat.dup .nm{text-decoration:none}
       <!-- 🔴 次に使うとき⑧まで下がらなくていいように、呼び出しは①に置く（2026-08-31 本人）。
            ⚠残したものが1件も無いときは出さない（はじめての人には邪魔なだけ） -->
       <div class="row tight" id="quickLoad" hidden style="margin-bottom:12px">
-        <div class="pick"><label for="clsSel2">さくらツールで保存済のデータ</label>
+        <div class="pick"><label for="clsSel2">保存済のデータ</label>
           <select id="clsSel2"><option value="">－</option></select></div>
         <div><label>&nbsp;</label>
           <button class="mini" id="clsLoad2" type="button">このデータを自動入力</button></div>
@@ -249,7 +250,10 @@ body.screen .seat.dup .nm{text-decoration:none}
       </div>
       <div class="in-col">
         <div>
-      <textarea id="names" placeholder="ここをクリック→エクセルデータを貼り付け（手入力可）&#10;&#10;1,やまだ たろう,男&#10;2,さとう はなこ,女&#10;すずき いちろう（名前だけでもOK）&#10;&#10;空のままだとサンプルが出ます"></textarea>
+      <!-- ⭐枠の上にも出す（2026-09-10 本人「エクセルから貼り付けるってあったほうがいいよね」）。
+           ⚠知り合いの先生からも同じことを言われたとのこと -->
+      <label for="names">エクセルから貼り付ける</label>
+      <textarea id="names" placeholder="クリックして貼り付け（手入力可）&#10;&#10;1,やまだ たろう,男&#10;2,さとう はなこ,女&#10;すずき いちろう（名前だけでもOK）&#10;&#10;空のままだとサンプルが出ます"></textarea>
       <div class="row tight" style="margin-top:10px">
         <div><label for="nameMode">名前の見せ方</label>
           <select id="nameMode">
@@ -652,16 +656,15 @@ body.screen .seat.dup .nm{text-decoration:none}
       <!-- 🔴 ⑧の？の一番上にも置く（2026-09-09 本人）。①と同じ考え方 -->
       <p>🔒 <strong>保存先もインターネットではありません。</strong>使っている端末のブラウザの中だけに残るので、ほかの人からは見えません。パソコン・タブレット・スマホ、どれでも同じです。</p>
       <ul>
-        <li><strong>名前を付けて、いくつも保存できます。</strong>残るのは<strong>この端末の中だけ</strong>です。</li>
+        <li><strong>名前を付けて、<b style="font-size:inherit">20件</b>まで保存できます。</strong>残るのは<strong>この端末の中だけ</strong>です。</li>
         <li><strong>さくらツールの中で共通です。</strong>ほかの道具で保存したデータもここに出ますし、逆もできます（教室の形や班の設定はツールごとに覚えます）。</li>
         <li>呼び出すのは①の<strong>「このデータを自動入力」</strong>から。名簿も条件も入るので、あとは「席替えする」を押すだけです。</li>
         <li><strong>「記録の座席を表示」</strong>＝そのときの座席をそのまま出します（<strong>席替えはしません</strong>）。</li>
         <li>同じ日でも<strong>案1・案2</strong>を別々に残せます。「2学期はじめ」のような名前も付けられます。</li>
-        <li>同じ名前で保存したときは<strong>差し替えるか聞きます</strong>。同じものが2件できることはありません。</li>
       </ul>
     </div>
 
-    <p class="hint">保存したデータは、<b>さくらツール上で利用できます</b>。</p>
+    <p class="hint">保存したデータは、<b>座席表・席次表・班分け・スライド</b>で使えます。</p>
 
     <p class="safe">🔒 <strong>保存したものは、使っている端末の中だけに残ります。</strong></p>
 
@@ -673,7 +676,7 @@ body.screen .seat.dup .nm{text-decoration:none}
         <button class="mini" id="clsSave" type="button">上書き</button>
         <button class="mini" id="clsDel" type="button">削除</button>
       </p>
-      <div class="pick"><label for="clsSel">さくらツールで保存済のデータ</label>
+      <div class="pick"><label for="clsSel">保存済のデータ</label>
         <select id="clsSel"><option value="">－</option></select></div>
 
       <h3 style="margin-top:18px">決まった座席を保存（<span id="recCount">0／20件</span>）</h3>

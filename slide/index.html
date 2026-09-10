@@ -24,7 +24,7 @@
 </script>
 <title>簡単スライドメーカー｜パワーポイントの代わりに、文字と写真をモニターへ｜さくらツール</title>
 <meta name="description" content="パワーポイントの代わりに、文字と写真をそのまま大きくモニターに映せる無料の道具です。今日のめあて、問題文、作品の写真、発表する子の名前に。スライドを作り込まなくていいので、思いついたその場で出せます。写真の上に文字を重ねることもできます。名簿は座席表・班分けと共通。登録なし・インストールなし・写真も名簿も外に送りません。">
-<link rel="stylesheet" href="../style.css?v=133">
+<link rel="stylesheet" href="../style.css?v=134">
 <link rel="stylesheet" href="slide.css?v=67">
 </head>
 <body>
@@ -43,6 +43,7 @@
       </div>
     </nav>
   </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">簡単スライドメーカー</span><span class="now-short">簡単スライド</span></div></div>
 </header>
 
 <main class="wrap">
@@ -76,7 +77,7 @@
         <!-- 🔴 文字を出す側でも名簿を使える（2026-09-05 本人「さくらツールの名簿が使えるから、
              名簿から選択できるようにしたい」）。⭐1人＝1枚の文字として入る -->
         <div id="clsBoxT" hidden>
-          <p class="notice mini">さくらツールで利用しているデータを使うことができます。</p>
+          <p class="notice mini">座席表・席次表・班分けで保存したデータを使えます。</p>
           <div class="row" style="margin-bottom:14px">
             <select id="clsSelT"></select>
             <button id="clsLoadT">このデータを読み込む</button>
@@ -92,7 +93,7 @@
           <p><strong><code>//</code> にすると、前のほうが小さい文字</strong>になります。「今日のめあて」のような見出しを付けたいときに。<br>
             例：<code>今日のめあて//分数のたし算ができる</code></p>
         </div>
-        <textarea id="lines" placeholder="ここをクリック→エクセルデータを貼り付け（手入力可）
+        <textarea id="lines" placeholder="手入力（エクセルデータの貼り付けもできます）
 
 つぎの議題//会計の報告
 今日のめあて//分数のたし算ができる
@@ -113,24 +114,24 @@
         <h3 class="sub">名簿の入力</h3>
 
         <div id="clsBox" hidden>
-          <p class="notice mini">さくらツールで利用しているデータを使うことができます。</p>
+          <p class="notice mini">座席表・席次表・班分けで保存したデータを使えます。</p>
           <div class="row" style="margin-bottom:14px">
             <select id="clsSel"></select>
             <button id="clsLoad">このデータを読み込む</button>
           </div>
         </div>
 
-        <p class="hint" style="margin-bottom:10px">
-          <b>手入力</b>するか、<b>Excel</b>で名前の列を選んでコピーして貼り付け&#8288;<button type="button" class="tip-btn" aria-label="説明"></button>
-        </p>
+        <!-- ⭐枠の上は「エクセルから貼り付ける」でそろえる（2026-09-10 本人）。
+             ⚠手入力もできることは、枠の中のグレーで伝える -->
+        <label for="paste">エクセルから貼り付ける&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></label>
         <div class="tip-body" hidden>
           <p>1行目が「名前」「作品名」「班」などの<strong>見出しなら、自動で読み分けます</strong>。</p>
           <p>見出しがなければ <strong>1列目＝名前・2列目＝作品名</strong> として読みます。名前だけの1列でもかまいません。</p>
         </div>
-        <!-- 🔴 枠の中の案内は「貼り付け」が先（2026-09-05 本人「ここをクリック→エクセルデータを貼り付け（手入力可）
-             をデフォルトにしよう」「今時手入力する人はいないって。（学校はね。自治会とかは別だよ）」）。
+        <!-- 🔴 枠の中の案内は「貼り付け」が先（2026-09-05 本人「今時手入力する人はいないって。（学校はね。自治会とかは別だよ）」）。
+             ⭐文言は 2026-09-10 に短くした＝枠の上のラベルと重なるため。
              ⚠列の見本はその下に残す。3列の形（名前・作品名・班）がここでしか分からないため -->
-        <textarea id="paste" placeholder="ここをクリック→エクセルデータを貼り付け（手入力可）
+        <textarea id="paste" placeholder="クリックして貼り付け（手入力可）
 
 名前	作品名	班
 さくら	わたしの家族	1班
@@ -249,7 +250,7 @@
     <h2><span class="step">5</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
     <div class="tip-body" hidden>
       <ul>
-        <li><strong>名前を付けて、いくつも保存できます。</strong>残るのは<strong>この端末の中だけ</strong>です。</li>
+        <li><strong>名前を付けて、<b style="font-size:inherit">20件</b>まで保存できます。</strong>残るのは<strong>この端末の中だけ</strong>です。</li>
         <li><strong>座席表メーカーと共通です。</strong>あちらで保存したデータもここに出ますし、逆もできます（教室の形や班の設定はツールごとに覚えます）。</li>
         <li>呼び出すのは①の<strong>「このデータを読み込む」</strong>から。</li>
         <li><b>「上書き」と「削除」は、①でえらんでいるもの</b>に効きます。上書きしても、座席表で入れた<b>番号や男女は残ります</b>。⚠名前のデータを消すと<b>座席表メーカー・席次表メーカーからも消えます</b>。</li>
@@ -258,12 +259,12 @@
       </ul>
     </div>
 
-    <p class="hint">保存したデータは、<b>さくらツール上で利用できます</b>。</p>
+    <p class="hint">保存したデータは、<b>座席表・席次表・班分け・スライド</b>で使えます。</p>
 
-    <p class="safe">🔒 <strong>保存したものは、この端末の中だけに残ります。</strong></p>
+    <p class="safe">🔒 <strong>保存したものは、使っている端末の中だけに残ります。</strong></p>
 
     <div class="cls-box">
-      <h3>名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
+      <h3>データに名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
       <!-- 🔴 上書きも置いた（2026-09-06 本人「名簿に関しては上書きできるはずだよね？」）。
            ⭐番号・男女は namesNow() で残すので、上書きしても落ちない -->
       <!-- 🔴 説明はこの1行だけ（2026-09-06 本人「⑤の説明が長いね…だけでいいんじゃないかな？

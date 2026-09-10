@@ -24,7 +24,7 @@
 </script>
 <title>席次表メーカー｜無料・エクセルテンプレート不要｜会議・研修・大学</title>
 <meta name="description" content="席次表の作り方は簡単。名簿を貼るだけで、会議・研修・セミナー・大学の席次表が自動で作れる無料ツールです。前を向いて並ぶスクール形式で、席順は名簿順とランダムから選べます。用紙に合わせて自動で調整し、A4の1枚に収めるので、2ページに分かれません。会社名・役職（肩書き）・フリガナ・名前を1マスに並べ、敬称は様・さん・先生から選べます。Excelの名簿から複数の列をそのまま貼り付けでき、通し番号の向きも指定できます。エクセルテンプレートは不要です。印刷とPDFもこのページから。名簿はブラウザの中だけで処理し、AIの学習にも使われません。">
-<link rel="stylesheet" href="../style.css?v=133">
+<link rel="stylesheet" href="../style.css?v=134">
 <link rel="stylesheet" href="seki.css?v=23">
 <link rel="stylesheet" href="../print.css?v=54" media="print">
 <style>
@@ -87,6 +87,7 @@
       </div>
     </nav>
   </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">席次表メーカー</span><span class="now-short">席次表</span></div></div>
 </header>
 
 <main class="wrap">
@@ -132,7 +133,7 @@
            ⚠1件も無いうちは出さない。座席表と共通の置き場なので、
              /seat/ で保存したものもここに出る -->
       <div class="row tight" id="quickLoad" hidden style="margin-bottom:12px">
-        <div class="pick"><label for="clsSel2">さくらツールで保存済のデータ</label>
+        <div class="pick"><label for="clsSel2">保存済のデータ</label>
           <select id="clsSel2"><option value="">－</option></select></div>
         <div><label>&nbsp;</label>
           <button class="mini" id="clsLoad2" type="button">このデータを自動入力</button></div>
@@ -141,7 +142,10 @@
       </div>
       <div class="in-col">
         <div>
-      <textarea id="names" placeholder="ここをクリック→エクセルデータを貼り付け（手入力可）&#10;&#10;会社 ▸ 株式会社さくら商事　部長　山田 太郎&#10;大学 ▸ 1001　山田 太郎　ヤマダ タロウ　経営学科&#10;個人 ▸ 山田 太郎&#10;&#10;列の順番は気にしなくて大丈夫"></textarea>
+      <!-- ⭐枠の上にも出す（2026-09-10 本人「エクセルから貼り付けるってあったほうがいいよね」）。
+           ⚠知り合いの先生からも同じことを言われたとのこと -->
+      <label for="names">エクセルから貼り付ける</label>
+      <textarea id="names" placeholder="クリックして貼り付け（手入力可）&#10;&#10;会社 ▸ 株式会社さくら商事　部長　山田 太郎&#10;大学 ▸ 1001　山田 太郎　ヤマダ タロウ　経営学科&#10;個人 ▸ 山田 太郎&#10;&#10;列の順番は気にしなくて大丈夫&#10;空のままだとサンプルが出ます"></textarea>
         </div>
         <div>
       <div class="row tight" style="margin-top:10px">
@@ -504,14 +508,14 @@
       <!-- 🔴 ⑧の？の一番上にも置く（2026-09-09 本人）。①と同じ考え方 -->
       <p>🔒 <strong>保存先もインターネットではありません。</strong>使っている端末のブラウザの中だけに残るので、ほかの人からは見えません。パソコン・タブレット・スマホ、どれでも同じです。</p>
       <ul>
-        <li><strong>名前を付けて、いくつも保存できます。</strong>残るのは<strong>この端末の中だけ</strong>です。</li>
+        <li><strong>名前を付けて、<b style="font-size:inherit">20件</b>まで保存できます。</strong>残るのは<strong>この端末の中だけ</strong>です。</li>
         <li><strong>さくらツールの中で共通です。</strong>ほかの道具で保存したデータもここに出ますし、逆もできます。</li>
         <li>データは共通ですが、<strong>見た目や会場の形はツールごと</strong>に覚えます。席次表で決めた敬称やふりがなが、座席表に混ざることはありません。</li>
         <li>呼び出すのは①の<strong>「このデータを自動入力」</strong>から。あとは「席次表を作る」を押すだけです。</li>
       </ul>
     </div>
 
-    <p class="hint">保存したデータは、<b>さくらツール上で利用できます</b>。</p>
+    <p class="hint">保存したデータは、<b>座席表・席次表・班分け・スライド</b>で使えます。</p>
 
     <p class="safe">🔒 <strong>保存したものは、使っている端末の中だけに残ります。</strong></p>
 
@@ -523,7 +527,7 @@
         <button class="mini" id="clsSave" type="button">上書き</button>
         <button class="mini" id="clsDel" type="button">削除</button>
       </p>
-      <div class="pick"><label for="clsSel">さくらツールで保存済のデータ</label>
+      <div class="pick"><label for="clsSel">保存済のデータ</label>
         <select id="clsSel"><option value="">－</option></select></div>
 
     </div>

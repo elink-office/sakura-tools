@@ -73,7 +73,7 @@
 </style>
 </head>
 <body>
-<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/10 09:05</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/10 13:14</div>
 
 <header class="site-head noprint">
   <div class="wrap">
@@ -89,7 +89,7 @@
       </div>
     </nav>
   </div>
-  <div class="site-sub"><div class="wrap"><span class="now-long">席次表</span><span class="now-short">席次表</span></div></div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">席次表メーカー</span><span class="now-short">席次表</span></div></div>
 </header>
 
 <main class="wrap">
@@ -144,7 +144,10 @@
       </div>
       <div class="in-col">
         <div>
-      <textarea id="names" placeholder="ここをクリック→エクセルデータを貼り付け（手入力可）&#10;&#10;会社 ▸ 株式会社さくら商事　部長　山田 太郎&#10;大学 ▸ 1001　山田 太郎　ヤマダ タロウ　経営学科&#10;個人 ▸ 山田 太郎&#10;&#10;列の順番は気にしなくて大丈夫"></textarea>
+      <!-- ⭐枠の上にも出す（2026-09-10 本人「エクセルから貼り付けるってあったほうがいいよね」）。
+           ⚠知り合いの先生からも同じことを言われたとのこと -->
+      <label for="names">エクセルから貼り付ける</label>
+      <textarea id="names" placeholder="クリックして貼り付け（手入力可）&#10;&#10;会社 ▸ 株式会社さくら商事　部長　山田 太郎&#10;大学 ▸ 1001　山田 太郎　ヤマダ タロウ　経営学科&#10;個人 ▸ 山田 太郎&#10;&#10;列の順番は気にしなくて大丈夫&#10;空のままだとサンプルが出ます"></textarea>
         </div>
         <div>
       <div class="row tight" style="margin-top:10px">
@@ -507,7 +510,7 @@
       <!-- 🔴 ⑧の？の一番上にも置く（2026-09-09 本人）。①と同じ考え方 -->
       <p>🔒 <strong>保存先もインターネットではありません。</strong>使っている端末のブラウザの中だけに残るので、ほかの人からは見えません。パソコン・タブレット・スマホ、どれでも同じです。</p>
       <ul>
-        <li><strong>名前を付けて、いくつも保存できます。</strong>残るのは<strong>この端末の中だけ</strong>です。</li>
+        <li><strong>名前を付けて、<b style="font-size:inherit">20件</b>まで保存できます。</strong>残るのは<strong>この端末の中だけ</strong>です。</li>
         <li><strong>さくらツールの中で共通です。</strong>ほかの道具で保存したデータもここに出ますし、逆もできます。</li>
         <li>データは共通ですが、<strong>見た目や会場の形はツールごと</strong>に覚えます。席次表で決めた敬称やふりがなが、座席表に混ざることはありません。</li>
         <li>呼び出すのは①の<strong>「このデータを自動入力」</strong>から。あとは「席次表を作る」を押すだけです。</li>

@@ -29,7 +29,7 @@
 <link rel="stylesheet" href="slide.css?v=67">
 </head>
 <body>
-<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/10 09:05</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/10 13:14</div>
 
 <header class="site-head noprint">
   <div class="wrap">
@@ -45,7 +45,7 @@
       </div>
     </nav>
   </div>
-  <div class="site-sub"><div class="wrap"><span class="now-long">簡単スライド</span><span class="now-short">簡単スライド</span></div></div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">簡単スライドメーカー</span><span class="now-short">簡単スライド</span></div></div>
 </header>
 
 <main class="wrap">
@@ -95,7 +95,7 @@
           <p><strong><code>//</code> にすると、前のほうが小さい文字</strong>になります。「今日のめあて」のような見出しを付けたいときに。<br>
             例：<code>今日のめあて//分数のたし算ができる</code></p>
         </div>
-        <textarea id="lines" placeholder="ここをクリック→エクセルデータを貼り付け（手入力可）
+        <textarea id="lines" placeholder="手入力（エクセルデータの貼り付けもできます）
 
 つぎの議題//会計の報告
 今日のめあて//分数のたし算ができる
@@ -123,17 +123,17 @@
           </div>
         </div>
 
-        <p class="hint" style="margin-bottom:10px">
-          <b>手入力</b>するか、<b>Excel</b>で名前の列を選んでコピーして貼り付け&#8288;<button type="button" class="tip-btn" aria-label="説明"></button>
-        </p>
+        <!-- ⭐枠の上は「エクセルから貼り付ける」でそろえる（2026-09-10 本人）。
+             ⚠手入力もできることは、枠の中のグレーで伝える -->
+        <label for="paste">エクセルから貼り付ける&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></label>
         <div class="tip-body" hidden>
           <p>1行目が「名前」「作品名」「班」などの<strong>見出しなら、自動で読み分けます</strong>。</p>
           <p>見出しがなければ <strong>1列目＝名前・2列目＝作品名</strong> として読みます。名前だけの1列でもかまいません。</p>
         </div>
-        <!-- 🔴 枠の中の案内は「貼り付け」が先（2026-09-05 本人「ここをクリック→エクセルデータを貼り付け（手入力可）
-             をデフォルトにしよう」「今時手入力する人はいないって。（学校はね。自治会とかは別だよ）」）。
+        <!-- 🔴 枠の中の案内は「貼り付け」が先（2026-09-05 本人「今時手入力する人はいないって。（学校はね。自治会とかは別だよ）」）。
+             ⭐文言は 2026-09-10 に短くした＝枠の上のラベルと重なるため。
              ⚠列の見本はその下に残す。3列の形（名前・作品名・班）がここでしか分からないため -->
-        <textarea id="paste" placeholder="ここをクリック→エクセルデータを貼り付け（手入力可）
+        <textarea id="paste" placeholder="クリックして貼り付け（手入力可）
 
 名前	作品名	班
 さくら	わたしの家族	1班
@@ -252,7 +252,7 @@
     <h2><span class="step">5</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
     <div class="tip-body" hidden>
       <ul>
-        <li><strong>名前を付けて、いくつも保存できます。</strong>残るのは<strong>この端末の中だけ</strong>です。</li>
+        <li><strong>名前を付けて、<b style="font-size:inherit">20件</b>まで保存できます。</strong>残るのは<strong>この端末の中だけ</strong>です。</li>
         <li><strong>座席表メーカーと共通です。</strong>あちらで保存したデータもここに出ますし、逆もできます（教室の形や班の設定はツールごとに覚えます）。</li>
         <li>呼び出すのは①の<strong>「このデータを読み込む」</strong>から。</li>
         <li><b>「上書き」と「削除」は、①でえらんでいるもの</b>に効きます。上書きしても、座席表で入れた<b>番号や男女は残ります</b>。⚠名前のデータを消すと<b>座席表メーカー・席次表メーカーからも消えます</b>。</li>

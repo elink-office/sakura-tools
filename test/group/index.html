@@ -39,7 +39,7 @@
 </style>
 </head>
 <body>
-<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/10 09:05</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/10 13:14</div>
 
 <header class="site-head noprint">
   <div class="wrap">
@@ -56,7 +56,7 @@
       </div>
     </nav>
   </div>
-  <div class="site-sub"><div class="wrap"><span class="now-long">特別教室の座席表</span><span class="now-short">特別教室</span></div></div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">特別教室の座席表メーカー</span><span class="now-short">特別教室</span></div></div>
 </header>
 
 <main class="wrap">
@@ -84,7 +84,9 @@
         <button class="mini" id="clsDel2" type="button">削除</button></div>
     </div>
 
-    <textarea id="names" placeholder="ここをクリック→エクセルデータを貼り付け（手入力可）&#10;&#10;1,やまだ たろう,男&#10;2,さとう はなこ,女&#10;すずき いちろう（名前だけでもOK）&#10;&#10;空のままだとサンプルが出ます"></textarea>
+    <!-- ⭐枠の上にも出す（2026-09-10 本人） -->
+    <label for="names">エクセルから貼り付ける</label>
+    <textarea id="names" placeholder="クリックして貼り付け（手入力可）&#10;&#10;1,やまだ たろう,男&#10;2,さとう はなこ,女&#10;すずき いちろう（名前だけでもOK）&#10;&#10;空のままだとサンプルが出ます"></textarea>
 
     <div class="row tight" style="margin-top:10px">
       <div><label for="nameMode">名前の見せ方</label>
@@ -313,7 +315,7 @@
     <h2><span class="step">7</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
     <div class="tip-body" hidden>
       <ul>
-        <li><strong>名前を付けて、いくつも保存できます。</strong>残るのは<strong>この端末の中だけ</strong>です。</li>
+        <li><strong>名前を付けて、<b style="font-size:inherit">20件</b>まで保存できます。</strong>残るのは<strong>この端末の中だけ</strong>です。</li>
         <li><strong>さくらツールの中で共通です。</strong>ほかの道具で保存したデータもここに出ますし、逆もできます（部屋の形や班の設定はツールごとに覚えます）。</li>
         <li>呼び出すのは①の<strong>「このデータを自動入力」</strong>から。</li>
       </ul>
