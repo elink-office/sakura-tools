@@ -1485,7 +1485,14 @@
       drawSheet();
     }
     if ($('printWhat') && $('printWhat').value === 'all' && state.plans.length) buildAll();
-    else if ((!$('printWay') || $('printWay').value === 'img') && state.seats) {
+    /* 🔴⭐文字のまま印刷する（2026-09-10 本人「基本は文字方式に統一」）。
+       ⚠これまでは画面を写真にして印刷していた＝崩れないが、文字が残らない・拡大でぼやける。
+       ⭐紙だけを body の直下に出せば、画面用の指定がかからず、見本と紙が同じ大きさになる
+         （請求書メーカーで100%一致を確認した方法）*/
+    else if (state.seats) {
+      liftSheet();
+    }
+    else if (false) {
       // 🔴 画面と同じ絵を1枚作って、それだけを印刷する。
       //   ⚠3案まとめて印刷のときは、今までどおり文字のまま
       //   🔴⚠**<img> を使わない。**画像の読み込みを待つと、そのあいだに
@@ -1507,11 +1514,34 @@
   }
   var printKeepBoard = null;
 
+  /* 🔴⭐印刷の一瞬だけ、紙（#sheet）を body の直下に出す。
+     ⚠章の枠・幅・min-width が紙にかかっていると、ブラウザは紙に収まるまで全体を縮める
+       （2026-09-10 請求書メーカーで、94%まで縮んでいたのを100%に直した方法）。
+     ⭐印刷が終わったら必ず元の場所へ戻す（afterprint） */
+  var sheetHome = null;
+  function liftSheet() {
+    var el = $('sheet');
+    if (!el || sheetHome) return;
+    sheetHome = { parent: el.parentNode, next: el.nextSibling };
+    document.body.appendChild(el);
+    document.body.classList.add('print-sheet');
+  }
+  function dropSheet() {
+    var el = $('sheet');
+    document.body.classList.remove('print-sheet');
+    if (el && sheetHome) {
+      if (sheetHome.next) sheetHome.parent.insertBefore(el, sheetHome.next);
+      else sheetHome.parent.appendChild(el);
+    }
+    sheetHome = null;
+  }
+
   window.addEventListener('afterprint', function () {
     document.body.classList.remove('print-all');
     printBW = false;
     document.body.classList.remove('print-img');
     if ($('printImgWrap')) $('printImgWrap').innerHTML = '';
+    dropSheet();
     $('printAll').innerHTML = '';
     if (printKeepBoard) { state.board = printKeepBoard; printKeepBoard = null; drawSheet(); }
     // ⚠ 描き直しが終わってから戻す。すぐ戻すと、まだ高さが足りずに効かない

@@ -2,6 +2,17 @@
 @page{size:A4 landscape;margin:12mm}
 body.landscape{}
 @media print{
+  /* 🔴⭐印刷のときは、紙（#sheet）だけを body の直下に出している（seat.js の liftSheet）。
+     ⭐ここでその紙以外を全部消す＝画面用の指定がいっさいかからない。
+     ⚠min-width が残っていると、ブラウザは紙に収まるまで全体を縮める
+       （2026-09-10 請求書メーカーで判明。94%→100%になった） */
+  body.print-sheet > *:not(#sheet){display:none !important}
+  body.print-sheet > #sheet{display:block !important}
+  body.print-sheet{
+    margin:0 !important;padding:0 !important;
+    width:auto !important;min-width:0 !important;background:#fff;
+  }
+  body.print-sheet #sheet,body.print-sheet #sheet *{min-width:0 !important}
   body{background:#fff}
   /* スマホ用の縮小は紙には持ちこまない */
   #sheetBox{height:auto !important;overflow:visible !important}
