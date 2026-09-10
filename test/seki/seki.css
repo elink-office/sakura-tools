@@ -78,7 +78,13 @@
 
 /* 1マスの高さ。座席表は名前1行なので58px固定だが、席次表は行の数で変わる。
    ⚠ モニター表示（body.screen）は style.css 側で height:auto になる（そちらが優先） */
-.seat{ height: var(--seatScreenH, 76px); }
+/* ⭐画面のマスも、紙に出るミリ数をそのまま画面のミリに置きかえる
+   （2026-09-10 本人「見本と印刷がイコール」）。
+   --pxmm ＝ 画面の 1mm が何点になるか（seki.js の fitSheet が入れる）*/
+.seat{ height: calc(var(--seatHnum, 20) * var(--pxmm, 3.7795) * 1px); }
+.sheet{ padding: 0; }                     /* 紙の余白は @page が持つ */
+.grid{ gap: calc(1.6 * var(--pxmm, 3.7795) * 1px); }
+body.screen .sheet{ height: auto !important; }
 
 /* ---- 番号（右上に置いたとき） ---- */
 /* 左上のグループ記号（.gno）と逆サイドに置く。
@@ -216,16 +222,7 @@ body.screen .cellcfg-prev{ display: none !important; }
 body.screen #prevSheet{ display: none !important; }
 
 /* ---- 紙で小さくなりすぎたときの知らせ ---- */
-/* ⚠ 人数で警告を出さない。同じ100人でも、用紙の向きと列の数で読めるかどうかが変わる。
-   実際に計算した文字の大きさで判断する */
-.warn-note{
-  display: inline-block;
-  background: #fdf3ef;
-  border: 1px solid #e8c4b4;
-  border-radius: 8px;
-  padding: 4px 10px;
-  color: #8a5a3a !important;
-}
+/* ⚠ .warn-note は style.css に移した（2026-09-10）。座席表でも使うため */
 
 /* 名簿欄：例が6行あるので、スマホで最後の1行が切れないように少し高く
    （⚠共通の textarea{min-height:170px} だと「列の順番は…」が隠れる） */

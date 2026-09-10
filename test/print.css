@@ -16,7 +16,10 @@ body.landscape{}
   body{background:#fff}
   /* スマホ用の縮小は紙には持ちこまない */
   #sheetBox{height:auto !important;overflow:visible !important}
-  .sheet{width:auto !important;transform:none !important}
+  /* ⭐画面用の大きさは紙に持ちこまない。
+     ⚠height を残すと、画面の px がそのまま紙の高さになって 2ページになる
+       （2026-09-10 画面の紙をA4の形にしたときに気づいた）*/
+  .sheet{width:auto !important;height:auto !important;transform:none !important}
   .noprint,.site-head,.read,footer,.plan-tabs,.card,details.opt,.notice,
   h1,.catch,.lead,.two-col{display:none !important}
   .wrap{max-width:none;padding:0;margin:0}
@@ -63,6 +66,10 @@ body.landscape{}
 
 @media print{
   .seat{height:var(--seatH,15mm);padding:1.5mm}
+  /* ⭐マスのすき間は紙ではミリで固める。
+     ⚠画面側は --pxmm から計算しているので、そのままだと紙で 1.35mm になり、
+       「1枚に収める」の計算（GAP = 1.6）と合わなくなる */
+  .grid{gap:1.6mm}
   .sheet-foot{
     display:grid !important;grid-template-columns:1fr auto 1fr;align-items:end;
     break-inside:avoid;page-break-inside:avoid;margin-top:6mm;

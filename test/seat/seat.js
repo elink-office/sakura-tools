@@ -944,6 +944,10 @@
 
     // 前回の記録とのくらべ（画面だけ。紙・モニター・画像には出さない）
     var chk = checkInfo(gm), samap = sameSeatMap();
+    /* ⭐黄色い枠が何なのか、その場で知らせる（2026-09-10 本人「説明がどこにもない。
+       びっくりすると思うので、ふわっと出て消えるメッセージを座席表の上に」） */
+    var sameCount = 0;
+    if (samap) { for (var sk in samap) if (samap[sk]) sameCount++; }
 
     // 🔴 黒板を下にする＝教卓から見た向き＝紙を180度まわした形（2026-08-31 本人）
     //   本人「スクリーンが上で生徒用は左上が1なら、スクリーンが下になった時に右下が1」
@@ -1010,12 +1014,32 @@
     // 🔴 端末によって紙の余白がちがう（とくにタブレットは倍率を指定できない）。
     //   ⚠こちらで正解を決められないので、⑤で「印刷の大きさ」を選べるようにした（2026-09-01）
     var sc = 1;   // ⚠「印刷の大きさ」は外した（2026-09-01 本人「とにかく1ページに収める」）
-    var avail = (wide ? 154 : 242) * sc;
+    /* ⭐座席と座席のすき間（6px＝約1.6mm）も高さを食う。
+       ⚠前はこれを数えていなかったので、行が多いときに紙からはみ出していた */
+    var GAP = 1.6;
+    /* ⭐表以外（見出し・黒板・サイト名とそのあき）が使う高さ。
+       2026-09-10 に実測（見出し 7.1 ＋ 黒板 10.6 ＋ サイト名 9.4 ＋ あき 7.8）*/
+    var FIX = 34.9;
+    /* ⭐紙で使える高さ。A4よこ＝210−余白24、A4たて＝297−余白24。1mm だけ余させる */
+    /* ⚠よこ（185）はPDFで 1ページを確かめた。
+       たて（270）はまだ確かめていないので、少し多めに余させてある */
+    var LIMIT = wide ? 185 : 270;
+    var avail = (wide ? 152 : 238) * sc;
     var cap = (wide ? 36 : 46) * sc;
-    var mm = Math.max(11, Math.min(cap, Math.round(avail / rows)));
-    // 紙の高さいっぱいに広げるための下限（mm）。⚠vh は使わない（タブレットで紙からはみ出す）
-    $('sheet').style.setProperty('--sheetMin', Math.round((wide ? 170 : 255) * sc) + 'mm');
+    var mm = Math.max(9, Math.min(cap, Math.floor((avail - GAP * (rows - 1)) / rows)));
+    /* ⭐必ず1枚に収める（2026-09-10 本人「1枚で表示して」）。
+       ⚠計算だけだと 5行・6行 が 1mm ほどはみ出していたので、
+         収まるところまで 1mm ずつ下げる */
+    while (mm > 9 && mm * rows + GAP * (rows - 1) + FIX > LIMIT) mm--;
+    /* 紙の高さいっぱいに広げるための下限（mm）。⚠vh は使わない（タブレットで紙からはみ出す）
+       ⭐LIMIT を超えない値にする。超えると、中身が小さくても2ページになる */
+    $('sheet').style.setProperty('--sheetMin', LIMIT + 'mm');
     $('sheet').style.setProperty('--seatH', mm + 'mm');
+    /* ⭐画面のマスも、紙と同じミリ数にする（見本＝印刷）*/
+    $('sheet').style.setProperty('--seatHnum', mm);
+    /* ⚠文字の大きさを測る前に、紙の大きさを決めておく。
+       順番を逆にすると、古いマスの大きさで文字を決めてしまう */
+    fitSheet();
     // 印刷したときの1マスの大きさ（用紙の幅から逆算）
     var pageW = ($('paper').value === 'landscape' ? 297 : 210) - 24;
     var cellWmm = (pageW - (cols - 1) * 1.6) / cols;
@@ -1058,6 +1082,8 @@
       sp.style.fontSize = minPx + 'px';
       sp.style.setProperty('--nmPrint', minMm + 'mm');
     });
+    /* ⚠「紙にすると名前が○mm」の知らせは入れない（2026-09-10 本人）。
+       ⭐画面の紙を A4 の形にしたので、見て判断できる */
     }
     // ⚠この一文は毎回ここで書きかえている。HTML側を直しても出ない（2026-09-03 に気づいた）
     var note = document.querySelector('.drag-note');
@@ -1075,6 +1101,23 @@
     drawViolations();
     drawDeco();
     fitSheet();
+    /* ⭐黄色い枠が出たときだけ、その意味をふわっと知らせる */
+    if (sameCount) {
+      flashNote('⚠ 黄色い枠は、前回と同じ席の人です（' + sameCount + '人）。もう一度 席替えすると変わることがあります。');
+    }
+  }
+
+  /* ⭐座席表の上に、ふわっと出て数秒で消える知らせ（2026-09-10 本人）。
+     ⚠ずっと残す説明にはしない＝毎回読ませたいものではないため */
+  function flashNote(text) {
+    var box = $('seatFlash');
+    if (!box) return;
+    box.textContent = text;
+    box.classList.remove('show');
+    void box.offsetWidth;      /* ⚠いったん消してから付け直す＝続けて出せる */
+    box.classList.add('show');
+    clearTimeout(flashNote.t);
+    flashNote.t = setTimeout(function () { box.classList.remove('show'); }, 5000);
   }
 
   // 班長のいない班／前回も同じ班／前回と同じ席 を、まとめて知らせる。
@@ -1141,23 +1184,43 @@
   // ---- スマホでは、座席表ぜんぶを縮めて出す ----
   // ⚠マスの高さや文字だけ小さくすると、形が変わって縦長に見えてしまう。
   //   パソコンで見た形のまま、まるごと縮めるほうが伝わる（先生は作らないが、サンプルは必ずスマホで見る）
-  var SHEET_W = 640;   // パソコンで見たときの幅
+  /* ⭐紙に出る大きさ（余白をのぞいた中身）。A4よこ 273×185mm、A4たて 186×270mm。
+     ⚠高さは drawSheet の LIMIT と同じ値にすること（ここだけ直すと見本と紙がちがう）*/
+  function paperMM() {
+    var wide = $('paper') && $('paper').value === 'landscape';
+    return wide ? { w: 273, h: 185 } : { w: 186, h: 270 };
+  }
+  /* ⭐画面の紙を、えらんだ用紙の向きと同じ形にする（2026-09-10 本人「Aがいい！」）。
+     ⚠前はスマホのときだけ縮めていたので、パソコンではいつも横長だった。
+     ⭐幅も高さも紙の比率で決め、入るだけ大きく見せる */
   function fitSheet() {
     var box = $('sheetBox'), sh = $('sheet');
     if (!box || !sh) return;
-    var narrow = window.innerWidth <= 600 && !document.body.classList.contains('screen');
-    if (!narrow) {
-      sh.style.width = ''; sh.style.transform = ''; box.style.height = '';
+    if (document.body.classList.contains('screen')) {
+      sh.style.width = ''; sh.style.height = ''; sh.style.transform = '';
+      sh.style.removeProperty('--pxmm'); box.style.height = '';
       return;
     }
     var room = box.parentNode.clientWidth;
-    // ⚠読みこみの途中はまだ幅が決まっていない。0のまま計算すると scale(0) になって消える
-    if (!room || room <= 0) return;
-    var scale = Math.min(1, room / SHEET_W);
-    sh.style.width = SHEET_W + 'px';
+    /* ⚠読みこみの途中や、紙をかくしているあいだは幅が決まっていない。
+       そのまま計算すると、紙が 2px の縦長になって崩れる */
+    if (!room || room < 200) return;
+    var pp = paperMM();
+    /* ⭐紙は「1mm ＝ 3.2点」の決まった大きさで作り、
+       画面に入らなければまるごと縮めて見せる（請求書メーカーと同じやり方）。
+       ⚠画面の幅に合わせて作り直すと、スマホでマスが 25px になり、
+         名前の文字が 6px まで縮んで読めなくなる */
+    var K = 3.2;
+    var w = pp.w * K, h = pp.h * K;
+    // ⚠画面で紙に使える高さ。これがないと、たての紙が画面からはみ出す
+    var maxH = Math.max(360, window.innerHeight * 0.72);
+    var scale = Math.min(1, room / w, maxH / h);
+    sh.style.width = Math.round(w) + 'px';
+    sh.style.height = Math.round(h) + 'px';
+    sh.style.setProperty('--pxmm', K);
     sh.style.transformOrigin = 'top left';
-    sh.style.transform = 'scale(' + scale + ')';
-    box.style.height = Math.ceil(sh.offsetHeight * scale) + 'px';
+    sh.style.transform = scale < 1 ? 'scale(' + scale + ')' : '';
+    box.style.height = scale < 1 ? Math.ceil(h * scale) + 'px' : '';
   }
 
   function showSample() {
@@ -1435,12 +1498,9 @@
 
   // ---- 印刷 ----
   // ⚠「印刷するもの」は外した（2026-09-01 本人）。案は上のタブでえらぶ
-  function printNote() {
-    var el = $('printNote'); if (!el) return;
-    el.textContent = ($('printWhat') && $('printWhat').value === 'all')
-      ? ''
-      : '';
-  }
+  /* ⚠中身は drawSheet のほうで出している（紙の文字の大きさが決まるのがあちらのため）。
+     ここで書きかえると、せっかく出した知らせが消える */
+  function printNote() { }
 
   // 3案ぶんの座席表を作って、印刷用の入れ物に入れる
   function buildAll() {
@@ -2002,7 +2062,7 @@
 
   function doRecSave() {
     var st = loadStore(), c = curClass(st);
-    if (!c) { alert('先に、保存したデータをえらんでください。'); return; }
+    if (!c) { alert('「データに名前を付けて保存」を開き、保存済みのデータを選択してください。'); return; }
     if (!state.seats) { alert('先に席替えをしてください。'); return; }
     if (state.sample) { alert('サンプルは記録できません。名簿を入れてから席替えしてください。'); return; }
     c.recs = c.recs || [];

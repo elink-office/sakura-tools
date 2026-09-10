@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta name="robots" content="noindex,nofollow">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SAKURA TOOLS">
 <meta property="og:title" content="教室の座席表メーカー｜エクセルテンプレート不要・30人40人">
@@ -27,8 +27,8 @@
 <title>【テスト】教室の座席表メーカー｜エクセルテンプレート不要・30人40人</title>
 <meta name="description" content="教室の座席表の作り方は簡単。名簿を貼るだけで席替えができる無料ツールです。エクセルテンプレートは不要。新年度の出席番号順にも対応。小学校・中学校・高校のどのクラスでも、30人・35人・40人、4列・5列・6列・8列の教室席配置に対応。生徒に見せる向きと、先生が教卓から見る向きを切り替えられます。班分けと色分けもそのまま印刷・PDFにできます。エクセルテンプレートのダウンロードも、登録もいりません。名簿はブラウザの中だけで処理し、AIの学習にも使われません。">
 <link rel="stylesheet" href="../style.css?v=135">
-<link rel="stylesheet" href="seat.css?v=5">
-<link rel="stylesheet" href="../print.css?v=55" media="print">
+<link rel="stylesheet" href="seat.css?v=6">
+<link rel="stylesheet" href="../print.css?v=56" media="print">
 <style>
 /* 🔴 班長・前回とのくらべ・クラスの保存（2026-08-31）。
    ⚠style.css は席次表や円卓とも共通なので、このページだけの見た目はここに書く */
@@ -157,6 +157,16 @@ body.screen .sheet.masked .grid{display:grid}
 .del-box h3{margin:0 0 4px;font-size:1rem}
 .del-box .mini{margin-right:8px}
 .seat.same{box-shadow:inset 0 0 0 3px #f0a500}
+/* ⭐座席表の上に、ふわっと出て消える知らせ（2026-09-10 本人）。
+   ⚠場所を取らない＝出ていないときは高さゼロ */
+#seatFlash{
+  max-height:0;opacity:0;overflow:hidden;
+  transition:opacity .3s ease, max-height .3s ease, margin .3s ease;
+  margin:0;padding:0 12px;border-radius:8px;
+  background:#fff8e6;border:1px solid #f0a500;color:var(--ink);
+  font-size:.85rem;line-height:1.6;text-align:center;
+}
+#seatFlash.show{max-height:6em;opacity:1;margin:0 0 10px;padding:8px 12px}
 .seat.dup .nm{text-decoration:underline wavy #e05a2b;text-underline-offset:3px}
 /* 先生が確かめるための印なので、紙・モニター・画像には出さない */
 @media print{.seat.same{box-shadow:none}.seat.dup .nm{text-decoration:none}}
@@ -168,7 +178,7 @@ body.screen .seat.dup .nm{text-decoration:none}
 </style>
 </head>
 <body>
-<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/10 18:01</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/10 19:49</div>
 
 <header class="site-head noprint">
   <div class="wrap">
@@ -429,6 +439,8 @@ body.screen .seat.dup .nm{text-decoration:none}
       <p class="hint drag-note">席はマグネットのように入れ替えができます。班番号を押すと、席の班と色を変更できます。</p>
     </div>
 
+    <!-- ⭐ふわっと出て消える知らせ（黄色い枠の意味など）。⚠紙には出さない -->
+    <div id="seatFlash" class="noprint" aria-live="polite"></div>
     <div id="sheetBox">
     <div class="sheet" id="sheet">
       <div class="sheet-head">
@@ -448,7 +460,7 @@ body.screen .seat.dup .nm{text-decoration:none}
 
     <div id="printAll"></div>
 
-    <p class="hint noprint">条件に反したところは赤くなりますが、そのままでも印刷できます。<strong>決めるのは先生です。</strong></p>
+    <p class="hint noprint">条件に反したところは赤くなりますが、そのままでも印刷できます。<strong>文字が小さい場合は更新してください。</strong></p>
     <div id="vio" class="noprint"></div>
 
     <details class="opt noprint" id="sexCard">
@@ -620,6 +632,7 @@ body.screen .seat.dup .nm{text-decoration:none}
         <button id="doPrint" type="button">印刷（PDF作成）</button>
         <button id="doPng" type="button">画像で保存（PNG）</button>
       </div>
+      <p class="hint" style="margin:8px 0 0">印刷したときの見え方は、画面と少しちがいます。<strong>PDFにして確かめてください。</strong></p>
       <details class="opt sub noprint tips-sm" style="margin-top:14px">
         <summary>タブレット・スマホの方へ</summary>
         <div class="body">
@@ -801,7 +814,7 @@ body.screen .seat.dup .nm{text-decoration:none}
 </footer>
 
 <script src="../seating.js?v=57"></script>
-<script src="seat.js?v=166"></script>
+<script src="seat.js?v=173"></script>
 <!-- 🔴 印刷用の1枚絵の置き場（2026-09-01）。画面には出ない。
      ⚠**body の直下に置くこと。**中に入れると、印刷のときに親ごと隠されて白紙になる -->
 <div id="printImgWrap"></div>

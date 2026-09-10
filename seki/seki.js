@@ -811,6 +811,13 @@
     var pageW = (wide ? 297 : 210) - 24;
     var cellWmm = (pageW - (cols - 1) * 1.6) / cols;
     $('sheet').style.setProperty('--seatH', mm + 'mm');
+    /* ⭐画面のマスも、紙と同じミリ数にする（見本＝印刷）*/
+    $('sheet').style.setProperty('--seatHnum', mm);
+    /* ⭐紙を下まで広げる。これがないと、紙だけ上に寄って下があく
+       （画面は紙の形で固めているので、揃えておく）*/
+    $('sheet').style.setProperty('--sheetMin', (pageH - 1) + 'mm');
+    /* ⚠文字の大きさを測る前に、紙の大きさを決めておく */
+    fitSheet();
 
     state.orgFit = null;      // 所属の自動縮小は、毎回まっさらから決め直す
 
@@ -878,6 +885,12 @@
     var base = Math.max(7, Math.floor((seatHpx - 18) / lineEm));
     var minSize = base;
     var cells = g.querySelectorAll('.seat .cell');
+    /* ⚠かくしているあいだは測らない（座席表と同じ直し。2026-09-01に座席表だけ直していた）。
+       マスの幅も高さもゼロになるので「入りきらない」と判断して、
+       文字がいちばん小さい6pxまで縮む。
+       2026-09-10 本人「席次表の画面の文字が小さくなる。更新すると直る」
+       → かくした状態で描くと 13px が 6px になるのを再現して確かめた */
+    var canMeasure = g.clientWidth >= 10;
     // ⚠ 幅の判定から所属だけ外す。所属は下で別に詰めるので、
     //    ここに入れると長い会社名のせいで名前まで小さくなってしまう
     function overWide(cl) {
@@ -888,43 +901,51 @@
       }
       return false;
     }
-    cells.forEach(function (cl) {
-      var s = base, host = cl.parentNode;
-      cl.style.fontSize = s + 'px';
-      var h = host.clientHeight - 4;
-      while (s > 6 && (overWide(cl) || cl.scrollHeight > h)) {
-        s -= 1; cl.style.fontSize = s + 'px';
-      }
-      if (s < minSize) minSize = s;
-    });
-    cells.forEach(function (cl) { cl.style.fontSize = minSize + 'px'; });
+    if (canMeasure) {
+      cells.forEach(function (cl) {
+        var s = base, host = cl.parentNode;
+        cl.style.fontSize = s + 'px';
+        var h = host.clientHeight - 4;
+        while (s > 6 && (overWide(cl) || cl.scrollHeight > h)) {
+          s -= 1; cl.style.fontSize = s + 'px';
+        }
+        if (s < minSize) minSize = s;
+      });
+      cells.forEach(function (cl) { cl.style.fontSize = minSize + 'px'; });
+      state.cellFont = minSize;   /* ⭐次に測れなかったときのために覚えておく */
+    } else if (state.cellFont) {
+      /* ⭐測れないときは、前に決めた大きさをそのまま使う。
+         ⚠何も入れないと、作り直したマスは CSS の初期値（16px）になって大きすぎる */
+      minSize = state.cellFont;
+      cells.forEach(function (cl) { cl.style.fontSize = minSize + 'px'; });
+    }
 
     // 🔴 所属の行だけを詰める。いちばん長い会社名に合わせて、全部を同じ大きさにそろえる
-    var selOrg = sz('szOrg', .5), over = 1;
-    g.querySelectorAll('.seat .ln.org').forEach(function (o) {
-      var inner = o.parentNode.clientWidth;
-      if (inner > 0 && o.scrollWidth > inner) {
-        var ratio = o.scrollWidth / inner;
-        if (ratio > over) over = ratio;
-      }
-    });
-    state.orgFit = (over > 1) ? Math.max(.18, selOrg / over) : selOrg;
-    sh.style.setProperty('--sOrg', state.orgFit);
+    if (canMeasure) {
+      var selOrg = sz('szOrg', .5), over = 1;
+      g.querySelectorAll('.seat .ln.org').forEach(function (o) {
+        var inner = o.parentNode.clientWidth;
+        if (inner > 0 && o.scrollWidth > inner) {
+          var ratio = o.scrollWidth / inner;
+          if (ratio > over) over = ratio;
+        }
+      });
+      state.orgFit = (over > 1) ? Math.max(.18, selOrg / over) : selOrg;
+      sh.style.setProperty('--sOrg', state.orgFit);
+    } else if (state.orgFit) {
+      sh.style.setProperty('--sOrg', state.orgFit);   /* 所属の行も前の値を使う */
+    }
     var printMM = printCellMM(cellWmm, mm, lineEm);
     sh.style.setProperty('--cellPrint', printMM + 'mm');
-    // 🔴 人数で決め打ちせず、実際に小さくなったときだけ知らせる。
-    //    同じ100人でも、用紙の向きと列の数で読めたり読めなかったりするため
-    var pn = $('printNote');
-    if (pn) {
-      pn.innerHTML = (printMM < 3.5)
-        ? '⚠ 紙にすると名前が <b>' + printMM + 'mm</b> になります。' +
-          'フリガナや役職を「なし」にするか、用紙の向きを変えると大きくなります。'
-        : '';
-      pn.className = 'hint' + (printMM < 3.5 ? ' warn-note' : '');
-    }
+    /* ⚠「紙にすると名前が○mm」の知らせはやめた（2026-09-10 本人）。
+       ⭐画面の紙を A4 の形にし、文字も紙と同じ大きさで出すようになったので、
+         本人「見て判断すればいい」 */
     // 右上の通し番号は、マスの中身とは別に大きさを決める
     var noR = sz('szNo', .52);
-    sh.style.setProperty('--snoSize', Math.max(9, Math.round(minSize * noR)) + 'px');
+    /* ⚠番号の大きさも文字の大きさから決めているので、測れないときは触らない */
+    if (canMeasure || state.cellFont) {
+      sh.style.setProperty('--snoSize', Math.max(9, Math.round(minSize * noR)) + 'px');
+    }
     sh.style.setProperty('--snoPrint', (Math.round(printMM * noR * 10) / 10) + 'mm');
     // ⚠この一文は毎回ここで書きかえている。HTML側を直しても出ない
     var note = document.querySelector('.drag-note');
@@ -971,23 +992,39 @@
   // ---- スマホでは、座席表ぜんぶを縮めて出す ----
   // ⚠マスの高さや文字だけ小さくすると、形が変わって縦長に見えてしまう。
   //   パソコンで見た形のまま、まるごと縮めるほうが伝わる（先生は作らないが、サンプルは必ずスマホで見る）
-  var SHEET_W = 640;   // パソコンで見たときの幅
+  /* ⭐紙に出る大きさ（余白をのぞいた中身）。A4よこ 273×186mm、A4たて 186×273mm */
+  function paperMM() {
+    var wide = $('paper') && $('paper').value === 'landscape';
+    return wide ? { w: 273, h: 186 } : { w: 186, h: 273 };
+  }
+  /* ⭐画面の紙を、えらんだ用紙の向きと同じ形にする
+     （2026-09-10 本人「Aがいい！」「私は席次で使いたい」。座席表と同じやり方）。
+     ⚠紙は「1mm ＝ 3.2点」の決まった大きさで作り、画面に入らなければまるごと縮める。
+       画面の幅に合わせて作り直すと、スマホで名前が縮んで読めなくなる */
   function fitSheet() {
     var box = $('sheetBox'), sh = $('sheet');
     if (!box || !sh) return;
-    var narrow = window.innerWidth <= 600 && !document.body.classList.contains('screen');
-    if (!narrow) {
-      sh.style.width = ''; sh.style.transform = ''; box.style.height = '';
+    if (document.body.classList.contains('screen')) {
+      sh.style.width = ''; sh.style.height = ''; sh.style.transform = '';
+      sh.style.removeProperty('--pxmm'); box.style.height = '';
       return;
     }
     var room = box.parentNode.clientWidth;
-    // ⚠読みこみの途中はまだ幅が決まっていない。0のまま計算すると scale(0) になって消える
-    if (!room || room <= 0) return;
-    var scale = Math.min(1, room / SHEET_W);
-    sh.style.width = SHEET_W + 'px';
+    /* ⚠読みこみの途中や、紙をかくしているあいだは幅が決まっていない。
+       そのまま計算すると、紙が細い縦長になって崩れる */
+    if (!room || room < 200) return;
+    var pp = paperMM();
+    var K = 3.2;
+    var w = pp.w * K, h = pp.h * K;
+    // ⚠画面で紙に使える高さ。これがないと、たての紙が画面からはみ出す
+    var maxH = Math.max(360, window.innerHeight * 0.72);
+    var scale = Math.min(1, room / w, maxH / h);
+    sh.style.width = Math.round(w) + 'px';
+    sh.style.height = Math.round(h) + 'px';
+    sh.style.setProperty('--pxmm', K);
     sh.style.transformOrigin = 'top left';
-    sh.style.transform = 'scale(' + scale + ')';
-    box.style.height = Math.ceil(sh.offsetHeight * scale) + 'px';
+    sh.style.transform = scale < 1 ? 'scale(' + scale + ')' : '';
+    box.style.height = scale < 1 ? Math.ceil(h * scale) + 'px' : '';
   }
 
   function showSample() {
@@ -1286,22 +1323,45 @@
     // 🔴 画面と同じ絵を1枚作って、それだけを印刷する（2026-09-01。座席表と同じ）。
     //   ⚠<img> は使わない。読み込みを待つと「指で押した直後」の資格が切れて、
     //     iPadが印刷を受け付けない。canvas をそのまま置けば待たずに済む
-    if (state.seats) {
-      try {
-        var wrap = $('printImgWrap');
-        var wideP = $('paper').value === 'landscape';
-        var cv = padToAspect(buildSheetCanvas(2), wideP ? 1.50 : 0.75);
-        wrap.innerHTML = '';
-        wrap.appendChild(cv);
-        document.body.classList.add('print-img');
-      } catch (e) { }
-    }
+    /* ⭐文字のまま印刷する（2026-09-10 本人「基本は文字方式に統一」。座席表と同じ）。
+       ⚠前は画面を写真（canvas）にして印刷していた。
+         崩れないが、文字が残らない・拡大でぼやける。
+         さらに 2026-09-10 の PDF を調べたところ、
+         写真が紙の 2.8倍（582mm）に置かれてはみ出していた。
+         画面の幅が紙に持ちこまれるため。
+       ⭐紙だけを body の直下に出せば、画面用の指定がかからず、
+         見本と紙が同じ大きさになる（座席表で 1ページを確認済み）*/
+    if (state.seats) liftSheet();
     window.print();
   }
+
+  /* ⭐印刷の一瞬だけ、紙（#sheet）を body の直下に出す。
+     ⚠章の枠・幅・min-width が紙にかかっていると、
+       ブラウザは紙に収まるまで全体を縮める。
+     ⭐印刷が終わったら必ず元の場所へ戻す（afterprint）*/
+  var sheetHome = null;
+  function liftSheet() {
+    var el = $('sheet');
+    if (!el || sheetHome) return;
+    sheetHome = { parent: el.parentNode, next: el.nextSibling };
+    document.body.appendChild(el);
+    document.body.classList.add('print-sheet');
+  }
+  function dropSheet() {
+    var el = $('sheet');
+    document.body.classList.remove('print-sheet');
+    if (el && sheetHome) {
+      if (sheetHome.next) sheetHome.parent.insertBefore(el, sheetHome.next);
+      else sheetHome.parent.appendChild(el);
+    }
+    sheetHome = null;
+  }
+
   var printKeepBoard = null;
   window.addEventListener('afterprint', function () {
     document.body.classList.remove('print-img');
     if ($('printImgWrap')) $('printImgWrap').innerHTML = '';
+    dropSheet();
     if (printKeepBoard) { state.board = printKeepBoard; printKeepBoard = null; drawSheet(); }
     setTimeout(function () { window.scrollTo(0, printScrollY); }, 0);
     setTimeout(function () { window.scrollTo(0, printScrollY); }, 250);

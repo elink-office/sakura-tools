@@ -39,3 +39,14 @@
    ⭐入れたものは消さない。もどせば、そのまま効く
    （.off の薄さは style.css の .off{opacity:.45} を使う） */
 #pairBox.off{ pointer-events:none; }
+
+
+/* ⭐画面の紙も、えらんだ用紙の向きと同じ形にする（2026-09-10 本人「Aがいい！」）。
+   ⚠これまでは画面の紙がいつも横長で、「たて」をえらんでも形が変わらなかった。
+   幅と高さは seat.js の fitSheet が px で入れる。
+   --pxmm ＝ 画面の 1mm が何点になるか */
+.sheet{padding:0}                 /* 紙の余白は @page が持つので、中には作らない */
+.seat{height:calc(var(--seatHnum, 15.3) * var(--pxmm, 3.7795) * 1px)}
+.grid{gap:calc(1.6 * var(--pxmm, 3.7795) * 1px)}
+/* モニターに映すときは、紙の形にしばらない（画面いっぱいに広げる）*/
+body.screen .sheet{height:auto !important}
