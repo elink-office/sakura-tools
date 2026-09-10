@@ -1458,6 +1458,9 @@ function boot(){
       if(m) db.lastSeq = Math.max(db.lastSeq, Number(m[1]));
       save();
     }
+    /* 🔴⚠⑥がたたまれていると、紙に何も出ない（閉じた details は印刷されない）。
+       ⭐押したら必ず開けてから印刷する（2026-09-10） */
+    if($('prevBox') && !$('prevBox').open) $('prevBox').open = true;
     /* ⭐ここが肝。印刷の直前に題名を変えると、保存の名前がこれになる */
     document.title = fileName();
     setTimeout(function(){ window.print(); setTimeout(restoreTitle, 4000); }, 30);
