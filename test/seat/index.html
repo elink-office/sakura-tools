@@ -26,7 +26,7 @@
 <meta name="google-site-verification" content="PfjmCGxUaN1hzuj_dRw3e4PTY6xepghfXM_CrU_sO-A" />
 <title>【テスト】教室の座席表メーカー｜エクセルテンプレート不要・30人40人</title>
 <meta name="description" content="教室の座席表の作り方は簡単。名簿を貼るだけで席替えができる無料ツールです。エクセルテンプレートは不要。新年度の出席番号順にも対応。小学校・中学校・高校のどのクラスでも、30人・35人・40人、4列・5列・6列・8列の教室席配置に対応。生徒に見せる向きと、先生が教卓から見る向きを切り替えられます。班分けと色分けもそのまま印刷・PDFにできます。エクセルテンプレートのダウンロードも、登録もいりません。名簿はブラウザの中だけで処理し、AIの学習にも使われません。">
-<link rel="stylesheet" href="../style.css?v=134">
+<link rel="stylesheet" href="../style.css?v=135">
 <link rel="stylesheet" href="seat.css?v=5">
 <link rel="stylesheet" href="../print.css?v=54" media="print">
 <style>
@@ -168,7 +168,7 @@ body.screen .seat.dup .nm{text-decoration:none}
 </style>
 </head>
 <body>
-<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/10 14:00</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/10 14:19</div>
 
 <header class="site-head noprint">
   <div class="wrap">
@@ -671,7 +671,9 @@ body.screen .seat.dup .nm{text-decoration:none}
     <p class="safe">🔒 <strong>保存したものは、使っている端末の中だけに残ります。</strong></p>
 
     <div class="cls-box">
-      <h3>データに名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
+            <details class="opt sub">
+        <summary>データに名前を付けて保存（<span id="clsCount">0／20件</span>）</summary>
+        <div class="body">
       <p class="hint">名簿・教室の形・条件・男女・班の設定を、まとめて残すときに使います。<strong>「上書き」は、転入・転出で名簿が変わったとき</strong>に使ってください。<br>保存できるのは<b>文字情報のみ</b>です（写真や画像は残りません）。</p>
       <p class="btn-row">
         <button class="mini" id="clsNew" type="button">新しい名前で保存</button>
@@ -680,8 +682,11 @@ body.screen .seat.dup .nm{text-decoration:none}
       </p>
       <div class="pick"><label for="clsSel">保存済のデータ</label>
         <select id="clsSel"><option value="">－</option></select></div>
-
-      <h3 style="margin-top:18px">決まった座席を保存（<span id="recCount">0／20件</span>）</h3>
+        </div>
+      </details>
+      <details class="opt sub">
+        <summary>決まった座席を保存（<span id="recCount">0／20件</span>）</summary>
+        <div class="body">
       <p class="hint">記録が2件以上たまると、④の<strong>「前の班と同じメンバーをさける」</strong>が使えます。また、前回と同じ席になった時も知らせることができます。</p>
       <p class="btn-row">
         <button class="mini" id="recLoad" type="button">記録の座席を表示</button>
@@ -690,8 +695,9 @@ body.screen .seat.dup .nm{text-decoration:none}
       </p>
       <div class="pick"><label for="recSel">記録</label>
         <select id="recSel"><option value="">－</option></select></div>
-
-    </div>
+        </div>
+      </details>
+</div>
 
   </section>
 

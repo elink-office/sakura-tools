@@ -25,11 +25,11 @@
 </script>
 <title>【テスト】簡単スライドメーカー｜パワーポイントの代わりに、文字と写真をモニターへ｜さくらツール</title>
 <meta name="description" content="パワーポイントの代わりに、文字と写真をそのまま大きくモニターに映せる無料の道具です。今日のめあて、問題文、作品の写真、発表する子の名前に。スライドを作り込まなくていいので、思いついたその場で出せます。写真の上に文字を重ねることもできます。名簿は座席表・班分けと共通。登録なし・インストールなし・写真も名簿も外に送りません。">
-<link rel="stylesheet" href="../style.css?v=134">
+<link rel="stylesheet" href="../style.css?v=135">
 <link rel="stylesheet" href="slide.css?v=67">
 </head>
 <body>
-<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/10 14:00</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/10 14:19</div>
 
 <header class="site-head noprint">
   <div class="wrap">
@@ -266,7 +266,9 @@
     <p class="safe">🔒 <strong>保存したものは、使っている端末の中だけに残ります。</strong></p>
 
     <div class="cls-box">
-      <h3>データに名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
+            <details class="opt sub">
+        <summary>データに名前を付けて保存（<span id="clsCount">0／20件</span>）</summary>
+        <div class="body">
       <!-- 🔴 上書きも置いた（2026-09-06 本人「名簿に関しては上書きできるはずだよね？」）。
            ⭐番号・男女は namesNow() で残すので、上書きしても落ちない -->
       <!-- 🔴 説明はこの1行だけ（2026-09-06 本人「⑤の説明が長いね…だけでいいんじゃないかな？
@@ -280,7 +282,9 @@
         <button class="mini" id="clsDel" type="button">削除</button>
       </p>
       <p><span class="saving" id="clsSaved"></span></p>
-    </div>
+        </div>
+      </details>
+</div>
   </section>
 
   <!-- 使い方 ⭐読みものは details.howto（2026-09-08）。⚠details.opt は①②③の道具の部品 -->

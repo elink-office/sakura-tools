@@ -27,7 +27,7 @@
 </script>
 <title>【テスト】特別教室の座席表メーカー｜理科室・図工室・家庭科室｜さくらツール</title>
 <meta name="description" content="理科室・図工室・家庭科室の座席表を無料で作成。名簿を貼るだけで、実験台ごとの班分けと、台のどこに座るかまで決まります。1台4〜6人、台は2列でも3列でも。男女を均す・この2人は離す、も指定できます。名簿は20クラスまで残せるので、専科の先生でも貼り直しが要りません。印刷とPDFはA4の1枚に収まります。">
-<link rel="stylesheet" href="../style.css?v=134">
+<link rel="stylesheet" href="../style.css?v=135">
 <link rel="stylesheet" href="group.css?v=2">
 <style>
 /* 🔴「＋人を追加」と人数を1行に（2026-09-03 本人・座席表と同じ） */
@@ -39,7 +39,7 @@
 </style>
 </head>
 <body>
-<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/10 14:00</div>
+<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/10 14:19</div>
 
 <header class="site-head noprint">
   <div class="wrap">
@@ -326,7 +326,9 @@
     <p class="safe">🔒 <strong>保存したものは、この端末の中だけに残ります。</strong></p>
 
     <div class="cls-box">
-      <h3>データに名前を付けて保存（<span id="clsCount">0／20件</span>）</h3>
+            <details class="opt sub">
+        <summary>データに名前を付けて保存（<span id="clsCount">0／20件</span>）</summary>
+        <div class="body">
       <p class="hint">名簿・部屋の形・条件・男女の指定を、まとめて残すときに使います。<strong>「上書き」は、転入・転出で名簿が変わったとき</strong>に使ってください。<br>保存できるのは<b>文字情報のみ</b>です（写真や画像は残りません）。</p>
       <p class="btn-row">
         <button class="mini" id="clsNew" type="button">新しい名前で保存</button>
@@ -335,7 +337,9 @@
       </p>
       <div class="pick"><label for="clsSel">保存済のデータ</label>
         <select id="clsSel"><option value="">－</option></select></div>
-    </div>
+        </div>
+      </details>
+</div>
 
   </section>
 

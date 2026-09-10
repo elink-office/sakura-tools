@@ -312,6 +312,14 @@ details.opt > summary::after{
 }
 details.opt[open] > summary::after{transform:rotate(180deg)}
 details.opt > .body{padding:0 18px 20px}
+/* 🔴⭐章の中に置く小さなシャッター（2026-09-10 共通に移した）。
+   使う場所＝③の「細かい設定」／⑧の保存の欄（→ ページの型 4-d）。
+   ⚠外の章より一段軽く見せる＝薄い枠・小さめの見出し。⭐新しい見た目は作らず details.opt を細くする */
+details.opt.sub{margin:14px 0;border-color:var(--line);background:var(--bg)}
+details.opt.sub > summary{font-size:.95rem;padding:11px 14px 11px 28px}
+details.opt.sub > summary::before{left:13px}
+details.opt.sub > .body{padding:12px 14px 14px}
+details.opt.sub[open] > summary{border-bottom:1px solid var(--line)}
 
 /* 🔴 カード（②）の中に入れる「詳しい条件」＝枝なので、見出しより一段小さくする。
    ⚠ 縦棒のしるしは消す。付いたままだと ② の見出しと同じ格に見える */

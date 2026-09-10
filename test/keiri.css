@@ -66,13 +66,8 @@ body{touch-action:pan-y}
 @media(max-width:560px){.inv-2col{grid-template-columns:1fr}}
 .inv-hint{font-size:.78rem;color:var(--ink-soft);margin:4px 0 0;line-height:1.6}
 
-/* ⭐章の中に置く小さいシャッター（一度決めたら触らない設定をしまう）
-   ⚠外の章より一段軽く見せる＝薄い枠・小さめの見出し。新しい見た目は作らず、details.opt を細くする */
-details.opt.sub{margin:14px 0;border-color:var(--line);background:var(--bg)}
-details.opt.sub > summary{font-size:.95rem;padding:11px 14px 11px 28px}
-details.opt.sub > summary::before{left:13px}
-details.opt.sub > .body{padding:12px 14px 14px}
-details.opt.sub[open] > summary{border-bottom:1px solid var(--line)}
+/* ⚠details.opt.sub（章の中の細かい設定・保存の欄）の見た目は
+   ⭐共通の style.css に移した（2026-09-10 本人「共通ですよ」）。ここには置かない */
 
 /* ⭐「保存するもの／保存しないもの／気をつけること」の上に線を入れない（2026-09-10 本人） */
 .read .howto .body p.sub.noline{border-top:0;padding-top:0}

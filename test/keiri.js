@@ -913,12 +913,21 @@ var SAMPLE_3 = [
   {name:'ギフト箱（包装資材）',  qty:10, unit:'枚', price:250,  rate:10},
   {name:'送料',                  qty:1,  unit:'式', price:800,  rate:10}
 ];
+/* 🔴⭐日付は「発行日から何日前か」で持つ（2026-09-10 本人「サンプルの日付の整合性を全部確認して」）。
+   ⚠固定の日付にしていたら、9/11 のように発行日より後の日が出ていた */
 var SAMPLE_4 = [
-  {code:'BP-1234', date:'9/2',  name:'油性ボールペン（黒）', qty:20, unit:'本', price:120, rate:10},
-  {code:'NB-0087', date:'9/2',  name:'ノート A5 5冊組',      qty:15, unit:'組', price:180, rate:10},
-  {code:'FL-2201', date:'9/5',  name:'クリアファイル A4',     qty:50, unit:'枚', price:45,  rate:10},
-  {code:'ST-0310', date:'9/11', name:'ふせん 75×25mm',        qty:30, unit:'個', price:160, rate:10}
+  {code:'BP-1234', back:9, name:'油性ボールペン（黒）', qty:20, unit:'本', price:120, rate:10},
+  {code:'NB-0087', back:9, name:'ノート A5 5冊組',      qty:15, unit:'組', price:180, rate:10},
+  {code:'FL-2201', back:6, name:'クリアファイル A4',     qty:50, unit:'枚', price:45,  rate:10},
+  {code:'ST-0310', back:2, name:'ふせん 75×25mm',        qty:30, unit:'個', price:160, rate:10}
 ];
+/* ⭐発行日から back 日前を「9/2」の形で返す */
+function sampleDate(back){
+  var v = $('invDate') && $('invDate').value;
+  var d = v ? new Date(v) : new Date();
+  d.setDate(d.getDate() - back);
+  return (d.getMonth() + 1) + '/' + d.getDate();
+}
 var SAMPLE_2 = [
   {name:'サイト設計・打ち合わせ',        qty:3,  unit:'時間', price:8000,  rate:10},
   {name:'トップページ デザイン',          qty:1,  unit:'式',  price:80000, rate:10},
@@ -989,7 +998,16 @@ function sampleAdd(kind){
   $('subject').value  = SUBJECTS[kind] || SUBJECTS[1];
 
   $('itemBody').innerHTML = '';
-  items.forEach(function(r){ addRow(r); });
+  /* ⚠日付を持つサンプルは、発行日から数えて入れる（未来の日付を出さない） */
+  items.forEach(function(r){
+    if(r.back !== undefined){
+      var c = {}; for(var k in r) c[k] = r[k];
+      c.date = sampleDate(r.back);
+      addRow(c);
+    }else{
+      addRow(r);
+    }
+  });
   addRow();
   drawCols();
 
@@ -999,7 +1017,9 @@ function sampleAdd(kind){
   checkNo();
 
   SAMPLE_ON = true;
-  if(!$('dueDate').value) $('dueDate').value = nextMonthEnd();
+  /* 🔴⚠ここが書類の種類を見ていなかった（2026-09-10 本人「有効期限は発行日より1か月です、と
+     書いてあるのに 10月31日 になってる」）。⭐見積書は1か月後、請求書は来月末 */
+  if(!$('dueDate').value) $('dueDate').value = (D.dueMode === 'plus1m') ? plusOneMonth() : nextMonthEnd();
   if($('bank') && !$('bank').value.trim() && !db.bank){
     $('bank').value = 'さくら銀行　丸の内支店\n普通　1234567\nヤマダ ハナコ';
   }
@@ -1148,10 +1168,12 @@ function boot(){
       /* 2か所のえらび欄をそろえる */
       Array.prototype.forEach.call(sels, function(o){ o.value = v; });
       sampleAdd(v);
+      /* 🔴⭐どちらのえらび欄から選んでも、⑥確認を開く（2026-09-10 本人）。
+         ⚠下のえらび欄から選んだときは開いていなかった */
+      if($('prevBox') && !$('prevBox').open) $('prevBox').open = true;
       /* ⭐上のえらび欄から選んだ人は、そのまま見本まで送る（2026-09-09 本人） */
       if(this.closest('#sampleTop')){
         /* ⭐飛び先は「下のサンプル欄」＝そこに行くと、⭐サンプルと⑤が両方見える（2026-09-09 本人） */
-        if(!$('prevBox').open) $('prevBox').open = true;
         scrollToEl($('sampleLow'));
         /* ⭐上から飛んできた人にだけ、①へ戻る道を出す（2026-09-10 本人） */
         if($('backToTop')) $('backToTop').hidden = false;
