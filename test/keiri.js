@@ -194,7 +194,10 @@ function refreshNo(){
 function checkNo(){
   var v = $('invNo').value.trim();
   var hint = $('noHint');
-  if(v && db.usedNos.indexOf(v) >= 0){
+  /* 🔴⚠サンプルは番号を 001 に固定しているので、使ったことがある番号になる。
+     ⭐お試しで見ている人に警告を出さない（2026-09-10 本人「サンプルに出なくできないのかな」） */
+  var sampleNo = (db.noPrefix || '') + zeroPad(1, db.noDigits);
+  if(!(SAMPLE_ON && v === sampleNo) && v && db.usedNos.indexOf(v) >= 0){
     hint.innerHTML = '⚠ <strong>この番号は使ったことがあります。</strong>別の番号にしてください。';
     hint.style.color = 'var(--bad)';
     return false;
@@ -1013,10 +1016,11 @@ function sampleAdd(kind){
 
   /* ⭐サンプルの番号は必ず 1 から（2026-09-09 本人）。
      ⚠本来の「次の番号」を出すと、お試しで見ている人に 2026-007 のような数字が出てしまう */
+  /* ⚠SAMPLE_ON を先に立てる═checkNo() の中で見ているため（2026-09-10） */
+  SAMPLE_ON = true;
   $('invNo').value = (db.noPrefix || '') + zeroPad(1, db.noDigits);
   checkNo();
 
-  SAMPLE_ON = true;
   /* 🔴⚠ここが書類の種類を見ていなかった（2026-09-10 本人「有効期限は発行日より1か月です、と
      書いてあるのに 10月31日 になってる」）。⭐見積書は1か月後、請求書は来月末 */
   if(!$('dueDate').value) $('dueDate').value = (D.dueMode === 'plus1m') ? plusOneMonth() : nextMonthEnd();
