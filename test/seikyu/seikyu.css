@@ -18,14 +18,18 @@ body{touch-action:pan-y}
 .row.tight > div > input,
 .row.tight > div > select,
 .row.tight > div > textarea{width:100%}
+/* 🔴⭐同じ行に並ぶ「入力欄」と「ボタン」の高さをそろえる（2026-09-10 本人）。
+   ⚠共通CSSのボタンは45px、入力欄は42pxで、3pxずれていた。
+   ⚠iPhone では日付の欄がさらに変わるので、高さを決めて固定する */
+.row.tight > div > input:not([type=file]),
+.row.tight > div > select,
+.inv-row > input:not([type=file]),
+.inv-row > select{height:45px}
+.inv-row textarea,.row.tight > div > textarea{height:auto}
 /* ⚠日付とファイルは「中身ぶんの幅」が自然な形。伸ばさない（2026-09-09 本人） */
 .row.tight > div > input[type=date],
 .row.tight > div > input[type=file]{width:auto}
-/* ⚠日付だけ高さが 47.2px あって、ほかの欄（42px）とそろわない（2026-09-09 本人が指摘）。
-   ⭐中のカレンダーのしるしが押し上げているため。文字の大きさに追従する形でそろえる
-   ⚠これも全ツールに関わる話（→ 共通に上げるか要相談） */
-.row.tight > div > input[type=date],
-.inv-row input[type=date]{height:2.625em}
+
 .row.tight > div.d-auto{flex:0 0 auto}
 
 /* ⚠スマホ（375px）で折り返さないよう、伸びる欄の下限を小さくする */
