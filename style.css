@@ -20,6 +20,10 @@
 }
 input[type=checkbox],input[type=radio]{accent-color:var(--pink)}
 *{box-sizing:border-box}
+/* 🔴⭐ページ全体が横に動くのを止める（2026-09-10 本人「触ってたら横にずれる」「ふわふわする」）。
+   ⚠overflow-x:hidden は position:sticky（ヘッダー）を壊すことがあるので clip を使う。
+   ⭐横に動かしたい場所（明細の表など）は、その要素に overflow-x:auto を付ける */
+html{overflow-x:clip}
 body{
   margin:0; padding:0;
   /* ⭐サイトの地の文はこの1本（2026-09-08 本人「まずはフォント変えて」）。
@@ -45,6 +49,26 @@ body{
    ⭐**見ているページ自身へのリンクは出さない**ので、道具のページでは2つ、それ以外は3つ並ぶ。
    ⚠ 理由＝スマホ（375px）で4つ並べるとヘッダーが2行になり、貼り付いたまま場所を取る。
    ⚠ 色は付けない。並んでいれば「押せば飛ぶ」と分かる（本人の判断） */
+/* 🔴⭐ロゴの右に「いま開いている道具の名前」を出す（2026-09-09 本人
+   「全部見た目が同じようになってきて、どれを開いているのかが分からなくなってきた」）。
+   ⚠型1で「見ているページ自身へのリンクは出さない」と決めているので、ヘッダーに名前が無かった
+   ⭐入れるのは make_test.py（各ページの h1 から自動で取る）。ここは見た目だけ */
+/* ⭐ヘッダーの下の細い帯。⚠ヘッダーの中に入れると幅を取り合って2行になった（2026-09-10 本人） */
+.site-sub{background:var(--pink-pale);border-top:1px solid var(--pink-light)}
+.site-sub .wrap{
+  padding:3px 16px;font-size:.78rem;font-weight:bold;color:var(--pink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  /* ⚠.site-head .wrap が display:flex なので、text-align だけでは効かない（2026-09-10） */
+  display:block;text-align:center;
+}
+/* ⭐パソコンは長い名前、スマホは短い名前（2026-09-09 本人）
+   ⚠パソコンは幅に余裕がある。スマホのヘッダーに入るのは約6文字 */
+.site-sub .now-short{display:none}
+@media(max-width:640px){
+  .site-sub .now-long{display:none}
+  .site-sub .now-short{display:inline}
+}
+
 .site-head nav{display:flex;gap:16px}
 .site-head nav a{
   margin-left:0;font-weight:normal;color:var(--ink-soft);
