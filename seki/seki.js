@@ -1381,6 +1381,7 @@
       width: el.style.width, height: el.style.height,
       transform: el.style.transform, origin: el.style.transformOrigin,
       padding: el.style.padding, boxSizing: el.style.boxSizing,
+      overflow: el.style.overflow,
       pxmm: el.style.getPropertyValue('--pxmm')
     };
     el.style.transform = 'none'; el.style.transformOrigin = '';
@@ -1397,6 +1398,12 @@
     el.style.height = (wideP ? 207 : 294) + 'mm';
     el.style.padding = '12mm';
     el.style.boxSizing = 'border-box';
+    /* 🔴⭐紙からはみ出したものを切る（2026-09-11）。
+       ⚠SAMPLE の透かしは斜めに回した巨大な文字で、紙の外にはみ出していた。
+         ブラウザは「中身が用紙より大きい」と見て、全体を縮めてしまう。
+         実測：たて 0.839倍。⭐サンプルのときだけ起きるので、長く見つからなかった。
+       ⭐紙の大きさは上で決めてあるので、中身が切れる心配はない */
+    el.style.overflow = 'hidden';
     document.body.appendChild(el);
     document.body.classList.add('print-sheet');
   }
@@ -1411,6 +1418,7 @@
       el.style.width = keepStyle.width; el.style.height = keepStyle.height;
       el.style.transform = keepStyle.transform; el.style.transformOrigin = keepStyle.origin;
       el.style.padding = keepStyle.padding; el.style.boxSizing = keepStyle.boxSizing;
+      el.style.overflow = keepStyle.overflow;
       if (keepStyle.pxmm) el.style.setProperty('--pxmm', keepStyle.pxmm);
       keepStyle = null;
     }
@@ -2113,7 +2121,17 @@
       if (document.body.classList.contains('screen') && state.seats) drawSheet();
       else fitSheet();
     });
-    window.addEventListener('beforeprint', function () { fitSheet(); });
+    /* 🔴⭐印刷の直前に fitSheet() を呼んではいけない（2026-09-11）。
+       ⚠fitSheet は「画面に合わせた大きさ」を紙に入れる。
+         印刷ボタンで liftSheet が 210mm（よこ297mm）を入れたあとに
+         これが走ると、画面用の大きさに書き戻されてしまう。
+         その結果、紙が用紙に収まらず、ブラウザが全体を縮めていた。
+       ⭐印刷のときの紙の大きさは liftSheet が決める。ここでは何もしない。
+       ⚠ブラウザのメニュー（Ctrl+P）から刷られたときのために、
+         紙をまだ出していなければ、ここで出しておく */
+    window.addEventListener('beforeprint', function () {
+      if (state.seats) liftSheet();
+    });
     // 画像や字体が出そろってから、もう一度あてはめ直す
     window.addEventListener('load', function () { fitSheet(); });
     $('deco').addEventListener('change', drawDeco);
