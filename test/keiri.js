@@ -1439,9 +1439,10 @@ function boot(){
   /* ⭐①へ戻る。⚠たたんであったら開いてから動く */
   if($('backToTop')) $('backToTop').onclick = function(){
     if($('meBox') && !$('meBox').open) $('meBox').open = true;
-    /* ⭐飛び先は①の1つ上＝「？のしるし」の行（2026-09-10 本人
-       「①にすると上の余白が０になるから、そのうえに飛ばして」）*/
-    scrollToEl(document.querySelector('.tip-guide') || $('meBox'));
+    /* ⭐飛び先は上のサンプル欄（2026-09-12 本人「サンプルを削除も見えるように」）。
+       ⚠「？のしるし」の行だと、削除ボタンが画面の上に隠れて見つからない。
+       ⭐サンプル欄に飛べば、削除ボタン → ？のしるし → ① が順に見える */
+    scrollToEl($('sampleTop') || document.querySelector('.tip-guide') || $('meBox'));
     this.hidden = true;
   };
 

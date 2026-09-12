@@ -362,6 +362,27 @@ body{touch-action:pan-y}
   .inv-sheet table.det tr{page-break-inside:avoid}
 }
 
+/* 🔴⭐iPhone（Safari）だけの印刷（2026-09-12 本人のスクショで判明）。
+   ⚠Safari は @page の margin を読まない＝紙いっぱい（210×297mm）に置けない。
+     Safari 自前の余白が必ず入るので、⭐297mm の紙が印刷できる高さに入らず、
+     下が切れて、あふれた分が⭐白紙の2ページ目になっていた。
+   出典: mdn/browser-compat-data #23178「Safari does not handle print page margins
+   correctly」（2026-09-12 確認）https://github.com/mdn/browser-compat-data/issues/23178
+   ⭐iOSでは紙の大きさを決め打ちせず、Safari がくれた印刷できる範囲に合わせる。
+   ⚠@supports(-webkit-touch-callout) は iOS だけが通る＝PC（Edge）はここに入らない。
+     PCの印刷は 2026-09-10 に合わせたまま、いっさい変えない */
+@supports (-webkit-touch-callout: none){
+  @media print{
+    html,body{width:auto !important;min-width:0 !important}
+    #pages{width:100% !important}
+    /* ⭐高さは中身なり＝紙からはみ出さないので、切れない・白紙も出ない */
+    .inv-sheet{
+      width:100% !important;height:auto !important;min-height:0 !important;
+      padding:12mm !important;overflow:visible !important;
+    }
+  }
+}
+
 /* ⭐一段弱いボタン（2026-09-10 本人が3案から選んだ）
    使う場所＝見積書の「この内容で請求書を作る」。
    ⚠PDFで保存（.primary）と同じ見た目だと、⭐控えを残す前に押されてしまう。
