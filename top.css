@@ -16,6 +16,26 @@
 
 /* ---- 上のあいさつ ---- */
 /* ⚠ ヘッダーとの間が空きすぎていた（本人の指摘）。44px → 24px */
+/* 🔴⭐本文まわりの幅は1か所で決める（2026-09-12 本人「カード自体を小さくして全部揃えたい」）。
+   ⚠em は「その要素の文字サイズ」で決まるので、場所ごとに実寸がずれていた
+     （リード文 620px／下の文章 704px）。⭐rem＝ページ基準なので、どこでも同じ幅になる。
+   ⭐37rem = 592px＝世界基準に合わせた値（2026-09-12 本人「bでお願い」）。
+   ⭐日本語41文字／英語80文字＝**どちらも W3C の基準内**。
+   ⚠実測で分かったこと＝日本語40文字（576px）と英語80文字（593px）は**ほぼ同じ幅**。
+   ⭐だから**言語ごとに値を分けなくてよい** */
+:root{
+  /* 🔴⭐ページの枠（2026-09-12 本人「私のブログくらいのサイズ」）。
+     ⭐実測＝たねまき（JIN:R）1120px ／ キュリズムラボ 1152px（Tailwind max-w-6xl）
+     ⚠top.css を読むのはトップと経理トップだけ。ほかのページは .wrap 900px のまま */
+  --page:70rem;      /* 1120px */
+  /* ⭐本文の幅＝下の段を 2:1 にしたときの「2」のぶん。
+     ⭐実測＝たねまきの記事本文は 740px・17px・44文字。ここもそれに合わせる */
+  --honbun:45rem;    /* 720px */
+}
+
+/* ⭐トップ系のページだけ枠を広げる（top.css を読むページだけに効く） */
+main.wrap, .site-head .wrap, .site-foot .wrap{max-width:var(--page)}
+
 .t-hero{padding:24px 0 8px}
 .t-eyebrow{
   font-size:.74rem;letter-spacing:.18em;color:var(--ink-soft);margin:0 0 14px;
@@ -38,7 +58,7 @@
 }
 /* ⚠ 直下の span だけブロックにする。中に入れた span まで改行させないため */
 .t-catch > span{display:block}
-.t-hero .lead{font-size:.88rem;margin:0 0 30px;max-width:44em}
+.t-hero .lead{font-size:.88rem;margin:0 0 30px;max-width:var(--honbun)}
 .t-hero .more{color:var(--midori);text-decoration:none;white-space:nowrap;margin-left:4px}
 .t-hero .more:hover{text-decoration:underline}
 
@@ -53,7 +73,8 @@
 /* ⚠カードの高さがそろわず、絵とボタンの位置がズレる（2026-09-06 本人「微妙に箱がズレるのが気持ち悪い」）。
    原因＝説明文の行数がカードごとに違うこと。⭐空白でごまかさず、
      ①カードを同じ高さに伸ばす ②説明の高さを3行ぶん確保する ③ボタンを下端にそろえる、で直す */
-.t-cards{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:34px;align-items:stretch}
+/* 🔴⭐カードは3列・枠いっぱい（2026-09-12 本人「カードサイズはいいけど、3つは並べたいね〜」） */
+.t-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:22px;margin-bottom:34px;align-items:stretch;max-width:var(--page)}
 /* 🔴 2026-09-06 カードごと押せるようにした（本人）。「使ってみる」ボタンは廃止。
    ⚠押せることは**浮く見た目**で伝える（マウスのある機器は hover、スマホは最初から影） */
 .t-card{
@@ -80,6 +101,12 @@
   font-size:.72rem;color:var(--ink-soft);
   border:1px solid var(--line);border-radius:999px;background:var(--bg);
 }
+/* 🔴⭐絵ありのカードは「2行ぶん」の高さを取る（2026-09-12 本人
+   「カードの高さ、今大きいサイズと小さいサイズがある。
+     小さいサイズは大きいサイズの横に並べて2つ入れるっていうことできる？」）。
+   ⭐横に、絵なしの小さいカードが2つ縦に入る。⭐高さは grid が自動でそろえる */
+.t-card.big{grid-row:span 2}
+
 .t-card{display:flex;flex-direction:column}
 .t-card .t-tool{margin-bottom:0;display:flex;flex-direction:column;flex:1}
 /* ⭐説明は3行ぶんの場所を先に取る＝文字数が違っても絵の位置がそろう */
@@ -141,6 +168,13 @@
 }
 /* 🔴 2026-09-06 本人：名前と説明を絵の上に。絵は説明の下、ボタンはその下 */
 /* ⚠絵とボタンが近すぎた（2026-09-06 本人）。絵の下に間を取る */
+/* ⭐縦長の絵（A4の書類）は、上半分を切り取って大きく見せる（2026-09-12 本人
+   「経理のページの画像。上半分で切っていいから、大きいサイズにして」）。
+   ⚠contain のままだと、縦長の絵が16:9の枠に収まりきらず、左右が白くなって絵が小さくなる。
+   ⭐cover＋object-position:top ＝ 上から切り取って枠いっぱいに広げる */
+/* ⚠16:9のままだと、上から40%しか見えない（実測）。
+   ⭐4:3 にするとちょうど「上半分」になり、絵も縦に大きくなる */
+.t-shot.tall{object-fit:cover;object-position:top center;aspect-ratio:4 / 3}
 .t-card .t-shot{margin:14px 0 18px}
 .t-card .t-tool .nm{margin-bottom:6px}
 /* 🔴 絵のないカード（2026-09-06）。⚠絵つきカードの下に続くので、細い線で区切る。
@@ -194,7 +228,7 @@
 .t-tool .go:active{box-shadow:0 1px 3px rgba(0,0,0,.16);transform:translateY(2px);filter:brightness(.9)}
 
 /* じゅんび中は、枠を作らず文字だけ。できているものと見分けがつくように */
-.t-soon{border-top:1px solid var(--line);margin-top:22px;padding-top:16px;margin-bottom:48px}
+.t-soon{border-top:1px solid var(--line);margin-top:22px;padding-top:16px;margin-bottom:48px;max-width:var(--honbun)}
 .t-soon p{margin:0 0 6px;font-size:.83rem;color:var(--ink-soft)}
 .t-soon .lbl{
   font-size:.72rem;letter-spacing:.1em;color:var(--ink-soft);
@@ -204,13 +238,57 @@
 /* ---- 読み物 ---- */
 /* 🔴 「くわしくは →」で飛ぶ先。⭐上に横線を1本引いて、そこが画面の上に来るようにする
    （2026-09-06 本人）。線があると「ここから別の話」と分かる */
-.t-about{max-width:44em;margin-bottom:32px;border-top:1px solid var(--line);padding-top:20px}
+/* 🔴⭐下の段は 2:1（2026-09-12 本人「下の文章を２カラムで、2：1にして、
+   1のほうに、サイトのリンクを作ったらどうかな？ そうすると幅が広くても読みにくくない」）。
+   ⭐左＝読ませる文章／右＝サイトの中のリンク。⭐いずれ広告も置ける */
+.t-lower{display:grid;grid-template-columns:2fr 1fr;gap:34px;max-width:var(--page);align-items:start}
+.t-about{margin-bottom:32px;border-top:1px solid var(--line);padding-top:20px}
 .t-about h2{font-size:1rem;margin:0 0 10px;padding-left:0}
-.t-about p{color:var(--ink-soft);font-size:.9rem;margin:0}
+/* 🔴⚠一度17pxにしたが戻した（2026-09-12 本人「公開中の分より大きい。だからすごく違和感あった」）。
+   ⚠たねまきの17pxは「記事（長文）」の字。⭐トップの読み物は補足なので、そこに持ってきたのが間違いだった。
+   ⭐公開中と同じ .9rem（14.4px）にそろえる。⭐ページの中で一番大きい説明文でも14.72px */
+.t-about p{color:var(--ink-soft);font-size:.9rem;line-height:1.9;margin:0}
+
+/* ⭐右の段＝サイトの中へのリンク（ヘッダーだけに頼らない） */
+.t-side{border-top:1px solid var(--line);padding-top:20px}
+.t-side h2{font-size:.95rem;margin:0 0 12px}
+/* ⭐箱条きらしく左に下げる（2026-09-12 本人「インデント付けて」） */
+.t-side ul{list-style:none;margin:0 0 22px;padding:0 0 0 8px}
+.t-side li{margin:0 0 5px}
+/* ⭐字を小さく（2026-09-12 本人）。⭐▶を左に出して、折り返しても文字がそろう（ぶら下げ） */
+.t-side a{color:var(--ink);text-decoration:none;font-size:.82rem;display:block;
+  padding:4px 0 4px 1.25em;text-indent:-1.25em}
+/* ⭐しるしを付ける（2026-09-12 本人「ツールのリンクに箇条書きの▶つけてみて」）。
+   ⭐▶＝「進む」のしるし。⚠開け閉めのしるしには使わない（→ style.css の注記） */
+.t-side a::before{content:"▶";font-size:.62em;color:var(--pink);margin-right:8px;vertical-align:1.5px}
+.t-side a:hover{color:var(--pink);text-decoration:underline}
+
+/* 🔴⭐準備中（2026-09-12 本人）。⭐▶は付けない＝「押せる」のしるしなので、
+   準備中に付けると押せそうに見えて嘘になる。
+   ⭐でも頭は▶ありのリンクとそろえる＝同じ印を置いて visibility で消す。
+   ⚠空白で合わせない（字が変わるとズレるため） */
+.t-side .soon{
+  color:var(--ink-soft);font-size:.82rem;margin:10px 0 0 8px;   /* ⚠8px＝ul の下げぶんに合わせる */
+  padding:4px 0 4px 1.25em;text-indent:-1.25em;
+}
+.t-side .soon::before{content:"▶";font-size:.62em;margin-right:8px;visibility:hidden}
+/* ⭐子はもう一段下げる。⭐色も薄くして「まだ」を見た目で伝える */
+.t-side .soon-list{list-style:none;margin:2px 0 22px 8px;padding:0 0 0 2.1em}
+.t-side .soon-list li{color:var(--ink-soft);font-size:.8rem;margin:0 0 4px;opacity:.85}
+/* ⭐帯の広告の置き場。⚠審査が通るまで中身は空（高さ0＝何も見えない） */
+.t-ad{margin:0 0 30px;max-width:var(--page)}
+.t-ad:empty{display:none}
 
 /* 🔴 見出しに句点は使わない（2026-09-06 本人）。⭐句点があった位置で改行する */
 .t-catch .nl{display:block}
 
+@media(max-width:900px){
+  /* ⭐カードは3列→2列（900px以下）。⚠2列では span を外す（組み合わせが崩れるため） */
+  .t-cards{grid-template-columns:1fr 1fr}
+  .t-card.big{grid-row:auto}
+  /* ⭐下の段も1列に。⭐リンクは文章の下に回る */
+  .t-lower{grid-template-columns:1fr;gap:0}
+}
 @media(max-width:720px){
   .t-two{grid-template-columns:1fr}
   .t-cards{grid-template-columns:1fr}

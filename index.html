@@ -41,7 +41,7 @@
 }
 </script>
 <link rel="stylesheet" href="style.css?v=135">
-<link rel="stylesheet" href="top.css?v=40">
+<link rel="stylesheet" href="top.css?v=49">
 </head>
 <body>
 
@@ -80,7 +80,7 @@
     <!-- 🔴 2026-09-06 本人：カードごと押せるようにした（「使ってみる」ボタンは廃止）。
          ⚠2026-09-03の「絵とボタンを別々の入口に」は撤回。入口が1つになったぶん、
            カード全体が浮く見た目で「押せる」と分かるようにする -->
-    <a class="t-card school" id="seat" href="seat/">
+    <a class="t-card big school" id="seat" href="seat/">
       <div class="t-tool">
         <span class="nm">座席表メーカー</span>
         <span class="ds">名簿のコピペで、簡単席替え。席の形、30人・40人でも思いどおり。そのうえPDFもモニター表示もボタンひとつ！</span>
@@ -88,7 +88,7 @@
       </div>
     </a>
 
-    <a class="t-card work" id="seki" href="seki/">
+    <a class="t-card big work" id="seki" href="seki/">
       <div class="t-tool">
         <span class="nm">席次表メーカー</span>
         <span class="ds">会社名・役職・フリガナ・名前を並べた席次表。用紙に合わせて自動で調整し、A4の1枚に収めます。</span>
@@ -114,6 +114,15 @@
   </div>
 
 
+  <!-- ⭐帯の広告の置き場（2026-09-12 本人）。⚠審査が通るまで空のまま＝何も見えない。
+       ⭐通ったら、この中に AdSense の「レスポンシブ＋data-ad-format="horizontal"」のコードを入れる
+       （横長だけが出る。固定サイズは収益が下がると公式に書いてある） -->
+  <div class="t-ad noprint"></div>
+
+  <!-- 🔴⭐下の段は 2:1（2026-09-12 本人）。左＝読ませる文章／右＝サイトの中のリンク -->
+  <div class="t-lower">
+  <div>
+
   <section class="t-about" id="naze">
     <h2>ネットにつながっているのに、外部に出ないの？</h2>
     <p><strong>普段使っている端末で、ファイルを開くのと同じです。</strong>ネットにつながっていても、<strong>すべて使っている端末だけで完結します</strong>。だから、外に晒されることも、漏れることも、AIの学習に使われることもありません。いつもの作業と同じように、安心してお使いいただけます。また、そのままモニターに映したり、印刷やPDFにしたりできる作りです。</p>
@@ -126,6 +135,32 @@
     <!-- 🔴 2026-09-06 本人：準備中の一覧はやめて、ここに「これから増える」と「データが共通で使える」を書く -->
     <p><strong>ツールはこれから増やしていく予定です。</strong>保存したデータは、<strong>サイトの中のどのツールでも使えます</strong>。名簿やよく使う言葉など、同じものを何度も作らずに済むので、仕事の時短に直結します。</p>
   </section>
+
+  </div>
+
+  <!-- ⭐右の段。⚠ヘッダーだけに導線を頼らない -->
+  <aside class="t-side noprint">
+    <h2>ツール</h2>
+    <ul>
+      <li><a href="seat/">座席表メーカー</a></li>
+      <li><a href="seki/">席次表メーカー</a></li>
+      <li><a href="slide/">簡単スライドメーカー</a></li>
+      <li><a href="excel-fx/">Excel関数 早見表</a></li>
+    </ul>
+
+    <!-- ⭐準備中はリンクを貼らない。文字だけ（2026-09-12 本人） -->
+    <p class="soon">経理ツール（準備中）</p>
+    <ul class="soon-list">
+      <li>見積書メーカー</li>
+      <li>請求書メーカー</li>
+    </ul>
+    <p class="soon">さくらタイピング練習（準備中）</p>
+
+    <!-- ⭐ここにも帯（縦長）を置ける。⚠今は空のまま -->
+    <div class="t-ad"></div>
+  </aside>
+
+  </div>
 </main>
 
 <footer>
