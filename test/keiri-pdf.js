@@ -59,33 +59,21 @@
     });
   }
 
-  /* ⚠フォントは数MBある。⭐一度に btoa へ渡すと落ちるので、小分けにする */
-  function toBase64(buf) {
-    var a = new Uint8Array(buf), s = '', CH = 0x8000;
-    for (var i = 0; i < a.length; i += CH) {
-      s += String.fromCharCode.apply(null, a.subarray(i, i + CH));
-    }
-    return btoa(s);
-  }
-
-  function fetchFont(name) {
-    return fetch(BASE + name).then(function (r) {
-      if (!r.ok) throw new Error('フォントが見つかりません: ' + name);
-      return r.arrayBuffer();
-    }).then(toBase64);
-  }
-
+  /* 🔴⭐フォントは <script> で読む（2026-09-13）。
+     ⚠fetch で .ttf を取りに行く形にしていたが、⭐**ファイルを直接開いたとき**（file:///…）
+       ブラウザが止めるので「Failed to fetch」になった（本人のPCで発生）。
+     ⭐<script> なら、直接開いてもサイトから開いても同じように読める */
   function ready() {
     if (lib) return Promise.resolve(lib);
-    return loadScript(BASE + 'jspdf.umd.min.js').then(function () {
-      return Promise.all([
-        fetchFont('NotoSansJP-Regular.ttf'),
-        fetchFont('NotoSansJP-Bold.ttf')
-      ]);
-    }).then(function (f) {
-      lib = { jsPDF: global.jspdf.jsPDF, reg: f[0], bold: f[1] };
-      return lib;
-    });
+    return loadScript(BASE + 'jspdf.umd.min.js')
+      .then(function () { return loadScript(BASE + 'NotoSansJP-Regular.js'); })
+      .then(function () { return loadScript(BASE + 'NotoSansJP-Bold.js'); })
+      .then(function () {
+        var f = global.NJP_FONT || {};
+        if (!f.reg || !f.bold) throw new Error('フォントを読み込めませんでした');
+        lib = { jsPDF: global.jspdf.jsPDF, reg: f.reg, bold: f.bold };
+        return lib;
+      });
   }
 
   /* ========== 画面から値を取る ========== */
@@ -168,9 +156,31 @@
     var fx = X1 - 72, fw = 72, fy = topOfBlocks;
     if (data.logo) {
       try {
-        var lw = 44, lh2 = lw / (data.logoRatio || 3);
-        doc.addImage(data.logo, 'PNG', X1 - lw, fy, lw, lh2);
-        fy += lh2 + 2;
+        /* 🔴⭐ロゴの縦横は、画面に出ている絵そのものから読む（2026-09-13 本人
+           「PDFにすると、ロゴがつぶれた」）。
+           ⚠前は「横44mm・縦はその1/3」と決め打ちしていた＝形が変わってつぶれた。
+           ⭐入る大きさは⑥確認のCSSと同じ（横44mm・縦18mmまで）。⭐置き方も同じで中央 */
+        var im = document.querySelector('#pages .inv-logo');
+        var nw = im && im.naturalWidth, nh = im && im.naturalHeight;
+        var lw = 44, lh2 = 18;
+        if (nw && nh) {
+          lw = Math.min(44, 18 * nw / nh);
+          lh2 = lw * nh / nw;
+        }
+        /* 🔴⭐白い地に敷いてから貼る（2026-09-13 本人「ロゴがつぶれた」のあとに分かった）。
+           ⚠すき通ったPNGをそのまま貼ると、⭐すき通った部分が黒くなる */
+        var src = data.logo;
+        if (im && nw && nh) {
+          var cv = document.createElement('canvas');
+          cv.width = nw; cv.height = nh;
+          var cx = cv.getContext('2d');
+          cx.fillStyle = '#fff';
+          cx.fillRect(0, 0, nw, nh);
+          cx.drawImage(im, 0, 0, nw, nh);
+          src = cv.toDataURL('image/png');
+        }
+        doc.addImage(src, 'PNG', fx + (fw - lw) / 2, fy, lw, lh2);
+        fy += lh2 + 1.3;
       } catch (e) { /* ⚠ロゴが読めなくても紙は出す */ }
     }
     data.from.forEach(function (row) {
@@ -219,11 +229,14 @@
      ⚠PDF側で計算し直すと、画面と紙で行数が変わる（2026-09-12 に1行ずれた） */
   function drawTableHead(pen, y, g, heads) {
     var doc = pen.doc, x = X0, h = g.headH;
-    doc.setFillColor(243, 244, 245);
     doc.setDrawColor(119, 119, 119);
     doc.setLineWidth(0.2);
     pen.font(0.92, true);
     g.cols.forEach(function (w, i) {
+      /* 🔴⭐枠ごとに塗りの色を指定し直す（2026-09-13 本人「ナンバー以外が黒塗りになった」）。
+         ⚠PDFでは「文字を描く」と塗りの色が文字の色（黒）に変わる。
+           1回だけ灰色にしても、⭐2つ目の枠からは黒で塗られていた */
+      doc.setFillColor(243, 244, 245);
       doc.rect(x, y, w, h, 'FD');
       pen.put(heads[i] || '', x + w / 2, y + (h - MM(pt(0.92))) / 2, { align: 'center' });
       x += w;

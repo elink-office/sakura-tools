@@ -642,7 +642,10 @@ select.ph option{color:var(--ink)}
 .sheet.sample::after{
   content:"SAMPLE";
   position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-weight:bold;font-size:clamp(46px,17vw,150px);letter-spacing:.14em;
+  /* 🔴⭐大きさは紙に対して決める（2026-09-13 本人「縦も横もどっちも小さいサイズに」）。
+     ⚠前は画面の幅（17vw）で決めていた＝⭐紙を縦にすると、紙が小さいぶん透かしだけ大きく見えた。
+     ⭐紙は縮小して表示されるので、決め打ちの px でも紙といっしょに縮む */
+  font-weight:bold;font-size:84px;letter-spacing:.14em;
   color:rgba(229,143,174,.22);transform:rotate(-18deg);
   pointer-events:none;
 }

@@ -24,9 +24,9 @@
   gtag('config', 'G-GCK29PTKBG');
 </script>
 <title>【テスト】席次表メーカー｜会議・研修・大学の席次表を無料で自動作成</title>
-<meta name="description" content="席次表の作り方は簡単。名簿を貼るだけで、会議・研修・セミナー・大学の席次表が自動で作れる無料ツールです。前を向いて並ぶスクール形式で、席順は名簿順とランダムから選べます。用紙に合わせて自動で調整し、A4の1枚に収めるので、2ページに分かれません。会社名・役職（肩書き）・フリガナ・名前を1マスに並べ、敬称は様・さん・先生から選べます。Excelの名簿から複数の列をそのまま貼り付けでき、通し番号の向きも指定できます。エクセルテンプレートは不要です。印刷とPDFもこのページから。名簿はブラウザの中だけで処理し、AIの学習にも使われません。">
-<link rel="stylesheet" href="../style.css?v=137">
-<link rel="stylesheet" href="seki.css?v=30">
+<meta name="description" content="席次表の作り方は簡単。名簿を貼るだけで、会議・研修・セミナー・大学の席次表が自動で作れる無料ツールです。前を向いて並ぶスクール形式で、席順は名簿順とランダムから選べます。用紙に合わせて自動で調整し、A4の1枚に収めるので、2ページに分かれません。会社名・役職（肩書き）・フリガナ・名前を1マスに並べ、敬称は様・さん・先生から選べます。Excelの名簿から複数の列をそのまま貼り付けでき、通し番号の向きも指定できます。エクセルテンプレートは不要です。PDFもこのページから作れます。名簿はブラウザの中だけで処理し、AIの学習にも使われません。">
+<link rel="stylesheet" href="../style.css?v=138">
+<link rel="stylesheet" href="seki.css?v=32">
 <link rel="stylesheet" href="../print.css?v=63" media="print">
 <style>
 /* 🔴 見本は押すと大きくなる（2026-09-04 本人）。
@@ -326,7 +326,7 @@
 
 
 
-    <p class="hint noprint">条件に反したところは赤くなりますが、そのままでも印刷できます。</p>
+    <p class="hint noprint">条件に反したところは赤くなりますが、そのままでもPDFにできます。</p>
     <div id="vio" class="noprint"></div>
 
     <details class="opt noprint" id="cellCard">
@@ -397,7 +397,7 @@
         <p><strong>分け方は、その言葉をどの行に入れたかで選びます。</strong>学科を「役職・学部・学科」の行に入れたなら、「役職・学部・学科ごと」です。</p>
         <p><strong>「机のかたまり」「縦の列ごと」</strong>は、席のかたまりに色が付きます。グループ討議で使うときは、こちらです。席を動かして人を入れ替えると、色はその席に残ります。</p>
         <p><strong>グループ記号（A・B・C…）を押すと、その席のグループと色を変えられます。</strong>もう一度作り直すと、手で直したぶんは元にもどります。</p>
-        <p>色は印刷にも画像にもそのまま出ます。</p>
+        <p>色はPDFにも画像にもそのまま出ます。</p>
       </div>
       <p class="note-sm">
         席は<strong>ドラッグで動かせます</strong>（スマホ・タブレットは長押ししてから）。グループ記号を押すと、その席のグループと色を変えられます。
@@ -406,7 +406,7 @@
         <input type="checkbox" id="grpOn"> グループに分ける
       </label>
       <label class="chk-inline gap" id="grpNumWrap" hidden>
-        <input type="checkbox" id="grpNum" checked> グループ記号を印刷する
+        <input type="checkbox" id="grpNum" checked> グループ記号をPDFに出す
       </label>
       <div id="grpOpts" hidden style="margin-top:12px">
         <div class="row">
@@ -436,7 +436,6 @@
       <div class="body">
       <div class="tip-body" hidden>
         <p><strong>丸文字はWindowsとiPadだけ。</strong>ほかの機種ではゴシック体になりますが、崩れません。</p>
-        <p class="hint">⚠印刷の困りごと（PDF・たて向き）は、<strong>⑦の「？」</strong>にまとめてあります。</p>
       </div>
       <div class="row">
         <div><label for="font">書体</label>
@@ -476,27 +475,25 @@
     </details>
 
     <section class="card noprint">
-      <h2><span class="step">6</span>印刷・画像で保存&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+      <h2><span class="step">6</span>PDF・画像で保存&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
       <div class="tip-body" hidden>
-        <p><strong>PDFにするとき</strong>は、印刷画面で「送信先」（または「プリンター」）を <strong>PDFに保存</strong> に変えてください。</p>
-        <p><strong>印刷できないとき</strong>は、プリンターとつながっているか確認してください。つながっていれば、スマホからでも印刷できます。</p>
-        <p><strong>たて向きで出てしまうとき</strong>（スマホ・タブレットに多いです）は、印刷画面の設定で用紙の向きを「横」に変えてください。お使いの機種によっては、端末側の設定が優先されます。</p>
+        <p><strong>押すとPDFができます。</strong>上の見本と同じものが、そのままA4の1枚になります。スマホでもパソコンでも同じです。</p>
+        <p><strong>用紙の向き</strong>は、この下で横と縦を選べます。紙に出したいときは、できたPDFを開いて印刷してください。</p>
         <p><strong>「登壇者からの向き」</strong>にすると、紙は前に立って客席を向いた向き（180度まわした形）で出ます。画面はそのままです。受付は参加者と同じ向きで見るので、回すのは登壇者のぶんだけです。</p>
       </div>
       <p style="margin:0 0 10px">
-        <label class="chk-inline"><input type="checkbox" id="printStage"> 印刷（PDF）は登壇者からの向きで出す</label>
+        <label class="chk-inline"><input type="checkbox" id="printStage"> PDFを登壇者からの向きで出す</label>
       </p>
       <div class="print-line">
         <label for="paper">用紙の向き</label>
         <select id="paper" class="narrow"><option value="landscape">横</option><option value="portrait">縦</option></select>
-        <button id="doPrint" type="button">印刷（PDF作成）</button>
+        <button id="doPrint" type="button">PDFで保存</button>
         <button id="doPng" type="button">画像で保存（PNG）</button>
       </div>
-      <p class="hint" style="margin:8px 0 0">印刷したときの見え方は、画面と少しちがいます。<strong>PDFにして確かめてください。</strong></p>
       <details class="opt sub noprint tips-sm" style="margin-top:14px">
         <summary>タブレット・スマホの方へ</summary>
         <div class="body">
-          <p>PDFで保存する場合は、用紙を横にしても1ページに収まらないことがあります。その場合、印刷画面の<strong>倍率（サイズ調整）</strong>で調節してください。（<strong>75〜80％</strong>くらいにすると1ページに収まりやすいです。）</p>
+          <p>スマホやタブレットでも、パソコンと同じPDFができます。<strong>いつも1枚に収まります。</strong>保存先は、お使いの端末の「ダウンロード」や「ファイル」です。</p>
         </div>
       </details>
     </section>
@@ -567,7 +564,7 @@
       <li>どの列が何なのかを<strong>自動で見分けます</strong>。違っていたらメニューで選び直します。</li>
       <li>横と縦の席の数と、前方にあるもの（スクリーン・ホワイトボード・演台）を選びます。</li>
       <li>「席次表を作る」を押すと、名簿順に並んだ席次表ができます。</li>
-      <li>気になるところは<strong>ドラッグで入れ替えて</strong>、印刷します。</li>
+      <li>気になるところは<strong>ドラッグで入れ替えて</strong>、PDFにします。</li>
     </ol>
       <ul class="can">
       <li><b>Excelの名簿をそのまま貼り付け</b><small>会社名・役職・フリガナ・名前を、複数の列のままコピーできます。打ち直しはいりません</small></li>
@@ -576,7 +573,7 @@
       <li><b>敬称を選べる</b><small>様・さん・先生・なし。全員にまとめて付きます</small></li>
       <li><b>通し番号の向きを選べる</b><small>縦・横、左から・右から。受付のご案内に合わせられます</small></li>
       <li><b>A4の1枚に自動で収まる</b><small>人数と列の数から、1マスの大きさと文字の大きさを計算します。2ページに割れません</small></li>
-      <li><b>印刷・PDF</b><small>紙にもPDFにも、このページから出せます。A4の横でも縦でも、紙いっぱいに大きく出ます</small></li>
+      <li><b>PDF</b><small>このページからPDFにできます。A4の横でも縦でも、紙いっぱいに大きく出ます</small></li>
       <li><b>モニター表示</b><small>会場の画面に大きく映せます</small></li>
     </ul>
       <!-- ⭐「こんなときに」は章をやめて、使い方の中に入れた（2026-09-08 本人）-->
@@ -603,7 +600,7 @@
       <div class="body">
       <dl>
       <dt>ネットにつながっているのに、本当に外部に出ないのですか？</dt>
-      <dd><strong>普段使っている端末で、名簿を開くのと同じです。</strong>ネットにつながっていても、<strong>すべて使っている端末だけで完結します</strong>。そのまま印刷やPDFにできます。だから、外に晒されることも、漏れることも、AIの学習に使われることもありません。<strong>いつものパソコン仕事と同じように、安心して使えます。</strong></dd>
+      <dd><strong>普段使っている端末で、名簿を開くのと同じです。</strong>ネットにつながっていても、<strong>すべて使っている端末だけで完結します</strong>。そのままPDFにできます。だから、外に晒されることも、漏れることも、AIの学習に使われることもありません。<strong>いつものパソコン仕事と同じように、安心して使えます。</strong></dd>
       <dt>名簿は外部に送られますか？</dt>
       <dd>送りません。すべて使っている端末だけで完結します。<strong>外部に出ていないので、AIの学習に使われることも、個人情報が漏れることもありません。</strong></dd>
       <dt>個人情報が漏れないか心配です</dt>
@@ -642,8 +639,8 @@
       <dd>並んだ席の形であれば使えます。<strong>円卓（丸テーブル）の席次表は準備中</strong>です。</dd>
       <dt>2ページに分かれてしまいませんか？</dt>
       <dd><strong>分かれません。</strong>人数と列の数、用紙の向きから、1マスの大きさと文字の大きさを計算して、A4の1枚に収めます。Excelのテンプレートのように、はみ出したぶんが次のページに送られることはありません。</dd>
-      <dt>印刷したら小さくなってしまいます</dt>
-      <dd>用紙の向きを<strong>横</strong>にすると、多くの場合は大きく収まります。それでも小さいときは、印刷画面の拡大・縮小で調整してください。</dd>
+      <dt>PDFにしたら小さくなってしまいます</dt>
+      <dd>用紙の向きを<strong>横</strong>にすると、多くの場合は大きく収まります。PDFは紙いっぱいに作るので、あとから拡大・縮小をする必要はありません。</dd>
     </dl>
       </div>
     </details>
@@ -669,8 +666,9 @@
     <span class="copy">さくらツール　© 2026 SAKURA TOOLS</span></div>
 </footer>
 
+<script src="../paper-pdf.js?v=2"></script>
 <script src="../seating.js?v=57"></script>
-<script src="seki.js?v=72"></script>
+<script src="seki.js?v=73"></script>
 <!-- 🔴 印刷用の1枚絵の置き場。⚠body の直下に置くこと -->
 <div id="printImgWrap"></div>
 <script src="../tip.js?v=3"></script>

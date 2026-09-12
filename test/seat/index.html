@@ -7,7 +7,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SAKURA TOOLS">
 <meta property="og:title" content="教室の座席表メーカー｜席替えを簡単に・30人40人・4列">
-<meta property="og:description" content="名簿を貼るだけで席替えができる無料ツール。エクセルテンプレートは不要。30人・35人・40人、4列〜8列の教室席配置に対応。班分け・色分け・先生の向きへの反転・印刷・PDFまでこのページで。">
+<meta property="og:description" content="名簿を貼るだけで席替えができる無料ツール。エクセルテンプレートは不要。30人・35人・40人、4列〜8列の教室席配置に対応。班分け・色分け・先生の向きへの反転・PDFまでこのページで。">
 <meta property="og:url" content="https://sakura-tools.com/seat/">
 <meta property="og:image" content="https://sakura-tools.com/ogp.png">
 <meta property="og:image:width" content="1200">
@@ -25,8 +25,8 @@
 </script>
 <meta name="google-site-verification" content="PfjmCGxUaN1hzuj_dRw3e4PTY6xepghfXM_CrU_sO-A" />
 <title>【テスト】教室の座席表メーカー｜席替えを簡単に・30人40人・4列</title>
-<meta name="description" content="教室の座席表の作り方は簡単。名簿を貼るだけで席替えができる無料ツールです。エクセルテンプレートは不要。新年度の出席番号順にも対応。小学校・中学校・高校のどのクラスでも、30人・35人・40人、4列・5列・6列・8列の教室席配置に対応。生徒に見せる向きと、先生が教卓から見る向きを切り替えられます。班分けと色分けもそのまま印刷・PDFにできます。エクセルテンプレートのダウンロードも、登録もいりません。名簿はブラウザの中だけで処理し、AIの学習にも使われません。">
-<link rel="stylesheet" href="../style.css?v=137">
+<meta name="description" content="教室の座席表の作り方は簡単。名簿を貼るだけで席替えができる無料ツールです。エクセルテンプレートは不要。新年度の出席番号順にも対応。小学校・中学校・高校のどのクラスでも、30人・35人・40人、4列・5列・6列・8列の教室席配置に対応。生徒に見せる向きと、先生が教卓から見る向きを切り替えられます。班分けと色分けもそのままPDFにできます。エクセルテンプレートのダウンロードも、登録もいりません。名簿はブラウザの中だけで処理し、AIの学習にも使われません。">
+<link rel="stylesheet" href="../style.css?v=138">
 <link rel="stylesheet" href="seat.css?v=11">
 <link rel="stylesheet" href="../print.css?v=63" media="print">
 <style>
@@ -170,6 +170,10 @@ body.screen .sheet.masked .grid{display:grid}
 .seat.dup .nm{text-decoration:underline wavy #e05a2b;text-underline-offset:3px}
 /* 先生が確かめるための印なので、紙・モニター・画像には出さない */
 @media print{.seat.same{box-shadow:none}.seat.dup .nm{text-decoration:none}}
+/* 🔴⭐PDFを作っているあいだは、画面だけのしるしを消す（2026-09-13）。
+   ⚠PDFは画面を測って写すので、@media print は効かない。⭐同じ内容をここに持つ */
+body.pdfing .seat.same{box-shadow:none}
+body.pdfing .seat.dup .nm{text-decoration:none}
 body.screen .seat.same{box-shadow:none}
 body.screen .seat.dup .nm{text-decoration:none}
 .cls-box{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
@@ -476,7 +480,7 @@ body.screen .seat.dup .nm{text-decoration:none}
 
     <div id="printAll"></div>
 
-    <p class="hint noprint">条件に反したところは赤くなりますが、そのままでも印刷できます。<strong>文字が小さい場合は更新してください。</strong></p>
+    <p class="hint noprint">条件に反したところは赤くなりますが、そのままでもPDFにできます。<strong>文字が小さい場合は更新してください。</strong></p>
     <div id="vio" class="noprint"></div>
 
     <details class="opt noprint" id="sexCard">
@@ -495,7 +499,7 @@ body.screen .seat.dup .nm{text-decoration:none}
         <label class="chk-inline">
           <input type="checkbox" id="sexPrint" checked> 男女で色を分ける
         </label>
-        <span class="hint" style="margin-left:8px">外すと<strong>画面上の文字が全部黒</strong>になります。<strong>⑥で、印刷のみ名前を黒に設定する</strong>こともできます。</span>
+        <span class="hint" style="margin-left:8px">外すと<strong>画面上の文字が全部黒</strong>になります。<strong>⑥で、PDFのみ名前を黒に設定する</strong>こともできます。</span>
       </p>
 
       <div id="sexList" class="chips"></div>
@@ -509,7 +513,7 @@ body.screen .seat.dup .nm{text-decoration:none}
         <p>班は<strong>机のかたまり</strong>に付きます。席をドラッグして人を入れ替えると、班もそのまま入れ替わります。</p>
         <p>机は前後2つでひと組。4人なら2席×2段、6人なら3席×2段、<strong>3人ならかぎ型</strong>です。ひとりだけの班は作りません（35人を2人ずつなら、3人の班が1つできます）。</p>
         <p><strong>班の番号を押すと、その席の班を変えられます。</strong>「この子だけ となりの班に」ができます。もう一度席替えをすると、手で直したぶんは元にもどります。</p>
-        <p>「班の番号を出す」を外しても、この画面には薄く残ります（押せば変えられます）。紙・モニター・画像には出ません。色は印刷にも画像にもそのまま出ます。</p>
+        <p>「班の番号を出す」を外しても、この画面には薄く残ります（押せば変えられます）。紙・モニター・画像には出ません。色はPDFにも画像にもそのまま出ます。</p>
       </div>
       <p class="note-sm">
         席は<strong>マグネットのように、ドラッグで入れ替え</strong>ができます（スマホ・タブレットは長押ししてから）。班番号を押すと、その席の班と色を変えられます。
@@ -583,8 +587,7 @@ body.screen .seat.dup .nm{text-decoration:none}
       <div class="body">
       <div class="tip-body" hidden>
         <p><strong>丸文字はWindowsとiPadだけ。</strong>ほかの機種ではゴシック体になりますが、崩れません。</p>
-        <p><strong>「印刷（PDF）は先生の向きで出す」</strong>にすると、紙は教卓から見た向きになります。画面はそのままなので、生徒に見せるのは画面で足ります。</p>
-        <p class="hint">⚠印刷の困りごと（PDF・たて向き・2ページに分かれる）は、<strong>⑥の「？」</strong>にまとめてあります。</p>
+        <p><strong>「PDFを先生の向きで出す」</strong>にすると、紙は教卓から見た向きになります。画面はそのままなので、生徒に見せるのは画面で足ります。</p>
       </div>
       <div class="row">
         <div><label for="font">書体</label>
@@ -624,35 +627,32 @@ body.screen .seat.dup .nm{text-decoration:none}
           <input type="checkbox" id="showCredit" checked> 右下にサイト名を入れる
         </label>
       </p>
-      <p class="hint" style="margin-top:6px">印刷の向きや大きさは、使っている端末・プリンターの設定によります。うまく収まらないときは、印刷画面の<strong>拡大・縮小</strong>で調整してください。</p>
+      <p class="hint" style="margin-top:6px">PDFは、選んだ用紙の向きのまま、紙いっぱいに作ります。端末やプリンターの設定に左右されません。</p>
       </div>
     </details>
 
     <section class="card noprint">
-      <h2><span class="step">6</span>印刷・画像で保存&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+      <h2><span class="step">6</span>PDF・画像で保存&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
       <div class="tip-body" hidden>
-        <p><strong>PDFにするとき</strong>は、印刷画面で「送信先」（または「プリンター」）を <strong>PDFに保存</strong> に変えてください。</p>
-        <p><strong>印刷できないとき</strong>は、プリンターとつながっているか確認してください。つながっていれば、スマホからでも印刷できます。</p>
-        <p><strong>たて向きで出てしまうとき</strong>（スマホ・タブレットに多いです）は、印刷画面の設定で用紙の向きを「横」に変えてください。お使いの機種によっては、端末側の設定が優先されます。</p>
-        <p><strong>2ページに分かれてしまうとき</strong>は、印刷画面の<strong>「サイズ調整」を80%</strong>くらいにしてください。画像で保存して、写真アプリから印刷する方法もあります。</p>
+        <p><strong>押すとPDFができます。</strong>上の見本と同じものが、そのままA4の1枚になります。スマホでもパソコンでも同じです。</p>
+        <p><strong>用紙の向き</strong>は、この下で横と縦を選べます。紙に出したいときは、できたPDFを開いて印刷してください。</p>
         <p><strong>「先生の向き」</strong>にすると、紙は教卓から見た向き（180度まわした形）で出ます。画面はそのままです。</p>
         <p><strong>「男女の色を出さない」</strong>にすると、紙だけ黒で出ます。<strong>画面は色が付いたままです。</strong>③で色を消すと画面も黒くなるので、紙だけ黒にしたいときはこちらを使ってください。</p>
       </div>
       <p style="margin:0 0 10px">
-        <label class="chk-inline"><input type="checkbox" id="printTeacher" checked> 印刷（PDF）は先生の向きで出す</label>
-        <label class="chk-inline gap"><input type="checkbox" id="printBW"> 印刷（PDF）は男女の色を出さない</label>
+        <label class="chk-inline"><input type="checkbox" id="printTeacher" checked> PDFを先生の向きで出す</label>
+        <label class="chk-inline gap"><input type="checkbox" id="printBW"> PDFは男女の色を出さない</label>
       </p>
       <div class="print-line">
         <label for="paper">用紙の向き</label>
         <select id="paper" class="narrow"><option value="landscape">横</option><option value="portrait">縦</option></select>
-        <button id="doPrint" type="button">印刷（PDF作成）</button>
+        <button id="doPrint" type="button">PDFで保存</button>
         <button id="doPng" type="button">画像で保存（PNG）</button>
       </div>
-      <p class="hint" style="margin:8px 0 0">印刷したときの見え方は、画面と少しちがいます。<strong>PDFにして確かめてください。</strong></p>
       <details class="opt sub noprint tips-sm" style="margin-top:14px">
         <summary>タブレット・スマホの方へ</summary>
         <div class="body">
-          <p>PDFで保存する場合は、用紙を横にしても1ページに収まらないことがあります。その場合、印刷画面の<strong>倍率（サイズ調整）</strong>で調節してください。（<strong>75〜80％</strong>くらいにすると1ページに収まりやすいです。）</p>
+          <p>スマホやタブレットでも、パソコンと同じPDFができます。<strong>いつも1枚に収まります。</strong>保存先は、お使いの端末の「ダウンロード」や「ファイル」です。</p>
         </div>
       </details>
     </section>
@@ -741,15 +741,15 @@ body.screen .seat.dup .nm{text-decoration:none}
       <li>横と縦の席の数、黒板の位置を選びます。</li>
       <li>必要に応じて「詳しい条件」で、離す組・隣にする組・席を決める人を指定します。</li>
       <li>「席替えする」を押すと<strong>3つの案</strong>が出るので、見比べて選びます。</li>
-      <li><strong>班分け</strong>や<strong>男女の色分け</strong>も、そのままできます。班の色は印刷にも出ます。</li>
+      <li><strong>班分け</strong>や<strong>男女の色分け</strong>も、そのままできます。班の色はPDFにも出ます。</li>
       <li>気になるところは<strong>マグネットのように入れ替え</strong>られます。マウスでも指でも同じように動きます。</li>
-      <li>印刷やPDFで保存して、<strong>1年を通して座席を管理する</strong>こともできます。</li>
+      <li>PDFで保存して、<strong>1年を通して座席を管理する</strong>こともできます。</li>
     </ol>
       <ul class="can">
       <li><b>マグネットのように入れ替えも自由自在</b><small>席をつまんで動かすだけ。マウスでも指でも同じように動きます</small></li>
       <li><b>班分け</b><small>1班の人数を決めるだけ。<b>30人なら3人班で10班、4人班で8班</b>に分かれます。3人のときは前後をふくむかぎ型に組みます</small></li>
-      <li><b>色分け</b><small>班ごとに色が付きます。印刷にもそのまま出ます</small></li>
-      <li><b>印刷・PDF</b><small>紙にもPDFにも、このページから出せます。A4の横でも縦でも、紙いっぱいに大きく出ます</small></li>
+      <li><b>色分け</b><small>班ごとに色が付きます。PDFにもそのまま出ます</small></li>
+      <li><b>PDF</b><small>このページからPDFにできます。A4の横でも縦でも、紙いっぱいに大きく出ます</small></li>
       <li><b>モニター表示</b><small>教室の画面に大きく映せます。映したまま席替えもできます</small></li>
     </ul>
       <!-- ⭐「こんなときに」は章をやめて、使い方の中に入れた（2026-09-08 本人）-->
@@ -775,7 +775,7 @@ body.screen .seat.dup .nm{text-decoration:none}
       <div class="body">
       <dl>
       <dt>ネットにつながっているのに、本当に外部に出ないのですか？</dt>
-      <dd><strong>普段使っている端末で、名簿を開くのと同じです。</strong>エクセルで名簿を開いても、書いた中身がネットに出ていかないのと同じことです。ネットにつながっていても、<strong>すべて使っている端末だけで完結します</strong>。そのまま印刷やPDFにできます。だから、外に晒されることも、漏れることも、AIの学習に使われることもありません。<strong>いつもの仕事と同じように、安心して使えます。</strong></dd>
+      <dd><strong>普段使っている端末で、名簿を開くのと同じです。</strong>エクセルで名簿を開いても、書いた中身がネットに出ていかないのと同じことです。ネットにつながっていても、<strong>すべて使っている端末だけで完結します</strong>。そのままPDFにできます。だから、外に晒されることも、漏れることも、AIの学習に使われることもありません。<strong>いつもの仕事と同じように、安心して使えます。</strong></dd>
       <dt>名簿は外部に送られますか？</dt>
       <dd>送りません。すべて使っている端末だけで完結します。<strong>外部に出ていないので、AIの学習に使われることもありません。</strong></dd>
       <dt>入力した名簿がAIの学習に使われるか心配です</dt>
@@ -803,7 +803,7 @@ body.screen .seat.dup .nm{text-decoration:none}
       <dt>先生が教卓から見る向きにできますか？</dt>
       <dd>できます。「黒板の位置」を<strong>下</strong>にすると、<strong>紙を180度まわした向き</strong>になります。生徒に見せる向きで左上が1番なら、先生の向きでは右下が1番です。上下だけでなく<strong>左右も入れ替わる</strong>ので、教卓に立ったまま名前を探せます。</dd>
       <dt>座席表のテンプレートはありますか？</dt>
-      <dd><strong>テンプレートはいりません。</strong>Excelのファイルをダウンロードして編集する必要がなく、このページで名簿を貼り付ければ、そのまま座席表になります。印刷とPDFもこのページからできます。</dd>
+      <dd><strong>テンプレートはいりません。</strong>Excelのファイルをダウンロードして編集する必要がなく、このページで名簿を貼り付ければ、そのまま座席表になります。PDFもこのページから作れます。</dd>
     </dl>
       </div>
     </details>
@@ -829,8 +829,9 @@ body.screen .seat.dup .nm{text-decoration:none}
     <span class="copy">さくらツール　© 2026 SAKURA TOOLS</span></div>
 </footer>
 
+<script src="../paper-pdf.js?v=2"></script>
 <script src="../seating.js?v=57"></script>
-<script src="seat.js?v=186"></script>
+<script src="seat.js?v=187"></script>
 <!-- 🔴 印刷用の1枚絵の置き場（2026-09-01）。画面には出ない。
      ⚠**body の直下に置くこと。**中に入れると、印刷のときに親ごと隠されて白紙になる -->
 <div id="printImgWrap"></div>

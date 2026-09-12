@@ -1337,7 +1337,7 @@
       return v.name + 'さんが指定した席にいません';
     });
     el.innerHTML = '<div class="notice warn">' + lines.map(esc).join('<br>') +
-      '<br><small>このままでも印刷できます。</small></div>';
+      '<br><small>このままでもPDFにできます。</small></div>';
   }
 
   // ---- 1つ戻す（2026-09-03 本人・現場の先生「手が当たっただけで入れ替わって困る」） ----
@@ -1562,7 +1562,46 @@
       state.board = 'bottom';
       drawSheet();
     }
-    if ($('printWhat') && $('printWhat').value === 'all' && state.plans.length) buildAll();
+    var wantAll = !!($('printWhat') && $('printWhat').value === 'all' && state.plans.length);
+    if (wantAll) buildAll();
+
+    /* 🔴⭐PDFは自分で描く（2026-09-13 本人「PDFのレイアウト、見本と一緒っていうのが
+       すごく最重要」）。⚠ブラウザの印刷を通らないので、端末にも余白の設定にも左右されない。
+       ⭐紙は画面の見本をそのまま測って写す（paper-pdf.js） */
+    if (window.PAPER_PDF) {
+      var sh = $('sheet');
+      /* ⚠画面だけの見え方を、紙の見え方にそろえてから写す */
+      document.body.classList.add('pdfing');
+      var offMask = sh.classList.contains('masked');
+      if (offMask) sh.classList.remove('masked');            /* かくす板は紙に出さない */
+      var offSex = printBW && sh.classList.contains('sexprint');
+      if (offSex) sh.classList.remove('sexprint');           /* 「紙は男女の色を出さない」 */
+
+      var els = wantAll
+        ? Array.prototype.slice.call($('printAll').querySelectorAll('.sheet'))
+        : [sh];
+      var land = ($('paper') && $('paper').value === 'landscape');
+      var name = (sheetTitle().replace(/\s/g, '') || '座席表');
+      var btn = $('doPrint'), label = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'PDFを作っています…';
+
+      var back = function () {
+        btn.disabled = false;
+        btn.textContent = label;
+        document.body.classList.remove('pdfing');
+        if (offMask) sh.classList.add('masked');
+        if (offSex) sh.classList.add('sexprint');
+        afterPaper();
+      };
+      window.PAPER_PDF.saveMany(els, { landscape: land, name: name })
+        .then(back)
+        .catch(function (e) {
+          back();
+          alert('PDFを作れませんでした。' + (e && e.message ? ('　' + e.message) : ''));
+        });
+      return;
+    }
     /* 🔴⭐文字のまま印刷する（2026-09-10 本人「基本は文字方式に統一」）。
        ⚠これまでは画面を写真にして印刷していた＝崩れないが、文字が残らない・拡大でぼやける。
        ⭐紙だけを body の直下に出せば、画面用の指定がかからず、見本と紙が同じ大きさになる
@@ -1657,7 +1696,7 @@
     if (typeof fitSheet === 'function') fitSheet();
   }
 
-  window.addEventListener('afterprint', function () {
+  function afterPaper() {
     document.body.classList.remove('print-all');
     printBW = false;
     document.body.classList.remove('print-img');
@@ -1668,7 +1707,8 @@
     // ⚠ 描き直しが終わってから戻す。すぐ戻すと、まだ高さが足りずに効かない
     setTimeout(function () { window.scrollTo(0, printScrollY); }, 0);
     setTimeout(function () { window.scrollTo(0, printScrollY); }, 250);
-  });
+  }
+  window.addEventListener('afterprint', afterPaper);
 
   // ---- PNGで保存（自分で描くので外部の部品は使わない）----
   function roundRect(x, l, t, w, h, r) {
