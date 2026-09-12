@@ -16,12 +16,14 @@ var DOCS = {
   seikyu: {
     title:'請求書', file:'請求書',
     amount:'ご請求金額（税込）', lead:'下記のとおりご請求申し上げます。',
-    dueLabel:'お支払い期限', showBank:true, dueMode:'monthEnd'
+    dueLabel:'お支払い期限', showBank:true, dueMode:'monthEnd',
+    payLabel:'差引ご請求額'
   },
   mitsumori: {
     title:'見積書', file:'見積書',
     amount:'お見積金額（税込）', lead:'下記のとおりお見積り申し上げます。',
-    dueLabel:'有効期限', showBank:false, dueMode:'plus1m'
+    dueLabel:'有効期限', showBank:false, dueMode:'plus1m',
+    payLabel:'差引お支払予定額'
   }
 };
 var D = DOCS[DOC] || DOCS.seikyu;
@@ -321,13 +323,56 @@ function roundTax(x){
 }
 function yen(n){ return Number(n).toLocaleString('ja-JP'); }
 
+/* ⭐住所は「/」で改行できる（2026-09-11 本人
+   「自分の住所が変なところで改行されることがある」）。
+   ⭐日本の住所に「/」は使わないので、区切りに使って安全。⭐全角の「／」も受ける */
+function addrHtml(v){
+  return esc(v).replace(/[\/／]\s*/g, '<br>');
+}
+
+/* ⭐郵便番号は7桁固定。⭐数字だけで打っても 100-0005 にできる */
+function fmtZip(v){
+  var d = v.replace(/[^0-9]/g, '');
+  return (d.length === 7) ? (d.slice(0,3) + '-' + d.slice(3)) : v;
+}
+/* ⭐電話番号に「－」を入れる（2026-09-11 本人「-なしで入力した人には-を付けて保存して」）。
+   🔴⚠市外局番の桁数は番号だけでは決められない（03＝2桁、045＝3桁、0166＝4桁）。
+   ⭐だから**確実に分かるものだけ**付ける。⚠分からないものは触らない＝壊さない */
+function fmtTel(v){
+  var d = v.replace(/[^0-9]/g, '');
+  if(d.length === 11 && /^(070|080|090|050)/.test(d)) return d.slice(0,3) + '-' + d.slice(3,7) + '-' + d.slice(7);
+  if(d.length === 10 && /^0120/.test(d))              return '0120-' + d.slice(4,7) + '-' + d.slice(7);
+  if(d.length === 10 && /^(03|06)/.test(d))           return d.slice(0,2) + '-' + d.slice(2,6) + '-' + d.slice(6);
+  return v;
+}
+
+/* ⭐源泉徴収税額（2026-09-11）
+   出典＝国税庁 No.2795「原稿料や講演料等を支払ったとき」
+     ⭐100万円以下 … A × 10.21%
+     ⭐100万円超　 … (A - 100万円) × 20.42% ＋ 102,100円
+   ⚠1円未満は切り捨て（決まっている）。⭐消費税の端数の設定（roundSel）は流用しない */
+function withholdTax(a){
+  if(!(a > 0)) return 0;
+  var t = (a <= 1000000) ? a * 0.1021 : (a - 1000000) * 0.2042 + 102100;
+  return Math.floor(t);
+}
+
 /* ========== 計算と見本 ========== */
 var TOTAL = 0;
+/* ⭐単価を税込で入れているか（2026-09-11 本人「税込も欲しいって言われた」） */
+var INC = false;
+/* ⭐税率ごとの打ったままの合計（税込モードのときは税込額） */
+var GROSS = {10:0, 8:0, 0:0};
+/* ⭐源泉徴収の状態 */
+var WH = { on:false, gross:false, base:0, tax:0 };
 /* ⭐サンプルのまま刷ってしまう事故を防ぐ透かし。手を入れたら消える */
 var SAMPLE_ON = false;
 
 function calc(){
-  var list = [], sub = 0, base = {10:0, 8:0, 0:0};
+  /* ⭐単価を税込で入れているか（2026-09-11） */
+  INC = !!($('priceMode') && $('priceMode').value === 'in');
+
+  var list = [], sum = 0, gross = {10:0, 8:0, 0:0};
 
   var no = 0;
   rows().forEach(function(tr){
@@ -336,23 +381,61 @@ function calc(){
     if(!r.empty) no++;
     tr.querySelector('.c-no').textContent = r.empty ? '' : no;
     list.push(r);
-    sub += r.amt;
-    base[r.rate] = (base[r.rate] || 0) + r.amt;
+    sum += r.amt;
+    gross[r.rate] = (gross[r.rate] || 0) + r.amt;
   });
 
   /* ⭐途中の空の行はそのまま紙に出す。いちばん下に続く空の行だけ落とす（2026-09-09 本人） */
   while(list.length && list[list.length-1].empty) list.pop();
 
-  var tax10 = roundTax(base[10] * 0.10);
-  var tax8  = roundTax(base[8]  * 0.08);
-  var total = sub + tax10 + tax8;
+  var base = {10:0, 8:0, 0:0}, tax10, tax8, sub, total;
+  if(INC){
+    /* ⭐税込で入れたときは割り戻す。
+       ⚠1行ずつ割り戻すと1円ずつずれて合計が合わなくなる。
+       ⭐割り戻しは税率ごとに「合計で1回だけ」 */
+    tax10 = roundTax(gross[10] * 10 / 110);
+    tax8  = roundTax(gross[8]  *  8 / 108);
+    base[10] = gross[10] - tax10;
+    base[8]  = gross[8]  - tax8;
+    base[0]  = gross[0];
+    sub = total = sum;              /* ⭐打った金額がそのまま合計（税込） */
+  } else {
+    base  = gross;
+    tax10 = roundTax(base[10] * 0.10);
+    tax8  = roundTax(base[8]  * 0.08);
+    sub   = sum;
+    total = sum + tax10 + tax8;
+  }
+  GROSS = gross;
   TOTAL = total;
 
-  $('sumSub').textContent   = yen(sub) + ' 円';
-  $('sumTax10').textContent = yen(tax10) + ' 円';
-  $('sumTax8').textContent  = yen(tax8) + ' 円';
-  $('sumTotal').textContent = yen(total) + ' 円';
-  $('rowTax8').style.display = (base[8] > 0) ? '' : 'none';
+  /* ⭐源泉徴収。⭐もとにする額は原則税込だが、
+     ⭐請求書に消費税額が分けて書いてあれば税抜でよい（国税庁 No.6929）。
+     ⭐この道具は消費税額を必ず出すので、既定は税抜 */
+  var whOn    = !!($('useWithhold') && $('useWithhold').checked);
+  var whGross = !!(whOn && $('whTarget') && $('whTarget').value === 'gross');
+  var whBase  = whOn ? (whGross ? total : (base[10] + base[8] + base[0])) : 0;
+  WH = { on:whOn, gross:whGross, base:whBase, tax: whOn ? withholdTax(whBase) : 0 };
+  var payAmt = total - WH.tax;
+
+  /* --- 画面の合計欄 --- */
+  var set = function(id, txt){ var e = $(id); if(e) e.textContent = txt; };
+  var show = function(id, on){ var e = $(id); if(e) e.style.display = on ? '' : 'none'; };
+  set('sumSubTh',   INC ? '合計（税込）' : '小計');
+  set('sumSub',     yen(sub) + ' 円');   /* ⭐税込のときは sub がそのまま合計 */
+  set('sumTax10Th', INC ? '（うち消費税 10%）' : '消費税（10%）');
+  set('sumTax8Th',  INC ? '（うち消費税 8%）'  : '消費税（8%）');
+  set('sumTax10',   yen(tax10) + ' 円');
+  set('sumTax8',    yen(tax8) + ' 円');
+  set('sumTotal',   yen(total) + ' 円');
+  set('sumWh',      '-' + yen(WH.tax) + ' 円');
+  set('sumPayTh',   D.payLabel);
+  set('sumPay',     yen(payAmt) + ' 円');
+  show('rowTax8',  gross[8] > 0);
+  show('rowTotal', !INC);            /* 税込のときは一番上がもう合計 */
+  show('rowWh',    whOn);
+  show('rowPay',   whOn);
+  if($('whTargetWrap')) $('whTargetWrap').hidden = !whOn;
 
   renderPages(list, sub, base, tax10, tax8, total);
   fitSheet();
@@ -376,7 +459,7 @@ function headHtml(total){
   var solo = meName && !/(事務所|工房|デザイン|オフィス|スタジオ|商店|工務店|企画|製作所|舎|堂|屋|Studio|Office|Design|Works|Lab)/i.test(meName);
   var nameLine = meName ? ('<span class="from-name' + (solo ? ' solo' : '') + '">' + esc(meName) + '</span>') : '';
   var zip  = $('meZip').value.trim()  ? ('〒' + esc($('meZip').value.trim())) : '';
-  var addr = $('meAddr').value.trim() ? esc($('meAddr').value.trim()) : '';
+  var addr = $('meAddr').value.trim() ? addrHtml($('meAddr').value.trim()) : '';
   var tel  = $('meTel').value.trim()  ? ('TEL ' + esc($('meTel').value.trim())) : '';
   var mail = $('meMail').value.trim() ? esc($('meMail').value.trim()) : '';
 
@@ -399,7 +482,7 @@ function headHtml(total){
 
   h += '<div class="inv-head">';
   h += '<div class="inv-to"><div class="to-name">' + esc(toName) + (honor ? '　' + esc(honor) : '') + '</div>';
-  if($('toAddr').value.trim())   h += '<div class="to-addr">' + esc($('toAddr').value.trim()) + '</div>';
+  if($('toAddr').value.trim())   h += '<div class="to-addr">' + addrHtml($('toAddr').value.trim()) + '</div>';
   if($('toPerson').value.trim()) h += '<div class="to-addr">' + esc($('toPerson').value.trim()) + '</div>';
   h += '</div>';
   h += '<div class="inv-from">' +
@@ -458,18 +541,43 @@ function footHtml(sub, base, tax10, tax8, total){
   var useInv = $('useInvoice').checked;
   var h = '';
   h += '<div class="det-sum"><table>';
-  h += '<tr><th>小計</th><td>' + yen(sub) + '</td></tr>';
-  if(useInv){
-    if(base[10]) h += '<tr><th>10%対象</th><td>' + yen(base[10]) + '</td></tr>';
-    if(base[8])  h += '<tr><th>※8%対象</th><td>' + yen(base[8]) + '</td></tr>';
+  if(INC){
+    /* ⭐税込で入れたとき＝内税の書き方。
+       ⭐消費税額は必ず出す（※インボイスにも、源泉の「区分」にも要る） */
+    h += '<tr class="t"><th>合計（税込）</th><td>' + yen(total) + '</td></tr>';
+    if(useInv){
+      if(GROSS[10]) h += '<tr><th>10%対象（税込）</th><td>' + yen(GROSS[10]) + '</td></tr>';
+      if(GROSS[8])  h += '<tr><th>※8%対象（税込）</th><td>' + yen(GROSS[8]) + '</td></tr>';
+    }
+    if(tax10) h += '<tr><th>（うち消費税 10%）</th><td>' + yen(tax10) + '</td></tr>';
+    if(tax8)  h += '<tr><th>（うち消費税 8%）</th><td>' + yen(tax8) + '</td></tr>';
+  } else {
+    h += '<tr><th>小計</th><td>' + yen(sub) + '</td></tr>';
+    if(useInv){
+      if(base[10]) h += '<tr><th>10%対象</th><td>' + yen(base[10]) + '</td></tr>';
+      if(base[8])  h += '<tr><th>※8%対象</th><td>' + yen(base[8]) + '</td></tr>';
+    }
+    if(tax10) h += '<tr><th>消費税（10%）</th><td>' + yen(tax10) + '</td></tr>';
+    if(tax8)  h += '<tr><th>消費税（8%）</th><td>' + yen(tax8) + '</td></tr>';
+    h += '<tr class="t"><th>合計</th><td>' + yen(total) + '</td></tr>';
   }
-  if(tax10) h += '<tr><th>消費税（10%）</th><td>' + yen(tax10) + '</td></tr>';
-  if(tax8)  h += '<tr><th>消費税（8%）</th><td>' + yen(tax8) + '</td></tr>';
-  h += '<tr class="t"><th>合計</th><td>' + yen(total) + '</td></tr>';
+  /* ⭐源泉徴収を引いて、実際に振り込まれる額を出す */
+  if(WH.on){
+    h += '<tr><th>源泉徴収税額</th><td>-' + yen(WH.tax) + '</td></tr>';
+    h += '<tr class="t"><th>' + esc(D.payLabel) + '</th><td>' + yen(total - WH.tax) + '</td></tr>';
+  }
   h += '</table></div>';
 
-  if(useInv && base[8]){
-    h += '<p style="font-size:.85em;margin-top:8px">※は軽減税率（8%）の対象です。</p>';
+  var notes = [];
+  if(INC) notes.push('※単価・金額は税込です。');
+  if(useInv && (INC ? GROSS[8] : base[8])) notes.push('※は軽減税率（8%）の対象です。');
+  if(WH.on){
+    notes.push('源泉徴収税額は' +
+      (WH.gross ? '合計（税込）' : '報酬額（税抜）') +
+      ' ' + yen(WH.base) + '円 に対する額です。');
+  }
+  if(notes.length){
+    h += '<p style="font-size:.85em;margin-top:8px">' + notes.map(esc).join('<br>') + '</p>';
   }
 
   var pay = [];
@@ -784,6 +892,9 @@ function nowForm(){
     subject: $('subject').value.trim(),
     items  : items,
     round  : $('roundSel').value,
+    price  : $('priceMode') ? $('priceMode').value : 'ex',
+    wh     : { on: !!($('useWithhold') && $('useWithhold').checked),
+               target: $('whTarget') ? $('whTarget').value : 'net' },
     cols   : { code:$('colCode').checked, date:$('colDate').checked },
     note   : $('note') ? $('note').value : ''
   };
@@ -794,6 +905,11 @@ function useForm(f){
   if(!f) return;
   if(f.subject) $('subject').value = f.subject;
   if(f.round) $('roundSel').value = f.round;
+  if(f.price && $('priceMode')) $('priceMode').value = f.price;
+  if(f.wh && $('useWithhold')){
+    $('useWithhold').checked = !!f.wh.on;
+    if(f.wh.target && $('whTarget')) $('whTarget').value = f.wh.target;
+  }
   if(f.cols){ $('colCode').checked = !!f.cols.code; $('colDate').checked = !!f.cols.date; }
   $('itemBody').innerHTML = '';
   (f.items || []).forEach(function(r){ addRow(r); });
@@ -891,10 +1007,12 @@ function parseTable(text){
   return out;
 }
 
+/* ⭐入ったら true、読めなかったら false を返す（2026-09-11）。
+   ⭐呼んだ側が「入ったときだけ④を開く」をできるように */
 function putRows(list, msgEl){
   if(!list.length){
     alert('読み取れる行がありませんでした。品目・数量・単位・単価の順に並んでいるか見てください。');
-    return;
+    return false;
   }
   /* ⭐品番や日付が入っていたら、その列を自動で出す */
   if(list.some(function(r){ return r.code; })) $('colCode').checked = true;
@@ -905,9 +1023,15 @@ function putRows(list, msgEl){
   drawCols();
   calc();
   if(msgEl){
-    msgEl.textContent = list.length + '行を入れました';
+    /* ⭐どこに入ったかまで書く（2026-09-11 本人）。
+       ⚠請求書は「④請求の内容」、見積書は「④見積の内容」。
+       ⭐文字を手で持たず、見出し（summary）から取る＝必ず一致する */
+    var s4 = $('s4Box') && $('s4Box').querySelector('summary');
+    var where = s4 ? s4.textContent.replace(/\s+/g, '') : '④';
+    msgEl.textContent = list.length + '行を' + where + 'に入れました';
     flash(msgEl);
   }
+  return true;
 }
 
 /* ========== 取引先 ========== */
@@ -930,6 +1054,16 @@ function drawClients(){
   $('clientCount').textContent = db.clients.length + '／20件';
   /* ⚠1件も無いときは、②の呼び出しを出さない（はじめての人には邪魔なだけ） */
   $('quickLoad').hidden = !db.clients.length;
+  /* ⭐0件のときは⑧の「えらぶ」「上書き」「削除」も出さない（2026-09-11 本人）。
+     ⚠何も無いのに消せるように見えていた。⭐残るのは「新しい名前で保存」だけ */
+  showWhenHas(db.clients.length, 'clientHave', ['clientSave', 'clientDel']);
+}
+
+/* ⭐件数が0なら隠す、あれば出す（一覧の行と、それを使うボタン） */
+function showWhenHas(n, rowId, btnIds){
+  var on = n > 0;
+  if($(rowId)) $(rowId).hidden = !on;
+  btnIds.forEach(function(id){ if($(id)) $(id).hidden = !on; });
 }
 
 /* ========== 取引の内容の一覧 ========== */
@@ -950,6 +1084,8 @@ function drawForms(){
   });
   if($('formCount')) $('formCount').textContent = db.forms.length + '／' + MAX_FORMS + '件';
   if($('formLoad')) $('formLoad').hidden = !db.forms.length;
+  /* ⭐0件のときは⑧の「えらぶ」「上書き」「削除」も出さない（2026-09-11 本人） */
+  showWhenHas(db.forms.length, 'formHave', ['formSave', 'formDel']);
 }
 
 /* ⭐④をまとめて消す（2026-09-10 本人「内容を消すっていうことも必要だよね」） */
@@ -1033,13 +1169,30 @@ var SAMPLE_5 = [
   {name:'写真の選定と加工',   qty:1, unit:'式',   price:12000, rate:10},
   {name:'打ち合わせ',         qty:2, unit:'時間', price:6000,  rate:10}
 ];
-var SAMPLES = {1:SAMPLE_1, 2:SAMPLE_2, 3:SAMPLE_3, 4:SAMPLE_4, 5:SAMPLE_5};
+/* ⭐税込で金額が決まっている仕事（2026-09-11 本人「税込も欲しいって言われた」）。
+   ⚠単価はすべて税込。⭐合計 47,300円（うち消費税 4,300円）になる */
+var SAMPLE_6 = [
+  {name:'記事の執筆',        qty:3, unit:'本', price:11000, rate:10},
+  {name:'バナー画像の作成', qty:2, unit:'点', price:5500,  rate:10},
+  {name:'修正対応',            qty:1, unit:'式', price:3300,  rate:10}
+];
+/* ⭐源泉徴収がある仕事（原稿料）。
+   ⭐小計 120,000 → 消費税 12,000 → 合計 132,000、
+   ⭐源泉 12,252（120,000×10.21%）→ 差引 119,748 */
+var SAMPLE_7 = [
+  {name:'原稿執筆料（特集記事 4ページ）', qty:1, unit:'式', price:80000, rate:10},
+  {name:'取材の同行',                    qty:1, unit:'回', price:20000, rate:10},
+  {name:'写真の提供',                    qty:5, unit:'点', price:4000,  rate:10}
+];
+var SAMPLES = {1:SAMPLE_1, 2:SAMPLE_2, 3:SAMPLE_3, 4:SAMPLE_4, 5:SAMPLE_5, 6:SAMPLE_6, 7:SAMPLE_7};
 var SUBJECTS = {
   1:'9月分　ホームページ制作',
   2:'9月分　ホームページ制作一式',
   3:'9月分　商品代',
   4:'9月分　事務用品',
-  5:'9月分　記事執筆'
+  5:'9月分　記事執筆',
+  6:'9月分　記事執筆・バナー制作',
+  7:'9月分　原稿料'
 };
 /* ⭐屋号を付けていない個人事業主のサンプル（2026-09-09 本人） */
 var SAMPLE_ME_5 = {
@@ -1051,7 +1204,9 @@ function sampleAdd(kind){
   kind = Number(kind) || 1;
   var items = SAMPLES[kind] || SAMPLE_1;
   if(!hasSavedMe()){
-    var me = (kind === 5) ? SAMPLE_ME_5 : SAMPLE_ME;
+    /* ⭐屋号なしの個人名で出す＝5（屋号なし）・6（税込）・7（源泉）。
+       ⭐この3つは副業・フリーランスの場面（2026-09-11） */
+    var me = (kind === 5 || kind === 6 || kind === 7) ? SAMPLE_ME_5 : SAMPLE_ME;
     ['meName','meZip','meAddr','meTel','meMail'].forEach(function(k){ $(k).value = me[k] || ''; });
   }
   /* ③はインボイス、④は品番と日付を出した形にする */
@@ -1060,6 +1215,13 @@ function sampleAdd(kind){
   if(kind === 3 && !$('meTno').value.trim()) $('meTno').value = 'T1234567890123';
   $('colCode').checked = (kind === 4);
   $('colDate').checked = (kind === 4);
+  /* ⭐⑥は税込で入れた形、⑦は源泉徴収あり（2026-09-11） */
+  if($('priceMode')) $('priceMode').value = (kind === 6) ? 'in' : 'ex';
+  if($('useWithhold')){
+    $('useWithhold').checked = (kind === 7);
+    if($('whTarget')) $('whTarget').value = 'net';
+    if($('whTargetWrap')) $('whTargetWrap').hidden = !$('useWithhold').checked;
+  }
 
   $('toName').value   = '株式会社さくら商事';
   $('toHonor').value  = '御中';
@@ -1097,7 +1259,7 @@ function sampleAdd(kind){
   if($('note') && !$('note').value.trim() && !db.note){
     $('note').value = (D.showBank ? 'お振込手数料は貴社にてご負担くださいますようお願いいたします。' : 'このお見積の有効期限は発行日より1か月です。');
   }
-  if(kind === 5) $('toPerson').value = '編集部　鈴木様';
+  if(kind === 5 || kind === 7) $('toPerson').value = '編集部　鈴木様';
   calc();
 }
 
@@ -1108,6 +1270,11 @@ function sampleDel(){
   $('invoiceWrap').hidden = true;
   $('colCode').checked = false;
   $('colDate').checked = false;
+  if($('priceMode')) $('priceMode').value = 'ex';
+  if($('useWithhold')){
+    $('useWithhold').checked = false;
+    if($('whTargetWrap')) $('whTargetWrap').hidden = true;
+  }
   if(!hasSavedMe()){
     Object.keys(SAMPLE_ME).forEach(function(k){ $(k).value = ''; });
   }else{
@@ -1204,6 +1371,15 @@ function boot(){
   });
   document.addEventListener('change', function(e){
     if(e.target.closest && e.target.closest('main')) calc();
+  });
+  /* ⭐打ち終わったら「－」を入れて整える（2026-09-11 本人）。
+     ⭐欄の中そのものを書き換えるので、⭐**保存される値も紙もこの形になる**。
+     ⚠calc() は呼ばない＝document の change がこのあとに走る */
+  if($('meZip')) $('meZip').addEventListener('change', function(){
+    var v = fmtZip(this.value.trim()); if(v !== this.value) this.value = v;
+  });
+  if($('meTel')) $('meTel').addEventListener('change', function(){
+    var v = fmtTel(this.value.trim()); if(v !== this.value) this.value = v;
   });
   $('invNo').addEventListener('input', checkNo);
   $('noPrefix').addEventListener('input', refreshNo);
@@ -1472,7 +1648,13 @@ function boot(){
 
   /* --- 貼り付け --- */
   $('pasteIn').onclick = function(){
-    putRows(parseTable($('paste').value), $('pasteMsg'));
+    /* 🔴⭐入れたら④を開いて、そこまで送る（2026-09-11 本人
+       「④請求の内容は、今の『入れる』ボタンを押したら展開しよう」）。
+       ⚠今までは中身は入っていたのに、④が閉じたままで何も起きていないように見えた */
+    if(putRows(parseTable($('paste').value), $('pasteMsg')) === false) return;
+    /* 🔴⭐開くだけ。画面は動かさない（2026-09-11 本人
+       「④に飛ぶとビックリするから、画面の移動なしで展開して」） */
+    if($('s4Box') && !$('s4Box').open) $('s4Box').open = true;
   };
   $('pasteClear').onclick = function(){ $('paste').value = ''; };
 
@@ -1497,7 +1679,7 @@ function boot(){
   $('pages').onclick = function(){
     BIG = !BIG;
     $('stage').classList.toggle('big', BIG);
-    $('zoomHint').textContent = BIG ? '押すと小さくなります' : '押すと実物大になります（紙と同じ大きさ）';
+    $('zoomHint').textContent = BIG ? '押すと小さくなります' : '押すと実物大になります（A4サイズ）';
     fitSheet();
   };
 
@@ -1543,16 +1725,44 @@ function boot(){
 
   /* --- 全部消す --- */
   $('clearAll').onclick = function(){
-    if(!confirm('覚えているものを全部消します。\n自分の情報・取引先の一覧・振込先・番号の記録が消えます。\nよろしいですか。')) return;
+    if(!confirm('この端末に保存したものと、いま画面に入っているものを、全部消します。\n自分の情報・取引先・ひな形・振込先・番号の記録と、①〜⑤に打った内容すべて。\n戻せません。よろしいですか。')) return;
     try{ localStorage.removeItem(KEY); }catch(e){}
+    /* 🔴⚠ docs と forms が抜けていた（2026-09-11 に見つけた）。
+       ⚠db.forms が undefined になり、このあとひな形を保存しようとすると止まっていた。
+       ⭐最初の db と同じ形にそろえる */
     db = { me:{}, clients:[], bank:'', note:'', logo:'',
-           noPrefix:defaultPrefix(), noDigits:3, usedNos:[], lastSeq:0 };
-    ['meName','meZip','meAddr','meTel','meMail','meTno','bank','note'].forEach(function(k){ $(k).value = ''; });
+           noPrefix:defaultPrefix(), noDigits:3, usedNos:[], lastSeq:0, docs:{}, forms:[] };
+    /* 🔴⭐画面の中身も全部消す（2026-09-11 本人「本当に全部」）。
+       ⚠以前は①と⑤だけ消えて、②③④が残っていた＝半分残るのが一番困る。
+       🔴⚠見積書には bank（お振込先）の欄がない（2026-09-11 に見つけた）。
+       ⚠null に value を入れようとしてここで止まり、この下が全部走っていなかった。
+       ⭐欄があるときだけ消す */
+    ['meName','meZip','meAddr','meTel','meMail','meTno',
+     'toName','toPerson','toAddr','subject','dueDate','bank','note',
+     'formName','paste','logoFile'].forEach(function(k){ if($(k)) $(k).value = ''; });
+    if($('toHonor')) $('toHonor').value = '御中';
+    /* ⭐③のスイッチを全部初期に戻す */
     $('useInvoice').checked = false;
     $('invoiceWrap').hidden = true;
+    if($('colCode'))   $('colCode').checked = false;
+    if($('colDate'))   $('colDate').checked = false;
+    if($('roundSel'))  $('roundSel').value  = 'floor';
+    if($('priceMode')) $('priceMode').value = 'ex';
+    if($('whTarget'))  $('whTarget').value  = 'net';
+    if($('useWithhold')){
+      $('useWithhold').checked = false;
+      if($('whTargetWrap')) $('whTargetWrap').hidden = true;
+    }
     $('noPrefix').value = db.noPrefix;
     $('noDigits').value = '3';
+    /* ⭐④を空の4行に戻す（サンプルの透かしもここで消える） */
+    clearItems();
+    /* ⭐サンプルのえらび欄も戻す */
+    Array.prototype.forEach.call(document.querySelectorAll('.js-sample-sel'), function(o){ o.value = ''; });
+    if($('backToTop')) $('backToTop').hidden = true;
     drawClients();
+    /* ⚠ひな形の一覧を描き直していなかった＝消したのに画面に残っていた */
+    drawForms();
     drawLogo();
     $('invNo').value = makeNo();
     calc();

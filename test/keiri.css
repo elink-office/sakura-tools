@@ -402,6 +402,34 @@ body{touch-action:pan-y}
   -webkit-mask-image:linear-gradient(#000 82%,transparent);
   mask-image:linear-gradient(#000 82%,transparent);
 }
+/* 🔴⭐押すと全体が見える（2026-09-12 本人
+   「ちょっと見たい、大きくなるかなっていう気持ち。
+     あ、いいじゃんってなったらサンプルを見るで自分に合うものを選択」）。
+   ⚠JSは使わない＝チェックボックスで開け閉めする（座席表のナビと同じやり方） */
+.t-sample-open{position:absolute;opacity:0;pointer-events:none}
+.t-sample label{
+  display:block;position:absolute;inset:0;cursor:zoom-in;z-index:2;
+}
+/* ⭐開いたら═透かしを外して、絵全体を出す */
+.t-sample-open:checked ~ .t-sample{
+  /* ⭐幅はそのまま。⭐**縦だけ伸ばして下まで見せる**（2026-09-12 本人
+     「こんなに大きくなくていいよ。**今のサイズで下まで見えるくらい**」） */
+  -webkit-mask-image:none;mask-image:none;
+}
+.t-sample-open:checked ~ .t-sample img{
+  position:static;height:auto;object-fit:contain;
+}
+.t-sample-open:checked ~ .t-sample label{cursor:zoom-out}
+/* ⭐「押せる」と分かるしるし。⚠絵の上に小さく出す */
+.t-sample label::after{
+  content:"押すと全体";
+  position:absolute;right:6px;bottom:6px;
+  background:rgba(255,255,255,.92);color:var(--pink);
+  font-size:.68rem;font-weight:bold;padding:2px 7px;border-radius:999px;
+  box-shadow:0 1px 4px rgba(0,0,0,.18);
+}
+.t-sample-open:checked ~ .t-sample label::after{content:"押すと小さく";bottom:10px}
+/* ⚠幅を変えないので、パソコンでも並びはそのまま */
 /* ⚠絵を absolute にしないと、画像の自然な高さで枠が伸びる */
 .t-sample img{
   position:absolute;left:0;top:0;width:100%;height:100%;

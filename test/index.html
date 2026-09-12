@@ -8,8 +8,8 @@
 <meta name="robots" content="max-image-preview:large">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SAKURA TOOLS">
-<meta property="og:title" content="座席表を無料で作成｜30人40人・5列8列の教室に">
-<meta property="og:description" content="教室の座席表を無料で作成。名簿をコピペしてボタンひとつで席替えができます。出席番号順でもランダムでも、30人でも40人でも、5列でも8列でも思いどおりに。班分け・色分け・印刷・PDFまでこのページで完結します。会議・研修・セミナーの席次表も作れます。Excelテンプレートのダウンロードは不要です。">
+<meta property="og:title" content="さくらツール｜仕事の時短道具箱">
+<meta property="og:description" content="座席表・席次表・簡単スライド・Excel関数早見表が使える無料ツール集。登録もインストールもいりません。入力した内容は使っている端末の中だけで完結するので、外に出ません。印刷やPDFもそのままできます。ツールはこれから増やしていきます。">
 <meta property="og:url" content="https://sakura-tools.com/">
 <meta property="og:image" content="https://sakura-tools.com/ogp.png">
 <meta property="og:image:width" content="1200">
@@ -26,8 +26,8 @@
   gtag('config', 'G-GCK29PTKBG');
 </script>
 <meta name="google-site-verification" content="PfjmCGxUaN1hzuj_dRw3e4PTY6xepghfXM_CrU_sO-A" />
-<title>【テスト】座席表を無料で作成｜30人40人・5列8列の教室に｜さくらツール</title>
-<meta name="description" content="教室の座席表を無料で作成。名簿をコピペしてボタンひとつで席替えができます。出席番号順でもランダムでも、30人でも40人でも、5列でも8列でも思いどおりに。班分け・色分け・印刷・PDFまでこのページで完結します。会議・研修・セミナーの席次表も作れます。Excelテンプレートのダウンロードは不要です。">
+<title>【テスト】さくらツール｜仕事の時短道具箱｜登録なしで使える無料ツール</title>
+<meta name="description" content="座席表・席次表・簡単スライド・Excel関数早見表が使える無料ツール集。登録もインストールもいりません。入力した内容は使っている端末の中だけで完結するので、外に出ません。印刷やPDFもそのままできます。ツールはこれから増やしていきます。">
 <!-- 🔴 検索結果に URL ではなく「さくらツール」と出すための印。
      ⚠**カタカナ・漢字の別名は入れない**（2026-09-07 本人「消していいと思います」）。
         入れなくても検索で出ていることを本人が確認ずみ
@@ -42,7 +42,7 @@
 }
 </script>
 <link rel="stylesheet" href="style.css?v=135">
-<link rel="stylesheet" href="top.css?v=40">
+<link rel="stylesheet" href="top.css?v=54">
 </head>
 <body>
 <div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/10 18:17</div>
@@ -52,12 +52,13 @@
     <a class="logo" href="./"><span class="logo-mark">🌸</span><span class="logo-main">SAKURA TOOLS</span><span class="logo-sub">さくらツール</span></a>
     <nav>
       <input type="checkbox" id="navtoggle" class="navtoggle">
-      <label class="navburger" for="navtoggle">ツール</label>
+      <label class="navburger" for="navtoggle">無料ツール</label>
       <div class="navlist">
       <a href="seat/">座席表</a>
       <a href="seki/">席次表</a>
       <a href="slide/">スライド</a>
       <a href="excel-fx/">関数早見表</a>
+      <a href="keiri/">経理ツール</a>
       </div>
     </nav>
   </div>
@@ -82,7 +83,7 @@
     <!-- 🔴 2026-09-06 本人：カードごと押せるようにした（「使ってみる」ボタンは廃止）。
          ⚠2026-09-03の「絵とボタンを別々の入口に」は撤回。入口が1つになったぶん、
            カード全体が浮く見た目で「押せる」と分かるようにする -->
-    <a class="t-card school" id="seat" href="seat/">
+    <a class="t-card big school" id="seat" href="seat/">
       <div class="t-tool">
         <span class="nm">座席表メーカー</span>
         <span class="ds">名簿のコピペで、簡単席替え。席の形、30人・40人でも思いどおり。そのうえPDFもモニター表示もボタンひとつ！</span>
@@ -90,7 +91,7 @@
       </div>
     </a>
 
-    <a class="t-card work" id="seki" href="seki/">
+    <a class="t-card big work" id="seki" href="seki/">
       <div class="t-tool">
         <span class="nm">席次表メーカー</span>
         <span class="ds">会社名・役職・フリガナ・名前を並べた席次表。用紙に合わせて自動で調整し、A4の1枚に収めます。</span>
@@ -113,8 +114,35 @@
       </div>
     </a>
 
+    <!-- ⭐経理は2枚に分けた（2026-09-12 本人）。⚠経理トップを経由せず直接入る。
+         ⭐並び＝1段目に座席表・席次表＋右にスライド/早見表、2段目に見積書・請求書（右下は空く） -->
+    <a class="t-card big work" id="mitsumori" href="keiri/mitsumori/">
+      <div class="t-tool">
+        <span class="nm">見積書メーカー</span>
+        <span class="ds">見積が通ったら、その中身をそのまま請求書へ。もう一度入力し直す必要がありません。</span>
+        <img class="t-shot" src="img/mitsumori-sample.png?v=1" width="1280" height="720" alt="A4の見積書。品目・数量・単価と、小計・消費税・合計が並んだもの">
+      </div>
+    </a>
+
+    <a class="t-card big work" id="seikyu" href="keiri/seikyu/">
+      <div class="t-tool">
+        <span class="nm">請求書メーカー</span>
+        <span class="ds">税抜でも税込でも入力OK。源泉徴収（10.21％）を引いた差引額まで自動で計算します。インボイスにも対応。</span>
+        <img class="t-shot" src="img/seikyu-sample.png?v=1" width="1280" height="720" alt="A4の請求書。品目・数量・単価と、小計・消費税・合計が並んだもの">
+      </div>
+    </a>
+
   </div>
 
+
+  <!-- ⭐帯の広告の置き場（2026-09-12 本人）。⚠審査が通るまで空のまま＝何も見えない。
+       ⭐通ったら、この中に AdSense の「レスポンシブ＋data-ad-format="horizontal"」のコードを入れる
+       （横長だけが出る。固定サイズは収益が下がると公式に書いてある） -->
+  <div class="t-ad noprint"></div>
+
+  <!-- 🔴⭐下の段は 2:1（2026-09-12 本人）。左＝読ませる文章／右＝サイトの中のリンク -->
+  <div class="t-lower">
+  <div>
 
   <section class="t-about" id="naze">
     <h2>ネットにつながっているのに、外部に出ないの？</h2>
@@ -128,6 +156,31 @@
     <!-- 🔴 2026-09-06 本人：準備中の一覧はやめて、ここに「これから増える」と「データが共通で使える」を書く -->
     <p><strong>ツールはこれから増やしていく予定です。</strong>保存したデータは、<strong>サイトの中のどのツールでも使えます</strong>。名簿やよく使う言葉など、同じものを何度も作らずに済むので、仕事の時短に直結します。</p>
   </section>
+
+  </div>
+
+  <!-- ⭐右の段。⚠ヘッダーだけに導線を頼らない -->
+  <aside class="t-side noprint">
+    <h2>無料ツール</h2>
+    <ul>
+      <li><a href="seat/">座席表メーカー</a></li>
+      <li><a href="seki/">席次表メーカー</a></li>
+      <li><a href="slide/">簡単スライドメーカー</a></li>
+      <li><a href="excel-fx/">Excel関数 早見表</a></li>
+      <li><a href="keiri/mitsumori/">見積書メーカー</a></li>
+      <li><a href="keiri/seikyu/">請求書メーカー</a></li>
+    </ul>
+
+    <!-- ⭐経理ツールはここに出さない。⭐ヘッダーの「経理ツール」から入る（2026-09-12 本人）
+         ⚠見積書・請求書はトップのカードから直接入る -->
+    <!-- ⭐準備中はリンクを貼らない。文字だけ（2026-09-12 本人） -->
+    <p class="soon">さくらタイピング練習（準備中）</p>
+
+    <!-- ⭐ここにも帯（縦長）を置ける。⚠今は空のまま -->
+    <div class="t-ad"></div>
+  </aside>
+
+  </div>
 </main>
 
 <footer>
