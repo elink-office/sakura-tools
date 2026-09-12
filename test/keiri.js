@@ -1688,8 +1688,10 @@ function boot(){
   var oldTitle = document.title;
   function restoreTitle(){ document.title = oldTitle; }
   window.addEventListener('afterprint', restoreTitle);
-  /* ⚠afterprint が飛ばない機器があるので、戻す道をもう1本持つ */
-  window.addEventListener('focus', restoreTitle);
+  /* 🔴⭐ここに focus で題名を戻す道を持っていたが、やめた（2026-09-12）。
+     ⚠印刷の画面が開いている間に focus が来ると、⭐保存の名前が決まる前に
+       題名が元へ戻り、ファイル名がページの題名になってしまう（ローカルで再現した）。
+     ⭐題名を戻すのは、下の back()（合図4本）にまとめた */
 
   $('doPrint').onclick = function(){
     if(!$('toName').value.trim()){ alert('先に②で、請求先を入れてください。'); return; }
@@ -1715,12 +1717,48 @@ function boot(){
     document.title = fileName();
     var putBack = liftPages();
     setTimeout(function(){
+      /* 🔴⭐印刷が終わった合図で戻す（2026-09-12 本人「4秒っていうのがよくわからない。
+         使い方慣れてなかったら4秒以上たつし。ボタン、どれかわからないよ」）。
+         ⚠以前は4秒で戻していた＝保存先を選んでいる間に画面用の形へ戻り、
+           ⭐ブラウザが紙を描くころには注意文つき・縮んだ紙になっていた
+           （2026-09-12 本人のPDFを測って確定。紙が0.93倍・注意文に紙が6px重なっていた）。
+         🔴⭐Safari（WebKit）は afterprint を実装していない（caniuse・2026-09-12 確認）。
+           ⭐WebKit が用意しているのは matchMedia('print')。⭐両方に耳を置く。
+         ⭐iPhone用にもう1本＝印刷の画面から戻ってきたとき（blur→focus／画面が見えた）。
+           ⚠開いた直後に戻さないよう、いちど離れたことと1.5秒を条件にする。
+         ⚠どれも来ない機器のための逃げ道だけ残す（60秒）。⚠戻らないと画面が紙のままになる */
+      var done = false, wasAway = false, tid = null, mq = null;
+      var t0 = Date.now();
+      function back(){
+        if(done) return;
+        done = true;
+        window.removeEventListener('afterprint', back);
+        window.removeEventListener('blur', onAway);
+        window.removeEventListener('focus', onLate);
+        document.removeEventListener('visibilitychange', onVis);
+        if(mq){
+          if(mq.removeEventListener) mq.removeEventListener('change', onMq);
+          else if(mq.removeListener) mq.removeListener(onMq);
+        }
+        if(tid) clearTimeout(tid);
+        putBack();
+        restoreTitle();
+      }
+      function onMq(e){ if(!e.matches) back(); }
+      function onAway(){ wasAway = true; }
+      function onLate(){ if(!wasAway || Date.now() - t0 < 1500) return; back(); }
+      function onVis(){ if(document.hidden){ wasAway = true; } else { onLate(); } }
+      window.addEventListener('afterprint', back);
+      window.addEventListener('blur', onAway);
+      window.addEventListener('focus', onLate);
+      document.addEventListener('visibilitychange', onVis);
+      if(window.matchMedia){
+        mq = window.matchMedia('print');
+        if(mq.addEventListener) mq.addEventListener('change', onMq);
+        else if(mq.addListener) mq.addListener(onMq);
+      }
+      tid = setTimeout(back, 60000);
       window.print();
-      /* ⚠印刷の画面を閉じたら元に戻す。⭐onafterprint が来ない環境のために時間でも戻す */
-      var done = false;
-      var back = function(){ if(done) return; done = true; putBack(); restoreTitle(); };
-      window.addEventListener('afterprint', back, { once:true });
-      setTimeout(back, 4000);
     }, 30);
   };
 
