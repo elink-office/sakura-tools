@@ -662,10 +662,64 @@ function renderPages(list, sub, base, tax10, tax8, total){
   for(var i=0;i<FONTS.length;i++){
     wrap.style.fontSize = FONTS[i] + 'pt';
     buildPages(list, sub, base, tax10, tax8, total);
-    if(wrap.children.length <= 1) return;
+    if(wrap.children.length <= 1){ stash(list, sub, base, tax10, tax8, total); return; }
   }
   wrap.style.fontSize = FONTS[0] + 'pt';
   buildPages(list, sub, base, tax10, tax8, total);
+  stash(list, sub, base, tax10, tax8, total);
+}
+
+/* 🔴⭐⑥確認の紙を、そのまま測って渡す（2026-09-12）。
+   ⚠PDF側で行数や高さを計算し直すと、⭐画面と紙で行数が変わる（実際に1行ずれた）。
+   ⭐画面はもう「何行が何ミリで、どこに置かれているか」を知っている。それを渡す。
+   ⚠ここは buildPages の直後＝縮小（fitSheet）の前に呼ぶこと。でないと寸法が縮む */
+function sheetGeo(){
+  var out = [], sheets = $('pages').children;
+  for(var i=0;i<sheets.length;i++){
+    var sh = sheets[i], top = sh.getBoundingClientRect().top;
+    var g = { tableTop:null, headH:0, cols:[], rows:[], footTop:null };
+    var t = sh.querySelector('table.det');
+    if(t && t.tHead && t.tBodies[0]){
+      g.tableTop = (t.getBoundingClientRect().top - top) / MM;
+      var ths = t.tHead.rows[0].cells;
+      for(var c=0;c<ths.length;c++) g.cols.push(ths[c].getBoundingClientRect().width / MM);
+      g.headH = t.tHead.rows[0].getBoundingClientRect().height / MM;
+      var rs = t.tBodies[0].rows;
+      for(var r=0;r<rs.length;r++){
+        var cells = [];
+        for(var k=0;k<rs[r].cells.length;k++){
+          var td = rs[r].cells[k], cl = td.className || '';
+          cells.push({
+            text: td.textContent.replace(/ /g,' ').trim(),
+            al: (cl.indexOf('n') >= 0) ? 'right' : (cl.indexOf('c') >= 0 ? 'center' : 'left')
+          });
+        }
+        g.rows.push({ h: rs[r].getBoundingClientRect().height / MM, cells: cells });
+      }
+    }
+    var ds = sh.querySelector('.det-sum');
+    if(ds) g.footTop = (ds.getBoundingClientRect().top - top) / MM;
+    out.push(g);
+  }
+  return out;
+}
+
+/* 🔴⭐⑥確認が組み立てた中身を、PDFを描くほう（keiri-pdf.js）に渡す（2026-09-12）。
+   ⚠同じ計算を2か所に持つと必ずずれる。⭐画面が出した答えだけを渡す。
+   ⭐em＝画面が1枚に収めるために選んだ字の大きさ。紙も同じ大きさで描く */
+function stash(list, sub, base, tax10, tax8, total){
+  window.KEIRI_LAST = {
+    list: list, sub: sub, base: base, tax10: tax10, tax8: tax8, total: total,
+    em: parseFloat($('pages').style.fontSize) || FONTS[0],
+    /* ⚠このファイルは (function(){ }) の中なので、外からは何も見えない。
+       ⭐紙を描くのに要るものは、ここで手渡す */
+    d: D, inc: INC, gross: GROSS, wh: WH, sample: SAMPLE_ON,
+    logo: db.logo || '',
+    /* ⭐金額と日付の書き方は画面と同じものを使う（別に持つとずれる） */
+    yen: yen, jpDate: jpDate,
+    /* ⭐紙を実測したもの（行の位置・高さ・列幅・合計の位置） */
+    geo: sheetGeo()
+  };
 }
 
 function buildPages(list, sub, base, tax10, tax8, total){
@@ -1713,6 +1767,22 @@ function boot(){
     /* 🔴⚠⑥がたたまれていると、紙に何も出ない（閉じた details は印刷されない）。
        ⭐押したら必ず開けてから印刷する（2026-09-10） */
     if($('prevBox') && !$('prevBox').open) $('prevBox').open = true;
+    /* 🔴⭐PDFを自分で描けるページは、そちらで作る（2026-09-12・見積書から）。
+       ⭐ブラウザの印刷を通らないので、端末・ブラウザ・余白の設定に左右されない。
+       ⚠読み込みに少しかかる（道具とフォント）。⭐押した合図としてボタンの字を変える */
+    if(window.KEIRI_PDF){
+      var btn = $('doPrint'), label = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'PDFを作っています…';
+      window.KEIRI_PDF.save(fileName()).then(function(){
+        btn.disabled = false; btn.textContent = label;
+      }).catch(function(e){
+        btn.disabled = false; btn.textContent = label;
+        alert('PDFを作れませんでした。' + (e && e.message ? ('　' + e.message) : ''));
+      });
+      return;
+    }
+
     /* ⭐ここが肝。印刷の直前に題名を変えると、保存の名前がこれになる */
     document.title = fileName();
     var putBack = liftPages();

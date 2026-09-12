@@ -11,7 +11,22 @@
 <meta http-equiv="refresh" content="0;url=../index.html?kids=1&g=5">
 </head>
 <body>
-<div style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版 09/10 18:17</div>
+<div id="testBadge" style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
+<script>
+/* 🔴⭐テスト版の印は、文字ではなく自動で出す（2026-09-12 本人「アップするたびに、
+   最終更新日が表示されるようにして」）。
+   ⚠make_test.py が走った時刻を文字で埋め込む作りだった＝9/10のまま固まり、
+     手で直しても変わらなかった＝どれが最新か分からなくなっていた。
+   ⭐document.lastModified＝サーバーが返す「このHTMLが最後に変わった時刻」。
+     UPすれば必ず動く。⚠make_test.py を走らせると文字の印に戻る（2026-09-12 未対応） */
+(function(){
+  var b = document.getElementById('testBadge');
+  if(!b) return;
+  var d = new Date(document.lastModified), z = function(n){ return (n<10?'0':'') + n; };
+  b.textContent = 'テスト版 ' + z(d.getMonth()+1) + '/' + z(d.getDate()) +
+                  ' ' + z(d.getHours()) + ':' + z(d.getMinutes());
+})();
+</script>
 <p><a href="../index.html?kids=1&g=5">タイピング練習（5年生）をひらく</a></p>
 </body>
 </html>
