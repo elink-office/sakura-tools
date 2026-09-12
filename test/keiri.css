@@ -296,8 +296,11 @@ body{touch-action:pan-y}
      ⚠表の見出しだけに書いていたのを、紙全体に広げた（2026-09-10 リサーチ） */
   body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   /* ⚠入力の章は .card。ここを入れ忘れると、打ち込む欄まで紙に出る */
+  /* 🔴⭐.inv-hint＝画面用の説明文。紙にはいっさい出さない（2026-09-12 本人のPDFで発覚
+     「⚠入力後に『サンプルを見る』を押すと…」が紙の一番上に出ていた）。
+     ⚠①〜⑤の中の説明文は章ごと消えるが、⭐この1行だけ章の外にあって残っていた */
   .site-head,footer,.noprint,.read,.card,h1,.catch,.lead,.can-do,
-  .inv-sample,.notice-top{display:none !important}
+  .inv-sample,.notice-top,.inv-hint{display:none !important}
   /* 🔴⭐①〜⑤は details.opt で、.card ではない（クラス指定だけでは消えない）。
      ⚠開いている章が紙に出ていた（2026-09-10 本人「請求書、PDFにしたら、その画面になったよ」）。
      ⭐IDで消す＝⑥（確認）も details.opt だが、中身が紙そのものなので残す */
