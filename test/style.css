@@ -833,3 +833,32 @@ html.tip-open{overflow:hidden}          /* 後ろが動かない＝閉じてか�
   font-size:1rem;line-height:1;padding:4px 8px;border-radius:6px;
 }
 .tip-x:hover{color:var(--ink);background:#fff}
+
+/* =====================================================================
+   🔴⭐角4px・章の番号は左にはみ出した付箋（2026-09-14 本人）
+   本人「私、このデザインのほうが好きだわ。testで全部に着けてみて」
+   ⭐見本＝開発室/成果物/2026-09-14_カード_左帯.html
+   ⚠上のほうの指定（14px・縦棒）をここで上書きしている。戻すときはこの塊を消せばよい
+   ===================================================================== */
+:root{--radius:4px}
+
+/* ⭐番号の左の小さな縦棒を消す（章と、番号つきの見出し）。
+   ⚠番号の無いふつうの見出し（h2）の縦棒は残す */
+details.opt > summary::before{display:none}
+.card > h2:has(> .step)::before{display:none}
+
+/* ⭐付箋＝カードの左ふちから、はみ出して貼ってある番号。
+   ⚠はみ出しは10px。スマホの余白（.wrap 12px）に収まる幅にしてある */
+details.opt > summary > .step,
+.card > h2 > .step{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:38px;height:28px;margin:0;border-radius:var(--radius);   /* ⭐カードと同じ角（2026-09-14 本人「付箋の角が小さく見える」） */
+  font-size:.9rem;font-weight:700;
+  box-shadow:0 1px 0 rgba(0,0,0,.08),0 3px 6px rgba(0,0,0,.16);
+}
+/* 章：summary の左端＝カードの枠の内側 → -11px で枠の外へ10px */
+details.opt > summary > .step{left:-11px}
+details.opt:not(.sub) > summary{padding-left:38px}
+/* 番号つきの見出し：カードの余白（18px）＋枠（1px）の外へ10px */
+.card > h2 > .step{left:-29px}
+.card > h2:has(> .step){padding-left:21px}

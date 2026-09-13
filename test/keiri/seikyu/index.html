@@ -26,7 +26,7 @@
 </script>
 <title>【テスト】請求書メーカー｜源泉徴収も自動・個人事業主や副業の請求書を無料作成</title>
 <meta name="description" content="副業・フリーランス・個人事業主のための請求書作成ツール。税抜でも税込でも入力でき、源泉徴収（10.21％）を引いた差引額まで自動で計算。ひな形やエクセルのテンプレートはいりません。取引先を保存できるので、2回目からは選ぶだけ。インボイスの登録番号にも対応。保存するときのファイル名が「請求書_日付_取引先_金額」の形になるので、あとから探せます。登録もインストールも不要、すべて無料です。">
-<link rel="stylesheet" href="../../style.css?v=136">
+<link rel="stylesheet" href="../../style.css?v=138">
 <link rel="stylesheet" href="../../keiri.css?v=58">
 </head>
 <body data-doc="seikyu">
@@ -116,7 +116,7 @@
   <p class="safe" id="handoffMsg" hidden>⭐<strong>見積書の内容を持ってきました。</strong>発行日と請求書番号は新しくしています。</p>
 
   <details class="opt" id="meBox">
-    <summary>① 自分の情報</summary>
+    <summary><span class="step">1</span>自分の情報</summary>
     <div class="body">
     <p class="safe">🔒 <strong>使っている端末の中だけで完結しています。</strong>安心してご利用ください。</p>
 
@@ -169,7 +169,7 @@
 
   <!-- ================= (2) 取引先の情報 ================= -->
   <details class="opt" id="s2Box">
-    <summary>② 取引先の情報</summary>
+    <summary><span class="step">2</span>取引先の情報</summary>
     <div class="body">
 
     <div id="quickLoad" hidden>
@@ -206,7 +206,7 @@
 
   <!-- ================= (3) 入力の準備 ================= -->
   <details class="opt" id="s3Box">
-    <summary>③ 入力の準備</summary>
+    <summary><span class="step">3</span>入力の準備</summary>
     <div class="body">
     <p class="safe">🔒 <strong>請求書の内容は、必ずPDFで保存してください。</strong></p>
 
@@ -336,7 +336,7 @@
   </details>
 
   <details class="opt" id="s4Box">
-    <summary>④ 請求の内容</summary>
+    <summary><span class="step">4</span>請求の内容</summary>
     <div class="body">
     <p class="inv-hint">エクセルから貼り付けたあとでも、<strong>手入力や編集ができます。</strong></p>
     <div class="inv-scroll" style="margin-top:16px">
@@ -385,7 +385,7 @@
 
   <!-- ================= (4) 支払いのこと ================= -->
   <details class="opt" id="s5Box">
-    <summary>⑤ 支払いのこと</summary>
+    <summary><span class="step">5</span>支払いのこと</summary>
     <div class="body">
     <div class="row tight">
       <div class="d-auto"><label for="dueDate">お支払い期限</label>
@@ -422,7 +422,7 @@
   </div>
 
   <details class="opt" id="prevBox">
-    <summary>⑥ 確認</summary>
+    <summary><span class="step">6</span>確認</summary>
     <div class="body">
       <p class="inv-hint" id="zoomHint" style="text-align:center;margin:0 0 8px">押すと実物大になります（A4サイズ）</p>
       <div class="inv-stage" id="stage">
@@ -433,7 +433,7 @@
 
   <!-- ================= (5) 印刷・PDF ================= -->
   <section class="card" id="s6" style="margin-top:18px">
-    <h2>⑦ PDFで保存</h2>
+    <h2><span class="step">7</span>PDFで保存</h2>
     <p class="safe">🔒 <strong>請求書の内容は、必ずPDFで保存してください。</strong><button type="button" class="tip-btn" aria-expanded="false" aria-label="印刷の画面について"></button></p>
     <div class="tip-body" hidden>
       <p>印刷画面で<strong>「PDF」を選ぶと、そのまま保存できます。</strong>紙に印刷することもできます。</p>
@@ -453,7 +453,7 @@
 
   <!-- ================= (6) 保存したデータの利用 ================= -->
   <section class="card" id="s6">
-    <h2>⑧ 保存したデータの利用</h2>
+    <h2><span class="step">8</span>保存したデータの利用</h2>
     <p class="inv-hint">保存した<b>取引先</b>と<b>ひな形</b>は、<b>さくらツール内の請求書・見積書・領収書</b>で使えます。
       <button type="button" class="tip-btn" aria-expanded="false" aria-label="保存について"></button></p>
     <!-- ⭐⑧の2行目に置く（2026-09-11 本人）。⚠一番下にあっても読まれない -->
@@ -666,7 +666,7 @@
   </div>
 </footer>
 
-<script src="../../keiri.js?v=50"></script>
+<script src="../../keiri.js?v=51"></script>
 <script src="../../keiri-pdf.js?v=2"></script>
 <script src="../../tip.js?v=3"></script>
 </body>

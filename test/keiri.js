@@ -1081,7 +1081,10 @@ function putRows(list, msgEl){
        ⚠請求書は「④請求の内容」、見積書は「④見積の内容」。
        ⭐文字を手で持たず、見出し（summary）から取る＝必ず一致する */
     var s4 = $('s4Box') && $('s4Box').querySelector('summary');
-    var where = s4 ? s4.textContent.replace(/\s+/g, '') : '④';
+    /* ⚠2026-09-14 見出しの番号が付箋（<span class="step">4</span>）になった。
+       ⭐番号のぶんを外して、頭に「④」を付け直す */
+    var st = s4 && s4.querySelector('.step');
+    var where = s4 ? '④' + s4.textContent.replace(st ? st.textContent : '', '').replace(/\s+/g, '') : '④';
     msgEl.textContent = list.length + '行を' + where + 'に入れました';
     flash(msgEl);
   }

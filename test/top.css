@@ -93,8 +93,9 @@ main.wrap, .site-head .wrap, .site-foot .wrap{max-width:var(--page)}
 @media (hover:none){
   .t-card{box-shadow:0 4px 14px rgba(0,0,0,.10)}
 }
-.t-card.school{border-top:3px solid var(--pink)}
-.t-card.work{border-top:3px solid var(--midori)}
+/* 🔴⭐帯は左に（2026-09-14 本人「トップカードは角4px・左に桜色の帯」）。⭐太さ2px（同日。6pxは「ちょっとうっとうしい」→細く）。⚠仕事の道具は緑のまま */
+.t-card.school{border-left:2px solid var(--pink)}
+.t-card.work{border-left:2px solid var(--midori)}
 /* ⭐使う場面は「見出し」ではなくカードの中の小さな札にする＝人を仕分けず、道具の説明になる */
 .t-for{
   display:inline-block;margin:0 0 12px;padding:2px 11px;
@@ -121,8 +122,8 @@ main.wrap, .site-head .wrap, .site-foot .wrap{max-width:var(--page)}
   background:#fff;border:1px solid var(--line);border-radius:var(--radius);
   padding:26px 24px 22px;
 }
-.t-col.l{border-top:3px solid var(--pink)}
-.t-col.r{border-top:3px solid var(--midori)}
+.t-col.l{border-left:2px solid var(--pink)}
+.t-col.r{border-left:2px solid var(--midori)}
 .t-col h2{
   font-size:.88rem;letter-spacing:.06em;margin:0 0 4px;font-weight:700;
   padding-left:0;
@@ -157,7 +158,7 @@ main.wrap, .site-head .wrap, .site-foot .wrap{max-width:var(--page)}
      ⚠絵そのものは切らない（contain）。足りないぶんは左右が白くなるだけ */
   display:block;width:100%;height:auto;aspect-ratio:16 / 9;
   object-fit:contain;background:#fff;
-  border:0;border-radius:10px;margin:0 0 14px;
+  border:0;border-radius:2px;margin:0 0 14px;   /* ⭐カードが角4pxなので絵も合わせる（2026-09-14） */
   /* 🔴 スマホには「マウスを乗せる」が無い＝触った時点でもう押した後（2026-09-03 本人）。
      だから**触る前から押せる板に見せる**。常に影を敷いて浮かせておく。
      ⚠ 線は付けない（本人「ピンクの線（緑の線）はなしにしてみて」）。
