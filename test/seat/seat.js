@@ -684,7 +684,7 @@
 
   // 画面に出すための情報（班長のいない班／前回も同じ班／前回と同じ席）
   function checkInfo(gm) {
-    var out = { noLead: [], dup: {}, dupText: [], same: 0, sizeNote: null };
+    var out = { noLead: [], dup: {}, dupText: [], same: 0, sizeNote: null, oddNote: null };
     var i, g, mem = {}, seats = state.seats;
     if (!seats) return out;
     if (gm) {
@@ -703,6 +703,16 @@
         // ⚠そもそも人数が足りないときは出さない（見れば分かることなので）
         if (mx && tot >= state.grp.size && mx < state.grp.size)
           out.sizeNote = { want: state.grp.size, got: mx };
+        /* 🔴⭐一部の班だけ人数が足りないときも知らせる（2026-09-13 本人）。
+           ⚠上の sizeNote は「どの班も足りない」とき。⭐こちらは⭐端数が出たとき＝
+             列の数と人数の都合で、最後のまとまりだけ人数が減る（本人「偶数列で考えているから
+             最後の列が端数が出る」）。⭐黙って出さずに、直せることを伝える */
+        if (!out.sizeNote) {
+          var small = [];
+          for (g in mem) if (mem[g].length < state.grp.size) small.push({ g: +g, n: mem[g].length });
+          small.sort(function (a, b) { return a.g - b.g; });
+          if (small.length) out.oddNote = { want: state.grp.size, small: small };
+        }
       }
       if (hasLeaders()) {
         for (g in mem) {
@@ -1138,6 +1148,12 @@
       li.push('<strong>' + chk.sizeNote.want + '人の班になりません</strong>：' +
         '2列ずつのまとまりで分けているからです。' + chk.sizeNote.want + '人班にしたい場合は、' +
         '教室の形を変更するか、マスの左上の班の番号を押して班を変更してください。');
+    if (chk.oddNote) {
+      /* ⚠文言は本人が書いたもの（2026-09-13）。⭐短く。勝手に言い換えない。
+         ⭐どの班かは並べない（本人「見たらわかるから数だけにしたい」）。数だけ出す */
+      li.push('<strong>人数が揃わない班が' + chk.oddNote.small.length + 'つあります。</strong>' +
+        '班の番号を押すと、自分で班を作ることができます。');
+    }
     // ⚠「★を気にせず班に分ける」ときは出さない（気にしないと決めた人に見せる意味がない）
     if (chk.noLead.length && !state.grp.ignoreLead)
       li.push('<strong>★の人がいない班</strong>：' + chk.noLead.join('班・') + '班');
