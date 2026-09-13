@@ -26,7 +26,7 @@
 <meta name="google-site-verification" content="PfjmCGxUaN1hzuj_dRw3e4PTY6xepghfXM_CrU_sO-A" />
 <title>【テスト】教室の座席表メーカー｜席替えが１分で完成！30人35人40人クラス</title>
 <meta name="description" content="教室の座席表を１分で作る！席替えも簡単。名簿を貼るだけの無料ツール。エクセルテンプレートは不要です。新年度の出席番号順にも対応。小学校・中学校・高校のどのクラスでも、30人・35人・40人、4列・5列・6列・8列の教室席配置に対応。生徒に見せる向きと、先生が教卓から見る向きを切り替えられます。班分けと色分けもそのままPDFにできます。エクセルテンプレートのダウンロードも、登録もいりません。名簿はブラウザの中だけで処理し、AIの学習にも使われません。">
-<link rel="stylesheet" href="../style.css?v=140">
+<link rel="stylesheet" href="../style.css?v=141">
 <link rel="stylesheet" href="seat.css?v=11">
 <link rel="stylesheet" href="../print.css?v=63" media="print">
 <style>
@@ -698,13 +698,13 @@ body.screen .seat.dup .nm{text-decoration:none}
       </ul>
     </div>
 
-    <p class="hint">保存したデータは、<b>座席表・席次表・班分け・スライド</b>で使えます。</p>
+    <p class="hint">保存したデータは、<b>座席表・席次表・スライド</b>で使えます。</p>
 
     <p class="safe">🔒 <strong>保存したものは、使っている端末の中だけに残ります。</strong></p>
 
     <div class="cls-box">
             <details class="opt sub">
-        <summary>データに名前を付けて保存（<span id="clsCount">0／20件</span>）</summary>
+        <summary>データに名前を付けて保存<span id="clsCount" class="cnt">0/20</span></summary>
         <div class="body">
       <p class="hint">名簿・教室の形・条件・男女・班の設定を、まとめて残すときに使います。<strong>「上書き」は、転入・転出で名簿が変わったとき</strong>に使ってください。<br>保存できるのは<b>文字情報のみ</b>です（写真や画像は残りません）。</p>
       <p class="btn-row">
@@ -717,7 +717,7 @@ body.screen .seat.dup .nm{text-decoration:none}
         </div>
       </details>
       <details class="opt sub">
-        <summary>決まった座席を保存（<span id="recCount">0／20件</span>）</summary>
+        <summary>決まった座席を保存<span id="recCount" class="cnt">0/20</span></summary>
         <div class="body">
       <p class="hint">記録が2件以上たまると、④の<strong>「前の班と同じメンバーをさける」</strong>が使えます。また、前回と同じ席になった時も知らせることができます。</p>
       <p class="btn-row">
@@ -834,7 +834,7 @@ body.screen .seat.dup .nm{text-decoration:none}
 
 <script src="../paper-pdf.js?v=2"></script>
 <script src="../seating.js?v=57"></script>
-<script src="seat.js?v=191"></script>
+<script src="seat.js?v=192"></script>
 <!-- 🔴 印刷用の1枚絵の置き場（2026-09-01）。画面には出ない。
      ⚠**body の直下に置くこと。**中に入れると、印刷のときに親ごと隠されて白紙になる -->
 <div id="printImgWrap"></div>

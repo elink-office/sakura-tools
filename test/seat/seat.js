@@ -2063,8 +2063,8 @@
     if ($('quickLoad')) $('quickLoad').hidden = !st.classes.length;
     var nCls = st.classes.filter(function (c) { return c.kind !== 'slide'; }).length;
     $('clsCount').textContent = nCls
-      ? nCls + '／' + MAXC + '件'
-      : '0／' + MAXC + '件・まだ保存していません';
+      ? nCls + '/' + MAXC
+      : '0/' + MAXC;   /* ⭐件・かっこなし、/ は半角（2026-09-14 本人） */
     refreshRecUI();
   }
   // ①と⑧の2か所にえらぶ欄があるので、両方そろえる
@@ -2082,7 +2082,7 @@
       o.textContent = r.label + '（' + r.at + '）';
       sel.appendChild(o);
     });
-    $('recCount').textContent = recs.length + '／' + MAXR + '件';
+    $('recCount').textContent = recs.length + '/' + MAXR;
     var el = $('avoidNote');
     if (el) el.textContent = !c ? 'クラスをえらぶと使えます。'
       : recs.length ? '「' + c.label + '」の記録が ' + recs.length + ' 件あります。'

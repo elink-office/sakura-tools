@@ -1758,8 +1758,8 @@
     });
     if ($('quickLoad')) $('quickLoad').hidden = !st.classes.length;
     $('clsCount').textContent = st.classes.length
-      ? st.classes.length + '／' + MAXC + '件'
-      : '0／' + MAXC + '件・まだ保存していません';
+      ? st.classes.length + '/' + MAXC
+      : '0/' + MAXC;   /* ⭐件・かっこなし、/ は半角（2026-09-14 本人） */
   }
 
   // 呼び出したあと、画面を組み直す

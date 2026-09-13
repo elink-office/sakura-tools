@@ -862,3 +862,12 @@ details.opt:not(.sub) > summary{padding-left:38px}
 /* 番号つきの見出し：カードの余白（18px）＋枠（1px）の外へ10px */
 .card > h2 > .step{left:-29px}
 .card > h2:has(> .step){padding-left:21px}
+
+/* 🔴⭐保存の欄の件数（2026-09-14 本人「件数がバグってる。件なしにして、/を半角に。薄い色にしたら、カッコもいらない」）。
+   ⚠見出しは横並び（flex）なので、かっこ・文字・件数がばらばらの列になってスマホで崩れていた。
+   ⭐件数は1つのうすい札にして、入りきらないときは次の行へ送る */
+details.opt.sub > summary{flex-wrap:wrap;row-gap:2px}
+.cnt{
+  margin-left:.6em;font-weight:normal;font-size:.85em;color:var(--ink-soft);
+  font-variant-numeric:tabular-nums;white-space:nowrap;
+}

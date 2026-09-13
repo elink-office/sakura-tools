@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- ⭐どこともつなげない（2026-09-14 本人）。トップのカード・サイトマップにも入れていない -->
+<meta name="robots" content="noindex,nofollow">
+<title>【テスト】シフト表メーカー｜店舗のシフト表を無料で作成・PDF保存</title>
+<meta name="description" content="スタッフの名前を貼って、マスを押すだけで作れる無料のシフト表。祝日・曜日・店休日を自動で並べ、社員とパート・アルバイトの人数が足りない日を知らせます。A4横のPDFで保存できます。エクセルテンプレートは不要です。">
+<link rel="stylesheet" href="../style.css?v=140">
+<link rel="stylesheet" href="shift.css?v=1">
+</head>
+<body>
+<div id="testBadge" style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
+<script>
+(function(){
+  var b = document.getElementById('testBadge');
+  if(!b) return;
+  var d = new Date(document.lastModified), z = function(n){ return (n<10?'0':'') + n; };
+  b.textContent = 'テスト版 ' + z(d.getMonth()+1) + '/' + z(d.getDate()) +
+                  ' ' + z(d.getHours()) + ':' + z(d.getMinutes());
+})();
+</script>
+
+<header class="site-head noprint">
+  <div class="wrap">
+    <a class="logo" href="../"><span class="logo-mark">🌸</span><span class="logo-main">SAKURA TOOLS</span><span class="logo-sub">さくらツール</span></a>
+    <nav>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">無料ツール</label>
+      <div class="navlist">
+      <a href="../">トップ</a>
+      <a href="../seat/">座席表</a>
+      <a href="../slide/">スライド</a>
+      <a href="../excel-fx/">関数早見表</a>
+      <a href="../keiri/">経理ツール</a>
+      </div>
+    </nav>
+  </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">シフト表メーカー</span><span class="now-short">シフト表</span></div></div>
+</header>
+
+<main class="wrap">
+  <h1>シフト表メーカー</h1>
+  <p class="catch">希望も人数も、1枚の表で確かめる</p>
+  <p class="lead"><strong>登録なし・全部無料。</strong>名前を貼ってマスを押すだけで、人数の足りない日も分かるシフト表をA4横のPDFにします。</p>
+  <ul class="can-do">
+    <li>祝日・曜日・店休日を、月を選ぶだけで表に</li>
+    <li>社員とパート・アルバイトの人数を日ごとに確認</li>
+    <li>先月の表を見ながら、今月を作れる</li>
+  </ul>
+  <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
+
+  <!-- ① -->
+  <details class="opt noprint" id="ch1">
+    <summary><span class="step">1</span>名簿の入力&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
+    <div class="body">
+      <div class="tip-body" hidden>
+        <p>🔒 <strong>名簿はインターネットに送りません。</strong>使っている端末のブラウザの中だけで計算しているので、名前がどこかに保存されることも、AIの学習に使われることもありません。パソコン・タブレット・スマホ、どれでも同じです。</p>
+        <p><strong>1行に1人ずつ書いてください。</strong>Excelの名簿から、名前の列をコピーして貼るだけでも入ります。</p>
+        <p>名前の右に「社員」「パート」「アルバイト」の列があれば、区分も一緒に入ります。無いときはパート・アルバイトで入るので、この下の名簿で選び直してください。</p>
+        <p>スタッフは<strong>40人まで</strong>入れられます。</p>
+      </div>
+      <p class="safe">🔒 <strong>使っている端末の中だけで完結しています。</strong>安心してご利用ください。</p>
+      <div class="row tight" id="quickLoad" hidden style="margin-bottom:12px">
+        <div class="pick"><label for="dataSel2">保存済のシフト</label>
+          <select id="dataSel2"><option value="">－</option></select></div>
+        <div><label>&nbsp;</label>
+          <button class="mini" id="dataLoad2" type="button">このデータを自動入力</button></div>
+      </div>
+      <label for="names">エクセルから貼り付ける</label>
+      <textarea id="names" placeholder="クリックして貼り付け（手入力可）&#10;&#10;山田 花子　社員&#10;高橋 翔　アルバイト&#10;田中 さくら&#10;&#10;区分が無い人は、パート・アルバイトで入ります"></textarea>
+      <div class="sf-btns">
+        <button type="button" class="primary" id="addNames">入れる</button>
+        <button type="button" id="sampleBtn">サンプルを入れる</button>
+        <button type="button" id="clearNames">消す</button>
+        <span class="saving" id="inMsg"></span>
+      </div>
+      <h3>スタッフ（<span id="staffCount">0人</span>）</h3>
+      <p class="hint">区分は、④必要な人数の「うち社員」で数えるときに使います。</p>
+      <div class="sf-list" id="staffList"></div>
+    </div>
+  </details>
+
+  <!-- ② -->
+  <details class="opt noprint" id="ch2">
+    <summary><span class="step">2</span>月と休み&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
+    <div class="body">
+      <div class="tip-body" hidden>
+        <p><strong>月を選ぶと、日付・曜日・祝日が表に並びます。</strong>振替休日もそのまま入ります。</p>
+        <p>春分の日と秋分の日は、国立天文台が前の年の2月に発表する日です。発表より先の年は、計算で出した日を入れています。</p>
+        <p><strong>店休日は、日付を押すと灰色になります。</strong>もう一度押すと戻ります。毎週決まった曜日が休みなら、下の「毎週この曜日を店休日にする」が早いです。</p>
+        <p>店休日は、⑥確認で人数を数えません。</p>
+      </div>
+      <div class="row tight">
+        <div><label for="ySel">年</label><select id="ySel"></select></div>
+        <div><label for="mSel">月</label><select id="mSel"></select></div>
+        <div class="grow"><label for="place">店名・部署名</label>
+          <input id="place" type="text" placeholder="さくら食堂 駅前店" style="width:100%"></div>
+      </div>
+      <h3>店休日</h3>
+      <div class="sf-days" id="dayChips"></div>
+      <div class="row tight">
+        <div><label for="wkSel">曜日</label>
+          <select id="wkSel"><option value="0">日</option><option value="1">月</option><option value="2">火</option><option value="3" selected>水</option><option value="4">木</option><option value="5">金</option><option value="6">土</option></select></div>
+        <div><label>&nbsp;</label><button type="button" class="mini" id="wkBtn">毎週この曜日を店休日にする</button></div>
+      </div>
+      <p class="hint" id="holList"></p>
+    </div>
+  </details>
+
+  <!-- ③ -->
+  <details class="opt noprint" id="ch3">
+    <summary><span class="step">3</span>勤務の種類&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
+    <div class="body">
+      <div class="tip-body" hidden>
+        <p><strong>表のマスに入れる記号を、職場に合わせて決めます。</strong>早番・遅番だけでなく、10時から、午前だけ、といった勤務も足せます。</p>
+        <p>記号は<strong>2文字まで</strong>。表のマスに入る長さです。時間は表の下の説明に出ます。</p>
+        <p><strong>「出勤として数える」を外した記号</strong>（公休・有給など）は、出勤日数にも④必要な人数にも入りません。</p>
+        <p>時間数を入れると、表の右に1か月の合計時間が出ます。勤務は<strong>12種類まで</strong>です。</p>
+      </div>
+      <div id="codeList"></div>
+      <div class="sf-btns"><button type="button" class="mini" id="addCode">＋ 勤務を追加</button></div>
+    </div>
+  </details>
+
+  <!-- ④ -->
+  <details class="opt noprint" id="ch4">
+    <summary><span class="step">4</span>必要な人数&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
+    <div class="body">
+      <div class="tip-body" hidden>
+        <p><strong>1日に何人いてほしいかを、勤務ごとに入れます。</strong>平日と土日祝で分けて入れられます。</p>
+        <p><strong>「うち社員」</strong>は、その人数のうち社員が何人いてほしいかです。社員が1人もいない時間を作らないために使います。</p>
+        <p>0のままの欄は数えません。足りない日は、⑤シフト表の下の人数の行が赤くなり、⑥確認に並びます。</p>
+      </div>
+      <div id="needBox"></div>
+    </div>
+  </details>
+
+  <!-- ⑤ -->
+  <details class="opt noprint" id="ch5">
+    <summary><span class="step">5</span>シフト表&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
+    <div class="body">
+      <div class="tip-body" hidden>
+        <p><strong>下の記号を選んでから、表のマスを押します。</strong>同じ記号のマスをもう一度押すと空に戻ります。パソコンでは、押したままなぞると続けて入ります。</p>
+        <p><strong>「希望として入れる」にチェックを入れて押すと、マスの右上に印が付きます。</strong>スタッフから聞いた希望の休みや出勤を、自分で決めたものと見分けるための印です。印はPDFには出ません。</p>
+        <p>人数の行が赤いのは、④必要な人数より少ない日です。赤のままでもPDFにできます。PDFでは赤は付きません。</p>
+        <p>この下の「先月の表（見るだけ）」を開くと、先月のシフトを見ながら入れられます。先月もこの画面で作って保存していると出ます。</p>
+      </div>
+      <p class="notice" id="sampleNote" hidden>サンプルを表示しています。①に名前を入れると、サンプルは消えます。</p>
+      <div class="sf-pal" id="palette"></div>
+      <div class="sf-btns">
+        <label class="chk-inline"><input type="checkbox" id="hopeMode"> 希望として入れる</label>
+        <button type="button" class="mini" id="undo" disabled>↩ 1つ戻す</button>
+        <button type="button" class="mini" id="clearMonth">この月の表を空にする</button>
+      </div>
+      <div id="sheetBox">
+        <div class="sheet sf-sheet" id="sheet">
+          <div class="sf-head">
+            <div class="sf-title" id="shTitle">シフト表</div>
+            <div class="sf-place" id="shPlace"></div>
+          </div>
+          <div class="sf-grid" id="grid"></div>
+          <div class="sf-legend" id="legend"></div>
+          <div class="sf-memo" id="shMemo"></div>
+          <div class="sf-credit">さくらツール　sakura-tools.com</div>
+        </div>
+      </div>
+      <details class="opt sub" id="prevDet">
+        <summary>先月の表（見るだけ）</summary>
+        <div class="body">
+          <p class="hint" id="prevNote"></p>
+          <div id="prevBox">
+            <div class="sheet sf-sheet sf-ro" id="prevSheet">
+              <div class="sf-head"><div class="sf-title" id="prevTitle"></div></div>
+              <div class="sf-grid" id="prevGrid"></div>
+            </div>
+          </div>
+        </div>
+      </details>
+    </div>
+  </details>
+
+  <!-- ⑥ -->
+  <details class="opt noprint" id="ch6">
+    <summary><span class="step">6</span>確認&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
+    <div class="body">
+      <div class="tip-body" hidden>
+        <p>④必要な人数より少ない日と、店休日に勤務が入っている日を並べます。</p>
+        <p>並んだものを直さなくても、PDFにはできます。</p>
+      </div>
+      <p id="checkSum"></p>
+      <ul class="sf-check" id="checkList"></ul>
+    </div>
+  </details>
+
+  <!-- ⑦ -->
+  <details class="opt noprint" id="ch7">
+    <summary><span class="step">7</span>PDFで保存&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
+    <div class="body">
+      <div class="tip-body" hidden>
+        <p><strong>押すとPDFができます。</strong>⑤シフト表の見本と同じものが、A4横の1枚になります。スマホでもパソコンでも同じです。</p>
+        <p>紙に出したいときは、できたPDFを開いて印刷してください。スタッフに配るときは、PDFのままLINEやメールで送れます。</p>
+      </div>
+      <label for="memo">表の下に書くこと（自由記入）</label>
+      <input id="memo" type="text" placeholder="交代するときは、店長に連絡してください" style="width:100%">
+      <div class="sf-btns">
+        <button type="button" class="primary" id="doPdf">PDFで保存</button>
+        <span class="saving" id="pdfMsg"></span>
+      </div>
+    </div>
+  </details>
+
+  <!-- ⑧ -->
+  <section class="card noprint">
+    <h2><span class="step">8</span>画面の保存&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+    <div class="tip-body" hidden>
+      <ul>
+        <li><strong>いま開いている画面をそのまま残します。</strong>スタッフ・勤務の種類・必要な人数・作ったシフト表まで、次に開いたときそのまま出ます。</li>
+        <li><strong>残るのは1つだけ</strong>です。別の店のシフトを作ると、前のものは上書きされます。</li>
+        <li><strong>チェックを外すと、保存していたものは消えます。</strong>いま見ている画面はそのままです。</li>
+        <li>残るのは<strong>この端末の中だけ</strong>です。<strong>どこにも送信されません。</strong></li>
+      </ul>
+    </div>
+    <label style="font-weight:normal">
+      <input type="checkbox" id="save"> この画面を保存する
+    </label>
+    <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。<br>
+      ⚠<b>共用の端末で使ったときは、このチェックを外して、この画面を閉じてください。</b></p>
+    <p><span class="saving" id="savingLabel"></span></p>
+  </section>
+
+  <!-- ⑨ -->
+  <section class="card noprint">
+    <h2><span class="step">9</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+    <div class="tip-body" hidden>
+      <p>🔒 <strong>保存先もインターネットではありません。</strong>使っている端末のブラウザの中だけに残るので、ほかの人からは見えません。パソコン・タブレット・スマホ、どれでも同じです。</p>
+      <ul>
+        <li><strong>名前を付けて、20件まで保存できます。</strong>店ごと・部署ごとに分けて残すときに使います。</li>
+        <li>スタッフ・勤務の種類・必要な人数と、<strong>作った月のシフト表（13か月分まで）</strong>がまとめて残ります。</li>
+        <li>呼び出すのは①の<strong>「このデータを自動入力」</strong>からです。</li>
+        <li>座席表メーカーや席次表メーカーの名簿とは、別に保存しています。スタッフの名前がほかの道具の一覧に出ることはありません。</li>
+      </ul>
+    </div>
+    <p class="hint">保存したシフトデータは、<b>シフト表メーカー</b>で使えます。</p>
+    <p class="safe">🔒 <strong>保存したものは、使っている端末の中だけに残ります。</strong></p>
+    <details class="opt sub">
+      <summary>シフトデータに名前を付けて保存（<span id="dataCount">0／20件</span>）</summary>
+      <div class="body">
+        <p class="hint">いま、シフトデータを保存します。保存できるのは<b>文字情報のみ</b>です。</p>
+        <p class="btn-row">
+          <button class="mini" id="dataNew" type="button">新しい名前で保存</button>
+          <button class="mini" id="dataSave" type="button">上書き</button>
+          <button class="mini" id="dataDel" type="button">削除</button>
+        </p>
+        <div class="pick"><label for="dataSel">保存済のシフト</label>
+          <select id="dataSel"><option value="">－</option></select></div>
+        <p><span class="saving" id="dataMsg"></span></p>
+      </div>
+    </details>
+  </section>
+
+  <section class="read">
+    <details class="howto">
+      <summary>使い方</summary>
+      <div class="body">
+        <ol>
+          <li>①に、スタッフの名前を1行に1人ずつ貼り付けて「入れる」を押します。</li>
+          <li>②で月を選び、店休日の日付を押します。</li>
+          <li>③で勤務の記号と時間を、④で1日に必要な人数を決めます。</li>
+          <li>⑤で記号を選んで、表のマスを押していきます。</li>
+          <li>⑥で足りない日を確かめて、⑦でPDFにします。</li>
+        </ol>
+        <ul class="can">
+          <li><b>祝日・曜日を自動で表に</b><small>月を選ぶだけで、振替休日も入った日付が並びます</small></li>
+          <li><b>勤務の記号を自由に決められる</b><small>早番・遅番のほかに、時間の違う勤務を12種類まで足せます</small></li>
+          <li><b>社員とパート・アルバイトを分けて数える</b><small>社員が1人もいない日を見つけられます</small></li>
+          <li><b>希望の印</b><small>スタッフから聞いた希望を、自分で決めたものと見分けられます</small></li>
+          <li><b>先月の表を見ながら作れる</b><small>保存しておけば、13か月分まで残ります</small></li>
+          <li><b>A4横のPDF</b><small>そのままスタッフに配れる形で出ます</small></li>
+        </ul>
+        <p class="sub"><b>こんなときに</b></p>
+        <ul>
+          <li>飲食店・小売店で、毎月のシフト表を作るとき</li>
+          <li>美容室・クリニック・事務所で、少人数の勤務表を作るとき</li>
+          <li>学校や職場の当番表を、月ごとに作るとき</li>
+          <li>Excelのシフト表テンプレートを、毎月直すのが大変なとき</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="howto">
+      <summary>よくある質問</summary>
+      <div class="body">
+        <dl>
+          <dt>ネットにつながっているのに、本当に外部に出ないのですか？</dt>
+          <dd><strong>普段使っている端末で、ファイルを開くのと同じです。</strong>ネットにつながっていても、すべて使っている端末だけで完結します。だから、外に晒されることも、漏れることも、AIの学習に使われることもありません。いつもの作業と同じように、安心して使えます。</dd>
+          <dt>スタッフの名前は外部に送られますか？</dt>
+          <dd>送りません。すべて使っている端末だけで完結します。<strong>外部に出ていないので、AIの学習に使われることも、個人情報が漏れることもありません。</strong></dd>
+          <dt>個人情報が漏れないか心配です</dt>
+          <dd><strong>漏れません。</strong>入れた名前やシフトは、すべて使っている端末だけで完結します。外部には送っていないので、漏れることも、AIの学習に使われることもありません。</dd>
+          <dt>会社の決まりでクラウドが使えません</dt>
+          <dd><strong>問題ありません。</strong>入れた内容は外部に送っていません。すべて使っている端末だけで完結します。社外にデータを出さない決まりのある会社でもお使いいただけます。</dd>
+          <dt>スタッフみんなで書き込めますか？</dt>
+          <dd>書き込めません。<strong>作るのは1人、配るのはPDF</strong>という作りです。みんなが書き込める表は、うっかり消したり、古い表を見ていたりが起きます。PDFで配れば、配ったものがそのまま決まった表になります。</dd>
+          <dt>祝日は正しく入りますか？</dt>
+          <dd>国民の祝日・振替休日・国民の休日が入ります。春分の日と秋分の日は、発表より先の年は計算で出した日です。お盆や年末年始のような職場ごとの休みは、②で店休日にしてください。</dd>
+          <dt>先月の表が出ません</dt>
+          <dd>先月もこの画面で作り、⑧画面の保存か⑨保存したデータの利用で残していると出ます。</dd>
+        </dl>
+      </div>
+    </details>
+
+    <details class="howto">
+      <summary>データの扱い</summary>
+      <div class="body">
+        <p><strong>使っている端末の中だけで完結できます。</strong>入れたスタッフの名前やシフトがネット上に流れることはありません。外部には送っていないので、AIの学習に使われることも、個人情報が漏れることもありません。「画面の保存」をオンにしたときだけ、この端末の中に残ります。オフのままなら、ページを閉じた時点で消えます。インストールも会員登録もいりません。</p>
+      </div>
+    </details>
+  </section>
+</main>
+
+<footer class="noprint">
+  <div class="wrap"><span class="fnav"><a href="../about/">運営者情報</a>　<a href="../contact/">お問い合わせ</a>　<a href="../privacy/">プライバシーポリシー</a></span>
+    <span class="copy">さくらツール　© 2026 SAKURA TOOLS</span></div>
+</footer>
+
+<script src="../paper-pdf.js?v=2"></script>
+<script src="shift.js?v=3"></script>
+<script src="../tip.js?v=3"></script>
+</body>
+</html>

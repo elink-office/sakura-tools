@@ -1108,7 +1108,7 @@ function drawClients(){
     });
     if(keep) sel.value = keep;
   });
-  $('clientCount').textContent = db.clients.length + '／20件';
+  $('clientCount').textContent = db.clients.length + '/20';   /* ⭐件なし・/ は半角（2026-09-14 本人） */
   /* ⚠1件も無いときは、②の呼び出しを出さない（はじめての人には邪魔なだけ） */
   $('quickLoad').hidden = !db.clients.length;
   /* ⭐0件のときは⑧の「えらぶ」「上書き」「削除」も出さない（2026-09-11 本人）。
@@ -1139,7 +1139,7 @@ function drawForms(){
     });
     if(keep) sel.value = keep;
   });
-  if($('formCount')) $('formCount').textContent = db.forms.length + '／' + MAX_FORMS + '件';
+  if($('formCount')) $('formCount').textContent = db.forms.length + '/' + MAX_FORMS;
   if($('formLoad')) $('formLoad').hidden = !db.forms.length;
   /* ⭐0件のときは⑧の「えらぶ」「上書き」「削除」も出さない（2026-09-11 本人） */
   showWhenHas(db.forms.length, 'formHave', ['formSave', 'formDel']);

@@ -1,0 +1,86 @@
+/* ============================================================
+   シフト表メーカー（2026-09-14 新規・どこともつなげない）
+   ⭐作るのは代表1人・配るのはPDF（本人「代表がPDFで保存したもののほうが、間違いがない」）
+   ⭐紙＝A4横。画面の紙は 1123px（297mm）で作り、狭い画面では丸ごと縮める
+   ============================================================ */
+
+/* ---------- ① スタッフ ---------- */
+.sf-btns{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;margin:10px 0 0}
+.sf-list{margin-top:8px}
+.sf-srow{display:flex;gap:6px;align-items:center;margin:0 0 6px;flex-wrap:wrap}
+.sf-srow .no{width:1.8em;text-align:right;color:var(--ink-soft);font-size:.85rem}
+.sf-srow input[type=text]{flex:1 1 8em;min-width:7em;height:38px}
+.sf-srow select{width:auto;height:38px}
+.sf-srow button{padding:4px 9px}
+
+/* ---------- ② 店休日 ---------- */
+.sf-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;max-width:30rem;margin:8px 0 12px}
+.sf-day{padding:4px 0;font-size:.85rem;line-height:1.2;border-radius:var(--radius)}
+.sf-day small{display:block;font-size:.68rem;color:var(--ink-soft)}
+.sf-day.we small{color:#a84a72}
+.sf-day.on{background:#6b6b6b;color:#fff;border-color:#6b6b6b}
+.sf-day.on small{color:#fff}
+.sf-day.blank{visibility:hidden}
+
+/* ---------- ③ 勤務の種類 ---------- */
+.sf-crow{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.sf-crow input[type=text],.sf-crow input[type=number],.sf-crow select{height:38px}
+.sf-crow .mk{width:3.4em;text-align:center;font-weight:bold}
+.sf-crow .nm{width:7em}
+.sf-crow .tm{width:9.5em}
+.sf-crow .hr{width:4.4em}
+.sf-crow .u{font-size:.85rem;color:var(--ink-soft)}
+.sf-crow button{padding:4px 9px}
+
+/* ---------- ④ 必要な人数 ---------- */
+.sf-need{border-collapse:collapse;font-size:.88rem}
+.sf-need th,.sf-need td{padding:4px 6px;text-align:center;border-bottom:1px solid var(--line)}
+.sf-need th{font-weight:bold;white-space:nowrap}
+.sf-need td:first-child{text-align:left;font-weight:bold;white-space:nowrap}
+.sf-need input[type=number]{width:3.6em;height:36px;padding:4px}
+
+/* ---------- ⑤ 記号をえらぶ ---------- */
+.sf-pal{display:flex;flex-wrap:wrap;gap:6px}
+.sf-pal button{padding:6px 10px}
+.sf-pal .sw{display:inline-block;min-width:1.7em;padding:1px 4px;margin-right:5px;border:1px solid #9a9a9a;border-radius:2px;font-weight:bold;text-align:center}
+.sf-pal button.on{box-shadow:0 0 0 2px var(--pink) inset;font-weight:bold;background:var(--pink-pale)}
+
+/* ---------- 紙 ---------- */
+#sheetBox,#prevBox{position:relative;overflow:hidden;margin:12px 0 0}
+.sf-sheet{width:1123px;padding:30px;box-sizing:border-box;transform-origin:0 0;border-radius:0}
+.sf-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:0 0 8px}
+.sf-title{font-size:20px;font-weight:bold;line-height:1.2}
+.sf-place{font-size:14px;line-height:1.2}
+/* ⭐線は「すき間から見える地の色」で出す。paper-pdf は枠を上の線でしか読まないため */
+.sf-grid{display:grid;gap:1px;background:#8f8f8f;border:1px solid #8f8f8f;--rowH:26px}
+.sf-c{background:#fff;display:flex;align-items:center;justify-content:center;height:var(--rowH);
+  min-width:0;overflow:hidden;white-space:nowrap;position:relative;line-height:1;font-size:12px}
+.sf-c.hd{height:18px;font-size:11px}
+.sf-c.sat{background:#e9f0fa}
+.sf-c.sun{background:#fbe8ec}
+.sf-c.cl{background:#dcdcdc}
+.sf-n{justify-content:flex-start;padding:0 6px;font-size:13px}
+.sf-g{grid-column:1 / -1;justify-content:flex-start;padding:0 6px;height:17px;font-size:11px;font-weight:bold;background:#f3f3f3}
+.sf-t{font-size:12px}
+.sf-d{cursor:pointer;font-size:13px;font-weight:bold;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.sf-ro .sf-d{cursor:default}
+@media (hover:hover){ .sf-sheet:not(.sf-ro) .sf-d:hover{box-shadow:inset 0 0 0 2px var(--pink)} }
+.sf-k{height:20px;font-size:11px}
+.sf-k.short{background:#fdeceb;color:#b3261e;font-weight:bold}
+.sf-sheet.pdf .sf-k.short{background:#fff;color:#222;font-weight:normal}
+/* ⭐希望の印＝右上の三角。中身が空の飾りなので、PDFには出ない */
+.sf-d.hope::after{content:"";position:absolute;right:0;top:0;border-style:solid;border-width:0 8px 8px 0;
+  border-color:transparent var(--pink) transparent transparent}
+.sf-empty{grid-column:1 / -1;height:60px;color:#888;font-size:13px}
+.sf-legend{display:flex;flex-wrap:wrap;gap:4px 16px;margin:8px 0 0;font-size:11px}
+.sf-lg{display:inline-flex;align-items:center;gap:5px}
+.sf-sw{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:16px;padding:0 3px;
+  border:1px solid #8f8f8f;font-weight:bold}
+.sf-memo{font-size:12px;margin:6px 0 0}
+.sf-memo:empty{display:none}
+.sf-credit{font-size:10px;color:#888;text-align:right;margin:6px 0 0}
+
+/* ---------- ⑥ 確認 ---------- */
+.sf-check{margin:6px 0 0;padding-left:1.3em;font-size:.88rem;line-height:1.7}
+.sf-check li::marker{color:#b3261e}
+.sf-check li.more{list-style:none;color:var(--ink-soft)}

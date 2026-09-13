@@ -195,13 +195,13 @@
       if (keep !== '' && cls[parseInt(keep,10)]) sel.value = keep;
     });
     // 🔴 削除は⑤に1つだけ（2026-09-06 本人「削除は⑤でしょ？」）。①でえらんでいるものを消す
-    if ($('clsDel')) $('clsDel').disabled = !cls.length;
-    var cnt = $('clsCount');
-    if (cnt){
-      var nR = cls.filter(function(c){ return c.kind !== 'slide'; }).length;
-      var nS = cls.length - nR;
-      cnt.textContent = '名前のデータ ' + nR + '／' + MAXC + '　文字のデータ ' + nS + '／' + MAXS;
-    }
+    /* ⭐2026-09-14 保存の欄を文字と名前の2つに分けた＝件数も削除も、それぞれの欄に */
+    var nR = cls.filter(function(c){ return c.kind !== 'slide'; }).length;
+    var nS = cls.length - nR;
+    if ($('clsCount'))  $('clsCount').textContent  = nR + '/' + MAXC;
+    if ($('clsCountT')) $('clsCountT').textContent = nS + '/' + MAXS;
+    if ($('clsDel'))  $('clsDel').disabled  = !nR;
+    if ($('clsDelT')) $('clsDelT').disabled = !nS;
   }
   // ⚠2つのセレクトは同じものを指す（座席表と同じ）
   function syncCls(from, to){
@@ -296,8 +296,8 @@
       })
       .join('\n');
   }
-  function doClsNew(){
-    var isText = (kind() === 'text');
+  /* ⭐isText＝押した欄（文字の欄なら true）。⚠①の切り替えには左右されない（2026-09-14） */
+  function doClsNew(isText){
     // ⭐文字を出す側なら、いま並んでいる文字をそのまま残す（本人「1年生資料とかにして保存」）
     var lines = isText
       ? sheets.map(function(sh){ return (sh.text||'').trim(); })
@@ -318,7 +318,7 @@
         if (isText) st.classes[i].kind = 'slide';
         if (!writeStore(st)) return;
         fillClassSelect();
-        showCls('「'+name+'」を入れ替えました');
+        showCls('「'+name+'」を入れ替えました', isText);
         return;
       }
     }
@@ -341,13 +341,12 @@
     st.classes.push(item);
     if (!writeStore(st)) return;
     fillClassSelect();
-    showCls('「'+name+'」として保存しました');
+    showCls('「'+name+'」として保存しました', isText);
   }
   /* 🔴 上書き（2026-09-06 本人「名簿に関しては上書きできるはずだよね？」）。
      ⭐名前だけになってしまう問題は namesNow() で解決ずみ＝番号・男女は残る。
      ⚠文字のまとまりと名簿は入れ替えられない（座席表の名簿が、めあての文で埋まってしまう） */
-  function doClsSave(){
-    var isText = (kind() === 'text');
+  function doClsSave(isText){
     var sel = isText ? $('clsSelT') : $('clsSel');
     if (!sel || sel.value === ''){ alert('先に①で、上書きするデータをえらんでください。'); return; }
     var st = readStore(), i = parseInt(sel.value,10), c = st.classes[i];
@@ -368,14 +367,17 @@
     c.names = isText ? lines.join('\n') : namesNow(c.names);
     if (!writeStore(st)) return;
     fillClassSelect();
-    showCls('「' + (c.label||'') + '」を上書きしました');
+    showCls('「' + (c.label||'') + '」を上書きしました', isText);
   }
   var clsTimer = null;
-  function showCls(t){
-    var el = $('clsSaved'); if (!el) return;
-    el.textContent = t;
+  /* ⭐知らせは押した欄に出す。どちらか分からないとき（保存の失敗など）は両方 */
+  function showCls(t, isText){
+    var ids = (isText === true) ? ['clsSavedT'] : (isText === false) ? ['clsSaved'] : ['clsSavedT', 'clsSaved'];
+    var els = ids.map(function(id){ return $(id); }).filter(function(x){ return x; });
+    if (!els.length) return;
+    els.forEach(function(el){ el.textContent = t; });
     clearTimeout(clsTimer);
-    if (t) clsTimer = setTimeout(function(){ el.textContent = ''; }, 2600);
+    if (t) clsTimer = setTimeout(function(){ els.forEach(function(el){ el.textContent = ''; }); }, 2600);
   }
 
   /* ================= 貼り付けを読む ================= */
@@ -1303,8 +1305,10 @@
     }
   });
 
-  $('clsNew').addEventListener('click', doClsNew);
-  if ($('clsSave')) $('clsSave').addEventListener('click', doClsSave);
+  $('clsNew').addEventListener('click', function(){ doClsNew(false); });
+  if ($('clsSave')) $('clsSave').addEventListener('click', function(){ doClsSave(false); });
+  if ($('clsNewT')) $('clsNewT').addEventListener('click', function(){ doClsNew(true); });
+  if ($('clsSaveT')) $('clsSaveT').addEventListener('click', function(){ doClsSave(true); });
   $('clsSel').addEventListener('change', function(){
     syncCls('clsSel','clsSelT')();
     refreshDelT();
@@ -1317,14 +1321,20 @@
      「ほかの保存の場所にも…削除できるようにしてほしい」）。
      ⚠名簿は置き場が共通なので、消すとほかの道具からも消える＝確認でそう伝える */
   function refreshDelT(){
-    if ($('clsDel')) $('clsDel').disabled = !loadRosters().length;
+    var cls = loadRosters();
+    var nS = cls.filter(function(c){ return c.kind === 'slide'; }).length;
+    if ($('clsDel'))  $('clsDel').disabled  = !(cls.length - nS);
+    if ($('clsDelT')) $('clsDelT').disabled = !nS;
   }
-  function delPicked(selId){
-    var sel = $(selId);
+  /* ⭐isText＝押した欄。文字の欄は①の文字側のえらび（clsSelT）、名前の欄は発表者側（clsSel）を消す */
+  function delPicked(isText){
+    var sel = $(isText ? 'clsSelT' : 'clsSel');
     if (!sel || sel.value === ''){ alert('先に①で、消すデータをえらんでください。'); return; }
     var i = parseInt(sel.value,10);
     var st = readStore(), c = st.classes[i];
     if (!c) return;
+    /* ⚠文字側のえらびには名前のデータも並ぶ。⭐欄と種類が違うときは消さない */
+    if (isText && c.kind !== 'slide'){ alert('「' + (c.label||'') + '」は名前のデータです。名前のデータの欄で消してください。'); return; }
     var msg = '「'+(c.label||'')+'」を消します。';
     // ⚠名簿は座席表メーカーなどと同じ置き場。文字のまとまりはこのページのものだけ
     if (c.kind !== 'slide') msg += '座席表メーカー・席次表メーカーからも消えます。';
@@ -1332,12 +1342,10 @@
     st.classes.splice(i,1);
     if (!writeStore(st)) return;
     fillClassSelect(); refreshDelT();
-    showCls('「'+(c.label||'')+'」を消しました');
+    showCls('「'+(c.label||'')+'」を消しました', isText);
   }
-  // ⚠①のどちらの欄でえらんだかは、いまの分岐で決まる（文字＝clsSelT／発表者＝clsSel）
-  if ($('clsDel')) $('clsDel').addEventListener('click', function(){
-    delPicked(kind() === 'text' ? 'clsSelT' : 'clsSel');
-  });
+  if ($('clsDel'))  $('clsDel').addEventListener('click', function(){ delPicked(false); });
+  if ($('clsDelT')) $('clsDelT').addEventListener('click', function(){ delPicked(true); });
   /* 🔴 文字を出す側で名簿を読む（2026-09-05 本人）。⭐1人＝1枚の文字にする。
      ⚠いま入っているぶんは消さず、下に足す */
   if ($('clsLoadT')) $('clsLoadT').addEventListener('click', function(){

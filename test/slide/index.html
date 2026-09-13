@@ -24,8 +24,8 @@
   gtag('config', 'G-GCK29PTKBG');
 </script>
 <title>【テスト】簡単スライドメーカー｜パワーポイントの代わりに大きく映す</title>
-<meta name="description" content="パワーポイントの代わりに、文字と写真をそのまま大きくモニターに映せる無料の道具です。今日のめあて、問題文、作品の写真、発表する子の名前に。スライドを作り込まなくていいので、思いついたその場で出せます。写真の上に文字を重ねることもできます。名簿は座席表・班分けと共通。登録なし・インストールなし・写真も名簿も外に送りません。">
-<link rel="stylesheet" href="../style.css?v=138">
+<meta name="description" content="パワーポイントの代わりに、文字と写真をそのまま大きくモニターに映せる無料の道具です。今日のめあて、問題文、作品の写真、発表する子の名前に。スライドを作り込まなくていいので、思いついたその場で出せます。写真の上に文字を重ねることもできます。名簿は座席表・席次表と共通。登録なし・インストールなし・写真も名簿も外に送りません。">
+<link rel="stylesheet" href="../style.css?v=139">
 <link rel="stylesheet" href="slide.css?v=67">
 </head>
 <body>
@@ -95,7 +95,7 @@
         <!-- 🔴 文字を出す側でも名簿を使える（2026-09-05 本人「さくらツールの名簿が使えるから、
              名簿から選択できるようにしたい」）。⭐1人＝1枚の文字として入る -->
         <div id="clsBoxT" hidden>
-          <p class="notice mini">座席表・席次表・班分けで保存したデータを使えます。</p>
+          <p class="notice mini">座席表・席次表で保存したデータを使えます。</p>
           <div class="row" style="margin-bottom:14px">
             <select id="clsSelT"></select>
             <button id="clsLoadT">このデータを読み込む</button>
@@ -132,7 +132,7 @@
         <h3 class="sub">名簿の入力</h3>
 
         <div id="clsBox" hidden>
-          <p class="notice mini">座席表・席次表・班分けで保存したデータを使えます。</p>
+          <p class="notice mini">座席表・席次表で保存したデータを使えます。</p>
           <div class="row" style="margin-bottom:14px">
             <select id="clsSel"></select>
             <button id="clsLoad">このデータを読み込む</button>
@@ -269,35 +269,46 @@
     <div class="tip-body" hidden>
       <ul>
         <li><strong>名前を付けて、<b style="font-size:inherit">20件</b>まで保存できます。</strong>残るのは<strong>この端末の中だけ</strong>です。</li>
-        <li><strong>座席表メーカーと共通です。</strong>あちらで保存したデータもここに出ますし、逆もできます（教室の形や班の設定はツールごとに覚えます）。</li>
         <li>呼び出すのは①の<strong>「このデータを読み込む」</strong>から。</li>
-        <li><b>「上書き」と「削除」は、①でえらんでいるもの</b>に効きます。上書きしても、座席表で入れた<b>番号や男女は残ります</b>。⚠名前のデータを消すと<b>座席表メーカー・席次表メーカーからも消えます</b>。</li>
-        <li>①が<b>文字</b>なら<b>文字のデータ</b>、<b>発表者</b>なら<b>名前のデータ</b>が保存されます。文字は100件まで（⚠座席表メーカーの一覧には出ません）。</li>
+        <li><b>文字のデータ</b>と<b>名前のデータ</b>は、欄が分かれています。それぞれの欄のボタンは、その種類だけを保存・上書き・削除します。</li>
+        <li><b>「上書き」と「削除」は、①でえらんでいるもの</b>に効きます。上書きしても、座席表で入れた<b>番号や男女は残ります</b>。</li>
+        <li>文字のデータは100件まで（⚠座席表メーカーの一覧には出ません）。</li>
         <li>⚠<b>写真・班・作品名は保存されません。</b>写真が残るのは④の「画面の保存」だけです。</li>
       </ul>
     </div>
 
-    <p class="hint">保存したデータは、<b>座席表・席次表・班分け・スライド</b>で使えます。</p>
-
     <p class="safe">🔒 <strong>保存したものは、使っている端末の中だけに残ります。</strong></p>
 
     <div class="cls-box">
-            <details class="opt sub">
-        <summary>データに名前を付けて保存（<span id="clsCount">0／20件</span>）</summary>
+      <!-- 🔴⭐保存の欄を「文字」と「名前」の2つに分けた（2026-09-14 本人「自分が何を持ってるか知りたいから」）。
+           ⭐上が文字（本人「①で左だから」）。⭐それぞれの欄のボタンは、その種類だけを扱う＝①の切り替えに左右されない -->
+      <details class="opt sub">
+        <summary>文字のデータを保存<span id="clsCountT" class="cnt">0/100</span></summary>
         <div class="body">
-      <!-- 🔴 上書きも置いた（2026-09-06 本人「名簿に関しては上書きできるはずだよね？」）。
-           ⭐番号・男女は namesNow() で残すので、上書きしても落ちない -->
-      <!-- 🔴 説明はこの1行だけ（2026-09-06 本人「⑤の説明が長いね…だけでいいんじゃないかな？
-           だって、名前を付けて保存だからさ、仕事してたらわかると思う」）。
-           ⚠くわしい話（上書き・削除が①のえらびに従うこと）は「？」の中に置いてある -->
-      <p class="hint">いま、<b>②に入っているもの</b>を保存します。<br>保存できるのは<b>文字情報のみ</b>です。</p>
-      <p class="btn-row">
-        <button class="mini" id="clsNew" type="button">新しい名前で保存</button>
-        <button class="mini" id="clsSave" type="button">上書き</button>
-        <!-- 🔴 削除はここ（2026-09-06 本人「削除は⑤でしょ？」）。①には置かない -->
-        <button class="mini" id="clsDel" type="button">削除</button>
-      </p>
-      <p><span class="saving" id="clsSaved"></span></p>
+          <p class="hint">いま、<b>②に入っている文字</b>を保存します。</p>
+          <p class="btn-row">
+            <button class="mini" id="clsNewT" type="button">新しい名前で保存</button>
+            <button class="mini" id="clsSaveT" type="button">上書き</button>
+            <button class="mini" id="clsDelT" type="button">削除</button>
+          </p>
+          <p><span class="saving" id="clsSavedT"></span></p>
+        </div>
+      </details>
+      <details class="opt sub">
+        <summary>名前のデータを保存<span id="clsCount" class="cnt">0/20</span></summary>
+        <div class="body">
+          <!-- 🔴 上書きも置いた（2026-09-06 本人「名簿に関しては上書きできるはずだよね？」）。
+               ⭐番号・男女は namesNow() で残すので、上書きしても落ちない -->
+          <p class="hint">いま、<b>①に入っている名前</b>を保存します。</p>
+          <!-- 🔴⭐座席表・席次表と共通の話は、名前のデータの欄に置く（2026-09-14 本人）。⚠文字のデータはスライドだけのもの -->
+          <p class="hint">名前のデータは、<b>座席表・席次表</b>と共通です。教室の形など、それぞれのツールの設定は自動的に保存しています。</p>
+          <p class="hint">⚠消すと、<b>座席表・席次表からも消えます。</b></p>
+          <p class="btn-row">
+            <button class="mini" id="clsNew" type="button">新しい名前で保存</button>
+            <button class="mini" id="clsSave" type="button">上書き</button>
+            <button class="mini" id="clsDel" type="button">削除</button>
+          </p>
+          <p><span class="saving" id="clsSaved"></span></p>
         </div>
       </details>
 </div>
@@ -434,7 +445,7 @@
   </div>
 </div>
 
-<script src="slide.js?v=87"></script>
+<script src="slide.js?v=89"></script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>
