@@ -96,14 +96,19 @@ body.screen .seat.is-leader::after{font-size:var(--markSize,1.2em);right:9px;top
 /* 座席表をかくす（モニターに映す前のネタバレよけ）。
    ⚠ ::after は使わない。SAMPLE の透かしが .sheet::after を使っていて、
      rotate(-18deg) を受けついで板が斜めになる（2026-08-31） */
-#mask{display:none;background:#eceff1;border:2px dashed #b7c0c6;border-radius:10px;
-  align-items:center;justify-content:center;color:#78868f;font-size:1rem;min-height:240px}
+/* ⭐かくすときは、紙まるごとグレーの板でおおう。点線の枠はなし（2026-09-14 本人「グレーのを置くなら全部に置いてほしい。中途半端。点線である必要ない。罫線なしで」）
+   ⚠前は座席のところだけ板に替えていた＝見出し・黒板・サイト名・SAMPLE の透かしが見えたままだった
+   ⭐座席は visibility で消す＝紙の大きさはそのまま（板が紙と同じ大きさになる） */
+#mask{display:none;position:absolute;inset:0;z-index:5;background:#eceff1;border:0;border-radius:inherit;
+  align-items:center;justify-content:center;color:#78868f;font-size:1rem}
+body:not(.screen) .sheet.masked{position:relative}
 .sheet.masked #mask{display:flex}
-.sheet.masked .grid{display:none}
+.sheet.masked .grid{visibility:hidden}
+body:not(.screen) .sheet.masked::after{display:none}   /* ⚠紙にするときは masked を外してから描くので、ここは画面だけ */
 /* モニターと紙にはちゃんと出す */
 body.screen .sheet.masked #mask{display:none}
-body.screen .sheet.masked .grid{display:grid}
-@media print{.sheet.masked #mask{display:none}.sheet.masked .grid{display:grid}}
+body.screen .sheet.masked .grid{display:grid;visibility:visible}
+@media print{.sheet.masked #mask{display:none}.sheet.masked .grid{display:grid;visibility:visible}}
 /* 🔴 見本は押すと大きくなる（2026-09-04 本人）。
    本人「クリックしたら大きくなって見本って表示されるようにできる？
         で、サイズを小さくしといたほうがいいかも。
