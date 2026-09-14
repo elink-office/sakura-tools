@@ -47,6 +47,9 @@ h3.sub{font-size:1.02rem;margin:0 0 12px;display:flex;align-items:center}
 /* 「1枚だけ見る」の枚数を選ぶところ */
 #checkNo{max-width:260px}
 
+/* ⭐サンプルのボタン（①の上・2026-09-14）。座席表の .seat-sample と同じ形 */
+.slide-sample{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;margin:0 0 14px}
+
 /* 大きく出す：枠に入れず、ボタンと枚数だけ。中央に置く（2026-09-05 本人） */
 .startbox{margin:26px 0 30px;text-align:center}
 .startbox .count{margin-top:12px}
@@ -101,9 +104,12 @@ h3.sub{font-size:1.02rem;margin:0 0 12px;display:flex;align-items:center}
 
 /* 一覧 */
 .tbl{overflow-x:auto}
-.tbl table{border-collapse:collapse;width:100%;font-size:.92rem}
-.tbl th,.tbl td{border:1px solid var(--line);padding:6px 6px;text-align:left;vertical-align:middle}
-.tbl th{background:var(--pink-pale);font-weight:bold;font-size:.82rem}
+/* ⭐表の形はシフト表メーカーの「勤務の種類」にそろえた（2026-09-14 本人「スライドの表もそろえる」）
+   ＝縦の線なし・横の線だけ／項目名は地なし・うすいグレーの字・中央・上の線なし／表の地なし */
+.tbl table{border-collapse:collapse;width:100%;font-size:.92rem;background:transparent}
+.tbl th,.tbl td{border:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:6px 6px;text-align:left;vertical-align:middle}
+.tbl th{background:transparent;color:#9a9ea4;font-weight:bold;font-size:.82rem;text-align:center;white-space:nowrap}
+.tbl tr:first-child th{border-top:0}
 .tbl td.idx{width:32px;color:var(--ink-soft);text-align:center;font-variant-numeric:tabular-nums}
 .tbl td.chk{width:42px;text-align:center}
 .tbl td.mv{width:70px;white-space:nowrap;text-align:center}

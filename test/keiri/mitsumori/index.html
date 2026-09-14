@@ -26,8 +26,8 @@
 </script>
 <title>【テスト】見積書メーカー｜源泉徴収も自動・個人事業主や副業の見積書を無料作成</title>
 <meta name="description" content="副業・フリーランス・個人事業主のための見積書作成ツール。税抜でも税込でも入力でき、源泉徴収（10.21％）を引いた差引額まで自動で計算。ひな形やエクセルのテンプレートはいりません。取引先を保存できるので、2回目からは選ぶだけ。インボイスの登録番号にも対応。保存するときのファイル名が「見積書_日付_取引先_金額」の形になるので、あとから探せます。登録もインストールも不要、すべて無料です。">
-<link rel="stylesheet" href="../../style.css?v=139">
-<link rel="stylesheet" href="../../keiri.css?v=58">
+<link rel="stylesheet" href="../../style.css?v=140">
+<link rel="stylesheet" href="../../keiri.css?v=64">
 </head>
 <body data-doc="mitsumori">
 <div id="testBadge" style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
@@ -110,6 +110,9 @@
     <button type="button" class="js-sample-del">サンプルを削除</button>
   </div>
 
+  <!-- ⭐請求書の「← 見積書に戻る」で来たときだけ出す（2026-09-14） -->
+  <p class="safe" id="backMsg" hidden>⭐<strong>請求書に移る前の見積書に戻しました。</strong></p>
+
   <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
 
   <!-- ================= (1) 自分の情報 ================= -->
@@ -125,13 +128,13 @@
            「電話番号を、見積もりや請求書で-なしにする人はいない」）。
            ⭐－なしで打った人には、打ち終わったときにコード側で－を入れる（fmtTel） -->
       <div class="w-tel"><label for="meTel">電話番号<span style="font-weight:normal;font-size:.72rem;opacity:.75">　03-0000-0000</span></label>
-        <input id="meTel" type="text" placeholder="03-0000-0000"></div>
+        <input id="meTel" type="tel" inputmode="tel" autocomplete="tel" placeholder="03-0000-0000"></div>
       <div class="w-mail"><label for="meMail">メールアドレス</label>
-        <input id="meMail" type="text" placeholder="info@example.com"></div>
+        <input id="meMail" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="info@example.com"></div>
     </div>
     <div class="row tight">
       <div class="w-zip"><label for="meZip">郵便番号</label>
-        <input id="meZip" type="text" placeholder="100-0005"></div>
+        <input id="meZip" type="text" inputmode="numeric" autocomplete="postal-code" placeholder="100-0005"></div>
       <div class="grow"><label for="meAddr">住所<span style="font-weight:normal;font-size:.72rem;opacity:.75">　改行したい場合は / を入れる</span></label>
         <input id="meAddr" type="text" placeholder="東京都千代田区丸の内1-2-3"></div>
     </div>
@@ -353,7 +356,7 @@
           <th style="min-width:170px">品目</th>
           <th class="col-code" style="width:96px" hidden>品番</th>
           <th style="width:70px">数量</th>
-          <th style="width:70px">単位</th>
+          <th style="width:96px">単位</th><!-- ⭐単位は2〜3文字（時間・ヶ月・ページ）が入る幅に。品目が少し狭くなる（2026-09-14 本人「品目を少し小さくしてでも、単位を表示してほしい」） -->
           <th style="width:96px">単価</th>
           <th style="width:76px">税率</th>
           <th style="width:96px;text-align:right">金額</th>
@@ -445,14 +448,10 @@
     <p class="inv-fname">保存される名前　<b id="fnameOut">見積書.pdf</b></p>
 
     <p style="margin:14px 0 0;text-align:center"><button type="button" id="doPrint" class="primary">PDFで保存</button></p>
+
   </section>
 
   <!-- ================= (6) 保存したデータの利用 ================= -->
-  <div class="inv-handoff noprint">
-    <p class="inv-hint">見積が通ったら、<strong>請求書メーカーに移動して</strong>中身をそのまま入れます。</p>
-    <button type="button" id="toSeikyu" class="primary weak">この内容で請求書を作る</button>
-  </div>
-
   <section class="card" id="s7">
     <h2><span class="step">8</span>保存したデータの利用</h2>
     <p class="inv-hint">保存した<b>取引先</b>と<b>ひな形</b>は、<b>さくらツール内の請求書・見積書・領収書</b>で使えます。
@@ -562,6 +561,16 @@
     </details>
   </section>
 
+  <!-- 🔴⭐請求書を作るボタンは⑧の下（2026-09-14 本人「保存した後で請求書を作るっていう流れになりやすい」）。
+       ⭐⑦の「PDFで保存」から離れるので、同じ桜色のボタン -->
+  <div class="inv-handoff noprint">
+    <p class="inv-hint">見積が通ったら、<strong>請求書メーカーに移動して</strong>中身をそのまま入れます。</p>
+    <button type="button" id="toSeikyu" class="primary">この内容で請求書を作る</button>
+  </div>
+
+  <!-- ⭐見積書と請求書を行き来する（2026-09-14 本人）。⭐使い方の上・主張しない小さなリンク -->
+  <p class="doc-switch noprint"><a href="../seikyu/">請求書メーカーへ →</a></p>
+
   <!-- ================= 読みもの ================= -->
   <section class="read">
     <details class="howto">
@@ -661,6 +670,7 @@
       </div>
     </details>
   </section>
+
 </main>
 
 <footer class="noprint">
@@ -669,7 +679,7 @@
   </div>
 </footer>
 
-<script src="../../keiri.js?v=52"></script>
+<script src="../../keiri.js?v=56"></script>
 <script src="../../keiri-pdf.js?v=2"></script>
 <script src="../../tip.js?v=3"></script>
 </body>

@@ -93,6 +93,7 @@ function load(){
       });
       if(db.forms.length > MAX_FORMS) db.forms.length = MAX_FORMS;
       db.handoff  = o.handoff || null;
+      db.backTo   = o.backTo || null;   /* ⭐見積書に戻る道（2026-09-14） */
       db.noPrefix = o.noPrefix || '';
       db.noDigits = o.noDigits || 3;
       /* ⭐番号の記録は書類ごとに分ける（請求書と見積書で連番が混ざらないように） */
@@ -116,7 +117,7 @@ function save(){
     if(!db.docs) db.docs = {};
     db.docs[DOC] = { usedNos: db.usedNos, lastSeq: db.lastSeq };
     var out = {};
-    ['me','clients','bank','note','logo','noPrefix','noDigits','docs','forms','handoff'].forEach(function(k){ out[k]=db[k]; });
+    ['me','clients','bank','note','logo','noPrefix','noDigits','docs','forms','handoff','backTo'].forEach(function(k){ out[k]=db[k]; });   /* ⚠ここに無いものは保存されない（backTo を足し忘れて戻るボタンが出なかった） */
     localStorage.setItem(KEY, JSON.stringify(out));
   }catch(e){}
 }
@@ -328,6 +329,19 @@ function yen(n){ return Number(n).toLocaleString('ja-JP'); }
    ⭐日本の住所に「/」は使わないので、区切りに使って安全。⭐全角の「／」も受ける */
 function addrHtml(v){
   return esc(v).replace(/[\/／]\s*/g, '<br>');
+}
+
+/* 🔴⭐電話番号・メール・郵便番号は半角にそろえる（2026-09-14 本人「それぞれ最初から半角で入るようにしてほしい」）。
+   ⭐スマホは欄の種類（tel・email・numeric）で、はじめから半角のキーボードが出る。
+   ⚠パソコンは日本語入力のまま打てるので、⭐全角で入った字をここで半角に直す
+     （⚠CSSの ime-mode は廃止されていて使えない）。
+   ⭐tel と zip は、全角・長音の「ー」「－」なども半角の「-」にする */
+function toHalf(v, dash){
+  var s = String(v || '')
+    .replace(/[\uFF01-\uFF5E]/g, function(c){ return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); })
+    .replace(/\u3000/g, ' ');
+  if(dash) s = s.replace(/[\u30FC\u2010-\u2015\u2212\uFF70]/g, '-');
+  return s;
 }
 
 /* ⭐郵便番号は7桁固定。⭐数字だけで打っても 100-0005 にできる */
@@ -1399,6 +1413,17 @@ function boot(){
       $('toPerson').value = hc.person || '';
       $('toAddr').value   = hc.addr || '';
     }
+    /* ⭐自分の情報も入れる（2026-09-14）。⚠古い形（me を持たない）はそのまま */
+    var hm = db.handoff.me;
+    if(hm){
+      ['meName','meZip','meAddr','meTel','meMail','meTno'].forEach(function(k){
+        if($(k) && hm[k] != null) $(k).value = hm[k];
+      });
+      if($('useInvoice')){
+        $('useInvoice').checked = !!hm.useInvoice;
+        if($('invoiceWrap')) $('invoiceWrap').hidden = !hm.useInvoice;
+      }
+    }
     db.handoff = null; save();
     handed = true;
     /* ⭐見積書から渡ってきた人は、中身がもう入っている。⚠③④を開けて見せる */
@@ -1406,6 +1431,36 @@ function boot(){
     if($('s4Box')) $('s4Box').open = true;
     var m = $('handoffMsg');
     if(m){ m.hidden = false; }
+  }
+
+  /* 🔴⭐見積書に戻る道（2026-09-14 本人）。
+     ⭐請求書側＝覚えた見積書があるときだけ「← 見積書に戻る」を出す（1日まで）
+     ⭐見積書側＝その「戻る」で来たときだけ、写しておいた画面をそのまま戻す */
+  if(db.backTo && (Date.now() - db.backTo.at) > 86400000){ db.backTo = null; save(); }
+  if(DOC === 'seikyu' && db.backTo && $('backWrap')){
+    $('backWrap').hidden = false;
+    $('backToMitsumori').onclick = function(){
+      db.backTo.restore = true; save();
+      location.href = '../mitsumori/';
+    };
+  }
+  if(DOC === 'mitsumori' && db.backTo && db.backTo.restore){
+    var sn = db.backTo.snap || {};
+    var vals = sn.vals || {};
+    Object.keys(vals).forEach(function(id){
+      var el = $(id); if(!el) return;
+      if(el.type === 'checkbox' || el.type === 'radio') el.checked = !!vals[id];
+      else el.value = vals[id];
+    });
+    if(sn.form) useForm(sn.form);
+    if($('invoiceWrap') && $('useInvoice')) $('invoiceWrap').hidden = !$('useInvoice').checked;
+    if($('whTargetWrap') && $('useWithhold')) $('whTargetWrap').hidden = !$('useWithhold').checked;
+    db.backTo = null; save();
+    handed = true;
+    if($('s3Box')) $('s3Box').open = true;
+    if($('s4Box')) $('s4Box').open = true;
+    if($('backMsg')) $('backMsg').hidden = false;
+    calc();
   }
 
   /* ⭐はじめての人には、最初からサンプルを入れておく（2026-09-09 本人
@@ -1433,10 +1488,25 @@ function boot(){
      ⭐欄の中そのものを書き換えるので、⭐**保存される値も紙もこの形になる**。
      ⚠calc() は呼ばない＝document の change がこのあとに走る */
   if($('meZip')) $('meZip').addEventListener('change', function(){
-    var v = fmtZip(this.value.trim()); if(v !== this.value) this.value = v;
+    var v = fmtZip(toHalf(this.value, true).trim()); if(v !== this.value) this.value = v;
   });
   if($('meTel')) $('meTel').addEventListener('change', function(){
-    var v = fmtTel(this.value.trim()); if(v !== this.value) this.value = v;
+    var v = fmtTel(toHalf(this.value, true).trim()); if(v !== this.value) this.value = v;
+  });
+  if($('meMail')) $('meMail').addEventListener('change', function(){
+    var v = toHalf(this.value).replace(/\s+/g, ''); if(v !== this.value) this.value = v;
+  });
+  /* ⭐打っているそばから半角に（パソコンで全角のまま打ったとき）。
+     ⚠変換の途中（日本語入力の下線が出ているあいだ）は触らない＝確定してから直す */
+  ['meZip', 'meTel', 'meMail'].forEach(function(id){
+    var el = $(id); if(!el) return;
+    var dash = (id !== 'meMail');
+    var fix = function(){
+      var v = toHalf(el.value, dash);
+      if(v !== el.value) el.value = v;
+    };
+    el.addEventListener('input', function(e){ if(!e.isComposing) fix(); });
+    el.addEventListener('compositionend', fix);
   });
   $('invNo').addEventListener('input', checkNo);
   $('noPrefix').addEventListener('input', refreshNo);
@@ -1531,6 +1601,17 @@ function boot(){
     $('meMsg').textContent = 'この端末に保存しました';
     flash($('meMsg'));
   };
+
+  /* ⭐見積書の画面を丸ごと写す（戻る道のため・2026-09-14）。
+     ⭐欄の中身は id ごとに、明細は nowForm() で取る。⚠ファイルの欄（ロゴ）は写せないので外す */
+  function screenSnap(){
+    var vals = {};
+    Array.prototype.forEach.call(document.querySelectorAll('main input[id], main select[id], main textarea[id]'), function(el){
+      if(el.type === 'file' || el.type === 'button') return;
+      vals[el.id] = (el.type === 'checkbox' || el.type === 'radio') ? el.checked : el.value;
+    });
+    return { vals: vals, form: nowForm() };
+  }
 
   /* ⭐取引先＝相手の情報だけ（2026-09-10 本人）。⚠件名と明細は「取引の内容」のほう */
   function nowClient(){
@@ -1691,7 +1772,14 @@ function boot(){
     if(hit >= 0) db.forms[hit] = f;
     else if(db.forms.length < MAX_FORMS) db.forms.push(f);
     /* ⭐相手も一緒に渡す（請求書側で②に入る）。⚠内容には持たせない */
-    db.handoff = { at: Date.now(), form: f, client: nowClient() };
+    /* 🔴⭐自分の情報も渡す（2026-09-14 本人「全部が一気にいくっていうイメージ」）。
+       ⚠保存とは別＝保存していなければ、次回は出てこない。いまの画面の中身をそのまま渡すだけ */
+    var meNow = { useInvoice: !!($('useInvoice') && $('useInvoice').checked) };
+    ['meName','meZip','meAddr','meTel','meMail','meTno'].forEach(function(k){ meNow[k] = $(k) ? $(k).value : ''; });
+    db.handoff = { at: Date.now(), form: f, client: nowClient(), me: meNow };
+    /* 🔴⭐見積書に戻る道（2026-09-14 本人「戻ってもデータがなかった」）。
+       ⭐移る直前の見積書の画面を丸ごと覚えておく＝請求書の「← 見積書に戻る」でそのまま戻せる */
+    db.backTo = { at: Date.now(), snap: screenSnap() };
     save();
     location.href = '../seikyu/';
   };
@@ -1737,6 +1825,9 @@ function boot(){
   $('pages').onclick = function(){
     BIG = !BIG;
     $('stage').classList.toggle('big', BIG);
+    /* 🔴⭐横に動かした位置を戻す（2026-09-14 本人「拡大して動かしたあと縮小すると、左に寄って動かない」）。
+       ⚠実物大のとき横に動かした量が、小さく戻したあとも残っていた＝紙が左に切れて、もう動かせなかった */
+    $('stage').scrollLeft = 0;
     $('zoomHint').textContent = BIG ? '押すと小さくなります' : '押すと実物大になります（A4サイズ）';
     fitSheet();
   };

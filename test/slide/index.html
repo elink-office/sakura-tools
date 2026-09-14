@@ -25,8 +25,8 @@
 </script>
 <title>【テスト】簡単スライドメーカー｜パワーポイントの代わりに大きく映す</title>
 <meta name="description" content="パワーポイントの代わりに、文字と写真をそのまま大きくモニターに映せる無料の道具です。今日のめあて、問題文、作品の写真、発表する子の名前に。スライドを作り込まなくていいので、思いついたその場で出せます。写真の上に文字を重ねることもできます。名簿は座席表・席次表と共通。登録なし・インストールなし・写真も名簿も外に送りません。">
-<link rel="stylesheet" href="../style.css?v=139">
-<link rel="stylesheet" href="slide.css?v=67">
+<link rel="stylesheet" href="../style.css?v=140">
+<link rel="stylesheet" href="slide.css?v=69">
 </head>
 <body>
 <div id="testBadge" style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
@@ -79,6 +79,14 @@
   </ul>
 
   <!-- 準備（見せたくないものは全部この中。閉じれば一度に隠れる） -->
+  <!-- ⭐サンプルのボタンは①の上（2026-09-14 本人「一番上にサンプルデータ」「スライドも文字と人のサンプル」。座席表・シフト表と同じ並び）
+       ⭐押すと①②に入る。「サンプルを消す」で前の画面に戻る。⚠サンプルの間は保存しない -->
+  <div class="slide-sample noprint">
+    <button type="button" id="sampleT">サンプル①（文字）</button>
+    <button type="button" id="sampleL">サンプル②（発表者）</button>
+    <button type="button" id="sampleOff" hidden>サンプルを消す</button>
+    <span class="saving" id="sampleMsg"></span>
+  </div>
   <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
 
   <details class="opt" id="d1" open>
@@ -119,7 +127,6 @@
 のこり 5分"></textarea>
         <div class="row" style="margin-top:12px">
           <button id="addText">入れる</button>
-          <button id="sampleText">サンプルを入れる</button>
           <button id="clearLines">消す</button>
           <!-- 🔴 入れたことが分かるように、その場に出す（2026-09-06 本人） -->
           <span class="saving" id="addMsg"></span>
@@ -156,7 +163,6 @@
 たろう	わたしの家族	1班"></textarea>
         <div class="row" style="margin-top:12px">
           <button id="read">入れる</button>
-          <button id="sample">サンプルを入れる</button>
           <button id="clear">消す</button>
           <span class="saving" id="addMsgL"></span>
         </div>
@@ -227,22 +233,23 @@
     <div class="tip-body" hidden>
       <p><strong>この画面で見る</strong>＝選んだ1枚を映します。<strong>全画面にはなりません</strong>ので、見て、直して、また見る、がすぐできます。</p>
       <p>⚠<strong>文字の大きさと改行は、画面の広さで変わります。</strong>本番の見え方は、下の<strong>「スライド表示にする」</strong>で確かめられます。</p>
-      <p><strong>1枚だけスライド表示</strong>＝選んだ1枚から、全画面で出します。途中から出したいときや、1枚だけ出しておきたいときに。</p>
+      <p><strong>1枚だけモニターで表示</strong>＝選んだ1枚から、全画面で出します。途中から出したいときや、1枚だけ出しておきたいときに。</p>
     </div>
     <div class="row">
       <select id="checkNo"></select>
       <button id="checkBtn">この画面で見る</button>
-      <button id="fromBtn">1枚だけスライド表示</button>
+      <button id="fromBtn">1枚だけモニターで表示</button>
     </div>
   </div>
 
   <!-- 出す。枠に入れず、ボタンと枚数だけ -->
   <div class="startbox">
-    <button class="primary" id="start" disabled>スライド表示</button>
+    <!-- ⭐ボタンの文は「モニターで表示」（2026-09-14 本人「ボタン長いけど、そのほうがわかりやすい」） -->
+    <button class="primary" id="start" disabled>スライドをモニターで表示</button>
     <p class="count" id="count"></p>
     <!-- 🔴 比べるスライドがあるときだけ出す（2026-09-07 本人「スライド表示ボタンの時に出すか。
          比べる設定になっていたらそれを表示しておくとか」）。映す画面には出さない＝映す前に、映す人にだけ見せる -->
-    <p class="hint" id="compareHint" hidden>⭐<b>比べるスライドがあります。</b>スライド表示で2つが並んだときに写真を押すと、大きく表示されます</p>
+    <p class="hint" id="compareHint" hidden>⭐<b>比べるスライドがあります。</b>モニターで表示して2つが並んだときに写真を押すと、大きく表示されます</p>
   </div>
 
   <!-- 保存 -->
@@ -389,12 +396,12 @@
       </ul>
 
       <h3>設定を見せたくない</h3>
-      <p>「準備」を閉じると、中身がまとめて隠れます。<b>「スライド表示」を押したときも自動で閉じます</b>ので、映し終わって戻ったときに、順番やシャッフルが見ている人に見えることはありません。</p>
+      <p>「準備」を閉じると、中身がまとめて隠れます。<b>「スライドをモニターで表示」を押したときも自動で閉じます</b>ので、映し終わって戻ったときに、順番やシャッフルが見ている人に見えることはありません。</p>
       <p>ずっと開いたままにしたいときは、<b>「作成中」にチェック</b>を入れてください。</p>
 
       <h3>保存について</h3>
       <ul>
-        <li>「スライド表示」の下の<b>「この画面を保存する」</b>にチェックを入れると、次に開いたときも<b>文字・順番・写真・名簿</b>がそのまま残ります。</li>
+        <li>「スライドをモニターで表示」の下の<b>「この画面を保存する」</b>にチェックを入れると、次に開いたときも<b>文字・順番・写真・名簿</b>がそのまま残ります。</li>
         <li>残るのは<b>この端末の中だけ</b>です。<b>どこにも送信されません。</b></li>
         <li>チェックを外すと、保存していたものを消します。</li>
         <li>⭐<b>写真も残るのは、このページだけです。</b>ほかのページ（座席表など）は、読み込んだ画像を保存していません。</li>
@@ -445,7 +452,7 @@
   </div>
 </div>
 
-<script src="slide.js?v=89"></script>
+<script src="slide.js?v=93"></script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>

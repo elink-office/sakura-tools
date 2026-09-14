@@ -53,7 +53,7 @@ body{touch-action:pan-y}
 .inv-row label{display:block;margin:8px 0 3px;font-size:.86rem;font-weight:700;color:var(--ink-soft)}
 .inv-row label .tip-btn{vertical-align:middle}
 /* ⭐見た目（枠・角丸・余白）は共通の style.css に任せる。ここは幅だけ（→ ページの型 16-a） */
-.inv-row input[type=text],.inv-row input[type=number],.inv-row textarea,.inv-row select{width:100%}
+.inv-row input[type=text],.inv-row input[type=tel],.inv-row input[type=email],.inv-row input[type=number],.inv-row textarea,.inv-row select{width:100%}
 /* ⭐1行ぶん大きくした（2026-09-10 本人）。薄い文字（サンプル）はそのまま */
 .inv-row textarea{min-height:0;height:5.7em;resize:vertical}
 
@@ -75,6 +75,14 @@ body{touch-action:pan-y}
 /* ⭐見積書 →請求書 へ移るところ（2026-09-10 本人）。⭐ボタンは中央ぞろえ */
 .inv-handoff{text-align:center;margin:18px 0}
 .inv-handoff .inv-hint{margin:0 0 10px}
+/* ⭐⑦のカードの中に入れた（2026-09-14）。PDFで保存との間に区切りの線 */
+.card .inv-handoff{margin:22px 0 0;padding-top:18px;border-top:1px solid var(--line)}
+/* ⭐見積書⇔請求書の行き来（2026-09-14）。⭐いちばん下は中央、戻るは上に小さく */
+.doc-switch{text-align:center;margin:18px 0 22px;font-size:.9rem}
+.doc-switch a{color:var(--ink-soft);text-decoration:underline;text-underline-offset:3px}
+.doc-switch a:hover{color:var(--ink)}
+.doc-back{margin:0 0 14px}
+.doc-back .primary{font-size:.95rem;padding:9px 20px}
 
 /* ボタンだけを並べる行（ラベルの下に置く） */
 .btn-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 8px}
@@ -96,23 +104,36 @@ body{touch-action:pan-y}
 }
 
 /* 明細の表 */
-.inv-items{width:100%;border-collapse:collapse;font-size:.86rem}
+/* ⭐明細の表も「表の見た目」（ページの型 9-a）にそろえた（2026-09-14 本人「ほかのtestページに表があるか確認して、同じ型に変えて」）
+   ＝横の線だけ／項目名は地なし・うすいグレー・中央／表の地なし／消すボタンはうすいグレーの28×26px
+   ⭐④の地は白（実測 #fff）＝決まり「背景が白なら、そのまま」→ 入力欄はうすいグレーの地・枠なし、選ぶ欄は白＋枠
+   ⚠PDFに出る明細（.inv-sheet table.det）と④の下の合計（.inv-sum）はそろえない（本人「揃えないのはPDF（印刷）で使うもの」） */
+.inv-items{width:100%;border-collapse:collapse;font-size:.92rem;background:transparent}
 .inv-items th{
-  font-size:.74rem;color:var(--ink-soft);font-weight:700;text-align:left;
-  padding:0 4px 5px;border-bottom:1px solid var(--line);white-space:nowrap;
+  font-size:.82rem;color:#9a9ea4;font-weight:700;text-align:center !important;background:transparent;
+  padding:6px 6px;border-bottom:1px solid var(--line);white-space:nowrap;
 }
-.inv-items td{padding:3px 4px;vertical-align:middle;border-bottom:1px solid #f0f1f3}
-.inv-items input,.inv-items select{
-  width:100%;padding:5px 6px;border:1px solid var(--line);border-radius:7px;font:inherit;font-size:.86rem;background:#fff;color:var(--ink);
+.inv-items td{padding:6px 6px;vertical-align:middle;border-bottom:1px solid var(--line)}
+.inv-items input{
+  width:100%;padding:4px 7px;border:1px solid transparent;border-radius:6px;font:inherit;font-size:.92rem;background:var(--bg);color:var(--ink);
 }
+.inv-items select{
+  width:100%;padding:4px 3px;border:1px solid var(--line);border-radius:6px;font:inherit;font-size:.82rem;background:#fff;color:var(--ink);
+}
+.inv-items input:focus,.inv-items select:focus{outline:none;border-color:var(--pink);background:#fff}
 .inv-items input[type=number]{text-align:right}
+/* ⭐単位の▼（候補の一覧を開くしるし）を小さく・うすく（2026-09-14 本人「▶ボタンが出ると大きいような気がして」→ 案A）
+   ⚠Chrome・Edge向けの書き方。こちらの確認用ブラウザでは画面写真が撮れず、小さくなったかは見ていない（本人の画面で確かめる）。
+   ⚠Safari・Firefoxには効かない */
+.inv-items .i-unit::-webkit-calendar-picker-indicator{width:10px;height:10px;padding:0;margin:0;opacity:.5}
 .inv-items .c-no{text-align:center;color:var(--ink-soft);font-size:.8rem;white-space:nowrap}
 .inv-items .c-amt{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--ink)}
+.inv-items .c-del{text-align:center}
 .inv-items .c-del button{
-  width:28px;padding:2px 0;border:1px solid var(--line);background:#fff;border-radius:7px;
-  color:var(--ink-soft);cursor:pointer;line-height:1.4;
+  width:28px;height:26px;padding:0;border:1px solid var(--line);background:#fff;border-radius:6px;
+  color:var(--ink-soft);cursor:pointer;line-height:1;font-size:11px;
 }
-.inv-items .c-del button:hover{color:var(--bad);border-color:var(--bad)}
+.inv-items .c-del button:hover{background:var(--pink-pale)}
 /* ⭐明細の表だけは横に動かす（ここは意図した動き） */
 .inv-scroll{overflow-x:auto;touch-action:pan-x pan-y;overscroll-behavior-x:contain}
 .inv-items{min-width:560px}

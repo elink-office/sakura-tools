@@ -23,6 +23,8 @@
         ＝写真は「新しい1枚」ではなく、どの1枚にも後から入れられる。
      🔴 写真は保存しない（本人「保存なしでいい」）。メモリに置くだけ。 */
   var sheets = [];
+  /* ⭐サンプルを出しているあいだ（2026-09-14）。stash＝サンプルの前の画面（消すときに戻す） */
+  var sampleOn = false, stash = null;
 
   /* 🔴 サンプル（2026-09-05 本人「サンプルを入れるっていうのがあればやっぱりうれしい」）。
      ⚠枠の中のお手本（placeholder）は、画面を保存していると打った文字が残って見えないことがある＝ボタンで入れられる形に戻した。
@@ -72,27 +74,30 @@
   /* 🔴 写真も「画面の保存」に残す（2026-09-05 本人・いったん外したが戻した）。
      本人「授業終了→明日の準備でこれを使う、写真も選ぶ→翌日使う。⭐写真を選んで、翌日使うときに消えたら困る」
      ⚠外していいと言われたのは⑤（名前を付けた名簿）のほうで、④（画面の保存）ではなかった。 */
+  /* ⚠サンプルの間は、写真の置き場に書かない・消さない（外しておいた自分の写真を守る・2026-09-14） */
   function picPut(id, blob){
-    if (!$('save').checked || !blob) return;
+    if (sampleOn || !$('save').checked || !blob) return;
     withDB(function(db){
       if (!db) return;
       try{ db.transaction(STORE,'readwrite').objectStore(STORE).put(blob, id); }catch(e){}
     });
   }
   function picDel(id){
+    if (sampleOn) return;
     withDB(function(db){
       if (!db) return;
       try{ db.transaction(STORE,'readwrite').objectStore(STORE).delete(id); }catch(e){}
     });
   }
   function picClear(){
+    if (sampleOn) return;
     withDB(function(db){
       if (!db) return;
       try{ db.transaction(STORE,'readwrite').objectStore(STORE).clear(); }catch(e){}
     });
   }
   function picPutAll(){
-    if (!$('save').checked) return;
+    if (sampleOn || !$('save').checked) return;
     withDB(function(db){
       if (!db) return;
       try{
@@ -920,6 +925,8 @@
 
   /* ================= 保存（この端末のブラウザだけ） ================= */
   function save(){
+    /* ⭐サンプルの間は保存しない（座席表と同じ・2026-09-14）。⚠下の「消す」より前に止める */
+    if (sampleOn) return;
     // 🔴 チェックが外れているときは、この機器に何も残さない（座席表と同じ考え方）
     if (!$('save').checked){
       try{ localStorage.removeItem(KEY); }catch(e){}
@@ -1045,13 +1052,69 @@
     var n = addLines($('lines').value);
     openStep2(n ? n + '枚を入れました' : 'もう入っています');
   });
-  /* ⚠サンプルは何度も押されて増えていく（2026-09-06 本人）。⭐①の枠にも出して、②には足すだけ */
-  $('sampleText').addEventListener('click', function(){
-    var first = SAMPLE_TEXT.split(String.fromCharCode(10))[0];
-    if (String($('lines').value).indexOf(first) < 0) putLines(SAMPLE_TEXT);
-    var n = addLines(SAMPLE_TEXT);
-    openStep2(n ? 'サンプルを' + n + '枚入れました' : 'サンプルはもう入っています');
-  });
+  /* ---------- サンプルのボタン（①の上・2026-09-14 本人「ボタンを押したらサンプルが見れて、こういう仕組みだってわかったほうがいい。
+       それでサンプルを消したらなくなる」）
+     ⭐①＝文字のサンプル／②＝発表者のサンプル。①の枠と②の一覧に入る
+     ⭐押す前の画面（①の枠・②の一覧・写真の行・名簿）は外しておき、「サンプルを消す」で戻す。⚠サンプルの間は保存しない
+     ⚠前は①の中の「サンプルを入れる」＝今の一覧に足していた（何度も押されて増えた・2026-09-06） ---------- */
+  function loadSample(k){
+    if (!sampleOn){
+      stash = {
+        kind: kind(), lines: $('lines').value, paste: $('paste').value,
+        sheets: sheets, rows: rows, groupOrder: groupOrder, groupOff: groupOff,
+        origRows: origRows, origGroups: origGroups,
+        mode: (document.querySelector('input[name=mode]:checked')||{}).value || 'one',
+        d1: $('d1').open, d2: $('d2').open
+      };
+    }
+    sampleOn = true;
+    /* ⚠写真の入った行も stash が持っているので、URL は返さない（消すときに戻す） */
+    sheets = []; rows = []; groupOrder = []; groupOff = {}; origRows = []; origGroups = [];
+    $('lines').value = ''; $('paste').value = ''; $('warn').hidden = true;
+    var kr = document.querySelector('input[name=kind][value="' + (k === 2 ? 'list' : 'text') + '"]');
+    if (kr) kr.checked = true;
+    var name;
+    if (k === 2){
+      $('paste').value = SAMPLE_LIST;
+      setRows(parse(SAMPLE_LIST));
+      /* ⭐サンプル②は「班ごとにまとめて映す」にしておく（2026-09-14 本人）。⚠消すと前の映し方に戻る（stash.mode） */
+      var mg = document.querySelector('input[name=mode][value="group"]'); if (mg) mg.checked = true;
+      name = 'サンプル②（発表者）';
+    } else {
+      $('lines').value = SAMPLE_TEXT;
+      addLines(SAMPLE_TEXT);
+      /* ⭐「教室に戻ったらすること」は①②③と並ぶので左そろえ（2026-09-14 本人） */
+      sheets.forEach(function(sh){ if (sh.text.indexOf('教室に戻ったらすること') === 0) sh.al = 'left'; });
+      drawSheets();
+      name = 'サンプル①（文字）';
+    }
+    switchKind();
+    /* ⭐①②は開くだけ。画面は動かさない（2026-09-14 本人「②に飛ぶ。進めずに自分でスクロールする方にしてほしい」）
+       ⚠openStep2 は②まで画面を送るので、ここでは使わない */
+    $('d1').open = true; $('d2').open = true;
+    $('sampleOff').hidden = false;
+    $('sampleMsg').textContent = name + 'を出しました';
+    showAdd(name + 'を入れました');
+  }
+  function clearSample(){
+    var s = stash; stash = null;
+    sampleOn = false;
+    $('sampleOff').hidden = true;
+    if (s){
+      sheets = s.sheets; rows = s.rows; groupOrder = s.groupOrder; groupOff = s.groupOff;
+      origRows = s.origRows; origGroups = s.origGroups;
+      $('lines').value = s.lines; $('paste').value = s.paste; $('warn').hidden = true;
+      var m = document.querySelector('input[name=mode][value="' + s.mode + '"]'); if (m) m.checked = true;
+      var kr = document.querySelector('input[name=kind][value="' + s.kind + '"]'); if (kr) kr.checked = true;
+      $('d1').open = s.d1; $('d2').open = s.d2;
+    }
+    showAdd('');
+    switchKind();   // ⚠ここで描き直す＝save() も走るが、中身は押す前と同じ
+    $('sampleMsg').textContent = 'サンプルを消して、前の画面に戻しました';
+  }
+  $('sampleT').addEventListener('click', function(){ loadSample(1); });
+  $('sampleL').addEventListener('click', function(){ loadSample(2); });
+  $('sampleOff').addEventListener('click', clearSample);
   // 🔴 ①の枠を空にするボタン（2026-09-06 本人「サンプルを入れるの横に消すボタンを作って」）
   if ($('clearLines')) $('clearLines').addEventListener('click', function(){
     $('lines').value = ''; showAdd('');
@@ -1374,10 +1437,6 @@
     }
     $('warn').hidden = true;
     setRows(got); drawList(); openStep2(got.length + '人を入れました');
-  });
-  $('sample').addEventListener('click', function(){
-    $('paste').value = SAMPLE_LIST; $('warn').hidden = true;
-    setRows(parse(SAMPLE_LIST)); drawList(); openStep2('サンプルを入れました');
   });
   $('clear').addEventListener('click', function(){
     $('paste').value = ''; rows = []; groupOrder = []; groupOff = {};

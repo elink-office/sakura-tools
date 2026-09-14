@@ -59,3 +59,6 @@
   /* モニターに映すときは、紙の形にしばらない（画面いっぱいに広げる）*/
   body.screen .sheet{height:auto !important}
 }
+
+/* ⭐サンプルのボタン（①の上）（2026-09-14 本人「ボタンを押したらサンプルが見れて、こういう仕組みだってわかったほうがいい」） */
+.seat-sample{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;margin:0 0 14px}

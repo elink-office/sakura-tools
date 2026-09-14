@@ -25,7 +25,7 @@
 </script>
 <title>【テスト】席次表メーカー｜会議・研修・大学の席次表を無料で自動作成</title>
 <meta name="description" content="席次表の作り方は簡単。名簿を貼るだけで、会議・研修・セミナー・大学の席次表が自動で作れる無料ツールです。前を向いて並ぶスクール形式で、席順は名簿順とランダムから選べます。用紙に合わせて自動で調整し、A4の1枚に収めるので、2ページに分かれません。会社名・役職（肩書き）・フリガナ・名前を1マスに並べ、敬称は様・さん・先生から選べます。Excelの名簿から複数の列をそのまま貼り付けでき、通し番号の向きも指定できます。エクセルテンプレートは不要です。PDFもこのページから作れます。名簿はブラウザの中だけで処理し、AIの学習にも使われません。">
-<link rel="stylesheet" href="../style.css?v=141">
+<link rel="stylesheet" href="../style.css?v=142">
 <link rel="stylesheet" href="seki.css?v=32">
 <link rel="stylesheet" href="../print.css?v=63" media="print">
 <style>
@@ -63,6 +63,17 @@
 }
 /* 🔴 できあがりの見本（2026-09-04 本人）。⚠大きくしすぎない。①が画面の外に出てしまう */
 .t-sample{margin:0 0 20px;max-width:520px}
+/* ⭐サンプルのボタン（①の上・2026-09-14）。座席表の .seat-sample と同じ形 */
+.seki-sample{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;margin:0 0 14px}
+/* ⭐席次表を作る前の③〜⑥（グレー・押せない・2026-09-14）。#result が隠れているときだけ出る。座席表と同じ */
+#resultStub{display:none}
+#result[hidden] + #resultStub{display:block;margin-bottom:18px}
+#resultStub .opt.stub{opacity:.45;pointer-events:none;user-select:none;
+  background:#fff;border:1px solid #e3e5e8;border-radius:4px;margin:0 0 18px}
+#resultStub .stub-head{position:relative;display:flex;align-items:center;gap:10px;padding:22px 18px 22px 38px;font-weight:bold}
+#resultStub .stub-head > .step{position:absolute;top:50%;left:-11px;transform:translateY(-50%);
+  width:38px;height:28px;margin:0;border-radius:var(--radius,4px);font-size:.9rem;font-weight:700;
+  box-shadow:0 1px 0 rgba(0,0,0,.08),0 3px 6px rgba(0,0,0,.16)}
 .t-sample img{
   display:block;width:100%;height:auto;border-radius:10px;background:#fff;
   box-shadow:0 5px 16px rgba(0,0,0,.17), 0 1px 3px rgba(0,0,0,.10);
@@ -128,12 +139,22 @@
       <img src="../img/seki-sample.png?v=8" width="1280" height="720" alt="23人・5列の研修の席次表の完成見本。会社名・役職・フリガナ・名前を並べたもの">
     </figure>
   </div>
+  <!-- ⭐サンプルのボタンは①の上（2026-09-14 本人「席次表もサンプルつくって。ひとつは今のサンプル。もうひとつは色付きで学科ごと。学籍番号入れてね」）。
+       ⭐押すと①の欄にサンプルの名簿が入る。「サンプルを消す」で前の画面に戻る。⚠自動のサンプルはやめた・サンプルの間は保存しない（→ ページの型 12） -->
+  <div class="seki-sample noprint">
+    <button type="button" id="sample1Btn">サンプル①（研修）</button>
+    <button type="button" id="sample2Btn">サンプル②（大学・学科で色分け）</button>
+    <button type="button" id="sampleClear" hidden>サンプルを消す</button>
+    <span class="saving" id="sampleMsg"></span>
+  </div>
   <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
 
 
 
-    <section class="card noprint">
-      <h2><span class="step">1</span>名簿の入力&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+    <!-- ⭐①②もシャッター（2026-09-14 本人「席次表も基本をシャッターにしてね」・座席表と同じ）。はじめは閉じる（ページの型 2-a） -->
+    <details class="opt noprint" id="ch1">
+      <summary><span class="step">1</span>名簿の入力&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
+      <div class="body">
       <div class="tip-body" hidden>
         <!-- 🔴 ①の？の一番上に置く（2026-09-09 本人）。⚠端末の種類まで書く
              本人「使っている端末の中だけは、タブレットスマホでも同様という内容も入れたい」
@@ -163,13 +184,11 @@
       <!-- ⭐枠の上にも出す（2026-09-10 本人「エクセルから貼り付けるってあったほうがいいよね」）。
            ⚠知り合いの先生からも同じことを言われたとのこと -->
       <label for="names">エクセルから貼り付ける</label>
-      <textarea id="names" placeholder="クリックして貼り付け（手入力可）&#10;&#10;会社 ▸ 株式会社さくら商事　部長　山田 太郎&#10;大学 ▸ 1001　山田 太郎　ヤマダ タロウ　経営学科&#10;個人 ▸ 山田 太郎&#10;&#10;列の順番は気にしなくて大丈夫&#10;空のままだとサンプルが出ます"></textarea>
+      <textarea id="names" placeholder="クリックして貼り付け（手入力可）&#10;&#10;会社 ▸ 株式会社さくら商事　部長　山田 太郎&#10;大学 ▸ 1001　山田 太郎　ヤマダ タロウ　経営学科&#10;個人 ▸ 山田 太郎&#10;&#10;列の順番は気にしなくて大丈夫"></textarea>
         </div>
         <div>
       <div class="row tight" style="margin-top:10px">
-        <div><label>人数</label><div class="bignum" id="count">0人</div></div>
-        <div id="emptyNote" class="hint" style="align-self:flex-end;padding-bottom:6px">空の場合、サンプルで確認できます</div>
-      </div>
+        <div><label>人数</label><div class="bignum" id="count">0人</div></div>      </div>
 
       <div id="colMapWrap" hidden style="margin-top:12px">
         <label>貼り付けた列の役割&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></label>
@@ -191,10 +210,12 @@
       </div>
         </div>
       </div>
-    </section>
+      </div>
+    </details>
 
-    <section class="card noprint">
-      <h2><span class="step">2</span>会場の形</h2>
+    <details class="opt noprint" id="ch2">
+      <summary><span class="step">2</span>会場の形</summary>
+      <div class="body">
       <div class="row tight">
         <div><label for="cols">横のならび</label><span class="ctl"><input id="cols" type="number" min="1" max="20" value="6"><span class="unit">席</span></span></div>
         <div><label for="rows">縦のならび</label><span class="ctl"><input id="rows" type="number" min="1" max="20" value="5"><span class="unit">列</span></span></div>
@@ -288,7 +309,8 @@
         <p class="hint">来賓や進行役の席を先に決めておくときに使います。「前のほう」を選べば、席をぴったり決めなくても前方に配置されます。</p>
       </div>
     </details>
-    </section>
+      </div>
+    </details>
 
 
   <p class="noprint" style="text-align:center;margin:24px 0">
@@ -306,6 +328,8 @@
          本人「同じ行にあったら埋もれて気づかない」。席をさわる話と同じ行にする -->
     <div class="drag-row noprint">
       <button id="undo" type="button" disabled>↩ 1つ戻す</button>
+      <!-- ⭐サンプルの間は「1つ戻す」を隠して、ここに「サンプルを消す」（座席表と同じ・2026-09-14） -->
+      <button id="sampleClear2" type="button" hidden>サンプルを消す</button>
       <p class="hint drag-note">席は自由に動かせます</p>
     </div>
 
@@ -499,6 +523,16 @@
     </section>
   </div>
 
+  <!-- ⭐席次表を作る前も③〜⑥を見せる（グレー・押せない）（座席表と同じ・ページの型 12-a）。
+       ⚠#result が隠れているあいだだけ CSS で出す。作ったら本物の③〜⑥に入れ替わる -->
+  <div id="resultStub" class="noprint" aria-hidden="true">
+    <p class="hint" style="text-align:center;margin:0 0 10px">③〜⑥はサンプルを入れるか、「席次表を作る」を押すと使えます</p>
+    <div class="opt stub"><div class="stub-head"><span class="step">3</span>1マスの中身</div></div>
+    <div class="opt stub"><div class="stub-head"><span class="step">4</span>グループ分け</div></div>
+    <div class="opt stub"><div class="stub-head"><span class="step">5</span>見た目と用紙</div></div>
+    <div class="opt stub"><div class="stub-head"><span class="step">6</span>PDF・画像で保存</div></div>
+  </div>
+
 
   <section class="card noprint">
     <h2><span class="step">7</span>画面の保存&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
@@ -668,7 +702,7 @@
 
 <script src="../paper-pdf.js?v=2"></script>
 <script src="../seating.js?v=57"></script>
-<script src="seki.js?v=74"></script>
+<script src="seki.js?v=77"></script>
 <!-- 🔴 印刷用の1枚絵の置き場。⚠body の直下に置くこと -->
 <div id="printImgWrap"></div>
 <script src="../tip.js?v=3"></script>

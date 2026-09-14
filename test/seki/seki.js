@@ -320,6 +320,41 @@
     ['29', '村上 大地', 'ムラカミ ダイチ', '青葉技研株式会社', ''],
     ['30', '近藤 涼子', 'コンドウ リョウコ', '青葉技研株式会社', '']
   ];
+  /* ⭐サンプル②＝大学・学科ごとに色分け（2026-09-14 本人「色付きで学科ごと。学籍番号入れてね」）。
+       列＝学籍番号・名前・フリガナ・学科。学科は「役職・学部・学科」の行に入れ、グループ分け＝学科ごと
+       ⭐学籍番号は学科ごとに続き番号（261…経営／262…経済／263…心理／264…情報）＝名簿順で並べると学科の色がまとまって見える */
+  var SAMPLE2 = [
+    ['2610101', '青木 翔太', 'アオキ ショウタ', '経営学科'],
+    ['2610102', '石井 美咲', 'イシイ ミサキ', '経営学科'],
+    ['2610103', '上田 大樹', 'ウエダ ダイキ', '経営学科'],
+    ['2610104', '遠藤 彩花', 'エンドウ アヤカ', '経営学科'],
+    ['2610105', '小野 拓海', 'オノ タクミ', '経営学科'],
+    ['2610106', '金子 結衣', 'カネコ ユイ', '経営学科'],
+    ['2610107', '菊地 蓮', 'キクチ レン', '経営学科'],
+    ['2610108', '工藤 七海', 'クドウ ナナミ', '経営学科'],
+    ['2620101', '後藤 陽介', 'ゴトウ ヨウスケ', '経済学科'],
+    ['2620102', '坂本 真央', 'サカモト マオ', '経済学科'],
+    ['2620103', '島田 健', 'シマダ ケン', '経済学科'],
+    ['2620104', '杉山 優花', 'スギヤマ ユウカ', '経済学科'],
+    ['2620105', '関 悠斗', 'セキ ユウト', '経済学科'],
+    ['2620106', '高木 莉子', 'タカギ リコ', '経済学科'],
+    ['2620107', '千葉 颯', 'チバ ハヤテ', '経済学科'],
+    ['2620108', '土屋 萌', 'ツチヤ モエ', '経済学科'],
+    ['2630101', '中島 美月', 'ナカジマ ミヅキ', '心理学科'],
+    ['2630102', '西村 悠真', 'ニシムラ ユウマ', '心理学科'],
+    ['2630103', '野口 花音', 'ノグチ カノン', '心理学科'],
+    ['2630104', '原田 蒼', 'ハラダ アオイ', '心理学科'],
+    ['2630105', '平野 心春', 'ヒラノ コハル', '心理学科'],
+    ['2630106', '福田 湊', 'フクダ ミナト', '心理学科'],
+    ['2630107', '本田 紗希', 'ホンダ サキ', '心理学科'],
+    ['2640101', '丸山 大和', 'マルヤマ ヤマト', '情報学科'],
+    ['2640102', '三浦 葵', 'ミウラ アオイ', '情報学科'],
+    ['2640103', '宮本 陸', 'ミヤモト リク', '情報学科'],
+    ['2640104', '村田 美羽', 'ムラタ ミウ', '情報学科'],
+    ['2640105', '森田 樹', 'モリタ イツキ', '情報学科'],
+    ['2640106', '安田 玲奈', 'ヤスダ レナ', '情報学科'],
+    ['2640107', '横山 蒼空', 'ヨコヤマ ソラ', '情報学科']
+  ];
 
   // ---- 会議名・研修名（自由記入のみ。学年・組は席次表では使わない） ----
   function className() {
@@ -669,14 +704,8 @@
 
   // ---- 席替えを実行 ----
   function run(first) {
-    // 名簿が空ならサンプルで動かす（初めての人に、何ができるかを1回で見せる）
-    if (!readRows().length) {
-      // 会場の形はそのまま。席に入る分だけサンプルを使う。
-      // ⚠名簿欄には入れない＝自分の名簿を貼るとき、消す手間が要らない
-      var room = (+$('cols').value) * (+$('rows').value);
-      state.sample = true;
-      state.sampleCount = Math.max(1, Math.min(SAMPLE.length, room));
-    }
+    /* ⭐自動のサンプルはやめた（2026-09-14・座席表と同じ）。サンプルは上のボタンで①の欄に入れる
+       ⚠前は「名簿が空ならサンプルで動かす」＝開いただけでサンプルが出ていた */
     refreshNames();
     state.gfix = {};                // 席替えをしたら、手で変えた班は白紙に戻す
     clearHist();                    // ここから先は別の並び。「1つ戻す」も白紙にする
@@ -1054,7 +1083,7 @@
         note.id = 'sampleNote';
         note.className = 'hint noprint';
         note.style.marginTop = '8px';
-        note.textContent = '上の欄に名簿を貼り付けてください。サンプルは消えます。';
+        note.textContent = '自分の名簿を入れるときは、先に「サンプルを消す」を押してください。';
         ($('sheetBox') || $('sheet')).parentNode.insertBefore(note, ($('sheetBox') || $('sheet')).nextSibling);
       }
       /* ⭐いつでも「紙の入れ物」のすぐ下に置き直す（2026-09-11 本人）。
@@ -1764,6 +1793,14 @@
 
   // 呼び出したあと、画面を組み直す
   function afterRestore() {
+    /* ⭐保存したデータを入れたら、サンプルは終わり（外していた画面は戻さない＝いま入れたほうを使う） */
+    if (state.sample) {
+      state.stash = null;
+      if ($('sampleClear')) $('sampleClear').hidden = true;
+      if ($('sampleClear2')) $('sampleClear2').hidden = true;
+      if ($('undo')) $('undo').hidden = false;
+      if ($('sampleMsg')) $('sampleMsg').textContent = '';
+    }
     state.sample = false;
     state.seats = null;
     refreshNames();
@@ -1875,6 +1912,8 @@
     };
   }
   function save() {
+    /* ⭐サンプルの間は保存しない（2026-09-14）。⚠呼ぶ側で止めていないところ（並べ方の切り替えなど）もあるので、ここで止める */
+    if (state.sample) return;
     try { localStorage.setItem(KEY, JSON.stringify(snapshot())); showSaving(); } catch (e) { }
   }
   function showSaving() {
@@ -2019,8 +2058,10 @@
     drawPreview();
 
     $('names').addEventListener('input', function () {
-      // 自分の名簿を貼ったらサンプルではなくなる。列の割り当ても一度やり直す
-      if (readRows().length) { state.sample = false; state.colRoles = []; state.colSig = ''; }
+      // 自分の名簿を貼ったら、列の割り当ても一度やり直す
+      /* ⭐サンプルの間に欄を書きかえても、サンプルの続き（保存しない）。自分の名簿は「サンプルを消す」のあと（座席表と同じ 案A）
+         ⚠前は、名簿を入れたらサンプルが終わっていた */
+      if (readRows().length && !state.sample) { state.colRoles = []; state.colSig = ''; }
       showSample();
       refreshNames();
       if (state.seats) drawSheet();
@@ -2087,6 +2128,97 @@
     $('addSep').onclick = function () { addPairRow('sepList'); };
     $('addAdj').onclick = function () { addPairRow('adjList'); };
     $('addFix').onclick = addFixRow;
+    /* ---------- サンプルのボタン（2026-09-14 本人「席次表もサンプルつくって」・ページの型 12-a）
+         ⭐①＝研修（今までのサンプル）／②＝大学・学科ごとに色分け（学籍番号つき）
+         ⭐①の欄にサンプルの名簿を入れる。押す前の画面（名簿・設定・条件の行・席次表）は外しておき、「サンプルを消す」で戻す
+         ⚠サンプルの間は保存しない（save() で止める）。画面は動かさない（run(true)） ---------- */
+    function loadSample(kind) {
+      if (!state.sample) {
+        var lists = {};
+        /* ⭐詳しい条件の行は、行ごと外しておく（⚠残すと、サンプルにいない人の条件で作れなくなる） */
+        ['sepList', 'adjList', 'fixList'].forEach(function (id) {
+          var el = $(id); if (!el) return;
+          var fr = document.createDocumentFragment();
+          while (el.firstChild) fr.appendChild(el.firstChild);
+          lists[id] = fr;
+        });
+        state.stash = {
+          snap: JSON.parse(JSON.stringify(snapshot())),     // 名簿・設定・グループ・席次表
+          colRoles: (state.colRoles || []).slice(),
+          plans: state.plans ? state.plans.map(function (p) { return p.slice(); }) : [],
+          cur: state.cur, gfix: JSON.parse(JSON.stringify(state.gfix || {})),
+          resultHidden: $('result').hidden, lists: lists
+        };
+      }
+      state.sample = true; state.sampleKind = kind;
+      var src = (kind === 2) ? SAMPLE2 : SAMPLE;
+      var room = (+$('cols').value) * (+$('rows').value);
+      var use = src.slice(0, Math.max(1, Math.min(src.length, room)));
+      /* ⭐Excelから貼ったときと同じ形（タブ区切り）で①の欄に入れる */
+      $('names').value = use.map(function (r) { return r.join('\t'); }).join('\n');
+      state.colSig = '';
+      if (kind === 2) {
+        state.colRoles = ['no', 'name', 'kana', 'title'];           // 学科＝「役職・学部・学科」の行
+        /* ⭐どの学科の学生も受ける科目にする（2026-09-14 本人「経営学入門って、他の学科も受ける？」）。敬称はなし（本人「様はいらない」） */
+        $('clsFree').value = '全学共通科目 情報リテラシー 期末試験';
+        $('honor').value = '';
+        /* ⭐学籍番号は右上に置かない＝いちばん上の行（2026-09-14 本人「学籍番号と学科がかぶってる。右角に置かないほうがいい」）。
+           ⚠学籍番号は桁が多いので、右上だと学科の行に重なる */
+        $('numPos').value = 'line'; numStyleChanged();
+        drawPreview();
+        $('order').value = 'number'; $('dir').value = 'v';
+        $('grpOn').checked = true; $('grpStyle').value = 'title'; $('grpLook').value = 'both'; $('grpNum').checked = true;
+      } else {
+        state.colRoles = ['no', 'name', 'kana', 'org', 'title'];
+        $('order').value = 'number';
+        $('honor').value = '様';          // ⚠②から切りかえたときに「なし」のまま残らないように
+        $('numPos').value = 'corner'; numStyleChanged();   // ①の番号は短いので右上のまま
+        drawPreview();
+        $('grpOn').checked = false;
+      }
+      $('grpOn').dispatchEvent(new Event('change'));
+      state.seats = null;                 // ⚠orderChanged が古い並びで作り直さないように
+      orderChanged();
+      closeCond(); run(true);
+      $('sampleClear').hidden = false; $('sampleClear2').hidden = false; $('undo').hidden = true;
+      $('sampleMsg').textContent = 'サンプル' + (kind === 2 ? '②（大学・学科で色分け）' : '①（研修）') + 'を出しました。下の席次表で見られます';
+    }
+    function clearSample() {
+      var s = state.stash; state.stash = null;
+      $('sampleClear').hidden = true; $('sampleClear2').hidden = true; $('undo').hidden = false;
+      state.seats = null;
+      if (s) {
+        /* ⚠戻しているあいだは state.sample のまま＝途中で save() が走っても、空の席次表で上書きしない */
+        applySnap(s.snap);
+        state.colRoles = s.colRoles; state.colSig = '';
+        Object.keys(s.lists || {}).forEach(function (id) {
+          var el = $(id); if (!el) return;
+          el.innerHTML = ''; el.appendChild(s.lists[id]);
+        });
+        $('grpOn').dispatchEvent(new Event('change'));
+        orderChanged();
+      }
+      state.sample = false; state.sampleKind = null;
+      refreshNames(); numStyleChanged(); grpStyleChanged(); drawPreview();
+      var seats = s && s.snap.seats;
+      if (seats && seats.length) {
+        state.opt = collect();
+        state.plans = s.plans && s.plans.length ? s.plans : [seats.slice()];
+        state.cur = s.cur || 0; state.seats = seats.slice(); state.gfix = s.gfix || {};
+        $('result').hidden = s.resultHidden;
+        drawTabs(); drawSheet();
+      } else {
+        state.plans = []; $('result').hidden = true;
+      }
+      $('msg').innerHTML = '';
+      showSample(); showSaving();
+      $('sampleMsg').textContent = (s && s.snap.names) ? 'サンプルを消して、元の名簿に戻しました' : 'サンプルを消しました';
+    }
+    $('sample1Btn').onclick = function () { loadSample(1); };
+    $('sample2Btn').onclick = function () { loadSample(2); };
+    $('sampleClear').onclick = clearSample;
+    $('sampleClear2').onclick = clearSample;
+
     // ⚠run を直接わたさない。クリックの情報が第1引数に入って「初回」と間違われる
     $('go').onclick = function () { closeCond(); run(); };
     // ⚠「べつの案を出す」は座席表を見ながら押すので、画面を動かさない
@@ -2194,7 +2326,8 @@
           if ($('save').checked) { try { save(); } catch (e3) { } }
         } else run(true);
       } catch (e) { try { run(true); } catch (e2) { } }
-    } else {
+    } else if (readRows().length) {
+      /* ⭐名簿が入っているときだけ作る。空なら何も出さない（自動のサンプルはやめた・2026-09-14） */
       try { run(true); } catch (e) { }
     }
 
@@ -2203,6 +2336,8 @@
     if (location.hash === '#result') {
       // ⚠ demo=1 では判断しない。index.html は ?v= が付けられず古いまま残ることがあるので、
       //   印が消えていても戻り道が出るように「#result で来たか」で見る（2026-08-30）
+      /* ⭐自動のサンプルをやめたので、見に来た人にはここでサンプル①を出す（2026-09-14） */
+      if (!state.seats) { try { loadSample(1); } catch (e) { } }
       var fromSample = true;
       if (fromSample) {
         // 🔴 見に来ただけの人を、道具の画面に置き去りにしない（2026-08-30 本人の指摘）。

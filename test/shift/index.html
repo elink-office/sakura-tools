@@ -6,9 +6,9 @@
 <!-- ⭐どこともつなげない（2026-09-14 本人）。トップのカード・サイトマップにも入れていない -->
 <meta name="robots" content="noindex,nofollow">
 <title>【テスト】シフト表メーカー｜店舗のシフト表を無料で作成・PDF保存</title>
-<meta name="description" content="スタッフの名前を貼って、マスを押すだけで作れる無料のシフト表。祝日・曜日・店休日を自動で並べ、社員とパート・アルバイトの人数が足りない日を知らせます。A4横のPDFで保存できます。エクセルテンプレートは不要です。">
-<link rel="stylesheet" href="../style.css?v=140">
-<link rel="stylesheet" href="shift.css?v=1">
+<meta name="description" content="スタッフの名前を貼って、マスを押すだけで作れる無料のシフト表。祝日・曜日・定休日を自動で並べ、社員とレギュラー・スポットの人数が足りない日を知らせます。A4横のPDFで保存できます。エクセルテンプレートは不要です。">
+<link rel="stylesheet" href="../style.css?v=141">
+<link rel="stylesheet" href="shift.css?v=38">
 </head>
 <body>
 <div id="testBadge" style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
@@ -45,10 +45,18 @@
   <p class="catch">希望も人数も、1枚の表で確かめる</p>
   <p class="lead"><strong>登録なし・全部無料。</strong>名前を貼ってマスを押すだけで、人数の足りない日も分かるシフト表をA4横のPDFにします。</p>
   <ul class="can-do">
-    <li>祝日・曜日・店休日を、月を選ぶだけで表に</li>
-    <li>社員とパート・アルバイトの人数を日ごとに確認</li>
+    <li>祝日・曜日・定休日を、月を選ぶだけで表に</li>
+    <li>社員・レギュラー・スポットの人数を日ごとに確認</li>
     <li>先月の表を見ながら、今月を作れる</li>
   </ul>
+  <!-- ⭐サンプルは①名簿の入力の上。並びは サンプル → ？の案内（2026-09-14 本人「サンプルボタンが上。？の説明が↓」） -->
+  <div class="sf-btns sf-sample noprint">
+    <!-- ⭐ボタンは「サンプル①」「サンプル②」の2つ（2026-09-14 本人。「サンプルを見る」を押すとサンプル②が①に戻っていた） -->
+    <button type="button" id="sampleBtn">サンプル①</button>
+    <!-- ⭐サンプル②＝人数多め（2026-09-14 本人「もしかしたら削除するかも」）。消すときはこのボタンと shift.js の「サンプル②」の節 -->
+    <button type="button" id="sample2Btn">サンプル②</button>
+    <span class="saving" id="sampleMsg"></span>
+  </div>
   <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
 
   <!-- ① -->
@@ -58,7 +66,8 @@
       <div class="tip-body" hidden>
         <p>🔒 <strong>名簿はインターネットに送りません。</strong>使っている端末のブラウザの中だけで計算しているので、名前がどこかに保存されることも、AIの学習に使われることもありません。パソコン・タブレット・スマホ、どれでも同じです。</p>
         <p><strong>1行に1人ずつ書いてください。</strong>Excelの名簿から、名前の列をコピーして貼るだけでも入ります。</p>
-        <p>名前の右に「社員」「パート」「アルバイト」の列があれば、区分も一緒に入ります。無いときはパート・アルバイトで入るので、この下の名簿で選び直してください。</p>
+        <p>名前の右に「社員」「レギュラー」「スポット」の列があれば、区分も一緒に入ります。「パート」「アルバイト」はレギュラー、「ヘルプ」はスポットで入ります。区分が無いときはレギュラーで入るので、この下の名簿で選び直してください。</p>
+        <p><strong>「スポット」は、たまに入る人の区分です。</strong>大学生のように出られる日が決まっていない人や、応援の人に使います。勤務の時間はレギュラーと同じものを使い、表ではいちばん下にまとまります。その月に1日も入っていないスポットの人は、PDFに出ません。</p>
         <p>スタッフは<strong>40人まで</strong>入れられます。</p>
       </div>
       <p class="safe">🔒 <strong>使っている端末の中だけで完結しています。</strong>安心してご利用ください。</p>
@@ -68,29 +77,30 @@
         <div><label>&nbsp;</label>
           <button class="mini" id="dataLoad2" type="button">このデータを自動入力</button></div>
       </div>
-      <label for="names">エクセルから貼り付ける</label>
-      <textarea id="names" placeholder="クリックして貼り付け（手入力可）&#10;&#10;山田 花子　社員&#10;高橋 翔　アルバイト&#10;田中 さくら&#10;&#10;区分が無い人は、パート・アルバイトで入ります"></textarea>
+      <!-- ⭐あとから名前を足すことが多いので「手入力可」を見出しに（2026-09-14 本人） -->
+      <label for="names">エクセルから貼り付ける（手入力可）</label>
+      <textarea id="names" placeholder="クリックして貼り付け（手入力可）&#10;&#10;山田 花子　社員&#10;高橋 翔　レギュラー&#10;中村 由美　スポット&#10;田中 さくら&#10;&#10;区分が無い人は、レギュラーで入ります"></textarea>
       <div class="sf-btns">
         <button type="button" class="primary" id="addNames">入れる</button>
-        <button type="button" id="sampleBtn">サンプルを入れる</button>
         <button type="button" id="clearNames">消す</button>
         <span class="saving" id="inMsg"></span>
       </div>
       <h3>スタッフ（<span id="staffCount">0人</span>）</h3>
-      <p class="hint">区分は、④必要な人数の「うち社員」で数えるときに使います。</p>
+      <p class="hint">区分は、詳細設定の「必要な人数」の「うち社員」で数えるときに使います。<b>「レギュラー」</b>はいつもシフトに入る人、<b>「スポット」</b>はたまに入る人です。スポットの勤務の時間は、レギュラーと同じです。</p>
       <div class="sf-list" id="staffList"></div>
     </div>
   </details>
 
   <!-- ② -->
   <details class="opt noprint" id="ch2">
-    <summary><span class="step">2</span>月と休み&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
+    <summary><span class="step">2</span>月と定休日&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
     <div class="body">
       <div class="tip-body" hidden>
         <p><strong>月を選ぶと、日付・曜日・祝日が表に並びます。</strong>振替休日もそのまま入ります。</p>
         <p>春分の日と秋分の日は、国立天文台が前の年の2月に発表する日です。発表より先の年は、計算で出した日を入れています。</p>
-        <p><strong>店休日は、日付を押すと灰色になります。</strong>もう一度押すと戻ります。毎週決まった曜日が休みなら、下の「毎週この曜日を店休日にする」が早いです。</p>
-        <p>店休日は、⑥確認で人数を数えません。</p>
+        <p><strong>定休日は、日付を押すと灰色になります。</strong>もう一度押すと戻ります。毎週決まった曜日が休みなら、「毎週この曜日を定休日にする」が早いです。</p>
+        <p>特別休暇・お盆休み・年末年始のように、その月だけ店が休みの日も、日付を押して灰色にしてください。</p>
+        <p>定休日は、⑤確認で人数を数えません。</p>
       </div>
       <div class="row tight">
         <div><label for="ySel">年</label><select id="ySel"></select></div>
@@ -98,73 +108,116 @@
         <div class="grow"><label for="place">店名・部署名</label>
           <input id="place" type="text" placeholder="さくら食堂 駅前店" style="width:100%"></div>
       </div>
-      <h3>店休日</h3>
+      <h3>定休日</h3>
+      <p class="hint"><b>日付をクリックすると、特別休暇やお盆休み・年末年始などの定休日を指定できます。</b>④シフト表に反映されます。</p>
       <div class="sf-days" id="dayChips"></div>
       <div class="row tight">
         <div><label for="wkSel">曜日</label>
           <select id="wkSel"><option value="0">日</option><option value="1">月</option><option value="2">火</option><option value="3" selected>水</option><option value="4">木</option><option value="5">金</option><option value="6">土</option></select></div>
-        <div><label>&nbsp;</label><button type="button" class="mini" id="wkBtn">毎週この曜日を店休日にする</button></div>
+        <div><label>&nbsp;</label><button type="button" class="mini" id="wkBtn">毎週この曜日を定休日にする</button></div>
       </div>
       <p class="hint" id="holList"></p>
     </div>
   </details>
 
-  <!-- ③ -->
-  <details class="opt noprint" id="ch3">
-    <summary><span class="step">3</span>勤務の種類&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
+  <!-- ⭐詳細設定＝勤務の種類と必要な人数をまとめた。番号なし（2026-09-14 本人「３と４は、毎回設定じゃないよね。
+       番号をなしにして、詳細設定にしてはどうかな？しかもこの２つ地続きだし」） -->
+  <details class="opt noprint" id="chSetting">
+    <summary>詳細設定（勤務の種類・必要な人数）</summary>
+    <div class="body">
+  <details class="opt sub" id="ch3">
+    <summary>勤務の種類&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
     <div class="body">
       <div class="tip-body" hidden>
         <p><strong>表のマスに入れる記号を、職場に合わせて決めます。</strong>早番・遅番だけでなく、10時から、午前だけ、といった勤務も足せます。</p>
+        <p><strong>社員とレギュラー・スポットは、別々に決めます。</strong>「社員の勤務」「レギュラー・スポットの勤務」のボタンで切り替えてください。同じ「早」でも、社員は7時から、レギュラーは9時から、のように時間を分けられます。</p>
+        <p><strong>詳細設定の「必要な人数」は、記号でまとめて数えます。</strong>社員の「早」とレギュラーの「早」は、同じ「早」の人数になります。</p>
         <p>記号は<strong>2文字まで</strong>。表のマスに入る長さです。時間は表の下の説明に出ます。</p>
-        <p><strong>「出勤として数える」を外した記号</strong>（公休・有給など）は、出勤日数にも④必要な人数にも入りません。</p>
-        <p>時間数を入れると、表の右に1か月の合計時間が出ます。勤務は<strong>12種類まで</strong>です。</p>
+        <p><strong>「塗り」はマスの色、「文字」は記号の色です。</strong>2つを組み合わせると、似た勤務も見分けやすくなります。記号の箱が、表に出るときの見本です。</p>
+        <p><strong>「人数に数える」のチェックを外した記号</strong>（公休・有給など）は、詳細設定の「必要な人数」にも、表の右の出勤日数にも入りません。</p>
+        <p>時間数を入れると、表の右に1か月の合計時間が出ます。勤務は社員とレギュラー・スポットで<strong>それぞれ12種類まで</strong>です。</p>
       </div>
+      <div class="plan-tabs sf-tabs" id="codeTabs"><button type="button" data-k="s" class="on">社員の勤務</button><button type="button" data-k="p">レギュラー・スポットの勤務</button></div>
+      <p class="hint">社員とレギュラー・スポットで、勤務の時間を別々に決められます。「社員の勤務」「レギュラー・スポットの勤務」のボタンで切り替えてください。<br><b>「人数に数える」にチェックを入れた勤務が、詳細設定の「必要な人数」と④シフト表の人数の行に出ます。</b>休みの記号は、チェックを外しておきます。</p>
       <div id="codeList"></div>
       <div class="sf-btns"><button type="button" class="mini" id="addCode">＋ 勤務を追加</button></div>
     </div>
   </details>
 
-  <!-- ④ -->
-  <details class="opt noprint" id="ch4">
-    <summary><span class="step">4</span>必要な人数&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
+  <details class="opt sub" id="ch4">
+    <summary>必要な人数&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
     <div class="body">
       <div class="tip-body" hidden>
         <p><strong>1日に何人いてほしいかを、勤務ごとに入れます。</strong>平日と土日祝で分けて入れられます。</p>
         <p><strong>「うち社員」</strong>は、その人数のうち社員が何人いてほしいかです。社員が1人もいない時間を作らないために使います。</p>
-        <p>0のままの欄は数えません。足りない日は、⑤シフト表の下の人数の行が赤くなり、⑥確認に並びます。</p>
+        <p><strong>人数を入れた欄だけ、足りない日を知らせます。</strong>足りない日は、④シフト表の下の人数の行が赤くなり、⑤確認に並びます。</p>
       </div>
       <div id="needBox"></div>
     </div>
   </details>
+    </div>
+  </details>
 
-  <!-- ⑤ -->
-  <details class="opt noprint" id="ch5">
-    <summary><span class="step">5</span>シフト表&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
+  <!-- ③ 希望日（2026-09-14 本人「休みの希望日は指定→反映したい」「出勤日の希望を取ってるところもある」
+       「店長とかって、その出勤日とダメな日を聞いて、シフト組むよ」） -->
+  <details class="opt noprint" id="chReq">
+    <summary><span class="step">3</span>希望日&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
     <div class="body">
       <div class="tip-body" hidden>
-        <p><strong>下の記号を選んでから、表のマスを押します。</strong>同じ記号のマスをもう一度押すと空に戻ります。パソコンでは、押したままなぞると続けて入ります。</p>
-        <p><strong>「希望として入れる」にチェックを入れて押すと、マスの右上に印が付きます。</strong>スタッフから聞いた希望の休みや出勤を、自分で決めたものと見分けるための印です。印はPDFには出ません。</p>
-        <p>人数の行が赤いのは、④必要な人数より少ない日です。赤のままでもPDFにできます。PDFでは赤は付きません。</p>
-        <p>この下の「先月の表（見るだけ）」を開くと、先月のシフトを見ながら入れられます。先月もこの画面で作って保存していると出ます。</p>
+        <p><strong>表のマスを押すと、「○ 出勤の希望」「× 休みの希望」「空にする」のリストが出ます。</strong>選ぶだけで入ります。定休日は押せません。</p>
+        <p><strong>×の日は、「シフト表に入れる」を押すとまとめて休みが入ります。</strong>すでに勤務が入っている日は、休みに入れ替えるかを聞きます。</p>
+        <p><strong>○の日は、記号が入りません。</strong>④シフト表の希望の行を見ながら、入ってもらう日に記号を入れてください。</p>
+        <p>○の日に勤務を入れると、うすい緑になります。×の日に勤務が入っていると、赤くなります。○も×もPDFには出ません。</p>
       </div>
-      <p class="notice" id="sampleNote" hidden>サンプルを表示しています。①に名前を入れると、サンプルは消えます。</p>
-      <div class="sf-pal" id="palette"></div>
+      <!-- ⭐④にあった「希望日の一覧」をここへ移し、入れる場所にした（2026-09-14 本人「希望日の一覧は、③の希望日の中に入れて、
+           そこで行で〇×を入れるといいかも。ここ重複してるよね」）。休み／出勤の切り替え・スタッフの選択・日付ボタンはやめた -->
+      <p class="hint"><b>表のマスを押すと、「○ 出勤の希望」「× 休みの希望」「空にする」のリストが出ます。</b>×の日は、下の「シフト表に入れる」でまとめて休みにできます。</p>
+      <div id="reqSum"></div>
+      <div class="row tight" style="margin-top:12px">
+        <div id="reqCodeWrap"><label for="reqCode">×の日に入れる記号</label><select id="reqCode"></select></div>
+      </div>
+      <div class="sf-btns" id="reqApplyRow">
+        <button type="button" class="primary" id="reqApply">シフト表に入れる</button>
+        <span class="saving" id="reqMsg"></span>
+      </div>
+    </div>
+  </details>
+
+  <!-- ④ -->
+  <!-- ⭐はじめは閉じる。「サンプル①」「サンプル②」／①の「入れる」を押したときに開く（2026-09-14 本人と決めた） -->
+  <details class="opt noprint" id="chSheet">
+    <summary><span class="step">4</span>シフト表&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
+    <div class="body">
+      <div class="tip-body" hidden>
+        <p><strong>表のマスを押すと、その人の区分の勤務がリストで出ます。</strong>選ぶとそのマスに入り、「空にする」を選ぶと消えます。</p>
+        <p><strong>「○」は③希望日でもらった出勤の希望、「×」は休みの希望です。</strong>PDFには出ません。</p>
+        <p>人数の行が赤いのは、詳細設定の「必要な人数」より少ない日です。赤のままでもPDFにできます。PDFでは赤は付きません。</p>
+        <p>「先月の表（見るだけ）」を開くと、先月のシフトを見ながら入れられます。先月もこの画面で作って保存していると出ます。</p>
+      </div>
+      <p class="notice sf-samplebar" id="sampleNote" hidden><button type="button" class="mini" id="backTo1">①に戻る</button><span>サンプルを表示しています。①に名前を入れると、サンプルは消えます。</span></p>
+      <!-- ⭐できることを画面に出す（2026-09-14 本人「このボタンを押して表を押すと変更できますみたいな」） -->
+      <p class="hint"><b>表のマスを押すと、その人の勤務がリストで出ます。選ぶだけで入ります。</b>リストの「空にする」を選ぶと消える作りです。社員とレギュラー・スポットは、同じ記号でも詳細設定の「勤務の種類」で決めたそれぞれの時間で入ります。<b>「○」は③希望日でもらった出勤の希望、「×」は休みの希望で、どちらもPDFには出ません。</b>「希望も並べて見る」にチェックを入れると、1人ずつすぐ下に希望の行が並びます。希望の行のマスも、押すとリストで直せます。<b>「全画面で作る」を押すと、画面全体に表だけが大きく出ます。</b>「✕ とじる」かEscキーで戻ります。</p>
       <div class="sf-btns">
-        <label class="chk-inline"><input type="checkbox" id="hopeMode"> 希望として入れる</label>
-        <button type="button" class="mini" id="undo" disabled>↩ 1つ戻す</button>
-        <button type="button" class="mini" id="clearMonth">この月の表を空にする</button>
+        <!-- ⭐「大きくして作る」→「全画面で作る」（2026-09-14 本人「ブラウザを全画面にしないと大きくならないからさ」） -->
+        <button type="button" class="mini" id="bigOn">全画面で作る</button>
+        <label class="chk-inline"><input type="checkbox" id="showReq" checked> 希望も並べて見る（PDFには出ません）</label>
+        <!-- ⭐区分で紙を分ける（2026-09-14 本人「私もCと思った。日付は共通で」） -->
+        <label class="chk-inline"><input type="checkbox" id="splitKind"> 社員・レギュラーとスポットで紙を分ける</label>
+        <!-- ⭐「1つ戻す」「この月の表を空にする」は出さない（2026-09-14 本人「１つもとに戻すはいらない」
+             「この月の表を空にするも、シフト表の中ではいらないな。やるとしたら、次の月を作るときだ」） -->
+        <button type="button" class="mini" id="undo" disabled hidden>↩ 1つ戻す</button>
+        <button type="button" class="mini" id="clearMonth" hidden>この月の表を空にする</button>
+        <span class="saving" id="paintMsg"></span>
       </div>
-      <div id="sheetBox">
-        <div class="sheet sf-sheet" id="sheet">
-          <div class="sf-head">
-            <div class="sf-title" id="shTitle">シフト表</div>
-            <div class="sf-place" id="shPlace"></div>
-          </div>
-          <div class="sf-grid" id="grid"></div>
-          <div class="sf-legend" id="legend"></div>
-          <div class="sf-memo" id="shMemo"></div>
-          <div class="sf-credit">さくらツール　sakura-tools.com</div>
-        </div>
+      <!-- ⭐紙は shift.js が作る。人が多くてA4の1枚に入らないときは2枚以上（2026-09-14 本人「増えたら、用紙をふやして。２ページに」） -->
+      <!-- ⭐下の人数の行に出す勤務を選ぶ（2026-09-14 本人「社員以外の件数が選べるようにしたらいい」） -->
+      <div id="countPick" style="margin:8px 0 0;line-height:2"></div>
+      <div id="sheetBox"><div id="bigHead" class="sf-bighead" hidden aria-hidden="true"></div><div id="pages"></div></div>
+      <!-- ⭐大きくして作る間だけ、右上に出る（2026-09-14 本人「おおきくして作るやってみて」） -->
+      <div class="sf-bigbar">
+        <!-- ⭐「1つ戻す」をやめて、希望の行の出し入れにした（2026-09-14 本人） -->
+        <label class="sf-bigreq"><input type="checkbox" id="bigShowReq"> 希望の行</label>
+        <button type="button" id="bigOff">✕ とじる</button>
       </div>
       <details class="opt sub" id="prevDet">
         <summary>先月の表（見るだけ）</summary>
@@ -181,12 +234,12 @@
     </div>
   </details>
 
-  <!-- ⑥ -->
-  <details class="opt noprint" id="ch6">
-    <summary><span class="step">6</span>確認&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
+  <!-- ⑤ -->
+  <details class="opt noprint" id="chCheck">
+    <summary><span class="step">5</span>確認&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
     <div class="body">
       <div class="tip-body" hidden>
-        <p>④必要な人数より少ない日と、店休日に勤務が入っている日を並べます。</p>
+        <p>詳細設定の「必要な人数」より少ない日と、定休日に勤務が入っている日を並べます。</p>
         <p>並んだものを直さなくても、PDFにはできます。</p>
       </div>
       <p id="checkSum"></p>
@@ -194,12 +247,12 @@
     </div>
   </details>
 
-  <!-- ⑦ -->
-  <details class="opt noprint" id="ch7">
-    <summary><span class="step">7</span>PDFで保存&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
+  <!-- ⑥ -->
+  <details class="opt noprint" id="chPdf">
+    <summary><span class="step">6</span>PDFで保存&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
     <div class="body">
       <div class="tip-body" hidden>
-        <p><strong>押すとPDFができます。</strong>⑤シフト表の見本と同じものが、A4横の1枚になります。スマホでもパソコンでも同じです。</p>
+        <p><strong>押すとPDFができます。</strong>④シフト表の見本と同じものが、A4横の紙になります。人が多くて1枚に入らないときは紙が2枚以上に分かれます。1枚目から詰めて並べ、人数の行と表の下の説明は最後の紙に出ます。スマホでもパソコンでも同じです。</p>
         <p>紙に出したいときは、できたPDFを開いて印刷してください。スタッフに配るときは、PDFのままLINEやメールで送れます。</p>
       </div>
       <label for="memo">表の下に書くこと（自由記入）</label>
@@ -211,9 +264,9 @@
     </div>
   </details>
 
-  <!-- ⑧ -->
+  <!-- ⑥ -->
   <section class="card noprint">
-    <h2><span class="step">8</span>画面の保存&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+    <h2><span class="step">7</span>画面の保存&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
     <div class="tip-body" hidden>
       <ul>
         <li><strong>いま開いている画面をそのまま残します。</strong>スタッフ・勤務の種類・必要な人数・作ったシフト表まで、次に開いたときそのまま出ます。</li>
@@ -230,9 +283,9 @@
     <p><span class="saving" id="savingLabel"></span></p>
   </section>
 
-  <!-- ⑨ -->
+  <!-- ⑦ -->
   <section class="card noprint">
-    <h2><span class="step">9</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+    <h2><span class="step">8</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
     <div class="tip-body" hidden>
       <p>🔒 <strong>保存先もインターネットではありません。</strong>使っている端末のブラウザの中だけに残るので、ほかの人からは見えません。パソコン・タブレット・スマホ、どれでも同じです。</p>
       <ul>
@@ -266,15 +319,16 @@
       <div class="body">
         <ol>
           <li>①に、スタッフの名前を1行に1人ずつ貼り付けて「入れる」を押します。</li>
-          <li>②で月を選び、店休日の日付を押します。</li>
-          <li>③で勤務の記号と時間を、④で1日に必要な人数を決めます。</li>
-          <li>⑤で記号を選んで、表のマスを押していきます。</li>
-          <li>⑥で足りない日を確かめて、⑦でPDFにします。</li>
+          <li>②で月を選び、定休日の日付を押します。</li>
+          <li>詳細設定の「勤務の種類」で勤務の記号と時間を、詳細設定の「必要な人数」で1日に必要な人数を決めます。</li>
+          <li>③で休みの希望と出勤の希望を入れます。</li>
+          <li>④で表のマスを押して、リストから勤務を選びます。</li>
+          <li>⑤で足りない日を確かめて、⑥でPDFにします。</li>
         </ol>
         <ul class="can">
           <li><b>祝日・曜日を自動で表に</b><small>月を選ぶだけで、振替休日も入った日付が並びます</small></li>
           <li><b>勤務の記号を自由に決められる</b><small>早番・遅番のほかに、時間の違う勤務を12種類まで足せます</small></li>
-          <li><b>社員とパート・アルバイトを分けて数える</b><small>社員が1人もいない日を見つけられます</small></li>
+          <li><b>社員・レギュラー・スポットを分けて数える</b><small>社員が1人もいない日を見つけられます</small></li>
           <li><b>希望の印</b><small>スタッフから聞いた希望を、自分で決めたものと見分けられます</small></li>
           <li><b>先月の表を見ながら作れる</b><small>保存しておけば、13か月分まで残ります</small></li>
           <li><b>A4横のPDF</b><small>そのままスタッフに配れる形で出ます</small></li>
@@ -304,9 +358,9 @@
           <dt>スタッフみんなで書き込めますか？</dt>
           <dd>書き込めません。<strong>作るのは1人、配るのはPDF</strong>という作りです。みんなが書き込める表は、うっかり消したり、古い表を見ていたりが起きます。PDFで配れば、配ったものがそのまま決まった表になります。</dd>
           <dt>祝日は正しく入りますか？</dt>
-          <dd>国民の祝日・振替休日・国民の休日が入ります。春分の日と秋分の日は、発表より先の年は計算で出した日です。お盆や年末年始のような職場ごとの休みは、②で店休日にしてください。</dd>
+          <dd>国民の祝日・振替休日・国民の休日が入ります。春分の日と秋分の日は、発表より先の年は計算で出した日です。お盆や年末年始のような職場ごとの休みは、②で定休日にしてください。</dd>
           <dt>先月の表が出ません</dt>
-          <dd>先月もこの画面で作り、⑧画面の保存か⑨保存したデータの利用で残していると出ます。</dd>
+          <dd>先月もこの画面で作り、⑦画面の保存か⑧保存したデータの利用で残していると出ます。</dd>
         </dl>
       </div>
     </details>
@@ -320,13 +374,16 @@
   </section>
 </main>
 
+<!-- ⭐マスを押したときに出るリスト（2026-09-14 本人「ドロップダウンリストで選びたい。２回もクリックしたくない」） -->
+<div id="cellMenu" class="sf-menu noprint" hidden role="menu"></div>
+
 <footer class="noprint">
   <div class="wrap"><span class="fnav"><a href="../about/">運営者情報</a>　<a href="../contact/">お問い合わせ</a>　<a href="../privacy/">プライバシーポリシー</a></span>
     <span class="copy">さくらツール　© 2026 SAKURA TOOLS</span></div>
 </footer>
 
 <script src="../paper-pdf.js?v=2"></script>
-<script src="shift.js?v=3"></script>
+<script src="shift.js?v=58"></script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>
