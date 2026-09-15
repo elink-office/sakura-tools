@@ -433,18 +433,18 @@
   <!-- ================= (5) 印刷・PDF ================= -->
   <section class="card" id="s6" style="margin-top:18px">
     <h2><span class="step">7</span>PDFで保存</h2>
-    <p class="safe">🔒 <strong>作成した見積書は、必ずPDFで保存してください。</strong>今使っている端末に保存されます。<button type="button" class="tip-btn" aria-expanded="false" aria-label="印刷の画面について"></button></p>
-    <div class="tip-body" hidden>
-      <p>印刷画面で<strong>「PDF」を選ぶと、そのまま保存できます。</strong>紙に印刷することもできます。</p>
-      <p>印刷の画面で<strong>「余白」を「なし」</strong>にすると、<strong>⑥確認と同じ形</strong>で出ます。</p>
-    </div>
+    <p class="safe">🔒 <strong>作成した見積書は、必ずPDFで保存してください。</strong>今使っている端末に保存されます。</p>
+    <!-- ⭐🔒の文のすぐ下（2026-09-15 本人）
+         ⚠「印刷の画面について」の？は外した（2026-09-15 本人「不要になってると思う」）＝PDFはこのページが自分で作る（keiri-pdf.js）。
+           印刷の画面を通らないので、「PDFを選ぶ」「余白をなし」の説明は当てはまらない。紙に印刷する道もなくした -->
+
+    <p class="inv-hint" style="margin:6px 0 12px">ファイル名を自動で付けます。<strong>日付・取引先・金額が入っていると、あとから探せます。</strong></p>
 
     <div class="inv-chks">
       <label class="chk-inline"><input type="checkbox" id="fnDate" checked> 日付</label>
       <label class="chk-inline"><input type="checkbox" id="fnClient" checked> 取引先</label>
       <label class="chk-inline"><input type="checkbox" id="fnAmount" checked> 金額</label>
     </div>
-    <p class="inv-hint" style="margin-top:8px">ファイル名を自動で付けます。<strong>日付・取引先・金額が入っていると、あとから探せます。</strong></p>
     <p class="inv-fname">保存される名前　<b id="fnameOut">見積書.pdf</b></p>
 
     <p style="margin:14px 0 0;text-align:center"><button type="button" id="doPrint" class="primary">PDFで保存</button></p>
