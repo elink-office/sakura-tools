@@ -465,7 +465,7 @@ body.screen .seat.dup .nm{text-decoration:none}
         <h3>班に1人ずつにする人&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h3>
         <div class="tip-body" hidden>
           <p>班長・リーダー・声かけ役など、<strong>班に1人ずつ置きたい人</strong>を決められます。使い道は自由です。</p>
-          <p>④で「班に分ける」を入れているときだけ効きます（★を座席表に出すかどうかも④）。★の人数が足りないときは、いない班をお知らせします。</p>
+          <p>④で「班に分ける」を入れているときだけ効きます（★を座席表に表示するかどうかも④）。★の人数が足りないときは、いない班をお知らせします。</p>
         </div>
         <div id="leadList"></div>
         <!-- 🔴 人数はボタンの右に、それだけ出す（2026-09-03 本人）。
@@ -536,7 +536,8 @@ body.screen .seat.dup .nm{text-decoration:none}
         <p><strong>赤と緑は、いちばん見分けにくい組み合わせ</strong>です。はじめは青系と赤紫系にしてあり、明るさも変えてあるので、色が分かりにくい人でも濃さで見分けられます。</p>
         <p>色を付けたくないときは、両方とも「黒」を選んでください。</p>
       </div>
-      <p class="note-sm">下の名前を押すたびに <b>なし → 男 → 女</b> と変わります。</p>
+      <!-- ⭐①で男女を入れれば自動で入ることも書く（2026-09-15 本人）。読み取る言葉＝男・女・男子・女子・M・F など（seat.js SEX_M/SEX_F） -->
+      <p class="note-sm">下の名前を押すたびに <b>なし → 男 → 女</b> と変わります。<br>①名簿の入力で「男」「女」を入れておくと、自動で読み取ります。</p>
       <div class="row tight">
         <div><label for="colM">男の色</label><select id="colM"></select></div>
         <div><label for="colF">女の色</label><select id="colF"></select></div>
@@ -571,26 +572,11 @@ body.screen .seat.dup .nm{text-decoration:none}
         <input type="checkbox" id="grpNum" checked> 班の番号を出す
       </label>
       <div id="grpOpts" hidden style="margin-top:12px">
-        <!-- 🔴 ★の話は、班に分けるを入れたときだけ出す（2026-09-03 本人）。
-             本人「班に分けるを使わなかったら、★関係ないよね」。
-             ⚠並びは 説明 → 知らせ → チェック。先に「★とは何か」が見えていないと知らせが読めない -->
-        <p class="hint" id="leadWhat" style="margin:0 0 10px"></p>
-        <!-- 🔴 知らせはここに置く（2026-08-31 本人）。座席表のすぐ下だと、
-             モニターに映す前に子どもに見られてしまうため -->
-        <div id="gInfo"></div>
-        <div style="margin-bottom:6px">
-          <label class="chk-inline">
-            <input type="checkbox" id="leadIgnore"> ★を気にせず班に分ける
-          </label>
-        </div>
-        <p class="hint" id="leadIgnoreNote" hidden style="margin:0 0 8px"></p>
-        <!-- ⚠ 上が「★で分けるかどうか」、下が「★を紙に出すかどうか」。
-             決める話が先、見せる話があと（2026-09-03 本人の並び順） -->
-        <div style="margin-bottom:10px">
-          <label class="chk-inline">
-            <input type="checkbox" id="leadMark"> ★を座席表に出す
-          </label>
-        </div>
+        <!-- 🔴⭐並び（2026-09-15 本人「1班の人数の下がいい」「1班の人数を設定した後で、★を気にせず分けるか、座席表に出すか決める」）
+             ＝ 人数・分け方・色 → 人数の知らせ → ★の説明 → ★の知らせ → ★のチェック → 前の班
+             ⚠知らせは設定ごとに分けて、その設定のすぐ下に出す（前は1か所にまとめていた）
+             ⚠★の中は 説明 → 知らせ → チェック のまま（2026-09-03 本人）
+             🔴 知らせは④の中に置く（2026-08-31 本人）。座席表のすぐ下だと、モニターに映す前に子どもに見られる -->
         <div class="row">
           <div><label for="grpSize">1班の人数</label>
             <span class="ctl"><input id="grpSize" type="number" min="2" max="8" value="4"><span class="unit">人</span></span></div>
@@ -607,10 +593,31 @@ body.screen .seat.dup .nm{text-decoration:none}
               <option value="none">色なし（番号だけ）</option>
             </select></div>
         </div>
+        <div id="gInfoSize" style="margin-top:10px"></div>
+        <!-- 🔴 ★の話は、班に分けるを入れたときだけ出す（2026-09-03 本人「班に分けるを使わなかったら、★関係ないよね」） -->
+        <p class="hint" id="leadWhat" style="margin:14px 0 10px"></p>
+        <div id="gInfo"></div>
+        <div style="margin-bottom:6px">
+          <label class="chk-inline">
+            <!-- ⭐「★を気にせず班に分ける」→「★を班に1人ずつにする」（2026-09-15 本人）。チェックの意味が逆になった＝はじめはチェックあり。
+                 ⚠保存の中身は ignoreLead のまま（前に保存した人もそのまま開ける）。画面だけ逆にして見せる -->
+            <input type="checkbox" id="leadSpread" checked> ★を班に1人ずつにする
+          </label>
+        </div>
+        <p class="hint" id="leadIgnoreNote" hidden style="margin:0 0 8px"></p>
+        <!-- ⚠ 上が「★で分けるかどうか」、下が「★を紙に出すかどうか」。
+             決める話が先、見せる話があと（2026-09-03 本人の並び順） -->
+        <div style="margin-bottom:10px">
+          <label class="chk-inline">
+            <input type="checkbox" id="leadMark"> ★を座席表に表示する
+          </label>
+        </div>
         <div style="margin-top:14px;border-top:1px solid var(--line);padding-top:12px">
           <label class="chk-inline">
             <input type="checkbox" id="grpAvoid"> 前の班と同じメンバーをさける
           </label>
+          <!-- ⭐前回とくらべた知らせ（前回も同じ班／前回と同じ席）はここ（2026-09-15） -->
+          <div id="gInfoPast" style="margin-top:8px"></div>
           <div id="avoidOpts" hidden style="margin-top:8px">
             <div class="row tight">
               <div><label for="grpBack">さかのぼる回数</label>
@@ -770,12 +777,13 @@ body.screen .seat.dup .nm{text-decoration:none}
         </div>
       </details>
       <details class="opt sub">
-        <summary>決まった座席を保存<span id="recCount" class="cnt">0/20</span></summary>
+        <summary>座席の並びを保存<span id="recCount" class="cnt">0/20</span></summary>
         <div class="body">
       <p class="hint">記録が2件以上たまると、④の<strong>「前の班と同じメンバーをさける」</strong>が使えます。また、前回と同じ席になった時も知らせることができます。</p>
       <p class="btn-row">
-        <button class="mini" id="recLoad" type="button">記録の座席を表示</button>
+        <!-- ⭐並びは 記録 → 表示 → 削除（2026-09-15 本人「順番が違う。左から、今の座席を記録、記録の座席を〜に表示、削除」） -->
         <button class="mini" id="recSave" type="button">今の座席を記録</button>
+        <button class="mini" id="recLoad" type="button">記録の座席を表示</button>
         <button class="mini" id="recDel" type="button">削除</button>
       </p>
       <div class="pick"><label for="recSel">記録</label>
@@ -887,7 +895,7 @@ body.screen .seat.dup .nm{text-decoration:none}
 
 <script src="../paper-pdf.js?v=2"></script>
 <script src="../seating.js?v=57"></script>
-<script src="seat.js?v=203"></script>
+<script src="seat.js?v=207"></script>
 <!-- 🔴 印刷用の1枚絵の置き場（2026-09-01）。画面には出ない。
      ⚠**body の直下に置くこと。**中に入れると、印刷のときに親ごと隠されて白紙になる -->
 <div id="printImgWrap"></div>

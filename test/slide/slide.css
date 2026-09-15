@@ -47,6 +47,25 @@ h3.sub{font-size:1.02rem;margin:0 0 12px;display:flex;align-items:center}
 /* 「1枚だけ見る」の枚数を選ぶところ */
 #checkNo{max-width:260px}
 
+/* ⭐①の「文字をスライドにする／発表者をスライドにする」を2つの切り替えボタンに（2026-09-15 本人 案A）。
+   ⭐選んだほうに色（.on は slide.js の switchKind が付ける）。⚠ラジオは見えなくするだけで残す（キーボードでも選べる） */
+.kind-switch{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 16px}
+.kind-switch label{position:relative;display:inline-flex;align-items:center;justify-content:center;
+  padding:12px 20px;min-width:12em;margin:0;border:1px solid var(--line,#e3e5e8);border-radius:8px;
+  background:#fff;color:var(--ink,#333);font-weight:bold;cursor:pointer}
+.kind-switch label input{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
+.kind-switch label.on{background:var(--pink);border-color:var(--pink);color:#fff}
+/* ⚠押したあとに二重線（枠のまわりの線）が出ていた（2026-09-15 本人「二重線にはちょっと違和感」）。
+   ⭐線はキーボードで選んでいるときだけ出す（:focus-visible） */
+.kind-switch label:has(input:focus-visible){outline:2px solid var(--pink);outline-offset:2px}
+
+/* ⭐データを読み込んだあとの①の枠は小さく（2026-09-15 本人）。「追加で入力」で元の大きさにもどす
+   ⚠共通の style.css に textarea{min-height:170px} があるので、ここで外す */
+#lines.shrink{min-height:0;height:5.8em}
+/* ⭐「このデータを読み込む」は、となりの選ぶ欄と同じ高さ（2026-09-15 本人「データに合わせて」）。
+   ⚠ボタンだけ行の高さが 27.2px で、選ぶ欄（42px）より3px高かった＝行の高さを24pxにして42pxにそろえる */
+#clsLoadT, #clsLoad{line-height:24px}
+
 /* ⭐サンプルのボタン（①の上・2026-09-14）。座席表の .seat-sample と同じ形 */
 .slide-sample{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;margin:0 0 14px}
 
@@ -83,6 +102,8 @@ h3.sub{font-size:1.02rem;margin:0 0 12px;display:flex;align-items:center}
 .picadd:hover{background:var(--pink-pale);color:var(--pink);border-color:var(--pink-light)}
 /* 🔴 写真の欄は2段（1枚目の下に「＋比べる」または2枚目の小さい絵）。1枚目が無い行は今までどおり */
 .piccell{display:flex;flex-direction:column;gap:4px;align-items:center}
+/* ⭐発表者の写真は何枚も入るので、見本を横に並べて折り返す（2026-09-15） */
+.piccell.lp{flex-direction:row;flex-wrap:wrap;justify-content:center;max-width:150px}
 .picadd.second{height:22px;font-size:11px;line-height:1;padding:0 4px;white-space:nowrap}
 .thumb.second{height:30px;cursor:default}
 .tbl td.pic{width:66px}

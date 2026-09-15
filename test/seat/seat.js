@@ -526,13 +526,13 @@
     }
     updateLeadCount();
   }
-  // ★を気にせず班に分ける、を入れたときの案内（2026-09-03）
+  // 「★を班に1人ずつにする」を外したときの案内（2026-09-03・2026-09-15 言い方を逆に）
   function leadIgnoreNote() {
     var el = $('leadIgnoreNote'); if (!el) return;
-    var on = $('leadIgnore') ? $('leadIgnore').checked : false;
+    var on = $('leadSpread') ? !$('leadSpread').checked : false;   // 外した＝★を気にしない
     el.hidden = !on;
     if (on) el.innerHTML = '今表示している座席は、★の人が1人になる設定になっています。' +
-      '「★を気にせず班に分ける」にチェックを入れたら、<strong>もう一度「席替えする」を押すのがおすすめです。</strong>';
+      '「★を班に1人ずつにする」のチェックを外したら、<strong>もう一度「席替えする」を押すのがおすすめです。</strong>';
   }
 
   // 🔴 何人えらんでいるかだけを、ボタンの右に出す（2026-09-03 本人）。
@@ -546,8 +546,9 @@
     // 🔴 ④にも、★が何でどこでえらぶのかを出す（2026-09-03 本人「？を読まずに理解できるように」）。
     //   ⚠下の2つのチェックの**両方**にかかるので、チェックの上に1行だけ置く
     var w = $('leadWhat');
-    if (w) w.innerHTML = '★＝②<strong>「詳しい条件」</strong>の中の<strong>「班に1人ずつにする人」</strong>で設定することができます。' +
-      '今★は<strong>' + n + '人</strong>です';
+    /* ⭐文は本人の文（2026-09-15）。人数は今えらんでいる数 */
+    if (w) w.innerHTML = '★は、②<strong>詳しい条件</strong>の<strong>「班に1人ずつにする人」</strong>で設定や解除をすることができます。' +
+      '今★は<strong>' + n + '人</strong>です。';
   }
 
   // ============================================================
@@ -575,7 +576,7 @@
   // ⚠条件（離す・隣にする・席を決める）を壊さない相手を先に探す。
   //   どうしても壊れるときは班長を優先する＝そのときは赤い印で先生に見える
   function spreadLeaders(seats) {
-    // 🔴「★を気にせず班に分ける」なら、何もしない（2026-09-03 知り合いの先生の要望）
+    // 🔴「★を班に1人ずつにする」を外していたら、何もしない（2026-09-03 知り合いの先生の要望）
     if (state.grp.ignoreLead) return seats;
     if (!state.grp.on || !hasLeaders() || !state.opt) return seats;
     var o = state.opt, s2 = seats.slice(), loop, i;
@@ -1151,35 +1152,44 @@
   // 班長のいない班／前回も同じ班／前回と同じ席 を、まとめて知らせる。
   // ⚠黙って結果だけ出さない。避けきれないことがあるので、そのまま伝えて先生に直してもらう
   function drawCheck(chk, samap) {
-    var el = $('gInfo');
-    if (!el) return;
-    var li = [];
+    /* ⭐知らせは3か所に分ける（2026-09-15 本人「1班の人数の下がいい」）
+       gInfoSize＝人数（1班の人数の下）／gInfo＝★（★の説明の下）／gInfoPast＝前回とくらべて（前の班の下） */
+    function put(id, li) {
+      var el = $(id);
+      if (el) el.innerHTML = li.length ? '<div class="notice">' + li.join('<br>') + '</div>' : '';
+    }
+    var size = [], lead = [], past = [];
     // ⚠文言は本人が書いたもの（2026-09-02）。勝手に言い換えない
     if (chk.sizeNote)
-      li.push('<strong>' + chk.sizeNote.want + '人の班になりません</strong>：' +
+      size.push('<strong>' + chk.sizeNote.want + '人の班になりません</strong>：' +
         '2列ずつのまとまりで分けているからです。' + chk.sizeNote.want + '人班にしたい場合は、' +
         '教室の形を変更するか、マスの左上の班の番号を押して班を変更してください。');
     if (chk.oddNote) {
-      /* ⚠文言は本人が書いたもの（2026-09-13）。⭐短く。勝手に言い換えない。
-         ⭐どの班かは並べない（本人「見たらわかるから数だけにしたい」）。数だけ出す */
-      li.push('<strong>人数が揃わない班が' + chk.oddNote.small.length + 'つあります。</strong>' +
-        '班の番号を押すと、自分で班を作ることができます。');
+      /* ⚠文言は本人が書いたもの。⭐どの班かは並べない（2026-09-13 本人「見たらわかるから数だけにしたい」）。
+         ⭐2026-09-15 本人「人数が揃わない班が…ではなくて、人数が〇人の班が〇つあります。にしたい」
+           ＝人数ごとに数える。人数がちがう班が混ざったら「3人の班が1つ、2人の班が1つ」とつなぐ（多い人数から） */
+      var cnt = {};
+      chk.oddNote.small.forEach(function (s) { cnt[s.n] = (cnt[s.n] || 0) + 1; });
+      var parts = Object.keys(cnt).map(Number).sort(function (a, b) { return b - a; })
+        .map(function (n) { return n + '人の班が' + cnt[n] + 'つ'; });
+      size.push('<strong>人数が' + parts.join('、') + 'あります。</strong>' +
+        '班の番号を押すと、班の番号を変更することができます。');   // 2026-09-15 本人の文
     }
-    // ⚠「★を気にせず班に分ける」ときは出さない（気にしないと決めた人に見せる意味がない）
+    // ⚠「★を班に1人ずつにする」を外しているときは出さない（気にしないと決めた人に見せる意味がない）
     if (chk.noLead.length && !state.grp.ignoreLead)
-      li.push('<strong>★の人がいない班</strong>：' + chk.noLead.join('班・') + '班');
+      lead.push('<strong>★の人がいない班</strong>：' + chk.noLead.join('班・') + '班');
     if (chk.dupText.length) {
       // ⚠多いと一行が長くなりすぎるので、6組までにして残りは数で言う
       var show = chk.dupText.slice(0, 6).map(esc).join('／');
       var rest = chk.dupText.length - 6;
-      li.push('<strong>前回も同じ班</strong>：' + show + (rest > 0 ? '　ほか' + rest + '組' : ''));
+      past.push('<strong>前回も同じ班</strong>：' + show + (rest > 0 ? '　ほか' + rest + '組' : ''));
     }
     if (samap) {
       var n = 0, k;
       for (k in samap) n++;
-      li.push('<strong>前回と同じ席</strong>：' + n + '人（黄色い枠）');
+      past.push('<strong>前回と同じ席</strong>：' + n + '人（黄色い枠）');
     }
-    el.innerHTML = li.length ? '<div class="notice">' + li.join('<br>') + '</div>' : '';
+    put('gInfoSize', size); put('gInfo', lead); put('gInfoPast', past);
   }
 
   // 🔴 座席表をかくす（2026-08-31 本人）。
@@ -2026,7 +2036,7 @@
           mark: !!d.grp.mark,
           ignoreLead: !!d.grp.ignoreLead
         };
-        if ($('leadIgnore')) $('leadIgnore').checked = state.grp.ignoreLead;
+        if ($('leadSpread')) $('leadSpread').checked = !state.grp.ignoreLead;   // ⭐画面は逆（1人ずつにする＝気にしない、ではない）
         leadIgnoreNote();
         $('grpOn').checked = state.grp.on;
         $('grpOpts').hidden = !state.grp.on;
@@ -2473,12 +2483,12 @@
       });
     });
     modeChanged();
-    // 🔴「★を気にせず班に分ける」（2026-09-03 知り合いの先生の要望）
-    if ($('leadIgnore')) $('leadIgnore').addEventListener('change', function () {
-      state.grp.ignoreLead = this.checked;
-      // ⭐入れたとき＝すでに散らした並びは元にもどせないので、押し直してもらう。
-      //   外したとき＝その場で散らし直せるので、案内はいらない
-      if (!this.checked && state.seats && state.opt)
+    // 🔴「★を班に1人ずつにする」（2026-09-03 知り合いの先生の要望「★を気にせず」→ 2026-09-15 本人「★を班に1人ずつにする」に言い換え）
+    if ($('leadSpread')) $('leadSpread').addEventListener('change', function () {
+      state.grp.ignoreLead = !this.checked;
+      // ⭐外したとき＝すでに散らした並びは元にもどせないので、押し直してもらう。
+      //   入れたとき＝その場で散らし直せるので、案内はいらない
+      if (this.checked && state.seats && state.opt)
         state.seats = spreadLeaders(state.seats);
       leadIgnoreNote();
       if (state.seats) drawSheet();
@@ -2517,6 +2527,7 @@
           grade: $('grade').value, kumi: $('kumi').value, month: $('month').value, order: $('order').value,
           numOn: $('numOn').checked, stateNumOn: state.numOn, numTouched: state.numTouched,
           leadMark: $('leadMark') ? $('leadMark').checked : false, grpMark: state.grp.mark,
+          sexPrint: $('sexPrint').checked,
           lists: {}
         };
         /* ⭐詳しい条件の行（はなす・となり・固定・班長）は、行ごと一時的に外しておく（消すときにそのまま戻す）。
@@ -2550,8 +2561,11 @@
       state.grp.mark = (kind === 2);
       $('grpOn').checked = (kind === 2);
       $('grpOn').dispatchEvent(new Event('change'));
-      if (kind === 2) { $('colM').value = '#333333'; $('colF').value = '#333333'; }   /* 班の色を見せるため、名前は黒 */
-      else { $('colM').value = '#1f5fbf'; $('colF').value = '#b02a7a'; }
+      /* ⭐男女の色はどちらもはじめの色（青・赤紫）にする。②は「男女で色を分ける」を外して名前を黒に見せる
+           ＝チェックを入れると男女の色が付くことを、その場で試せる（2026-09-15 本人）。
+         ⚠前は②で男女の色そのものを黒にしていた（チェックを入れても黒のままだった） */
+      $('colM').value = '#1f5fbf'; $('colF').value = '#b02a7a';
+      $('sexPrint').checked = (kind !== 2);
       /* ⭐1年3組・4月の座席表にする（2026-09-14 本人「一年三組、四月の座席表にして出席番号を順で並べてみようか。
            で、番号を出しておいたら、ああそういうこともできるんだっていうのが分かると思う」）
          ⭐サンプル①＝出席番号順・席に番号を出す／サンプル②＝ランダムの班分け（番号は出さない） */
@@ -2578,6 +2592,7 @@
         $('names').value = s.hasNames ? s.names : '';
         $('grpOn').checked = s.grpOn; $('grpOn').dispatchEvent(new Event('change'));
         $('colM').value = s.colM; $('colF').value = s.colF;
+        if (s.sexPrint !== undefined) $('sexPrint').checked = s.sexPrint;
         if ($('leadMark')) $('leadMark').checked = s.leadMark;
         state.grp.mark = s.grpMark;
         /* ⭐外していた詳しい条件の行を戻す（サンプルの班長の行は捨てる） */

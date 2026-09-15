@@ -26,7 +26,7 @@
 <title>【テスト】簡単スライドメーカー｜パワーポイントの代わりに大きく映す</title>
 <meta name="description" content="パワーポイントの代わりに、文字と写真をそのまま大きくモニターに映せる無料の道具です。今日のめあて、問題文、作品の写真、発表する子の名前に。スライドを作り込まなくていいので、思いついたその場で出せます。写真の上に文字を重ねることもできます。名簿は座席表・席次表と共通。登録なし・インストールなし・写真も名簿も外に送りません。">
 <link rel="stylesheet" href="../style.css?v=140">
-<link rel="stylesheet" href="slide.css?v=69">
+<link rel="stylesheet" href="slide.css?v=73">
 </head>
 <body>
 <div id="testBadge" style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
@@ -82,28 +82,34 @@
   <!-- ⭐サンプルのボタンは①の上（2026-09-14 本人「一番上にサンプルデータ」「スライドも文字と人のサンプル」。座席表・シフト表と同じ並び）
        ⭐押すと①②に入る。「サンプルを消す」で前の画面に戻る。⚠サンプルの間は保存しない -->
   <div class="slide-sample noprint">
-    <button type="button" id="sampleT">サンプル①（文字）</button>
-    <button type="button" id="sampleL">サンプル②（発表者）</button>
+    <!-- ⭐名前は①の切り替えに寄せる（2026-09-15 本人） -->
+    <button type="button" id="sampleT">サンプル①（文字をスライド）</button>
+    <button type="button" id="sampleL">サンプル②（発表者をスライド）</button>
     <button type="button" id="sampleOff" hidden>サンプルを消す</button>
     <span class="saving" id="sampleMsg"></span>
   </div>
   <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
 
   <details class="opt" id="d1" open>
-    <summary><span class="step">1</span>準備</summary>
+    <summary><span class="step">1</span>スライドにする準備</summary>
     <div class="body">
 
-      <div class="radios" id="kind">
-        <label><input type="radio" name="kind" value="text" checked> 文字をスライドにする</label>
-        <label><input type="radio" name="kind" value="list"> 発表者をスライドにする</label>
+      <!-- ⭐文字／発表者は、ラジオではなく2つの切り替えボタンに見せる（2026-09-15 本人 案A「ここをボタンにしてほかを隠したほうがいい」）。
+           ⚠中身はラジオのまま（切り替え・保存・サンプルが input[name=kind] を見ている）。見た目だけ slide.css の .kind-switch で変える -->
+      <div class="radios kind-switch" id="kind">
+        <!-- ⚠autocomplete="off"＝ブラウザが読み込み直しのときに前の選択を勝手に戻さないように（2026-09-15 本人「最初が選択された状態だった」） -->
+        <label><input type="radio" name="kind" value="text" autocomplete="off"> 文字をスライドにする</label>
+        <label><input type="radio" name="kind" value="list" autocomplete="off"> 発表者をスライドにする</label>
       </div>
+      <!-- ⭐はじめはどちらも選ばない（2026-09-15 本人「最初はどっちも白にしておくことできないかな？選択したら色がつく」）。選ぶまで入力の欄は出さない -->
+      <p class="hint" id="kindHint" style="margin:-6px 0 8px">上のどちらかを選ぶと、入力の欄が出ます。</p>
 
       <!-- ===== 文字を出す：入力 ===== -->
       <div id="paneText">
         <!-- 🔴 文字を出す側でも名簿を使える（2026-09-05 本人「さくらツールの名簿が使えるから、
              名簿から選択できるようにしたい」）。⭐1人＝1枚の文字として入る -->
         <div id="clsBoxT" hidden>
-          <p class="notice mini">座席表・席次表で保存したデータを使えます。</p>
+          <p class="notice mini">座席表・席次表で保存したデータの名前を使えます。</p>
           <div class="row" style="margin-bottom:14px">
             <select id="clsSelT"></select>
             <button id="clsLoadT">このデータを読み込む</button>
@@ -125,7 +131,11 @@
 今日のめあて//分数のたし算ができる
 教科書 42ページ
 のこり 5分"></textarea>
-        <div class="row" style="margin-top:12px">
+        <!-- ⭐データを読み込んだら、上の枠を小さくして「追加で入力」を出す（2026-09-15 本人「読み込んだ後に、追加で入力っていうボタンを設置して枠を小さくしよう」） -->
+        <p id="linesMoreWrap" hidden style="margin:8px 0 0"><button type="button" id="linesMore">追加で入力</button> <button type="button" id="linesClear2">消す</button>
+          <!-- ⭐読み込んだあとの次の一歩（2026-09-15 本人「②に進みましょうっていうメッセージほしい」）。この行が出ているあいだは出したまま -->
+          <span class="saving" id="loadNext" style="margin-left:6px"></span></p>
+        <div class="row" id="linesBtnRow" style="margin-top:12px">
           <button id="addText">入れる</button>
           <button id="clearLines">消す</button>
           <!-- 🔴 入れたことが分かるように、その場に出す（2026-09-06 本人） -->
@@ -139,7 +149,7 @@
         <h3 class="sub">名簿の入力</h3>
 
         <div id="clsBox" hidden>
-          <p class="notice mini">座席表・席次表で保存したデータを使えます。</p>
+          <p class="notice mini">座席表・席次表で保存したデータの名前や班を使えます。</p>
           <div class="row" style="margin-bottom:14px">
             <select id="clsSel"></select>
             <button id="clsLoad">このデータを読み込む</button>
@@ -148,11 +158,16 @@
 
         <!-- ⭐枠の上は「エクセルから貼り付ける」でそろえる（2026-09-10 本人）。
              ⚠手入力もできることは、枠の中のグレーで伝える -->
-        <label for="paste">エクセルから貼り付ける&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></label>
+        <label for="paste">エクセルから貼り付ける（手入力可）&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></label>
         <div class="tip-body" hidden>
           <p>1行目が「名前」「作品名」「班」などの<strong>見出しなら、自動で読み分けます</strong>。</p>
           <p>見出しがなければ <strong>1列目＝名前・2列目＝作品名</strong> として読みます。名前だけの1列でもかまいません。</p>
         </div>
+        <!-- ⭐班ごとに映せることを、貼る前に伝える（2026-09-15 本人）。⚠？の説明（tip-body）は見出しの直後でないと開かないので、その後ろに置く -->
+        <!-- ⭐発表者でも改行の説明を出す（2026-09-15 本人「発表者をスライドにするの中に改行の説明がない」）。
+             ⭐作品名にも / と // が効く（映すところは文字と同じ作り） -->
+        <p class="hint" style="margin:4px 0 4px"><code>/</code> を入れると改行、<code>//</code> を入れると左が小さく表示されます。</p>
+        <p class="hint" style="margin:0 0 8px">班が同じ場合、②作品名と順番で、班ごとにまとめて映すを設定できます。</p>
         <!-- 🔴 枠の中の案内は「貼り付け」が先（2026-09-05 本人「今時手入力する人はいないって。（学校はね。自治会とかは別だよ）」）。
              ⭐文言は 2026-09-10 に短くした＝枠の上のラベルと重なるため。
              ⚠列の見本はその下に残す。3列の形（名前・作品名・班）がここでしか分からないため -->
@@ -212,6 +227,7 @@
           <b>作品名と班は、ここで直せます</b>&#8288;<button type="button" class="tip-btn" aria-label="説明"></button>
         </p>
         <div class="tip-body" hidden>
+          <p><strong>写真の欄の＋で、写真を何枚でも入れられます。</strong>1人ずつ映すときはその人に、班ごとに映すときはその班に入ります。映すときは<strong>1枚ずつ順番に</strong>出て、班・作品名・名前は下の帯に出ます。写真の右上の×で1枚ずつ外せます。</p>
           <p><strong>班の欄に打つと、その人の班が変わります。</strong>名簿に班が無くても、ここで分けられます。空にすれば班なしです。</p>
           <p>作品名はここで直せます。長いときは、<strong>改行したいところに <code>/</code></strong> を入れてください。</p>
           <p><strong>▲▼</strong>で順番を入れ替え。<strong>チェックを外す</strong>と、その人（その班）は映りません。</p>
@@ -277,7 +293,7 @@
       <ul>
         <li><strong>名前を付けて、<b style="font-size:inherit">20件</b>まで保存できます。</strong>残るのは<strong>この端末の中だけ</strong>です。</li>
         <li>呼び出すのは①の<strong>「このデータを読み込む」</strong>から。</li>
-        <li><b>文字のデータ</b>と<b>名前のデータ</b>は、欄が分かれています。それぞれの欄のボタンは、その種類だけを保存・上書き・削除します。</li>
+        <li><b>「文字スライドの文字を保存」</b>と<b>「発表者スライドの名前を保存」</b>は、欄が分かれています。それぞれの欄のボタンは、その種類だけを保存・上書き・削除します。</li>
         <li><b>「上書き」と「削除」は、①でえらんでいるもの</b>に効きます。上書きしても、座席表で入れた<b>番号や男女は残ります</b>。</li>
         <li>文字のデータは100件まで（⚠座席表メーカーの一覧には出ません）。</li>
         <li>⚠<b>写真・班・作品名は保存されません。</b>写真が残るのは④の「画面の保存」だけです。</li>
@@ -290,7 +306,8 @@
       <!-- 🔴⭐保存の欄を「文字」と「名前」の2つに分けた（2026-09-14 本人「自分が何を持ってるか知りたいから」）。
            ⭐上が文字（本人「①で左だから」）。⭐それぞれの欄のボタンは、その種類だけを扱う＝①の切り替えに左右されない -->
       <details class="opt sub">
-        <summary>文字のデータを保存<span id="clsCountT" class="cnt">0/100</span></summary>
+        <!-- ⭐欄の名前は①の言葉に寄せる（2026-09-15 本人 案B「文字スライドの文字を保存」「発表者スライドの名前を保存」） -->
+        <summary>文字スライドの文字を保存<span id="clsCountT" class="cnt">0/100</span></summary>
         <div class="body">
           <p class="hint">いま、<b>②に入っている文字</b>を保存します。</p>
           <p class="btn-row">
@@ -302,7 +319,7 @@
         </div>
       </details>
       <details class="opt sub">
-        <summary>名前のデータを保存<span id="clsCount" class="cnt">0/20</span></summary>
+        <summary>発表者スライドの名前を保存<span id="clsCount" class="cnt">0/20</span></summary>
         <div class="body">
           <!-- 🔴 上書きも置いた（2026-09-06 本人「名簿に関しては上書きできるはずだよね？」）。
                ⭐番号・男女は namesNow() で残すので、上書きしても落ちない -->
@@ -396,7 +413,7 @@
       </ul>
 
       <h3>設定を見せたくない</h3>
-      <p>「準備」を閉じると、中身がまとめて隠れます。<b>「スライドをモニターで表示」を押したときも自動で閉じます</b>ので、映し終わって戻ったときに、順番やシャッフルが見ている人に見えることはありません。</p>
+      <p>「スライドにする準備」を閉じると、中身がまとめて隠れます。<b>「スライドをモニターで表示」を押したときも自動で閉じます</b>ので、映し終わって戻ったときに、順番やシャッフルが見ている人に見えることはありません。</p>
       <p>ずっと開いたままにしたいときは、<b>「作成中」にチェック</b>を入れてください。</p>
 
       <h3>保存について</h3>
@@ -452,7 +469,7 @@
   </div>
 </div>
 
-<script src="slide.js?v=93"></script>
+<script src="slide.js?v=102"></script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>

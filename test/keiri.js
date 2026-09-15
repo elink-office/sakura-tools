@@ -205,7 +205,8 @@ function checkNo(){
     hint.style.color = 'var(--bad)';
     return false;
   }
-  hint.textContent = '自動で振っています。書き直せます。';
+  /* ⭐2026-09-15 本人「自動で見積書を振っています。書き直しも可能です。」→ 番号の欄の案内なので「〇〇番号」にした。書類の名前はページごと */
+  hint.textContent = '自動で' + D.title + '番号を振っています。書き直しも可能です。';
   hint.style.color = '';
   return true;
 }
@@ -1148,13 +1149,22 @@ function drawForms(){
     sel.appendChild(head);
     db.forms.forEach(function(f, i){
       var op = document.createElement('option');
-      op.value = String(i); op.textContent = f.label || '名前なし';
+      /* ⭐③の「④の内容の入れ方」では、ひな形とエクセルが同じ一覧に並ぶので「ひな形：」を付ける */
+      op.value = String(i); op.textContent = (sel.id === 'formSel2' ? 'ひな形：' : '') + (f.label || '名前なし');
       sel.appendChild(op);
     });
+    /* ⭐③の入れ方には「エクセルから貼り付ける」も並べる（2026-09-15 本人「エクセルから貼り付けるを選択肢に」） */
+    if(sel.id === 'formSel2' && db.forms.length){
+      var ex = document.createElement('option');
+      ex.value = 'excel'; ex.textContent = 'エクセルから貼り付ける';
+      sel.appendChild(ex);
+    }
     if(keep) sel.value = keep;
+    if(sel.selectedIndex < 0) sel.value = '';
   });
   if($('formCount')) $('formCount').textContent = db.forms.length + '/' + MAX_FORMS;
   if($('formLoad')) $('formLoad').hidden = !db.forms.length;
+  srcUpdate();
   /* ⭐0件のときは⑧の「えらぶ」「上書き」「削除」も出さない（2026-09-11 本人） */
   showWhenHas(db.forms.length, 'formHave', ['formSave', 'formDel']);
 }
@@ -1271,8 +1281,35 @@ var SAMPLE_ME_5 = {
   meAddr:'東京都千代田区丸の内1-2-3', meTel:'090-0000-0000', meMail:'hanako@example.com'
 };
 
+/* ⭐③「④の内容の入れ方」で、出すものを決める（2026-09-15 本人「ひな形を入れると、エクセルから貼り付けるを選択肢に」
+     「入れるボタンと、エクセルで追加ボタンが現れる」）
+   - ひな形が0件 … 入れ方の欄は出さず、貼り付け欄をそのまま出す（はじめての人が迷わない）
+   - 「－」 … 何も出さない
+   - ひな形を選んだ … 「このひな形を入れる」「エクセルから追加で貼り付ける」の2つ。追加を押したら貼り付け欄も出す
+   - 「エクセルから貼り付ける」 … 貼り付け欄を出す */
+var PASTE_OPEN = false;
+function srcUpdate(){
+  var has = !!(db && db.forms && db.forms.length);
+  var v = $('formSel2') ? $('formSel2').value : '';
+  var isForm = has && v !== '' && v !== 'excel';
+  if($('formBtns')) $('formBtns').hidden = !isForm;
+  if($('pasteWrap')) $('pasteWrap').hidden = has && !(v === 'excel' || (isForm && PASTE_OPEN));
+}
+/* ⭐④「全部消す」のあとの「消しました。③から入れ直す」を閉じる */
+function hideClearMsg(){
+  if($('clearItemsMsg')) $('clearItemsMsg').hidden = true;
+}
+/* ⭐サンプル・全部消すのときは、入れ方を「－」にもどす */
+function pasteFold(){
+  hideClearMsg();
+  PASTE_OPEN = false;
+  if($('formSel2')) $('formSel2').value = '';
+  srcUpdate();
+}
+
 function sampleAdd(kind){
   kind = Number(kind) || 1;
+  pasteFold(false);
   var items = SAMPLES[kind] || SAMPLE_1;
   if(!hasSavedMe()){
     /* ⭐屋号なしの個人名で出す＝5（屋号なし）・6（税込）・7（源泉）。
@@ -1736,7 +1773,7 @@ function boot(){
   };
   if($('formUse')) $('formUse').onclick = function(){
     var v = $('formSel2').value;
-    if(v === ''){ alert('先に、呼び出すものをえらんでください。'); return; }
+    if(v === '' || v === 'excel'){ alert('先に、呼び出すものをえらんでください。'); return; }
     var f = db.forms[Number(v)];
     if(!f) return;
     /* ⚠すでに④に入力があったら、消す前に聞く */
@@ -1746,6 +1783,12 @@ function boot(){
     useForm(f);
     if($('formSel')) $('formSel').value = String(v);
     if($('formName')) $('formName').value = f.label || '';
+    /* ⭐入れたあともボタン2つは残す＝続けてエクセルで足せる（2026-09-15 本人） */
+  };
+  if($('formSel2')) $('formSel2').addEventListener('change', function(){ PASTE_OPEN = false; hideClearMsg(); srcUpdate(); });
+  if($('pasteShow')) $('pasteShow').onclick = function(){
+    PASTE_OPEN = true; srcUpdate();
+    if($('paste')) $('paste').focus();
   };
 
   /* ⭐④をまとめて消す */
@@ -1754,7 +1797,26 @@ function boot(){
     rows().forEach(function(tr){ if(!readRow(tr).empty) live = true; });
     if(live && !confirm('④に入れた品目を全部消します。よろしいですか。')) return;
     clearItems();
+    /* ⭐③の入れ方もリセットする（2026-09-15 本人「自分で③のボタン選んだほうがいい。そうするなら③の中身をリセットしたい」）。
+       ⚠画面は動かさない＝そのまま④に手で入れ直す人がいる */
+    pasteFold();
+    if($('paste')) $('paste').value = '';
+    if($('pasteMsg')) $('pasteMsg').hidden = true;
+    /* ⭐時間では消さない（2026-09-15 本人「メッセージをもう少し長く。それか③からやり直すボタン」→ボタン） */
+    if($('clearItemsMsg')) $('clearItemsMsg').hidden = false;
   };
+  /* ⭐「③から入れ直す」＝押した人だけ③へ送る（自動では動かさない）。ひな形があれば入れ方の欄、なければ貼り付け欄 */
+  if($('backToSrc')) $('backToSrc').onclick = function(){
+    hideClearMsg();
+    var to = ($('formLoad') && !$('formLoad').hidden) ? $('formSel2') : $('paste');
+    if(!to) return;
+    /* ⚠ゆっくり動かす指定は機器によって効かないので、そのまま送る（ページの型 8） */
+    try{ to.scrollIntoView({block:'center'}); }catch(e){ to.scrollIntoView(); }
+    to.focus();
+  };
+  /* ⭐④に入れはじめたら・貼り付け欄に打ったら、知らせは役目が終わる */
+  if($('itemBody')) $('itemBody').addEventListener('input', hideClearMsg);
+  if($('paste')) $('paste').addEventListener('input', hideClearMsg);
 
   /* ⭐この内容で請求書を作る（見積書だけ）＝取引の内容に残してから請求書へ移る */
   if($('toSeikyu')) $('toSeikyu').onclick = function(){
@@ -1939,6 +2001,7 @@ function boot(){
     ['meName','meZip','meAddr','meTel','meMail','meTno',
      'toName','toPerson','toAddr','subject','dueDate','bank','note',
      'formName','paste','logoFile'].forEach(function(k){ if($(k)) $(k).value = ''; });
+    pasteFold(false);       /* ⭐全部消したら、貼り付け欄も元どおり出す */
     if($('toHonor')) $('toHonor').value = '御中';
     /* ⭐③のスイッチを全部初期に戻す */
     $('useInvoice').checked = false;
