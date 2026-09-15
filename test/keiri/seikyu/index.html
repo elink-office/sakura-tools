@@ -456,11 +456,12 @@
   <!-- ================= (6) 保存したデータの利用 ================= -->
   <section class="card" id="s6">
     <h2><span class="step">8</span>保存したデータの利用</h2>
-    <p class="inv-hint">保存した<b>取引先</b>と<b>ひな形</b>は、<b>さくらツール内の請求書・見積書・領収書</b>で使えます。
+    <!-- 🔴⭐⑧の文章（2026-09-15 本人「この文章が気持ち悪くて」）。⭐テンプレート→端末だけ→個別はPDF の順 -->
+    <!-- ⭐テンプレートと端末の話は同じ段落（2026-09-15 本人「3行にしたくない」） -->
+    <p class="inv-hint">保存したデータは<b>ひな形</b>として、<b>さくらツール内の見積書・請求書</b>で使えます。🔒 保存したデータは、使っている端末の中だけに残ります。
       <button type="button" class="tip-btn" aria-expanded="false" aria-label="保存について"></button></p>
-    <!-- ⭐⑧の2行目に置く（2026-09-11 本人）。⚠一番下にあっても読まれない -->
-    <p class="inv-hint">⚠<strong>作った請求書は必ずPDFで保存してください。</strong>この端末には保存されません。</p>
-    <p class="safe">🔒 <strong>保存したものは、使っている端末の中だけに残ります。</strong></p>
+    <!-- ⭐⑧に置く（2026-09-11 本人）。⚠一番下にあっても読まれない -->
+    <p class="inv-hint">⚠<strong>個別の請求書は必ずPDFで保存してください。</strong></p>
     <div class="tip-body" hidden>
       <p>🔒 保存先もインターネットではありません。使っている端末のブラウザの中だけに残るので、
         ほかの人からは見えません。パソコン・タブレット・スマホ、どれでも同じです。</p>
@@ -495,7 +496,7 @@
       <details class="opt sub">
         <summary>取引先データに名前を付けて保存<span id="clientCount" class="cnt">0/20</span></summary>
         <div class="body">
-        <p class="inv-hint">②の中の<strong>会社名・敬称・担当者・住所</strong>を<strong>20件</strong>まで保存でき、<strong>次回選択して使えます。</strong>⭐<strong>見積書メーカーと共通です。</strong><button type="button" class="tip-btn" aria-expanded="false" aria-label="取引先の保存について"></button></p>
+        <p class="inv-hint">②取引先情報を<strong>20件</strong>保存でき、<strong>次回から、選択して使えます。</strong>⭐<strong>見積書メーカーと共通です。</strong><button type="button" class="tip-btn" aria-expanded="false" aria-label="取引先の保存について"></button></p>
         <p class="inv-hint">⚠③の中の件名や④請求の内容は、この下の<strong>「請求の内容をひな形として保存」</strong>で保存します。</p>
         <div class="tip-body" hidden>
           <p>名前は、②の中に入れた<strong>会社名・氏名</strong>がそのまま付きます。<strong>「上書き」は、担当者が変わったとき</strong>に使ってください。保存できるのは<b>文字情報のみ</b>です。</p>
@@ -519,8 +520,7 @@
       <details class="opt sub">
         <summary>請求の内容をひな形として保存<span id="formCount" class="cnt">0/30</span></summary>
         <div class="body">
-        <p class="inv-hint">③の中の<strong>件名</strong>と④請求の内容を<strong>30件</strong>、<strong>ひな形として保存できます。</strong><button type="button" class="tip-btn" aria-expanded="false" aria-label="ひな形について"></button></p>
-        <p class="inv-hint">⭐<strong>見積書メーカーと共通です</strong></p>
+        <p class="inv-hint">③の中の件名と④請求の内容を<strong>30件</strong>保存でき、<strong>次回から、選択して使えます。</strong>⭐<strong>見積書メーカーと共通です。</strong><button type="button" class="tip-btn" aria-expanded="false" aria-label="ひな形について"></button></p>
         <div class="tip-body" hidden>
           <p>⭐<strong>次も同じ内容を出すとき</strong>に使います。名前は「株式会社もみじ　案1」のように、自分で分かる形で付けてください。<strong>空のままなら、②の中の取引先と③の中の件名をつないで、自動で付きます。</strong></p>
           <p><strong>見積書メーカーと共通です。</strong>見積書で保存したひな形も、請求書メーカーでそのまま呼び出せます。</p>
@@ -555,7 +555,7 @@
     <details class="opt sub">
       <summary>すべてのデータと画面のデータを全部消す</summary>
       <div class="body">
-      <p class="inv-hint">⚠<strong>この端末に保存したもの（自分の情報・取引先・ひな形・振込先・番号）と、いま①〜⑤に打ってある内容を、すべて消します。</strong>消したものは戻せません。</p>
+      <p class="inv-hint">⚠<strong>この端末に保存したもの（自分の情報・取引先データ・請求の内容のひな形）と、いま①〜⑤に打ってある画面の内容を、すべて消します。</strong>消したものは戻せません。</p>
       <p class="btn-row">
         <button type="button" id="clearAll">すべてのデータと画面のデータを全部消す</button>
       </p>
@@ -622,7 +622,7 @@
           <dd>いりません。⑧の<strong>「請求の内容をひな形として保存」</strong>に残しておくと、③から呼び出せます。<strong>同じ取引先で2つ以上のひな形を持てます。</strong></dd>
 
           <dt>見積書メーカーで保存したものは使えますか</dt>
-          <dd>使えます。<strong>取引先もひな形も、見積書メーカーと同じものが並びます。</strong>見積書のほうで「この内容で請求書を作る」を押すと、中身がそのまま請求書メーカーに入ります。</dd>
+          <dd>使えます。<strong>取引先もひな形も、見積書メーカーと同じものが並びます。</strong>見積書のほうで「画面の内容のまま請求書を作る」を押すと、中身がそのまま請求書メーカーに入ります。</dd>
 
           <dt>PDFのファイル名は変えられますか</dt>
           <dd>保存するときに書き直せます。⑦のチェックで、入れる項目を選ぶこともできます。</dd>
@@ -672,7 +672,7 @@
   </div>
 </footer>
 
-<script src="../../keiri.js?v=56"></script>
+<script src="../../keiri.js?v=57"></script>
 <script src="../../keiri-pdf.js?v=2"></script>
 <script src="../../tip.js?v=3"></script>
 </body>

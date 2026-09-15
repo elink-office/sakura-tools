@@ -454,11 +454,12 @@
   <!-- ================= (6) 保存したデータの利用 ================= -->
   <section class="card" id="s7">
     <h2><span class="step">8</span>保存したデータの利用</h2>
-    <p class="inv-hint">保存した<b>取引先</b>と<b>ひな形</b>は、<b>さくらツール内の請求書・見積書・領収書</b>で使えます。
+    <!-- 🔴⭐⑧の文章（2026-09-15 本人「この文章が気持ち悪くて」）。⭐テンプレート→端末だけ→個別はPDF の順 -->
+    <!-- ⭐テンプレートと端末の話は同じ段落（2026-09-15 本人「3行にしたくない」） -->
+    <p class="inv-hint">保存したデータは<b>ひな形</b>として、<b>さくらツール内の見積書・請求書</b>で使えます。🔒 保存したデータは、使っている端末の中だけに残ります。
       <button type="button" class="tip-btn" aria-expanded="false" aria-label="保存について"></button></p>
-    <!-- ⭐⑧の2行目に置く（2026-09-11 本人）。⚠一番下にあっても読まれない -->
-    <p class="inv-hint">⚠<strong>作った見積書は必ずPDFで保存してください。</strong>この端末には保存されません。</p>
-    <p class="safe">🔒 <strong>保存したものは、使っている端末の中だけに残ります。</strong></p>
+    <!-- ⭐⑧に置く（2026-09-11 本人）。⚠一番下にあっても読まれない -->
+    <p class="inv-hint">⚠<strong>個別の見積書は必ずPDFで保存してください。</strong></p>
     <div class="tip-body" hidden>
       <p>🔒 保存先もインターネットではありません。使っている端末のブラウザの中だけに残るので、
         ほかの人からは見えません。パソコン・タブレット・スマホ、どれでも同じです。</p>
@@ -493,7 +494,7 @@
       <details class="opt sub">
         <summary>取引先データに名前を付けて保存<span id="clientCount" class="cnt">0/20</span></summary>
         <div class="body">
-        <p class="inv-hint">②の中の<strong>会社名・敬称・担当者・住所</strong>を<strong>20件</strong>まで保存でき、<strong>次回選択して使えます。</strong>⭐<strong>請求書メーカーと共通です。</strong><button type="button" class="tip-btn" aria-expanded="false" aria-label="取引先の保存について"></button></p>
+        <p class="inv-hint">②取引先情報を<strong>20件</strong>保存でき、<strong>次回から、選択して使えます。</strong>⭐<strong>請求書メーカーと共通です。</strong><button type="button" class="tip-btn" aria-expanded="false" aria-label="取引先の保存について"></button></p>
         <p class="inv-hint">⚠③の中の件名や④見積の内容は、この下の<strong>「見積の内容をひな形として保存」</strong>で保存します。</p>
         <div class="tip-body" hidden>
           <p>名前は、②の中に入れた<strong>会社名・氏名</strong>がそのまま付きます。<strong>「上書き」は、担当者が変わったとき</strong>に使ってください。保存できるのは<b>文字情報のみ</b>です。</p>
@@ -517,8 +518,7 @@
       <details class="opt sub">
         <summary>見積の内容をひな形として保存<span id="formCount" class="cnt">0/30</span></summary>
         <div class="body">
-        <p class="inv-hint">③の中の<strong>件名</strong>と④見積の内容を<strong>30件</strong>、<strong>ひな形として保存できます。</strong><button type="button" class="tip-btn" aria-expanded="false" aria-label="ひな形について"></button></p>
-        <p class="inv-hint">⭐<strong>請求書メーカーと共通です</strong></p>
+        <p class="inv-hint">③の中の件名と④見積の内容を<strong>30件</strong>保存でき、<strong>次回から、選択して使えます。</strong>⭐<strong>請求書メーカーと共通です。</strong><button type="button" class="tip-btn" aria-expanded="false" aria-label="ひな形について"></button></p>
         <div class="tip-body" hidden>
           <p>⭐<strong>次も同じ内容を出すとき</strong>に使います。名前は「株式会社もみじ　案1」のように、自分で分かる形で付けてください。<strong>空のままなら、②の中の取引先と③の中の件名をつないで、自動で付きます。</strong></p>
           <p><strong>請求書メーカーと共通です。</strong>請求書で保存したひな形も、見積書メーカーでそのまま呼び出せます。</p>
@@ -553,7 +553,7 @@
     <details class="opt sub">
       <summary>すべてのデータと画面のデータを全部消す</summary>
       <div class="body">
-      <p class="inv-hint">⚠<strong>この端末に保存したもの（自分の情報・取引先・ひな形・振込先・番号）と、いま①〜⑤に打ってある内容を、すべて消します。</strong>消したものは戻せません。</p>
+      <p class="inv-hint">⚠<strong>この端末に保存したもの（自分の情報・取引先データ・見積もりの内容のひな形）と、いま①〜⑤に打ってある画面の内容を、すべて消します。</strong>消したものは戻せません。</p>
       <p class="btn-row">
         <button type="button" id="clearAll">すべてのデータと画面のデータを全部消す</button>
       </p>
@@ -565,7 +565,7 @@
        ⭐⑦の「PDFで保存」から離れるので、同じ桜色のボタン -->
   <div class="inv-handoff noprint">
     <p class="inv-hint">見積が通ったら、<strong>請求書メーカーに移動して</strong>中身をそのまま入れます。</p>
-    <button type="button" id="toSeikyu" class="primary">この内容で請求書を作る</button>
+    <button type="button" id="toSeikyu" class="primary">画面の内容のまま請求書を作る</button>
   </div>
 
   <!-- ⭐見積書と請求書を行き来する（2026-09-14 本人）。⭐使い方の上・主張しない小さなリンク -->
@@ -584,7 +584,7 @@
           <li>⑤に<b>有効期限と備考</b>を書きます。ここも保存できます。</li>
           <li>⑥で<b>紙の見た目</b>を確かめます。</li>
           <li>⑦の<b>PDFで保存</b>を押して、出てきた画面で「PDF」を選びます。</li>
-          <li>見積が通ったら、⑦の<b>この内容で請求書を作る</b>で請求書メーカーに移ります。</li>
+          <li>見積が通ったら、⑧の下の<b>画面の内容のまま請求書を作る</b>で請求書メーカーに移ります。</li>
         </ol>
         <p class="sub">できること</p>
         <ul class="can">
@@ -626,7 +626,7 @@
           <dd>決められます。③の「番号の頭」に好きな文字を入れると、<strong>末尾の番号だけが1つずつ増えます。</strong>番号そのものを書き直すこともできます。<strong>一度使った番号を入れると、赤字でお知らせします。</strong></dd>
 
           <dt>この見積書から、請求書は作れますか</dt>
-          <dd>作れます。⑦の<strong>「この内容で請求書を作る」</strong>を押すと、取引先と④の中身がそのまま請求書メーカーに入ります。⚠<strong>見積書の控えは残らないので、先にPDFで保存してください。</strong></dd>
+          <dd>作れます。⑧の下の<strong>「画面の内容のまま請求書を作る」</strong>を押すと、取引先と④の中身がそのまま請求書メーカーに入ります。⚠<strong>見積書の控えは残らないので、先にPDFで保存してください。</strong></dd>
 
           <dt>同じ取引先に、2つの案を出したいのですが</dt>
           <dd>できます。⑧の<strong>「見積の内容をひな形として保存」</strong>で、「〇〇株式会社　案1」「案2」のように名前を付けて残せます。③から呼び出せます。</dd>
@@ -679,7 +679,7 @@
   </div>
 </footer>
 
-<script src="../../keiri.js?v=56"></script>
+<script src="../../keiri.js?v=57"></script>
 <script src="../../keiri-pdf.js?v=2"></script>
 <script src="../../tip.js?v=3"></script>
 </body>
