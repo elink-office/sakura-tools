@@ -2083,8 +2083,11 @@
       if (el.selectedIndex < 0) el.value = '';
     });
     // ⚠残したものが無いうちは、①の呼び出し欄を出さない
-    if ($('quickLoad')) $('quickLoad').hidden = !st.classes.length;
+    /* ⭐保存が無いとき・サンプルを出しているあいだは隠す（2026-09-15 本人「保存済みのデータは保存してあるから使えるもの」「サンプルだと邪魔」） */
+    /* 🔴⚠スライドの「文字のデータ」も同じ置き場に入る。数えると、選べるものが無いのに行が出る（2026-09-15 本人「保存済みのデータは選べない」）。
+       ⭐名簿のデータだけを数える */
     var nCls = st.classes.filter(function (c) { return c.kind !== 'slide'; }).length;
+    if ($('quickLoad')) $('quickLoad').hidden = !nCls || state.sample;
     $('clsCount').textContent = nCls
       ? nCls + '/' + MAXC
       : '0/' + MAXC;   /* ⭐件・かっこなし、/ は半角（2026-09-14 本人） */
@@ -2577,6 +2580,7 @@
       closeCond(); run(true);
       $('sampleClear').hidden = false; $('sampleClear2').hidden = false; $('undo').hidden = true;
       $('sampleMsg').textContent = 'サンプル' + (kind === 2 ? '②（班分け）' : '①（出席番号順）') + 'を出しました。下の座席表で見られます';
+      refreshClsUI();   // ⭐サンプルの間は①の「保存済のデータ」を隠す
     }
     $('sample1Btn').onclick = function () { loadSample(1); };
     $('sample2Btn').onclick = function () { loadSample(2); };
@@ -2617,10 +2621,12 @@
           $('result').hidden = true;
         }
         $('sampleMsg').textContent = s.hasNames ? 'サンプルを消して、元の名簿に戻しました' : 'サンプルを消しました';
+        refreshClsUI();   // ⭐「保存済のデータ」を元どおり出す
       } else {
         $('result').hidden = true;
         refreshNames();
         $('sampleMsg').textContent = 'サンプルを消しました';
+        refreshClsUI();
       }
     }
     $('sampleClear').onclick = clearSample;

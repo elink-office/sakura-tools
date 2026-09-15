@@ -26,7 +26,7 @@
 <title>【テスト】簡単スライドメーカー｜パワーポイントの代わりに大きく映す</title>
 <meta name="description" content="パワーポイントの代わりに、文字と写真をそのまま大きくモニターに映せる無料の道具です。今日のめあて、問題文、作品の写真、発表する子の名前に。スライドを作り込まなくていいので、思いついたその場で出せます。写真の上に文字を重ねることもできます。名簿は座席表・席次表と共通。登録なし・インストールなし・写真も名簿も外に送りません。">
 <link rel="stylesheet" href="../style.css?v=140">
-<link rel="stylesheet" href="slide.css?v=73">
+<link rel="stylesheet" href="slide.css?v=74">
 </head>
 <body>
 <div id="testBadge" style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
@@ -109,8 +109,9 @@
         <!-- 🔴 文字を出す側でも名簿を使える（2026-09-05 本人「さくらツールの名簿が使えるから、
              名簿から選択できるようにしたい」）。⭐1人＝1枚の文字として入る -->
         <div id="clsBoxT" hidden>
-          <p class="notice mini">座席表・席次表で保存したデータの名前を使えます。</p>
-          <div class="row" style="margin-bottom:14px">
+          <!-- ⭐手入力が基本。帯はやめて文字に、左に小さい「保存のデータを使う」。押すと選ぶ欄と読み込むが出る（2026-09-15 本人 案A） -->
+          <p class="hint cls-use"><button type="button" class="mini" id="clsUseT" aria-expanded="false">保存のデータを使う</button>座席表・席次表で保存したデータの名前を使えます。</p>
+          <div class="row" id="clsPickT" hidden style="margin-bottom:14px">
             <select id="clsSelT"></select>
             <button id="clsLoadT">このデータを読み込む</button>
           </div>
@@ -149,8 +150,9 @@
         <h3 class="sub">名簿の入力</h3>
 
         <div id="clsBox" hidden>
-          <p class="notice mini">座席表・席次表で保存したデータの名前や班を使えます。</p>
-          <div class="row" style="margin-bottom:14px">
+          <!-- ⭐文字のほうと同じ形（2026-09-15 本人 案A） -->
+          <p class="hint cls-use"><button type="button" class="mini" id="clsUse" aria-expanded="false">保存のデータを使う</button>座席表・席次表で保存したデータの名前や班を使えます。</p>
+          <div class="row" id="clsPick" hidden style="margin-bottom:14px">
             <select id="clsSel"></select>
             <button id="clsLoad">このデータを読み込む</button>
           </div>
@@ -469,7 +471,7 @@
   </div>
 </div>
 
-<script src="slide.js?v=102"></script>
+<script src="slide.js?v=103"></script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>

@@ -1526,6 +1526,15 @@
   if ($('clsDelT')) $('clsDelT').addEventListener('click', function(){ delPicked(true); });
   /* 🔴 文字を出す側で名簿を読む（2026-09-05 本人）。⭐1人＝1枚の文字にする。
      ⚠いま入っているぶんは消さず、下に足す */
+  /* ⭐「保存のデータを使う」＝押すと選ぶ欄と「このデータを読み込む」が出る。もう一度押すとしまう（2026-09-15 本人 案A） */
+  [['clsUseT','clsPickT'], ['clsUse','clsPick']].forEach(function(p){
+    var b = $(p[0]), box = $(p[1]);
+    if (!b || !box) return;
+    b.addEventListener('click', function(){
+      box.hidden = !box.hidden;
+      b.setAttribute('aria-expanded', String(!box.hidden));
+    });
+  });
   if ($('clsLoadT')) $('clsLoadT').addEventListener('click', function(){
     var c = loadRosters()[parseInt($('clsSelT').value,10)];
     if (!c) return;

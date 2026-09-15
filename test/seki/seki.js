@@ -1784,9 +1784,13 @@
       el.value = keep;
       if (el.selectedIndex < 0) el.value = '';
     });
-    if ($('quickLoad')) $('quickLoad').hidden = !st.classes.length;
-    $('clsCount').textContent = st.classes.length
-      ? st.classes.length + '/' + MAXC
+    /* ⭐保存が無いとき・サンプルを出しているあいだは隠す（2026-09-15 本人・座席表と同じ） */
+    /* 🔴⚠スライドの「文字のデータ」も同じ置き場に入る。数えると、選べるものが無いのに行が出て、件数も増えて見えた（2026-09-15 本人「保存済みのデータは選べない」）。
+       ⭐名簿のデータだけを数える（座席表と同じ） */
+    var nCls = st.classes.filter(function (c) { return c.kind !== 'slide'; }).length;
+    if ($('quickLoad')) $('quickLoad').hidden = !nCls || state.sample;
+    $('clsCount').textContent = nCls
+      ? nCls + '/' + MAXC
       : '0/' + MAXC;   /* ⭐件・かっこなし、/ は半角（2026-09-14 本人） */
   }
 
@@ -2181,6 +2185,7 @@
       closeCond(); run(true);
       $('sampleClear').hidden = false; $('sampleClear2').hidden = false; $('undo').hidden = true;
       $('sampleMsg').textContent = 'サンプル' + (kind === 2 ? '②（大学・学科で色分け）' : '①（研修）') + 'を出しました。下の席次表で見られます';
+      refreshClsUI();   // ⭐サンプルの間は①の「保存済のデータ」を隠す
     }
     function clearSample() {
       var s = state.stash; state.stash = null;
@@ -2212,6 +2217,7 @@
       $('msg').innerHTML = '';
       showSample(); showSaving();
       $('sampleMsg').textContent = (s && s.snap.names) ? 'サンプルを消して、元の名簿に戻しました' : 'サンプルを消しました';
+      refreshClsUI();   // ⭐「保存済のデータ」を元どおり出す
     }
     $('sample1Btn').onclick = function () { loadSample(1); };
     $('sample2Btn').onclick = function () { loadSample(2); };
