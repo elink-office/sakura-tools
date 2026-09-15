@@ -265,7 +265,12 @@
     ['あん', 'f'], ['あさひ', 'm'], ['ひまり', 'f'], ['りひと', 'm'],
     ['つむぎ', 'f'], ['はるき', 'm'], ['いろは', 'f'], ['ゆうま', 'm'],
     ['すみれ', 'f'], ['そうま', 'm'], ['ことは', 'f']
-  ];
+  ].sort(function (a, b) { return a[0].localeCompare(b[0], 'ja'); });
+  /* ⭐サンプルの名前は あいうえお順（出席番号の順）にならべる（2026-09-14 本人「今の名前でいいから、あいうえお順に並べてほしい。
+       あおいが一番かな。あかりが二番かな」）。名前と男女はそのまま */
+  /* ⭐サンプル②の班長（35人・4人班＝9班なので9人。出席番号 1・5・9…33 の人）。
+       ②では「詳しい条件」の「班に1人ずつにする人」に入れる（2026-09-14 本人「決めた班長の名前が表示されるようになってたら、使い方が分かる」） */
+  var SAMPLE_LEAD = ['あおい', 'いちか', 'ことは', 'そうすけ', 'たくみ', 'はるき', 'みお', 'ゆうき', 'りひと'];
 
   // ---- クラス名・文字づかい ----
   var GRADE_KANJI = { e: '%d年', j: '中%d', h: '高%d' };
@@ -521,13 +526,13 @@
     }
     updateLeadCount();
   }
-  // ★を気にせず班に分ける、を入れたときの案内（2026-09-03）
+  // 「★を班に1人ずつにする」を外したときの案内（2026-09-03・2026-09-15 言い方を逆に）
   function leadIgnoreNote() {
     var el = $('leadIgnoreNote'); if (!el) return;
-    var on = $('leadIgnore') ? $('leadIgnore').checked : false;
+    var on = $('leadSpread') ? !$('leadSpread').checked : false;   // 外した＝★を気にしない
     el.hidden = !on;
     if (on) el.innerHTML = '今表示している座席は、★の人が1人になる設定になっています。' +
-      '「★を気にせず班に分ける」にチェックを入れたら、<strong>もう一度「席替えする」を押すのがおすすめです。</strong>';
+      '「★を班に1人ずつにする」のチェックを外したら、<strong>もう一度「席替えする」を押すのがおすすめです。</strong>';
   }
 
   // 🔴 何人えらんでいるかだけを、ボタンの右に出す（2026-09-03 本人）。
@@ -541,8 +546,9 @@
     // 🔴 ④にも、★が何でどこでえらぶのかを出す（2026-09-03 本人「？を読まずに理解できるように」）。
     //   ⚠下の2つのチェックの**両方**にかかるので、チェックの上に1行だけ置く
     var w = $('leadWhat');
-    if (w) w.innerHTML = '★＝②<strong>「詳しい条件」</strong>の中の<strong>「班に1人ずつにする人」</strong>で設定することができます。' +
-      '今★は<strong>' + n + '人</strong>です';
+    /* ⭐文は本人の文（2026-09-15）。人数は今えらんでいる数 */
+    if (w) w.innerHTML = '★は、②<strong>詳しい条件</strong>の<strong>「班に1人ずつにする人」</strong>で設定や解除をすることができます。' +
+      '今★は<strong>' + n + '人</strong>です。';
   }
 
   // ============================================================
@@ -570,7 +576,7 @@
   // ⚠条件（離す・隣にする・席を決める）を壊さない相手を先に探す。
   //   どうしても壊れるときは班長を優先する＝そのときは赤い印で先生に見える
   function spreadLeaders(seats) {
-    // 🔴「★を気にせず班に分ける」なら、何もしない（2026-09-03 知り合いの先生の要望）
+    // 🔴「★を班に1人ずつにする」を外していたら、何もしない（2026-09-03 知り合いの先生の要望）
     if (state.grp.ignoreLead) return seats;
     if (!state.grp.on || !hasLeaders() || !state.opt) return seats;
     var o = state.opt, s2 = seats.slice(), loop, i;
@@ -684,7 +690,7 @@
 
   // 画面に出すための情報（班長のいない班／前回も同じ班／前回と同じ席）
   function checkInfo(gm) {
-    var out = { noLead: [], dup: {}, dupText: [], same: 0, sizeNote: null };
+    var out = { noLead: [], dup: {}, dupText: [], same: 0, sizeNote: null, oddNote: null };
     var i, g, mem = {}, seats = state.seats;
     if (!seats) return out;
     if (gm) {
@@ -703,6 +709,16 @@
         // ⚠そもそも人数が足りないときは出さない（見れば分かることなので）
         if (mx && tot >= state.grp.size && mx < state.grp.size)
           out.sizeNote = { want: state.grp.size, got: mx };
+        /* 🔴⭐一部の班だけ人数が足りないときも知らせる（2026-09-13 本人）。
+           ⚠上の sizeNote は「どの班も足りない」とき。⭐こちらは⭐端数が出たとき＝
+             列の数と人数の都合で、最後のまとまりだけ人数が減る（本人「偶数列で考えているから
+             最後の列が端数が出る」）。⭐黙って出さずに、直せることを伝える */
+        if (!out.sizeNote) {
+          var small = [];
+          for (g in mem) if (mem[g].length < state.grp.size) small.push({ g: +g, n: mem[g].length });
+          small.sort(function (a, b) { return a.g - b.g; });
+          if (small.length) out.oddNote = { want: state.grp.size, small: small };
+        }
       }
       if (hasLeaders()) {
         for (g in mem) {
@@ -806,8 +822,10 @@
 
   // ---- 席替えを実行 ----
   function run(first) {
-    // 名簿が空ならサンプルで動かす（初めての人に、何ができるかを1回で見せる）
-    if (!readNames().length) {
+    /* ⭐自動のサンプルはやめた（2026-09-14 本人「ボタンを押したらサンプルが見れて、こういう仕組みだってわかったほうがいい。
+         それでサンプルを消したらなくなる」）。⭐サンプルを出しているときだけ、席の数に合わせてサンプルの人数を取り直す
+       ⚠前は「名簿が空ならサンプルで動かす」＝開いただけでサンプルが出ていた */
+    if (!readNames().length && state.sample) {
       // 教室の形はそのまま。席に入る分だけサンプルを使う。
       // ⚠名簿欄には入れない＝自分の名簿を貼るとき、消す手間が要らない
       var room = (+$('cols').value) * (+$('rows').value);
@@ -1068,7 +1086,7 @@
     }
     // 🔴 モニターでは班番号と★も名前に合わせて大きくする（2026-08-31 本人「小さすぎる」）。
     //   ⚠決め打ちの大きさにすると、マスが小さいときに番号のほうが名前より大きくなる
-    $('sheet').style.setProperty('--markSize', Math.max(11, Math.round(base * 0.34)) + 'px');
+    $('sheet').style.setProperty('--markSize', Math.max(13, Math.round(base * 0.42)) + 'px');   // 2026-09-14 0.34→0.42（本人「小さい」）
     // 🔴 マスごとに大きさを決めると、名前の長さでばらつく（2026-09-01 本人）。
     //   ⚠**いちばん小さくなったものに全部そろえる。**
     //     一覧して名前を探す表なので、大きさがちがうと目が迷う
@@ -1098,9 +1116,13 @@
       // 🔴 文はこれだけ（2026-09-03 本人の指定）。
       //   ⚠長押しのことも「1つ戻す」のことも、ここには書かない。
       //     長押しは④の説明に、戻すのはこの文のすぐ左のボタンにある
+      /* ⭐サンプル②のときだけ、★の設定場所も足す（2026-09-14 本人）。⚠章の名前は「教室の形」 */
       note.innerHTML = state.grp.on
-        ? '席はマグネットのように入れ替えができます。<strong>班番号を押すと、席の班と色を変更できます</strong>。'
-        : '席はマグネットのように入れ替えができます。';
+        ? '席はマグネットのように自分で入れ替えができます。<strong>班番号を押すと、席の班と色を変更できます</strong>。' +
+          (state.sample && state.sampleKind === 2 ? '★は②教室の形の中の詳しい条件で自由に設定できます。' : '')
+        : '席はマグネットのように自分で入れ替えができます。' +
+          /* ⭐サンプル①（出席番号順）のときだけ、並ぶ向きも選べることを足す（2026-09-15 本人） */
+          (state.sample && state.sampleKind === 1 ? '出席番号順は右の列や前の左右スタートも可能です。男女の色を黒にするのもボタン一つです。' : '');
     }
     drawCheck(chk, samap);
     updateLeadCount();          // 班の数が決まったので、★の人数の案内も出し直す
@@ -1130,29 +1152,44 @@
   // 班長のいない班／前回も同じ班／前回と同じ席 を、まとめて知らせる。
   // ⚠黙って結果だけ出さない。避けきれないことがあるので、そのまま伝えて先生に直してもらう
   function drawCheck(chk, samap) {
-    var el = $('gInfo');
-    if (!el) return;
-    var li = [];
+    /* ⭐知らせは3か所に分ける（2026-09-15 本人「1班の人数の下がいい」）
+       gInfoSize＝人数（1班の人数の下）／gInfo＝★（★の説明の下）／gInfoPast＝前回とくらべて（前の班の下） */
+    function put(id, li) {
+      var el = $(id);
+      if (el) el.innerHTML = li.length ? '<div class="notice">' + li.join('<br>') + '</div>' : '';
+    }
+    var size = [], lead = [], past = [];
     // ⚠文言は本人が書いたもの（2026-09-02）。勝手に言い換えない
     if (chk.sizeNote)
-      li.push('<strong>' + chk.sizeNote.want + '人の班になりません</strong>：' +
+      size.push('<strong>' + chk.sizeNote.want + '人の班になりません</strong>：' +
         '2列ずつのまとまりで分けているからです。' + chk.sizeNote.want + '人班にしたい場合は、' +
         '教室の形を変更するか、マスの左上の班の番号を押して班を変更してください。');
-    // ⚠「★を気にせず班に分ける」ときは出さない（気にしないと決めた人に見せる意味がない）
+    if (chk.oddNote) {
+      /* ⚠文言は本人が書いたもの。⭐どの班かは並べない（2026-09-13 本人「見たらわかるから数だけにしたい」）。
+         ⭐2026-09-15 本人「人数が揃わない班が…ではなくて、人数が〇人の班が〇つあります。にしたい」
+           ＝人数ごとに数える。人数がちがう班が混ざったら「3人の班が1つ、2人の班が1つ」とつなぐ（多い人数から） */
+      var cnt = {};
+      chk.oddNote.small.forEach(function (s) { cnt[s.n] = (cnt[s.n] || 0) + 1; });
+      var parts = Object.keys(cnt).map(Number).sort(function (a, b) { return b - a; })
+        .map(function (n) { return n + '人の班が' + cnt[n] + 'つ'; });
+      size.push('<strong>人数が' + parts.join('、') + 'あります。</strong>' +
+        '班の番号を押すと、班の番号を変更することができます。');   // 2026-09-15 本人の文
+    }
+    // ⚠「★を班に1人ずつにする」を外しているときは出さない（気にしないと決めた人に見せる意味がない）
     if (chk.noLead.length && !state.grp.ignoreLead)
-      li.push('<strong>★の人がいない班</strong>：' + chk.noLead.join('班・') + '班');
+      lead.push('<strong>★の人がいない班</strong>：' + chk.noLead.join('班・') + '班');
     if (chk.dupText.length) {
       // ⚠多いと一行が長くなりすぎるので、6組までにして残りは数で言う
       var show = chk.dupText.slice(0, 6).map(esc).join('／');
       var rest = chk.dupText.length - 6;
-      li.push('<strong>前回も同じ班</strong>：' + show + (rest > 0 ? '　ほか' + rest + '組' : ''));
+      past.push('<strong>前回も同じ班</strong>：' + show + (rest > 0 ? '　ほか' + rest + '組' : ''));
     }
     if (samap) {
       var n = 0, k;
       for (k in samap) n++;
-      li.push('<strong>前回と同じ席</strong>：' + n + '人（黄色い枠）');
+      past.push('<strong>前回と同じ席</strong>：' + n + '人（黄色い枠）');
     }
-    el.innerHTML = li.length ? '<div class="notice">' + li.join('<br>') + '</div>' : '';
+    put('gInfoSize', size); put('gInfo', lead); put('gInfoPast', past);
   }
 
   // 🔴 座席表をかくす（2026-08-31 本人）。
@@ -1242,7 +1279,7 @@
         note.id = 'sampleNote';
         note.className = 'hint noprint';
         note.style.marginTop = '8px';
-        note.textContent = '上の欄に、自分のクラスの名簿を入れてください。サンプルは消えます。';
+        note.textContent = '自分のクラスの名簿を入れるときは、先に「サンプルを消す」を押してください。';
         ($('sheetBox') || $('sheet')).parentNode.insertBefore(note, ($('sheetBox') || $('sheet')).nextSibling);
       }
       /* ⭐いつでも「紙の入れ物」のすぐ下に置き直す（2026-09-11 本人）。
@@ -1337,7 +1374,7 @@
       return v.name + 'さんが指定した席にいません';
     });
     el.innerHTML = '<div class="notice warn">' + lines.map(esc).join('<br>') +
-      '<br><small>このままでも印刷できます。</small></div>';
+      '<br><small>このままでもPDFにできます。</small></div>';
   }
 
   // ---- 1つ戻す（2026-09-03 本人・現場の先生「手が当たっただけで入れ替わって困る」） ----
@@ -1562,7 +1599,46 @@
       state.board = 'bottom';
       drawSheet();
     }
-    if ($('printWhat') && $('printWhat').value === 'all' && state.plans.length) buildAll();
+    var wantAll = !!($('printWhat') && $('printWhat').value === 'all' && state.plans.length);
+    if (wantAll) buildAll();
+
+    /* 🔴⭐PDFは自分で描く（2026-09-13 本人「PDFのレイアウト、見本と一緒っていうのが
+       すごく最重要」）。⚠ブラウザの印刷を通らないので、端末にも余白の設定にも左右されない。
+       ⭐紙は画面の見本をそのまま測って写す（paper-pdf.js） */
+    if (window.PAPER_PDF) {
+      var sh = $('sheet');
+      /* ⚠画面だけの見え方を、紙の見え方にそろえてから写す */
+      document.body.classList.add('pdfing');
+      var offMask = sh.classList.contains('masked');
+      if (offMask) sh.classList.remove('masked');            /* かくす板は紙に出さない */
+      var offSex = printBW && sh.classList.contains('sexprint');
+      if (offSex) sh.classList.remove('sexprint');           /* 「紙は男女の色を出さない」 */
+
+      var els = wantAll
+        ? Array.prototype.slice.call($('printAll').querySelectorAll('.sheet'))
+        : [sh];
+      var land = ($('paper') && $('paper').value === 'landscape');
+      var name = (sheetTitle().replace(/\s/g, '') || '座席表');
+      var btn = $('doPrint'), label = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'PDFを作っています…';
+
+      var back = function () {
+        btn.disabled = false;
+        btn.textContent = label;
+        document.body.classList.remove('pdfing');
+        if (offMask) sh.classList.add('masked');
+        if (offSex) sh.classList.add('sexprint');
+        afterPaper();
+      };
+      window.PAPER_PDF.saveMany(els, { landscape: land, name: name })
+        .then(back)
+        .catch(function (e) {
+          back();
+          alert('PDFを作れませんでした。' + (e && e.message ? ('　' + e.message) : ''));
+        });
+      return;
+    }
     /* 🔴⭐文字のまま印刷する（2026-09-10 本人「基本は文字方式に統一」）。
        ⚠これまでは画面を写真にして印刷していた＝崩れないが、文字が残らない・拡大でぼやける。
        ⭐紙だけを body の直下に出せば、画面用の指定がかからず、見本と紙が同じ大きさになる
@@ -1657,7 +1733,7 @@
     if (typeof fitSheet === 'function') fitSheet();
   }
 
-  window.addEventListener('afterprint', function () {
+  function afterPaper() {
     document.body.classList.remove('print-all');
     printBW = false;
     document.body.classList.remove('print-img');
@@ -1668,7 +1744,8 @@
     // ⚠ 描き直しが終わってから戻す。すぐ戻すと、まだ高さが足りずに効かない
     setTimeout(function () { window.scrollTo(0, printScrollY); }, 0);
     setTimeout(function () { window.scrollTo(0, printScrollY); }, 250);
-  });
+  }
+  window.addEventListener('afterprint', afterPaper);
 
   // ---- PNGで保存（自分で描くので外部の部品は使わない）----
   function roundRect(x, l, t, w, h, r) {
@@ -1861,6 +1938,8 @@
     };
   }
   function save() {
+    /* ⭐サンプルの間は保存しない（2026-09-14）。⚠前は一部の操作で保存が走り、サンプルのために空にした名簿で画面の保存が上書きされた */
+    if (state.sample) return;
     try { localStorage.setItem(KEY, JSON.stringify(snapshot())); showSaving(); } catch (e) { }
   }
   function showSaving() {
@@ -1957,7 +2036,7 @@
           mark: !!d.grp.mark,
           ignoreLead: !!d.grp.ignoreLead
         };
-        if ($('leadIgnore')) $('leadIgnore').checked = state.grp.ignoreLead;
+        if ($('leadSpread')) $('leadSpread').checked = !state.grp.ignoreLead;   // ⭐画面は逆（1人ずつにする＝気にしない、ではない）
         leadIgnoreNote();
         $('grpOn').checked = state.grp.on;
         $('grpOpts').hidden = !state.grp.on;
@@ -2004,11 +2083,14 @@
       if (el.selectedIndex < 0) el.value = '';
     });
     // ⚠残したものが無いうちは、①の呼び出し欄を出さない
-    if ($('quickLoad')) $('quickLoad').hidden = !st.classes.length;
+    /* ⭐保存が無いとき・サンプルを出しているあいだは隠す（2026-09-15 本人「保存済みのデータは保存してあるから使えるもの」「サンプルだと邪魔」） */
+    /* 🔴⚠スライドの「文字のデータ」も同じ置き場に入る。数えると、選べるものが無いのに行が出る（2026-09-15 本人「保存済みのデータは選べない」）。
+       ⭐名簿のデータだけを数える */
     var nCls = st.classes.filter(function (c) { return c.kind !== 'slide'; }).length;
+    if ($('quickLoad')) $('quickLoad').hidden = !nCls || state.sample;
     $('clsCount').textContent = nCls
-      ? nCls + '／' + MAXC + '件'
-      : '0／' + MAXC + '件・まだ保存していません';
+      ? nCls + '/' + MAXC
+      : '0/' + MAXC;   /* ⭐件・かっこなし、/ は半角（2026-09-14 本人） */
     refreshRecUI();
   }
   // ①と⑧の2か所にえらぶ欄があるので、両方そろえる
@@ -2026,7 +2108,7 @@
       o.textContent = r.label + '（' + r.at + '）';
       sel.appendChild(o);
     });
-    $('recCount').textContent = recs.length + '／' + MAXR + '件';
+    $('recCount').textContent = recs.length + '/' + MAXR;
     var el = $('avoidNote');
     if (el) el.textContent = !c ? 'クラスをえらぶと使えます。'
       : recs.length ? '「' + c.label + '」の記録が ' + recs.length + ' 件あります。'
@@ -2282,7 +2364,9 @@
     renderSexList();
 
     $('names').addEventListener('input', function () {
-      if (readNames().length) state.sample = false;   // 自分の名簿を入れたらサンプルではなくなる
+      /* ⭐サンプルの間に名簿の欄を書きかえても、サンプルの続き（保存もしない）。
+           自分の名簿は「サンプルを消す」を押してから（2026-09-14 本人 案A「自分の子供たちじゃないから分かる」）
+         ⚠前は、名簿を入れたらサンプルが終わっていた（サンプルの名前を欄に入れるようにしたので、やめた） */
       showSample();
       refreshNames(); renderSexList();
       if ($('save').checked) save();
@@ -2402,12 +2486,12 @@
       });
     });
     modeChanged();
-    // 🔴「★を気にせず班に分ける」（2026-09-03 知り合いの先生の要望）
-    if ($('leadIgnore')) $('leadIgnore').addEventListener('change', function () {
-      state.grp.ignoreLead = this.checked;
-      // ⭐入れたとき＝すでに散らした並びは元にもどせないので、押し直してもらう。
-      //   外したとき＝その場で散らし直せるので、案内はいらない
-      if (!this.checked && state.seats && state.opt)
+    // 🔴「★を班に1人ずつにする」（2026-09-03 知り合いの先生の要望「★を気にせず」→ 2026-09-15 本人「★を班に1人ずつにする」に言い換え）
+    if ($('leadSpread')) $('leadSpread').addEventListener('change', function () {
+      state.grp.ignoreLead = !this.checked;
+      // ⭐外したとき＝すでに散らした並びは元にもどせないので、押し直してもらう。
+      //   入れたとき＝その場で散らし直せるので、案内はいらない
+      if (this.checked && state.seats && state.opt)
         state.seats = spreadLeaders(state.seats);
       leadIgnoreNote();
       if (state.seats) drawSheet();
@@ -2425,6 +2509,128 @@
     $('go').onclick = function () { closeCond(); run(); };
     // ⚠「べつの案を出す」は座席表を見ながら押すので、画面を動かさない
     $('again').onclick = function () { closeCond(); run(true); };
+
+    /* ---------- サンプルのボタン（2026-09-14 本人「座席表の場合は、男女のシンプルなものと班分けしたもの。
+         特に班分けしたものをどんと出せるとすごく魅力的」）
+       ⭐サンプル①＝男女の色（班なし）／サンプル②＝班分け（名前は黒）。⭐画面は動かさない（run(true)）
+       ⭐「サンプルを消す」で表も消える。⚠名簿の欄は使わない（自分の名簿を貼るとき、消す手間が出ないように） ---------- */
+    function loadSample(kind) {
+      /* ⭐名簿が入っていても出す。①の名簿は画面から一時的に外すだけ（2026-09-14 本人「データじゃなくって①の画面が消えた方がいい」→ 案A）
+         ⭐「サンプルを消す」で、外した名簿・班・色・座席表を元に戻す。⚠サンプルの間は save() が止まる
+         ⚠前は「名簿の欄が空のときに出せます」で止めた。本人が名簿の欄を空にしたら、画面の保存が空で上書きされ、名簿が消えた */
+      if (!state.sample) {
+        /* ⭐名簿が空でも、学年・組・月・並べ方・番号の設定は控える（サンプルで書きかえるため） */
+        var hasNames = readNames().length > 0;
+        state.stash = {
+          hasNames: hasNames,
+          names: $('names').value, grpOn: $('grpOn').checked, colM: $('colM').value, colF: $('colF').value,
+          seats: hasNames && state.seats ? state.seats.slice() : null,
+          plans: hasNames && state.plans ? state.plans.map(function (p) { return p.slice(); }) : null,
+          cur: state.cur, gfix: JSON.parse(JSON.stringify(state.gfix || {})), resultHidden: $('result').hidden,
+          grade: $('grade').value, kumi: $('kumi').value, month: $('month').value, order: $('order').value,
+          numOn: $('numOn').checked, stateNumOn: state.numOn, numTouched: state.numTouched,
+          leadMark: $('leadMark') ? $('leadMark').checked : false, grpMark: state.grp.mark,
+          sexPrint: $('sexPrint').checked,
+          lists: {}
+        };
+        /* ⭐詳しい条件の行（はなす・となり・固定・班長）は、行ごと一時的に外しておく（消すときにそのまま戻す）。
+           ⚠残すと、サンプルにいない名前の条件で席替えが止まる */
+        ['sepList', 'adjList', 'fixList', 'leadList'].forEach(function (id) {
+          var el = $(id); if (!el) return;
+          var fr = document.createDocumentFragment();
+          while (el.firstChild) fr.appendChild(el.firstChild);
+          state.stash.lists[id] = fr;
+        });
+      }
+      /* ⭐サンプルの名簿を、名簿の欄に入れる＝Excelから貼ったときと同じ形（番号・名前・男女）
+         （2026-09-14 本人「Excelから貼り付けるっていう所に、サンプルのデータが貼り付いて」）
+         ⭐サンプルの間に欄を書きかえても、サンプルの続き（保存しない）。自分の名簿は「サンプルを消す」のあと（本人 案A） */
+      var room = (+$('cols').value) * (+$('rows').value);
+      var use = SAMPLE.slice(0, Math.max(1, Math.min(SAMPLE.length, room)));
+      $('names').value = use.map(function (x, i) {
+        return (i + 1) + '\t' + x[0] + '\t' + (x[1] === 'f' ? '女' : '男');
+      }).join('\n');
+      state.sampleNames = use.map(function (x) { return x[0]; });
+      state.lastRaw = null;                // 男女を読み直させる
+      refreshNames();
+      if ($('leadList')) {
+        $('leadList').innerHTML = '';
+        if (kind === 2) SAMPLE_LEAD.forEach(function (n) { if (state.names.indexOf(n) >= 0) addLeadRow(n); });
+        updateLeadCount();
+      }
+      state.sample = true; state.sampleKind = kind;
+      /* ⭐②は班長の★を座席表に出す */
+      if ($('leadMark')) $('leadMark').checked = (kind === 2);
+      state.grp.mark = (kind === 2);
+      $('grpOn').checked = (kind === 2);
+      $('grpOn').dispatchEvent(new Event('change'));
+      /* ⭐男女の色はどちらもはじめの色（青・赤紫）にする。②は「男女で色を分ける」を外して名前を黒に見せる
+           ＝チェックを入れると男女の色が付くことを、その場で試せる（2026-09-15 本人）。
+         ⚠前は②で男女の色そのものを黒にしていた（チェックを入れても黒のままだった） */
+      $('colM').value = '#1f5fbf'; $('colF').value = '#b02a7a';
+      $('sexPrint').checked = (kind !== 2);
+      /* ⭐1年3組・4月の座席表にする（2026-09-14 本人「一年三組、四月の座席表にして出席番号を順で並べてみようか。
+           で、番号を出しておいたら、ああそういうこともできるんだっていうのが分かると思う」）
+         ⭐サンプル①＝出席番号順・席に番号を出す／サンプル②＝ランダムの班分け（番号は出さない） */
+      $('grade').value = 'e1'; $('kumi').value = '3'; $('month').value = '4';
+      if (kind === 1) { $('order').value = 'number'; $('numOn').checked = true; state.numOn = true; }
+      else { $('order').value = 'random'; $('numOn').checked = false; state.numOn = false; }
+      orderChanged();
+      renderSexList();
+      closeCond(); run(true);
+      $('sampleClear').hidden = false; $('sampleClear2').hidden = false; $('undo').hidden = true;
+      $('sampleMsg').textContent = 'サンプル' + (kind === 2 ? '②（班分け）' : '①（出席番号順）') + 'を出しました。下の座席表で見られます';
+      refreshClsUI();   // ⭐サンプルの間は①の「保存済のデータ」を隠す
+    }
+    $('sample1Btn').onclick = function () { loadSample(1); };
+    $('sample2Btn').onclick = function () { loadSample(2); };
+    function clearSample() {
+      var s = state.stash; state.stash = null;
+      state.sample = false; state.sampleKind = null; state.sampleNames = []; state.seats = null; state.plans = [];
+      $('sheet').classList.remove('sample');
+      var note = document.getElementById('sampleNote'); if (note) note.remove();
+      $('msg').innerHTML = '';
+      $('sampleClear').hidden = true; $('sampleClear2').hidden = true; $('undo').hidden = false;
+      if (s) {
+        /* ⭐外していた名簿の画面に戻す（班・色・座席表の並びも） */
+        $('names').value = s.hasNames ? s.names : '';
+        $('grpOn').checked = s.grpOn; $('grpOn').dispatchEvent(new Event('change'));
+        $('colM').value = s.colM; $('colF').value = s.colF;
+        if (s.sexPrint !== undefined) $('sexPrint').checked = s.sexPrint;
+        if ($('leadMark')) $('leadMark').checked = s.leadMark;
+        state.grp.mark = s.grpMark;
+        /* ⭐外していた詳しい条件の行を戻す（サンプルの班長の行は捨てる） */
+        Object.keys(s.lists || {}).forEach(function (id) {
+          var el = $(id); if (!el) return;
+          el.innerHTML = ''; el.appendChild(s.lists[id]);
+        });
+        updateLeadCount();
+        state.lastRaw = null;
+        /* ⭐学年・組・月・並べ方・番号も、サンプルの前に戻す（orderChanged が番号を入れ直すので、そのあとで戻す） */
+        $('grade').value = s.grade; $('kumi').value = s.kumi; $('month').value = s.month; $('order').value = s.order;
+        orderChanged();
+        $('numOn').checked = s.numOn; state.numOn = s.stateNumOn; state.numTouched = s.numTouched;
+        refreshNames(); renderSexList();
+        if (s.seats) {
+          state.plans = s.plans && s.plans.length ? s.plans : [s.seats];
+          state.cur = s.cur || 0; state.seats = s.seats; state.gfix = s.gfix || {};
+          state.opt = collect();
+          $('result').hidden = s.resultHidden;
+          drawTabs(); drawSheet(); printNote(); showSample();
+        } else {
+          $('result').hidden = true;
+        }
+        $('sampleMsg').textContent = s.hasNames ? 'サンプルを消して、元の名簿に戻しました' : 'サンプルを消しました';
+        refreshClsUI();   // ⭐「保存済のデータ」を元どおり出す
+      } else {
+        $('result').hidden = true;
+        refreshNames();
+        $('sampleMsg').textContent = 'サンプルを消しました';
+        refreshClsUI();
+      }
+    }
+    $('sampleClear').onclick = clearSample;
+    $('sampleClear2').onclick = clearSample;
     $('doPrint').onclick = doPrint;
     if ($('printWhat')) $('printWhat').addEventListener('change', printNote);
     // 🔴 用紙の向きで1マスの高さが変わる。描き直さないと、
@@ -2514,17 +2720,15 @@
     // トップの「完成サンプルを見る」から来た人には、班の色を付けて、名前は黒で見せる。
     // ⭐色より先に「班に分けられる」ことが伝わるので、見本としてはこの形がいちばん強い。
     // ⚠名簿を保存している先生には自分の名簿が出る。そのときは何もしない（設定を書き換えないため）
-    if (/(^|[?&])demo=1(&|$)/.test(location.search) && !readNames().length) {
-      $('grpOn').checked = true;
-      $('grpOn').dispatchEvent(new Event('change'));
-      $('colM').value = '#333333'; $('colF').value = '#333333';   // 男女の色を消す＝名前は黒
-      renderSexList();
+    /* ⭐トップの「完成サンプルを見る」から来たときは、サンプル②（班分け）を出す（自動のサンプルをやめたので、ここで呼ぶ） */
+    if ((/(^|[?&])demo=1(&|$)/.test(location.search) || location.hash === '#result') && !readNames().length && !state.seats) {
+      loadSample(2);
     }
 
     // 🔴 保存してあった座席表を戻したときは、ここで作り直さない（2026-08-31 検証で見つけた）。
     //   ⚠この行は「開いた時点で現物が見えているように」入れたもの。
     //     復元のあとに走ると、せっかく戻した並びを別のものに書きかえてしまう
-    if (!state.seats) { try { run(true); } catch (e) { } }
+    if (!state.seats && readNames().length) { try { run(true); } catch (e) { } }   /* ⭐名簿があるときだけ（自動のサンプルはやめた） */
 
     // ---- 「完成サンプルを見る」から来たとき ----
     // ⚠ #result は最初 hidden なので、ブラウザの目印飛び（#result）が効かない。自分で送る

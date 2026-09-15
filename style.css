@@ -170,7 +170,7 @@ label{display:block;font-size:.9rem;margin:10px 0 4px;font-weight:bold}
 /* ⚠ date と file が抜けていて、そこだけ素の見た目（角丸なし・細い枠）だった
      （2026-09-09 本人がスクショで発見。請求書メーカーで気づいた）。
    ⭐ file はスライドでも使っているので、共通に置くのが正しい（→ ページの型 16-a） */
-input[type=text],input[type=number],input[type=date],input[type=file],textarea,select{
+input[type=text],input[type=tel],input[type=email],input[type=number],input[type=date],input[type=file],textarea,select{
   font:inherit;padding:8px 10px;border:1px solid var(--line);
   border-radius:8px;background:#fff;color:var(--ink);
 }
@@ -190,7 +190,7 @@ input[type=file]::file-selector-button{
    ⚠色は変数を通す＝席次表（seki.css で --pink を緑に上書き）では緑になる */
 @media (hover:hover){
   input[type=file]::file-selector-button:hover{border-color:var(--pink);color:var(--pink)}
-  input[type=text]:hover,input[type=number]:hover,input[type=date]:hover,textarea:hover,select:hover{
+  input[type=text]:hover,input[type=tel]:hover,input[type=email]:hover,input[type=number]:hover,input[type=date]:hover,textarea:hover,select:hover{
     /* ⚠乗せたときは**細い線の色だけ**（2026-09-04 本人）。
        うすく塗るのはボタンだけにする＝入力欄とボタンの役割を見た目で分ける */
     border-color:var(--pink);
@@ -198,7 +198,7 @@ input[type=file]::file-selector-button{
 }
 /* 選んでいるあいだ＝枠だけ色づけて、中は白にもどす（打っている字が読みやすいように）。
    ⚠ :focus-visible の枠（キーボード操作の目印）は消さない */
-input[type=text]:focus,input[type=number]:focus,input[type=date]:focus,input[type=file]:focus,textarea:focus,select:focus{
+input[type=text]:focus,input[type=tel]:focus,input[type=email]:focus,input[type=number]:focus,input[type=date]:focus,input[type=file]:focus,textarea:focus,select:focus{
   border-color:var(--pink);background:#fff;
 }
 textarea{width:100%;min-height:170px;resize:vertical;line-height:1.6}
@@ -566,7 +566,7 @@ select.ph option{color:var(--ink)}
 .row.tight > div{display:flex;flex-direction:column}
 .row.tight label{margin:0 0 4px;height:1.3em;line-height:1.3em;white-space:nowrap}
 .row.tight .ctl{display:flex;align-items:center;gap:4px}
-.row input[type=text],.row input[type=number],.row select{height:42px}
+.row input[type=text],.row input[type=tel],.row input[type=email],.row input[type=number],.row select{height:42px}
 .row.tight .unit{font-size:.9rem;color:var(--ink-soft)}
 
 /* 3案まとめて印刷（画面には出さない） */
@@ -642,7 +642,10 @@ select.ph option{color:var(--ink)}
 .sheet.sample::after{
   content:"SAMPLE";
   position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-weight:bold;font-size:clamp(46px,17vw,150px);letter-spacing:.14em;
+  /* 🔴⭐大きさは紙に対して決める（2026-09-13 本人「縦も横もどっちも小さいサイズに」）。
+     ⚠前は画面の幅（17vw）で決めていた＝⭐紙を縦にすると、紙が小さいぶん透かしだけ大きく見えた。
+     ⭐紙は縮小して表示されるので、決め打ちの px でも紙といっしょに縮む */
+  font-weight:bold;font-size:84px;letter-spacing:.14em;
   color:rgba(229,143,174,.22);transform:rotate(-18deg);
   pointer-events:none;
 }
@@ -830,3 +833,41 @@ html.tip-open{overflow:hidden}          /* 後ろが動かない＝閉じてか�
   font-size:1rem;line-height:1;padding:4px 8px;border-radius:6px;
 }
 .tip-x:hover{color:var(--ink);background:#fff}
+
+/* =====================================================================
+   🔴⭐角4px・章の番号は左にはみ出した付箋（2026-09-14 本人）
+   本人「私、このデザインのほうが好きだわ。testで全部に着けてみて」
+   ⭐見本＝開発室/成果物/2026-09-14_カード_左帯.html
+   ⚠上のほうの指定（14px・縦棒）をここで上書きしている。戻すときはこの塊を消せばよい
+   ===================================================================== */
+:root{--radius:4px}
+
+/* ⭐番号の左の小さな縦棒を消す（章と、番号つきの見出し）。
+   ⚠番号の無いふつうの見出し（h2）の縦棒は残す */
+details.opt > summary::before{display:none}
+.card > h2:has(> .step)::before{display:none}
+
+/* ⭐付箋＝カードの左ふちから、はみ出して貼ってある番号。
+   ⚠はみ出しは10px。スマホの余白（.wrap 12px）に収まる幅にしてある */
+details.opt > summary > .step,
+.card > h2 > .step{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:38px;height:28px;margin:0;border-radius:var(--radius);   /* ⭐カードと同じ角（2026-09-14 本人「付箋の角が小さく見える」） */
+  font-size:.9rem;font-weight:700;
+  box-shadow:0 1px 0 rgba(0,0,0,.08),0 3px 6px rgba(0,0,0,.16);
+}
+/* 章：summary の左端＝カードの枠の内側 → -11px で枠の外へ10px */
+details.opt > summary > .step{left:-11px}
+details.opt:not(.sub) > summary{padding-left:38px}
+/* 番号つきの見出し：カードの余白（18px）＋枠（1px）の外へ10px */
+.card > h2 > .step{left:-29px}
+.card > h2:has(> .step){padding-left:21px}
+
+/* 🔴⭐保存の欄の件数（2026-09-14 本人「件数がバグってる。件なしにして、/を半角に。薄い色にしたら、カッコもいらない」）。
+   ⚠見出しは横並び（flex）なので、かっこ・文字・件数がばらばらの列になってスマホで崩れていた。
+   ⭐件数は1つのうすい札にして、入りきらないときは次の行へ送る */
+details.opt.sub > summary{flex-wrap:wrap;row-gap:2px}
+.cnt{
+  margin-left:.6em;font-weight:normal;font-size:.85em;color:var(--ink-soft);
+  font-variant-numeric:tabular-nums;white-space:nowrap;
+}

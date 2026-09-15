@@ -23,6 +23,12 @@
         ＝写真は「新しい1枚」ではなく、どの1枚にも後から入れられる。
      🔴 写真は保存しない（本人「保存なしでいい」）。メモリに置くだけ。 */
   var sheets = [];
+  /* ⭐サンプルを出しているあいだ（2026-09-14）。stash＝サンプルの前の画面（消すときに戻す） */
+  var sampleOn = false, stash = null;
+  /* ⭐発表者の写真（2026-09-15 本人「発表者で写真を入れることはできないかな」「1班用で3枚表示したい」→ 案A）。
+     ⭐人の名前（'p:名前'）か班（'g:班'）ごとに何枚でも。映すときは1枚ずつ順番に出す。
+     ⭐名前・班で覚えるので、名簿を貼り直しても同じ名前・班の写真は残る。写真そのものは IndexedDB（文字の写真と同じ） */
+  var listPics = {};   // key -> [{picId, url, blob, name}]
 
   /* 🔴 サンプル（2026-09-05 本人「サンプルを入れるっていうのがあればやっぱりうれしい」）。
      ⚠枠の中のお手本（placeholder）は、画面を保存していると打った文字が残って見えないことがある＝ボタンで入れられる形に戻した。
@@ -35,17 +41,18 @@
     "教科書 42ページ\n" +
     "のこり 5分";
 
+  /* ⭐名前は苗字と名前（2026-09-15 本人「いまは下のなまえだけ」）。苗字は漢字・名前はひらがな（小学校の名簿の書き方） */
   var SAMPLE_LIST =
     "名前\t作品名\t班\n" +
-    "さくら\tわたしの家族\t1班\n" +
-    "たろう\tわたしの家族\t1班\n" +
-    "はなこ\t海の生きものを/しらべて分かったこと\t2班\n" +
-    "けんた\t海の生きものを/しらべて分かったこと\t2班\n" +
-    "みく\t海の生きものを/しらべて分かったこと\t2班\n" +
-    "そうた\tぼくの町のじまん\t3班\n" +
-    "あおい\tぼくの町のじまん\t3班\n" +
-    "ゆい\t大切な友だち\t4班\n" +
-    "りく\t大切な友だち\t4班";
+    "山本 さくら\tわたしの家族\t1班\n" +
+    "田中 たろう\tわたしの家族\t1班\n" +
+    "佐藤 はなこ\t海の生きものを/しらべて分かったこと\t2班\n" +
+    "鈴木 けんた\t海の生きものを/しらべて分かったこと\t2班\n" +
+    "高橋 みく\t海の生きものを/しらべて分かったこと\t2班\n" +
+    "伊藤 そうた\tぼくの町のじまん\t3班\n" +
+    "渡辺 あおい\tぼくの町のじまん\t3班\n" +
+    "中村 ゆい\t大切な友だち\t4班\n" +
+    "小林 りく\t大切な友だち\t4班";
 
   /* 🔴 一覧の「#」は、幅があるときだけ「スライド」と出す（2026-09-05 本人）。
      ⚠せまいと列を食うので、CSSで出し分ける */
@@ -72,27 +79,30 @@
   /* 🔴 写真も「画面の保存」に残す（2026-09-05 本人・いったん外したが戻した）。
      本人「授業終了→明日の準備でこれを使う、写真も選ぶ→翌日使う。⭐写真を選んで、翌日使うときに消えたら困る」
      ⚠外していいと言われたのは⑤（名前を付けた名簿）のほうで、④（画面の保存）ではなかった。 */
+  /* ⚠サンプルの間は、写真の置き場に書かない・消さない（外しておいた自分の写真を守る・2026-09-14） */
   function picPut(id, blob){
-    if (!$('save').checked || !blob) return;
+    if (sampleOn || !$('save').checked || !blob) return;
     withDB(function(db){
       if (!db) return;
       try{ db.transaction(STORE,'readwrite').objectStore(STORE).put(blob, id); }catch(e){}
     });
   }
   function picDel(id){
+    if (sampleOn) return;
     withDB(function(db){
       if (!db) return;
       try{ db.transaction(STORE,'readwrite').objectStore(STORE).delete(id); }catch(e){}
     });
   }
   function picClear(){
+    if (sampleOn) return;
     withDB(function(db){
       if (!db) return;
       try{ db.transaction(STORE,'readwrite').objectStore(STORE).clear(); }catch(e){}
     });
   }
   function picPutAll(){
-    if (!$('save').checked) return;
+    if (sampleOn || !$('save').checked) return;
     withDB(function(db){
       if (!db) return;
       try{
@@ -100,6 +110,10 @@
         sheets.forEach(function(sh){
           if (sh.picId  && sh.blob)  st.put(sh.blob,  sh.picId);
           if (sh.picId2 && sh.blob2) st.put(sh.blob2, sh.picId2);   // 2枚目（比べる用）
+        });
+        // ⭐発表者の写真も
+        Object.keys(listPics).forEach(function(k){
+          listPics[k].forEach(function(p){ if (p.picId && p.blob) st.put(p.blob, p.picId); });
         });
       }catch(e){}
     });
@@ -126,6 +140,10 @@
         sheets.forEach(function(sh){
           pull(sh, 'picId',  'blob',  'url');
           pull(sh, 'picId2', 'blob2', 'url2');
+        });
+        // ⭐発表者の写真も同じ手順で戻す
+        Object.keys(listPics).forEach(function(k){
+          listPics[k].forEach(function(p){ pull(p, 'picId', 'blob', 'url'); });
         });
       }catch(e){}
       done = true; fin();
@@ -195,13 +213,13 @@
       if (keep !== '' && cls[parseInt(keep,10)]) sel.value = keep;
     });
     // 🔴 削除は⑤に1つだけ（2026-09-06 本人「削除は⑤でしょ？」）。①でえらんでいるものを消す
-    if ($('clsDel')) $('clsDel').disabled = !cls.length;
-    var cnt = $('clsCount');
-    if (cnt){
-      var nR = cls.filter(function(c){ return c.kind !== 'slide'; }).length;
-      var nS = cls.length - nR;
-      cnt.textContent = '名前のデータ ' + nR + '／' + MAXC + '　文字のデータ ' + nS + '／' + MAXS;
-    }
+    /* ⭐2026-09-14 保存の欄を文字と名前の2つに分けた＝件数も削除も、それぞれの欄に */
+    var nR = cls.filter(function(c){ return c.kind !== 'slide'; }).length;
+    var nS = cls.length - nR;
+    if ($('clsCount'))  $('clsCount').textContent  = nR + '/' + MAXC;
+    if ($('clsCountT')) $('clsCountT').textContent = nS + '/' + MAXS;
+    if ($('clsDel'))  $('clsDel').disabled  = !nR;
+    if ($('clsDelT')) $('clsDelT').disabled = !nS;
   }
   // ⚠2つのセレクトは同じものを指す（座席表と同じ）
   function syncCls(from, to){
@@ -296,8 +314,28 @@
       })
       .join('\n');
   }
-  function doClsNew(){
-    var isText = (kind() === 'text');
+  /* ⭐isText＝押した欄（文字の欄なら true）。⚠①の切り替えには左右されない（2026-09-14） */
+  /* ⭐①で選んでいる種類と、押した保存の欄がちがうときは、どちらを押せばいいかを伝える（2026-09-15 本人）。
+     ⚠前は「先に文字を入れてください」と出ていた＝②に中身が入っているのに、何が足りないのか分からなかった */
+  function wrongKind(isText){
+    /* ⭐まだどちらも選んでいないとき（2026-09-15 はじめは白にした） */
+    if (!document.querySelector('input[name=kind]:checked')){
+      alert('①で「文字をスライドにする」か「発表者をスライドにする」を選んでください。');
+      return true;
+    }
+    var k = kind();
+    if (isText && k === 'list'){
+      alert('①で「発表者をスライドにする」を選んでいます。保存したい場合は「発表者スライドの名前を保存」を選んでください。');
+      return true;
+    }
+    if (!isText && k === 'text'){
+      alert('①で「文字をスライドにする」を選んでいます。保存したい場合は「文字スライドの文字を保存」を選んでください。');
+      return true;
+    }
+    return false;
+  }
+  function doClsNew(isText){
+    if (wrongKind(isText)) return;
     // ⭐文字を出す側なら、いま並んでいる文字をそのまま残す（本人「1年生資料とかにして保存」）
     var lines = isText
       ? sheets.map(function(sh){ return (sh.text||'').trim(); })
@@ -318,7 +356,7 @@
         if (isText) st.classes[i].kind = 'slide';
         if (!writeStore(st)) return;
         fillClassSelect();
-        showCls('「'+name+'」を入れ替えました');
+        showCls('「'+name+'」を入れ替えました', isText);
         return;
       }
     }
@@ -341,13 +379,13 @@
     st.classes.push(item);
     if (!writeStore(st)) return;
     fillClassSelect();
-    showCls('「'+name+'」として保存しました');
+    showCls('「'+name+'」として保存しました', isText);
   }
   /* 🔴 上書き（2026-09-06 本人「名簿に関しては上書きできるはずだよね？」）。
      ⭐名前だけになってしまう問題は namesNow() で解決ずみ＝番号・男女は残る。
      ⚠文字のまとまりと名簿は入れ替えられない（座席表の名簿が、めあての文で埋まってしまう） */
-  function doClsSave(){
-    var isText = (kind() === 'text');
+  function doClsSave(isText){
+    if (wrongKind(isText)) return;
     var sel = isText ? $('clsSelT') : $('clsSel');
     if (!sel || sel.value === ''){ alert('先に①で、上書きするデータをえらんでください。'); return; }
     var st = readStore(), i = parseInt(sel.value,10), c = st.classes[i];
@@ -368,14 +406,17 @@
     c.names = isText ? lines.join('\n') : namesNow(c.names);
     if (!writeStore(st)) return;
     fillClassSelect();
-    showCls('「' + (c.label||'') + '」を上書きしました');
+    showCls('「' + (c.label||'') + '」を上書きしました', isText);
   }
   var clsTimer = null;
-  function showCls(t){
-    var el = $('clsSaved'); if (!el) return;
-    el.textContent = t;
+  /* ⭐知らせは押した欄に出す。どちらか分からないとき（保存の失敗など）は両方 */
+  function showCls(t, isText){
+    var ids = (isText === true) ? ['clsSavedT'] : (isText === false) ? ['clsSaved'] : ['clsSavedT', 'clsSaved'];
+    var els = ids.map(function(id){ return $(id); }).filter(function(x){ return x; });
+    if (!els.length) return;
+    els.forEach(function(el){ el.textContent = t; });
     clearTimeout(clsTimer);
-    if (t) clsTimer = setTimeout(function(){ el.textContent = ''; }, 2600);
+    if (t) clsTimer = setTimeout(function(){ els.forEach(function(el){ el.textContent = ''; }); }, 2600);
   }
 
   /* ================= 貼り付けを読む ================= */
@@ -469,6 +510,26 @@
     origRows = rows.map(function(r){ return {name:r.name,title:r.title,group:r.group,off:false}; });
     origGroups = groupOrder.slice();
   }
+  /* ⭐発表者の写真：写真があれば1枚ずつ、なければ今までどおり文字だけで1枚 */
+  function pushWithPics(base, key){
+    var ps = (listPics[key] || []).filter(function(p){ return p.url; });
+    if (!ps.length){ slides.push(base); return; }
+    ps.forEach(function(p){
+      var s = {}; for (var k in base) s[k] = base[k];
+      s.pic = p.url; s.pos = 'out';        // ⭐写真を大きく。文字（班・作品名・名前）は下の帯に1行で出す
+      slides.push(s);
+    });
+  }
+  /* ⭐②の一覧の「写真」の欄。入れた写真の見本と×、最後に＋ */
+  function lpCell(key){
+    var ps = listPics[key] || [], h = '<td class="pic"><div class="piccell lp">';
+    ps.forEach(function(p, j){
+      if (!p.url) return;
+      h += '<span class="picwrap"><img class="thumb" src="'+esc(p.url)+'" alt="">'
+         + '<button class="picx" data-lpdel="'+esc(key)+'" data-lpi="'+j+'" title="この写真を外す">×</button></span>';
+    });
+    return h + '<button class="picadd" data-lpadd="'+esc(key)+'" title="写真を入れる（何枚でも入ります。1枚ずつ順番に映します）">＋</button></div></td>';
+  }
   function hasGroup(){ return rows.some(function(r){ return r.group !== ''; }); }
   function mode(){
     var el = document.querySelector('input[name=mode]:checked');
@@ -491,7 +552,7 @@
     if (mode()==='one'){
       rows.forEach(function(r){
         if (r.off) return;
-        slides.push({ group:'', title:r.title, names:[r.name] });
+        pushWithPics({ group:'', title:r.title, names:[r.name] }, 'p:' + r.name);
       });
       return;
     }
@@ -501,7 +562,7 @@
       if (!mem.length) return;
       var t = '';
       for (var i=0;i<mem.length;i++){ if (mem[i].title){ t = mem[i].title; break; } }
-      slides.push({ group:g, title:t, names:mem.map(function(m){ return m.name; }) });
+      pushWithPics({ group:g, title:t, names:mem.map(function(m){ return m.name; }) }, 'g:' + g);
     });
   }
 
@@ -515,7 +576,7 @@
       + '<th>出す文字（/ で改行・// で見出し）</th><th class="mv">順番</th><th class="del">消す</th></tr>'
       + '<tr class="ghost"><td class="chk"></td><td class="idx">1</td>'
       + '<td class="pic"><button class="picadd" data-picnew="1" title="ここに写真を入れる">＋</button></td>'
-      + '<td class="members">「＋」で写真、①準備で文字が入ります</td>'
+      + '<td class="members">「＋」で写真、①スライドにする準備で文字が入ります</td>'
       + '<td class="mv"></td><td class="del"></td></tr></table>';
       updateCount(); save(); return;
     }
@@ -617,7 +678,7 @@
 
     var h;
     if (mode()==='group'){
-      h = '<table><tr><th class="chk">映す</th>'+HEAD_IDX+'<th>班</th>'
+      h = '<table><tr><th class="chk">映す</th>'+HEAD_IDX+'<th class="pic">写真</th><th>班</th>'
         + '<th>作品名（/ で改行）</th><th>メンバー</th><th class="mv">順番</th></tr>';
       groupOrder.forEach(function(g,i){
         var mem = rows.filter(function(r){ return r.group===g; });
@@ -627,6 +688,7 @@
         h += '<tr class="'+(off?'off':'')+'">'
           + '<td class="chk"><input type="checkbox" data-g="'+esc(g)+'"'+(off?'':' checked')+'></td>'
           + '<td class="idx">'+(i+1)+'</td>'
+          + lpCell('g:' + g)
           + '<td><b>'+esc(g)+'</b></td>'
           + '<td><textarea class="ttl" rows="1" data-gt="'+esc(g)+'" placeholder="作品名">'+esc(t)+'</textarea></td>'
           + '<td class="members">'+mem.map(function(m){ return esc(m.name); }).join('・')+'</td>'
@@ -639,12 +701,13 @@
     } else {
       // 🔴 班は打ちかえられる（2026-09-05 本人「班自体を変更できるならそれがベスト」）。
       //    ⚠前は表示だけで、班が1つも無いと列も出なかった＝名簿に班が無いと班分けができなかった
-      h = '<table><tr><th class="chk">映す</th>'+HEAD_IDX+'<th>名前</th><th>作品名（/ で改行）</th>';
+      h = '<table><tr><th class="chk">映す</th>'+HEAD_IDX+'<th class="pic">写真</th><th>名前</th><th>作品名（/ で改行）</th>';
       h += '<th class="grp">班</th><th class="mv">順番</th></tr>';
       rows.forEach(function(r,i){
         h += '<tr class="'+(r.off?'off':'')+'">'
           + '<td class="chk"><input type="checkbox" data-i="'+i+'"'+(r.off?'':' checked')+'></td>'
           + '<td class="idx">'+(i+1)+'</td>'
+          + lpCell('p:' + r.name)
           + '<td><b>'+esc(r.name)+'</b></td>'
           + '<td><textarea class="ttl" rows="1" data-t="'+i+'" placeholder="作品名">'+esc(r.title)+'</textarea></td>';
         h += '<td class="grp">'+grpSel(i, r.group)+'</td>';
@@ -678,11 +741,14 @@
     } else if (!rows.length){
       msg = '';
     } else if (mode()==='group'){
-      msg = rows.length+'人／'+groupOrder.length+'班　→ 班ごとに '+slides.length+'回 表示';
+      /* ⭐写真を何枚も入れると枚数が増えるので、全部で何枚かを出す（2026-09-15） */
+      var npG = slides.filter(function(s){ return s.pic; }).length;
+      msg = rows.length+'人／'+groupOrder.length+'班　→ 班ごとに 全部で '+slides.length+'枚 表示' + (npG ? '（うち写真 '+npG+'枚）' : '');
       var offG = groupOrder.filter(function(g){ return groupOff[g]; }).length;
       if (offG) msg += '（'+offG+'班は映しません）';
     } else {
-      msg = rows.length+'人　→ 1人ずつ '+slides.length+'回 表示';
+      var npN = slides.filter(function(s){ return s.pic; }).length;
+      msg = rows.length+'人　→ 1人ずつ 全部で '+slides.length+'枚 表示' + (npN ? '（うち写真 '+npN+'枚）' : '');
       var offN = rows.filter(function(r){ return r.off; }).length;
       if (offN) msg += '（'+offN+'人は映しません）';
     }
@@ -703,7 +769,9 @@
       var o = document.createElement('option');
       o.value = String(i);
       var t = (sl.title||'').replace(/\/+/g,' ').trim();
+      if (!t && sl.names && sl.names.length) t = sl.group || sl.names.join('・');
       if (!t) t = sl.pic ? '写真' : '（からっぽ）';
+      if (sl.pic && sl.names && sl.names.length) t = '📷' + t;   // ⭐発表者の写真の1枚
       if (t.length > 14) t = t.slice(0,14) + '…';
       o.textContent = (i+1) + '枚目　' + t;
       sel.appendChild(o);
@@ -797,6 +865,10 @@
     var cap = $('cap');
     if (band){
       var ct = (s.title || '').replace(/\/\//g, '　').replace(/\//g, '　').trim();
+      /* ⭐発表者の写真のときは、班・作品名・名前を下の帯に1行で（2026-09-15）。⚠帯のときは名前の箱が隠れるため */
+      if (s.names && s.names.length){
+        ct = [s.group || '', ct, s.names.join('・')].filter(function(x){ return x; }).join('　');
+      }
       cap.textContent = ct;
     } else {
       cap.textContent = '';
@@ -918,6 +990,8 @@
 
   /* ================= 保存（この端末のブラウザだけ） ================= */
   function save(){
+    /* ⭐サンプルの間は保存しない（座席表と同じ・2026-09-14）。⚠下の「消す」より前に止める */
+    if (sampleOn) return;
     // 🔴 チェックが外れているときは、この機器に何も残さない（座席表と同じ考え方）
     if (!$('save').checked){
       try{ localStorage.removeItem(KEY); }catch(e){}
@@ -926,7 +1000,7 @@
     try{
       localStorage.setItem(KEY, JSON.stringify({
         v: 2,   // ⭐2026-09-07：位置の意味が変わった（下＝重ねる／外＝フッター）。無印は古い形
-        kind: kind(), text: $('paste').value,
+        kind: (document.querySelector('input[name=kind]:checked')||{}).value || '', text: $('paste').value,   // ⭐選んでいなければ空
         // 写真そのものは IndexedDB に置く。ここには番号だけ残す
         sheets: sheets.map(function(s){
                   return { text:s.text||'', url:'', name:s.name||'', picId:s.picId||'',
@@ -936,7 +1010,16 @@
         editMode: $('editMode').checked,
         rows: rows, groupOrder: groupOrder, groupOff: groupOff,
         origRows: origRows, origGroups: origGroups,
-        mode: (document.querySelector('input[name=mode]:checked')||{}).value || 'one'
+        mode: (document.querySelector('input[name=mode]:checked')||{}).value || 'one',
+        // ⭐発表者の写真は番号だけ残す（写真そのものは IndexedDB）
+        listPics: (function(){
+          var o = {};
+          Object.keys(listPics).forEach(function(k){
+            var ids = listPics[k].map(function(p){ return p.picId; }).filter(function(x){ return x; });
+            if (ids.length) o[k] = ids;
+          });
+          return o;
+        })()
       }));
       showSaving('このパソコンに保存しました');
     }catch(e){}
@@ -972,14 +1055,21 @@
         var m = document.querySelector('input[name=mode][value="'+(d.mode||'one')+'"]');
         if (m) m.checked = true;
       }
+      if (d.listPics && typeof d.listPics === 'object'){
+        listPics = {};
+        Object.keys(d.listPics).forEach(function(k){
+          listPics[k] = (d.listPics[k] || []).map(function(id){ return { picId:id, url:'', blob:null, name:'' }; });
+        });
+      }
       if (d.editMode) $('editMode').checked = true;
-      var k = document.querySelector('input[name=kind][value="'+(d.kind||'text')+'"]');
+      var k = d.kind ? document.querySelector('input[name=kind][value="'+d.kind+'"]') : null;   // ⭐選んでいなかった保存は、白のまま開く
       if (k) k.checked = true;
       switchKind();
       if (sheets.length || (Array.isArray(d.rows) && d.rows.length)){ $('d1').open = false; $('d2').open = false; }
       // 写真は非同期で戻す（読めたら一覧を描き直す）
-      if (sheets.some(function(x){ return x.picId || x.picId2; })){
-        picLoadAll(function(){ drawSheets(); });
+      var hasLP = Object.keys(listPics).some(function(k){ return listPics[k].length; });
+      if (sheets.some(function(x){ return x.picId || x.picId2; }) || hasLP){
+        picLoadAll(function(){ if (kind()==='text') drawSheets(); else drawList(); });
       }
     }catch(e){}
   }
@@ -989,10 +1079,18 @@
      「①準備 ②を、①の分岐で表示変更したら？」）。②の見出しも一緒に変わる。 */
   function switchKind(){
     var t = (kind()==='text');
-    $('paneText').hidden  = !t;
-    $('paneList').hidden  = t;
-    $('paneText2').hidden = !t;
-    $('paneList2').hidden = t;
+    /* ⭐切り替えボタンの色（2026-09-15 本人 案A）。選んでいるほうに .on */
+    Array.prototype.forEach.call(document.querySelectorAll('#kind label'), function(l){
+      var i = l.querySelector('input');
+      l.classList.toggle('on', !!(i && i.checked));
+    });
+    /* ⭐はじめはどちらも選ばない＝選ぶまで①②の入力の欄を出さない（2026-09-15 本人） */
+    var chosen = !!document.querySelector('input[name=kind]:checked');
+    $('paneText').hidden  = !chosen || !t;
+    $('paneList').hidden  = !chosen || t;
+    $('paneText2').hidden = !chosen || !t;
+    $('paneList2').hidden = !chosen || t;
+    if ($('kindHint')) $('kindHint').hidden = chosen;
     $('d2title').textContent = t ? 'スライドにする順番' : '作品名と順番';
     if (t) drawSheets(); else drawList();
   }
@@ -1043,16 +1141,80 @@
     var n = addLines($('lines').value);
     openStep2(n ? n + '枚を入れました' : 'もう入っています');
   });
-  /* ⚠サンプルは何度も押されて増えていく（2026-09-06 本人）。⭐①の枠にも出して、②には足すだけ */
-  $('sampleText').addEventListener('click', function(){
-    var first = SAMPLE_TEXT.split(String.fromCharCode(10))[0];
-    if (String($('lines').value).indexOf(first) < 0) putLines(SAMPLE_TEXT);
-    var n = addLines(SAMPLE_TEXT);
-    openStep2(n ? 'サンプルを' + n + '枚入れました' : 'サンプルはもう入っています');
-  });
+  /* ---------- サンプルのボタン（①の上・2026-09-14 本人「ボタンを押したらサンプルが見れて、こういう仕組みだってわかったほうがいい。
+       それでサンプルを消したらなくなる」）
+     ⭐①＝文字のサンプル／②＝発表者のサンプル。①の枠と②の一覧に入る
+     ⭐押す前の画面（①の枠・②の一覧・写真の行・名簿）は外しておき、「サンプルを消す」で戻す。⚠サンプルの間は保存しない
+     ⚠前は①の中の「サンプルを入れる」＝今の一覧に足していた（何度も押されて増えた・2026-09-06） ---------- */
+  function loadSample(k){
+    linesExpand();
+    if (!sampleOn){
+      stash = {
+        kind: (document.querySelector('input[name=kind]:checked')||{}).value || '', lines: $('lines').value, paste: $('paste').value,
+        sheets: sheets, rows: rows, groupOrder: groupOrder, groupOff: groupOff,
+        origRows: origRows, origGroups: origGroups,
+        mode: (document.querySelector('input[name=mode]:checked')||{}).value || 'one',
+        d1: $('d1').open, d2: $('d2').open,
+        listPics: listPics
+      };
+    }
+    sampleOn = true;
+    /* ⚠写真の入った行も stash が持っているので、URL は返さない（消すときに戻す） */
+    sheets = []; rows = []; groupOrder = []; groupOff = {}; origRows = []; origGroups = [];
+    listPics = {};
+    $('lines').value = ''; $('paste').value = ''; $('warn').hidden = true;
+    var kr = document.querySelector('input[name=kind][value="' + (k === 2 ? 'list' : 'text') + '"]');
+    if (kr) kr.checked = true;
+    var name;
+    if (k === 2){
+      $('paste').value = SAMPLE_LIST;
+      setRows(parse(SAMPLE_LIST));
+      /* ⭐サンプル②は「班ごとにまとめて映す」にしておく（2026-09-14 本人）。⚠消すと前の映し方に戻る（stash.mode） */
+      var mg = document.querySelector('input[name=mode][value="group"]'); if (mg) mg.checked = true;
+      name = 'サンプル②（発表者をスライド）';
+    } else {
+      $('lines').value = SAMPLE_TEXT;
+      addLines(SAMPLE_TEXT);
+      /* ⭐「教室に戻ったらすること」は①②③と並ぶので左そろえ（2026-09-14 本人） */
+      sheets.forEach(function(sh){ if (sh.text.indexOf('教室に戻ったらすること') === 0) sh.al = 'left'; });
+      drawSheets();
+      name = 'サンプル①（文字をスライド）';
+    }
+    switchKind();
+    /* ⭐①②は開くだけ。画面は動かさない（2026-09-14 本人「②に飛ぶ。進めずに自分でスクロールする方にしてほしい」）
+       ⚠openStep2 は②まで画面を送るので、ここでは使わない */
+    $('d1').open = true; $('d2').open = true;
+    $('sampleOff').hidden = false;
+    $('sampleMsg').textContent = name + 'を出しました';
+    showAdd(name + 'を入れました');
+  }
+  function clearSample(){
+    linesExpand();
+    var s = stash; stash = null;
+    sampleOn = false;
+    $('sampleOff').hidden = true;
+    if (s){
+      sheets = s.sheets; rows = s.rows; groupOrder = s.groupOrder; groupOff = s.groupOff;
+      origRows = s.origRows; origGroups = s.origGroups;
+      listPics = s.listPics || {};
+      $('lines').value = s.lines; $('paste').value = s.paste; $('warn').hidden = true;
+      var m = document.querySelector('input[name=mode][value="' + s.mode + '"]'); if (m) m.checked = true;
+      var kr = s.kind ? document.querySelector('input[name=kind][value="' + s.kind + '"]') : null;
+      if (kr) kr.checked = true;
+      else Array.prototype.forEach.call(document.querySelectorAll('input[name=kind]'), function(x){ x.checked = false; });   // ⭐選んでいなかったら白にもどす
+      $('d1').open = s.d1; $('d2').open = s.d2;
+    }
+    showAdd('');
+    switchKind();   // ⚠ここで描き直す＝save() も走るが、中身は押す前と同じ
+    $('sampleMsg').textContent = 'サンプルを消して、前の画面に戻しました';
+  }
+  $('sampleT').addEventListener('click', function(){ loadSample(1); });
+  $('sampleL').addEventListener('click', function(){ loadSample(2); });
+  $('sampleOff').addEventListener('click', clearSample);
   // 🔴 ①の枠を空にするボタン（2026-09-06 本人「サンプルを入れるの横に消すボタンを作って」）
   if ($('clearLines')) $('clearLines').addEventListener('click', function(){
     $('lines').value = ''; showAdd('');
+    linesExpand();
   });
   // 🔴 空の1枚を足す。文字を打つのも、写真の「＋」を押すのも、ここから（2026-09-05 本人）
   $('addRow').addEventListener('click', function(){
@@ -1068,7 +1230,8 @@
   $('clearText').addEventListener('click', function(){
     // 写真のぶんはメモリを返してから消す
     sheets.forEach(function(s){ if (s.url) URL.revokeObjectURL(s.url); if (s.url2) URL.revokeObjectURL(s.url2); });
-    picClear();
+    /* ⚠置き場まるごと消す（picClear）はやめた（2026-09-15）＝発表者の写真まで消えてしまう。⭐文字の写真だけ消す */
+    sheets.forEach(function(s){ if (s.picId) picDel(s.picId); if (s.picId2) picDel(s.picId2); });
     sheets = []; $('lines').value = ''; drawSheets();
   });
 
@@ -1076,7 +1239,23 @@
      picTarget が -1 なら末尾に新しい1枚として足す。
      🔴 行の「＋」から呼んだときは、その行に入れる（文字を打ち直さなくていい） */
   var picTarget = -1, picSlot = 1;
+  var lpTarget = '';   // ⭐発表者の写真を入れる先（'p:名前' か 'g:班'）
   $('picfile').addEventListener('change', function(e){
+    /* ⭐発表者の写真：選んだ写真を全部、その人（班）の後ろに足す（何枚でも） */
+    if (lpTarget){
+      var key = lpTarget; lpTarget = '';
+      var fl = e.target.files, arr = listPics[key] || (listPics[key] = []);
+      for (var q=0; fl && q<fl.length; q++){
+        if (fl[q].type.indexOf('image/') !== 0) continue;
+        var pid = newPicId();
+        arr.push({ picId:pid, url:URL.createObjectURL(fl[q]), blob:fl[q], name:fl[q].name });
+        picPut(pid, fl[q]);
+      }
+      if (!arr.length) delete listPics[key];
+      e.target.value = '';
+      drawList();
+      return;
+    }
     var files = e.target.files;
     if (!files || !files.length){ picTarget = -1; picSlot = 1; return; }
     for (var i=0;i<files.length;i++){
@@ -1127,6 +1306,7 @@
     // ＋ ＝ この行に写真を入れる（空のときは、新しい1枚を作ってそこに入れる）
     var add = e.target.closest ? e.target.closest('.picadd') : null;
     if (add){
+      lpTarget = '';        // ⚠発表者の写真の入れ先が残っていたら消す（選ぶ画面をやめたときの残り）
       picSlot = 1;
       if (add.hasAttribute('data-picnew')){
         sheets.push({ text:'', url:'', name:'', pos:'', size:'', font:'', al:'', off:false });
@@ -1303,8 +1483,10 @@
     }
   });
 
-  $('clsNew').addEventListener('click', doClsNew);
-  if ($('clsSave')) $('clsSave').addEventListener('click', doClsSave);
+  $('clsNew').addEventListener('click', function(){ doClsNew(false); });
+  if ($('clsSave')) $('clsSave').addEventListener('click', function(){ doClsSave(false); });
+  if ($('clsNewT')) $('clsNewT').addEventListener('click', function(){ doClsNew(true); });
+  if ($('clsSaveT')) $('clsSaveT').addEventListener('click', function(){ doClsSave(true); });
   $('clsSel').addEventListener('change', function(){
     syncCls('clsSel','clsSelT')();
     refreshDelT();
@@ -1317,14 +1499,20 @@
      「ほかの保存の場所にも…削除できるようにしてほしい」）。
      ⚠名簿は置き場が共通なので、消すとほかの道具からも消える＝確認でそう伝える */
   function refreshDelT(){
-    if ($('clsDel')) $('clsDel').disabled = !loadRosters().length;
+    var cls = loadRosters();
+    var nS = cls.filter(function(c){ return c.kind === 'slide'; }).length;
+    if ($('clsDel'))  $('clsDel').disabled  = !(cls.length - nS);
+    if ($('clsDelT')) $('clsDelT').disabled = !nS;
   }
-  function delPicked(selId){
-    var sel = $(selId);
+  /* ⭐isText＝押した欄。文字の欄は①の文字側のえらび（clsSelT）、名前の欄は発表者側（clsSel）を消す */
+  function delPicked(isText){
+    var sel = $(isText ? 'clsSelT' : 'clsSel');
     if (!sel || sel.value === ''){ alert('先に①で、消すデータをえらんでください。'); return; }
     var i = parseInt(sel.value,10);
     var st = readStore(), c = st.classes[i];
     if (!c) return;
+    /* ⚠文字側のえらびには名前のデータも並ぶ。⭐欄と種類が違うときは消さない */
+    if (isText && c.kind !== 'slide'){ alert('「' + (c.label||'') + '」は名前のデータです。「発表者スライドの名前を保存」の欄で消してください。'); return; }
     var msg = '「'+(c.label||'')+'」を消します。';
     // ⚠名簿は座席表メーカーなどと同じ置き場。文字のまとまりはこのページのものだけ
     if (c.kind !== 'slide') msg += '座席表メーカー・席次表メーカーからも消えます。';
@@ -1332,14 +1520,21 @@
     st.classes.splice(i,1);
     if (!writeStore(st)) return;
     fillClassSelect(); refreshDelT();
-    showCls('「'+(c.label||'')+'」を消しました');
+    showCls('「'+(c.label||'')+'」を消しました', isText);
   }
-  // ⚠①のどちらの欄でえらんだかは、いまの分岐で決まる（文字＝clsSelT／発表者＝clsSel）
-  if ($('clsDel')) $('clsDel').addEventListener('click', function(){
-    delPicked(kind() === 'text' ? 'clsSelT' : 'clsSel');
-  });
+  if ($('clsDel'))  $('clsDel').addEventListener('click', function(){ delPicked(false); });
+  if ($('clsDelT')) $('clsDelT').addEventListener('click', function(){ delPicked(true); });
   /* 🔴 文字を出す側で名簿を読む（2026-09-05 本人）。⭐1人＝1枚の文字にする。
      ⚠いま入っているぶんは消さず、下に足す */
+  /* ⭐「保存のデータを使う」＝押すと選ぶ欄と「このデータを読み込む」が出る。もう一度押すとしまう（2026-09-15 本人 案A） */
+  [['clsUseT','clsPickT'], ['clsUse','clsPick']].forEach(function(p){
+    var b = $(p[0]), box = $(p[1]);
+    if (!b || !box) return;
+    b.addEventListener('click', function(){
+      box.hidden = !box.hidden;
+      b.setAttribute('aria-expanded', String(!box.hidden));
+    });
+  });
   if ($('clsLoadT')) $('clsLoadT').addEventListener('click', function(){
     var c = loadRosters()[parseInt($('clsSelT').value,10)];
     if (!c) return;
@@ -1354,8 +1549,33 @@
     var joined = names.join(String.fromCharCode(10));
     putLines(joined);
     var n = addLines(joined);
-    openStep2(n ? '「' + (c.label || '') + '」を' + n + '枚入れました'
-                : '「' + (c.label || '') + '」はもう入っています');
+    /* ⭐画面は動かさない。②は開くだけ（2026-09-15 本人「画面を動かさないようにしてほしい」）。⚠openStep2 は②まで画面を送る */
+    $('d2').open = true;
+    showAdd(n ? '「' + (c.label || '') + '」を' + n + '枚入れました'
+              : '「' + (c.label || '') + '」はもう入っています');
+    /* ⭐読み込んだら、①の枠を小さくして「追加で入力」を出す（2026-09-15 本人） */
+    $('lines').classList.add('shrink');
+    if ($('linesMoreWrap')) $('linesMoreWrap').hidden = false;
+    /* ⭐「追加で入力」があるあいだは「入れる／消す」の行は出さない（2026-09-15 本人「入れるボタンは不要。追加で入力の隣に消す」） */
+    if ($('linesBtnRow')) $('linesBtnRow').hidden = true;
+    if ($('loadNext')) $('loadNext').textContent = '②へ進みましょう';
+  });
+  /* ⭐枠をもとの大きさにもどす（追加で入力・消す・サンプル） */
+  function linesExpand(){
+    if ($('lines')) $('lines').classList.remove('shrink');
+    if ($('linesMoreWrap')) $('linesMoreWrap').hidden = true;
+    if ($('linesBtnRow')) $('linesBtnRow').hidden = false;
+    if ($('loadNext')) $('loadNext').textContent = '';
+  }
+  /* ⭐「追加で入力」の隣の「消す」＝①の枠を空にして、読み込む前の形（入れる／消す）にもどす（2026-09-15 本人「消すボタンを押したら、今の状態に」） */
+  if ($('linesClear2')) $('linesClear2').addEventListener('click', function(){
+    $('lines').value = ''; showAdd('');
+    linesExpand();
+  });
+  if ($('linesMore')) $('linesMore').addEventListener('click', function(){
+    linesExpand();
+    var box = $('lines'); box.focus();
+    try{ box.setSelectionRange(box.value.length, box.value.length); }catch(e){}
   });
 
   $('read').addEventListener('click', function(){
@@ -1367,10 +1587,6 @@
     $('warn').hidden = true;
     setRows(got); drawList(); openStep2(got.length + '人を入れました');
   });
-  $('sample').addEventListener('click', function(){
-    $('paste').value = SAMPLE_LIST; $('warn').hidden = true;
-    setRows(parse(SAMPLE_LIST)); drawList(); openStep2('サンプルを入れました');
-  });
   $('clear').addEventListener('click', function(){
     $('paste').value = ''; rows = []; groupOrder = []; groupOff = {};
     origRows = []; origGroups = [];
@@ -1378,13 +1594,35 @@
   });
   $('clsLoad').addEventListener('click', function(){
     loadFromClass();
-    openStep2(rows.length ? rows.length + '人を入れました' : '読み込みました');
+    /* ⭐発表者も画面は動かさない。②は開くだけ（2026-09-15 文字とそろえた） */
+    $('d2').open = true;
+    showAdd(rows.length ? rows.length + '人を入れました' : '読み込みました');
   });
 
   $('shuffle').addEventListener('click', doShuffle);
   $('reset').addEventListener('click', doReset);
   $('allon').addEventListener('click', allOn);
 
+  /* ⭐発表者の写真の＋と×（2026-09-15） */
+  $('list').addEventListener('click', function(e){
+    var add = e.target.closest ? e.target.closest('[data-lpadd]') : null;
+    if (add){
+      lpTarget = add.getAttribute('data-lpadd'); picTarget = -1; picSlot = 1;
+      $('picfile').click();
+      return;
+    }
+    var x = e.target.closest ? e.target.closest('[data-lpdel]') : null;
+    if (x){
+      var key = x.getAttribute('data-lpdel'), j = parseInt(x.getAttribute('data-lpi'),10), ps = listPics[key];
+      if (ps && ps[j]){
+        if (ps[j].url) URL.revokeObjectURL(ps[j].url);
+        if (ps[j].picId) picDel(ps[j].picId);
+        ps.splice(j, 1);
+        if (!ps.length) delete listPics[key];
+      }
+      drawList();
+    }
+  });
   $('list').addEventListener('click', function(e){
     var b = e.target.closest ? e.target.closest('.mvbtn') : null;
     if (!b || b.disabled) return;
@@ -1519,6 +1757,8 @@
   });
 
   fillClassSelect();
+  /* ⭐はじめはどちらも選ばない。⚠ブラウザが読み込み直しで前の選択を戻すことがあるので、ここで外す（保存があれば load() が戻す） */
+  Array.prototype.forEach.call(document.querySelectorAll('input[name=kind]'), function(x){ x.checked = false; });
   load();
   switchKind();
 })();
