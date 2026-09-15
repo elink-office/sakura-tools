@@ -98,7 +98,7 @@
   <!-- ⭐はじめて開いた人は、まずサンプルが入った状態を見る（2026-09-09 本人） -->
   <div class="inv-sample noprint" id="sampleTop">
     <select class="js-sample-sel">
-      <option value="">サンプルを見る（選ぶと⑥確認へ移動）</option>
+      <option value="">サンプルを見る</option>
       <option value="1">サンプル1　基本（1ページ）</option>
       <option value="2">サンプル2　明細が多い（2ページ）</option>
       <option value="3">サンプル3　インボイス（登録番号あり・8%混在）</option>
@@ -209,7 +209,7 @@
   <details class="opt" id="s3Box">
     <summary><span class="step">3</span>入力の準備</summary>
     <div class="body">
-    <p class="safe">🔒 <strong>見積書の内容は、必ずPDFで保存してください。</strong></p>
+    <p class="safe">🔒 <strong>作成した見積書は、必ずPDFで保存してください。</strong>今使っている端末に保存されます。</p>
 
     <div class="row tight">
       <div class="w-no"><label for="invNo">見積書番号</label>
@@ -231,7 +231,7 @@
       <p class="inv-hint">⭐<strong>件名と④見積の内容が入ります。</strong>請求書メーカーで保存したひな形も、同じ一覧に並びます。</p>
     </div>
 
-    <div class="inv-row" style="margin-top:16px">
+    <div class="inv-row" id="pasteWrap" style="margin-top:16px">
       <label for="paste">エクセルから貼り付ける<button type="button" class="tip-btn" aria-expanded="false" aria-label="貼り付けについて"></button></label>
       <div class="tip-body" hidden>
         <p>見積書やエクセルの表を、そのままコピーして貼り付けます。<strong>下の表に直接貼り付けても入ります。</strong></p>
@@ -257,6 +257,9 @@
       <p style="margin:6px 0 0"><span class="saving" id="pasteMsg" hidden></span></p>
 
     </div>
+    <!-- ⭐ひな形を入れたら、上の貼り付け欄とボタン2つは隠して、これだけ出す（2026-09-15 本人「ひな形を入れた人はエクセル使わないんじゃないか」）。
+         ⭐押すと貼り付け欄が戻る。④の表に直接貼っても入るので、Excelの道はなくならない -->
+    <p id="pasteReopen" hidden style="margin:16px 0 0"><button type="button" id="pasteShow">エクセルから追加で貼り付ける</button></p>
 
 
     <details class="opt sub" id="setBox">
@@ -405,7 +408,7 @@
   <p class="inv-hint" style="margin:16px 0 -6px">⚠<strong>入力後に「サンプルを見る」を押すと、すべてがサンプルに置き換わります。</strong></p>
   <div class="inv-sample noprint" id="sampleLow">
     <select class="js-sample-sel">
-      <option value="">サンプルを見る（選ぶと⑥確認へ移動）</option>
+      <option value="">サンプルを見る</option>
       <option value="1">サンプル1　基本（1ページ）</option>
       <option value="2">サンプル2　明細が多い（2ページ）</option>
       <option value="3">サンプル3　インボイス（登録番号あり・8%混在）</option>
@@ -433,18 +436,18 @@
   <!-- ================= (5) 印刷・PDF ================= -->
   <section class="card" id="s6" style="margin-top:18px">
     <h2><span class="step">7</span>PDFで保存</h2>
-    <p class="safe">🔒 <strong>見積書の内容は、必ずPDFで保存してください。</strong><button type="button" class="tip-btn" aria-expanded="false" aria-label="印刷の画面について"></button></p>
-    <div class="tip-body" hidden>
-      <p>印刷画面で<strong>「PDF」を選ぶと、そのまま保存できます。</strong>紙に印刷することもできます。</p>
-      <p>印刷の画面で<strong>「余白」を「なし」</strong>にすると、<strong>⑥確認と同じ形</strong>で出ます。</p>
-    </div>
+    <p class="safe">🔒 <strong>作成した見積書は、必ずPDFで保存してください。</strong>今使っている端末に保存されます。</p>
+    <!-- ⭐🔒の文のすぐ下（2026-09-15 本人）
+         ⚠「印刷の画面について」の？は外した（2026-09-15 本人「不要になってると思う」）＝PDFはこのページが自分で作る（keiri-pdf.js）。
+           印刷の画面を通らないので、「PDFを選ぶ」「余白をなし」の説明は当てはまらない。紙に印刷する道もなくした -->
+
+    <p class="inv-hint" style="margin:6px 0 12px">ファイル名を自動で付けます。<strong>日付・取引先・金額が入っていると、あとから探せます。</strong></p>
 
     <div class="inv-chks">
       <label class="chk-inline"><input type="checkbox" id="fnDate" checked> 日付</label>
       <label class="chk-inline"><input type="checkbox" id="fnClient" checked> 取引先</label>
       <label class="chk-inline"><input type="checkbox" id="fnAmount" checked> 金額</label>
     </div>
-    <p class="inv-hint" style="margin-top:8px">保存するときに出てくる名前です。<strong>日付・取引先・金額の3つが入っていると、あとから探せます。</strong></p>
     <p class="inv-fname">保存される名前　<b id="fnameOut">見積書.pdf</b></p>
 
     <p style="margin:14px 0 0;text-align:center"><button type="button" id="doPrint" class="primary">PDFで保存</button></p>
@@ -679,7 +682,7 @@
   </div>
 </footer>
 
-<script src="../../keiri.js?v=57"></script>
+<script src="../../keiri.js?v=58"></script>
 <script src="../../keiri-pdf.js?v=2"></script>
 <script src="../../tip.js?v=3"></script>
 </body>
