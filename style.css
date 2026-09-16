@@ -18,6 +18,27 @@
      勝手に暗く描かれるのを止める。CSSで色を指定していても起きるので、これが要る */
   color-scheme: light;
 }
+
+/* 🔴⭐上から重ねる「光」（2026-09-16 本人「立体タイルで、ほかのページの番号も対応できないのかな？」
+   「ぴくのおおきいボタンもできる？」）。
+   ⭐番号のタイル（.step）と、ピンクの大きいボタン（.primary）で同じものを使う
+     ＝弱めたい・やめたいときは、ここ1か所を直せばよい。
+   ⚠色は使う側の background（background-color）で入れる。
+     ⭐使う側で background と書くと、この光は消える。かならず background-image で足すこと。
+   ⭐もとはトップページのタイル（top.css の .t-card::before・2026-09-15 本人「これにしてみる」） */
+:root{
+  --gloss:
+    radial-gradient(115% 78% at 50% -14%,
+      rgba(255,255,255,.82) 0%,
+      rgba(255,255,255,.36) 36%,
+      rgba(255,255,255,.05) 64%,
+      rgba(255,255,255,0) 100%),
+    linear-gradient(180deg,
+      rgba(255,255,255,.05) 0%,
+      rgba(255,255,255,0) 58%,
+      rgba(255,255,255,.16) 100%);
+}
+
 input[type=checkbox],input[type=radio]{accent-color:var(--pink)}
 *{box-sizing:border-box}
 /* 🔴⭐ページ全体が横に動くのを止める（2026-09-10 本人「触ってたら横にずれる」「ふわふわする」）。
@@ -222,6 +243,8 @@ button:hover{background:var(--pink-pale)}
 .primary{
   background:var(--pink);border-color:var(--pink);color:#fff;
   font-size:1.1rem;font-weight:bold;padding:14px 30px;border-radius:999px;
+  /* ⭐番号のタイルと同じ光をのせる（2026-09-16）。⚠上の background より後ろに書くこと */
+  background-image:var(--gloss);
   /* 🔴 押せる板に見せる（2026-09-03 本人「画像のように影つけて」）。
      ⚠影は**グレー**にする。ページごとに色が違う（座席表＝桜色／席次表＝緑）ので、
        色つきの影にすると片方で浮く。グレーならどちらでも合う */
@@ -237,6 +260,7 @@ button:hover{background:var(--pink-pale)}
 @media (hover:hover){
   .primary:hover{
     background:var(--pink);border-color:var(--pink);filter:brightness(1.04);
+    background-image:var(--gloss);   /* ⚠これが無いと、乗せた瞬間に光だけ消える */
     box-shadow:0 8px 18px rgba(0,0,0,.24), 0 1px 3px rgba(0,0,0,.10);
     transform:translateY(-2px);
   }
@@ -854,7 +878,15 @@ details.opt > summary > .step,
   position:absolute;top:50%;transform:translateY(-50%);
   width:38px;height:28px;margin:0;border-radius:var(--radius);   /* ⭐カードと同じ角（2026-09-14 本人「付箋の角が小さく見える」） */
   font-size:.9rem;font-weight:700;
-  box-shadow:0 1px 0 rgba(0,0,0,.08),0 3px 6px rgba(0,0,0,.16);
+  /* 🔴⭐トップのタイルと同じ立体にする（2026-09-16 本人「立体タイルで、ほかのページの番号も対応できないのかな？」）。
+     ⭐中身は top.css の .t-card::before と同じ（上から光を重ねる）。⚠色は上の .step の background で入っている＝
+       ここで background と書くと光が消えるので、かならず background-image で足す */
+  background-image:var(--gloss);
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,.85),
+    inset 0 -2px 4px rgba(120,100,70,.05),
+    0 2px 4px rgba(85,74,58,.16),
+    0 1px 1px rgba(85,74,58,.09);
 }
 /* 章：summary の左端＝カードの枠の内側 → -11px で枠の外へ10px */
 details.opt > summary > .step{left:-11px}
