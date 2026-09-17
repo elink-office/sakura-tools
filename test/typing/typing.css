@@ -748,3 +748,13 @@ a.stage{display:block;text-decoration:none;color:var(--text)}
 .textwrap.waiting{background:transparent !important;box-shadow:none !important;border-color:transparent !important;
   -webkit-backdrop-filter:none !important;backdrop-filter:none !important}
 .textwrap.waiting::before,.textwrap.waiting::after{display:none !important}
+
+/* ⭐スマホ・タブレットの案内（2026-09-17 本人）。数秒で消える */
+.touchnote{
+  /* ⚠スマホは横にはみ出すページなので、left:50% だと右に切れる。左右16pxの間に置く */
+  position:fixed;left:16px;right:16px;margin:0 auto;width:fit-content;top:84px;transform:translateY(-8px);z-index:9000;
+  box-sizing:border-box;padding:12px 18px;border-radius:10px;
+  background:rgba(44,46,48,.92);color:#fff;font-size:14px;line-height:1.6;text-align:center;
+  box-shadow:0 6px 18px rgba(0,0,0,.18);opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;
+}
+.touchnote.on{opacity:1;transform:none}

@@ -1563,7 +1563,25 @@ Array.prototype.forEach.call(document.querySelectorAll('input[name="chn"]'), fun
   var i = m ? parseInt(m[1],10)-1 : 0;
   if(i<0 || i>=STAGES.length) i=0;
   openStage(i);
+  showTouchNote();
 })();
+/* ⭐スマホ・タブレット（指で操作する画面）だけ、練習ページを開いたときに数秒の案内（2026-09-17 本人）。
+   ⚠入力欄が無いので、画面のキーボードは出ない＝つないだキーボードでしか打てない。一覧のページには出さない */
+function showTouchNote(){
+  var touch = (window.matchMedia && matchMedia("(pointer: coarse)").matches) || navigator.maxTouchPoints > 0;
+  if(!touch) return;
+  var n=document.createElement("div"); n.className="touchnote";
+  n.innerHTML="キーボードをつないで練習してください。<br>画面のキーボードは指の見本です。";
+  /* ⚠スマホではページが画面より横に広い（653px など）ので、見えている幅（visualViewport）の中に置く */
+  var vv=window.visualViewport;
+  if(vv && vv.width < window.innerWidth){
+    n.style.left=(vv.offsetLeft+16)+"px"; n.style.right="auto"; n.style.margin="0";
+    n.style.width=Math.max(200, vv.width-32)+"px";
+  }
+  document.body.appendChild(n);
+  requestAnimationFrame(function(){ n.classList.add("on"); });
+  setTimeout(function(){ n.classList.remove("on"); setTimeout(function(){ if(n.parentNode) n.parentNode.removeChild(n); }, 400); }, 4000);
+}
 
 if(KIDS){ document.body.classList.add("kids"); if($("optSound")) $("optSound").checked=false; }
 drawCoins();
