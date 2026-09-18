@@ -25,11 +25,11 @@
 </script>
 <title>【テスト】Excel関数 早見表｜事務職がよく使う46個</title>
 <meta name="description" content="事務職がよく使うExcel関数46個をまとめた早見表です。「SUMって何？」からも「〜したい」からも引けるので、関数名を知らなくても大丈夫。登録もダウンロードもいりません。">
-<link rel="stylesheet" href="../style.css?v=140">
-<link rel="stylesheet" href="fx.css?v=7">
+<link rel="stylesheet" href="../style.css?v=144">
+<link rel="stylesheet" href="fx.css?v=12">
 </head>
 <body>
-<div id="testBadge" style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
+<div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
 <script>
 /* 🔴⭐テスト版の印は、文字ではなく自動で出す（2026-09-12 本人「アップするたびに、
    最終更新日が表示されるようにして」）。
@@ -91,6 +91,86 @@
 
   <div class="list" id="list"></div>
 
+  <!-- ⭐46個の説明をページ本文に置く（2026-09-18 本人「通すことを最優先にしたい／見えるようにしたい」）。
+       ⚠理由＝「こんなとき・書き方・メモ」はタップしないと出ないので、Googleに読まれない可能性がある。
+       ⭐中身は fx.js の DATA から作る（正本は fx.js のまま）。作り直す道具＝
+         C:\ゆうこ社\開発室\成果物\fx_list.py -->
+  <section class="read">
+  <!-- ⭐PDFのボタンは、一覧の上・線の下（2026-09-18 本人「線の下において」）。
+       ⭐線は .read の border-top。作りは fxpdf.js（jsPDF＝ページの型17-c） -->
+  <div class="fxprintrow noprint">
+    <p class="fxprintbtns"><button id="fxPdfCat" type="button">PDFで保存（分類ごと）</button><button id="fxPdfLv" type="button">PDFで保存（覚える順）</button></p>
+    <p class="fxprinthint">46個ぜんぶをA4の1枚に</p>
+  </div>
+  <!-- FXALL:START -->
+  <details class="howto fxall">
+    <summary>46個ぜんぶの一覧（PDFで保存できます）</summary>
+    <div class="body">
+      <p>分類ごとに並べた一覧です。上の「PDFで保存」から、<b>A4の1枚に収まったPDF</b>にできます。</p>
+      <div class="fxsheet">
+        <p class="sheettitle">Excel関数 早見表　46個<span>sakura-tools.com</span></p>
+        <table class="fxtable">
+          <tr class="cat"><th colspan="3">合計・計算</th></tr>
+          <tr><td class="fn">SUM</td><td class="w">合計する</td><td class="h">=SUM(B2:B10)</td></tr>
+          <tr><td class="fn">SUMIF</td><td class="w">条件に合うものだけ合計する</td><td class="h">=SUMIF(A2:A20,&quot;A支店&quot;,C2:C20)</td></tr>
+          <tr><td class="fn">SUMIFS</td><td class="w">条件が2つ以上のときに合計する</td><td class="h">=SUMIFS(C2:C20,A2:A20,&quot;A支店&quot;,B2:B20,&quot;4月&quot;)</td></tr>
+          <tr><td class="fn">SUBTOTAL</td><td class="w">絞り込んで表示されている分だけ合計する</td><td class="h">=SUBTOTAL(9,C2:C20)</td></tr>
+          <tr><td class="fn">AVERAGE</td><td class="w">平均を出す</td><td class="h">=AVERAGE(B2:B10)</td></tr>
+          <tr><td class="fn">ROUND</td><td class="w">四捨五入する</td><td class="h">=ROUND(B2,0)</td></tr>
+          <tr><td class="fn">ROUNDUP</td><td class="w">切り上げる</td><td class="h">=ROUNDUP(B2,0)</td></tr>
+          <tr><td class="fn">ROUNDDOWN</td><td class="w">切り捨てる</td><td class="h">=ROUNDDOWN(B2,0)</td></tr>
+          <tr class="cat"><th colspan="3">数える</th></tr>
+          <tr><td class="fn">COUNT</td><td class="w">数字が入っているセルを数える</td><td class="h">=COUNT(B2:B20)</td></tr>
+          <tr><td class="fn">COUNTA</td><td class="w">空白でないセルを数える</td><td class="h">=COUNTA(A2:A20)</td></tr>
+          <tr><td class="fn">COUNTIF</td><td class="w">条件に合うものの数を数える</td><td class="h">=COUNTIF(D2:D20,&quot;済&quot;)</td></tr>
+          <tr><td class="fn">COUNTIFS</td><td class="w">条件が2つ以上のときに数える</td><td class="h">=COUNTIFS(A2:A20,&quot;A支店&quot;,D2:D20,&quot;未着手&quot;)</td></tr>
+          <tr><td class="fn">COUNTBLANK</td><td class="w">空白のセルを数える</td><td class="h">=COUNTBLANK(D2:D20)</td></tr>
+          <tr class="cat"><th colspan="3">探す・引っぱる</th></tr>
+          <tr><td class="fn">XLOOKUP</td><td class="w">別の表から探して持ってくる</td><td class="h">=XLOOKUP(A2,商品!A:A,商品!B:B)</td></tr>
+          <tr><td class="fn">VLOOKUP</td><td class="w">表の左端で探して、右にある値を持ってくる</td><td class="h">=VLOOKUP(A2,商品!A:C,2,FALSE)</td></tr>
+          <tr><td class="fn">HLOOKUP</td><td class="w">横方向に探して持ってくる</td><td class="h">=HLOOKUP(A2,料金!A1:F3,2,FALSE)</td></tr>
+          <tr><td class="fn">INDEX</td><td class="w">「上から〇番目」の値を取り出す</td><td class="h">=INDEX(B2:B20,3)</td></tr>
+          <tr><td class="fn">MATCH</td><td class="w">探すものが何番目にあるかを返す</td><td class="h">=MATCH(&quot;田中&quot;,A2:A20,0)</td></tr>
+          <tr><td class="fn">IFERROR</td><td class="w">エラーのときに別の表示にする</td><td class="h">=IFERROR(VLOOKUP(A2,商品!A:C,2,FALSE),&quot;&quot;)</td></tr>
+          <tr class="cat"><th colspan="3">条件で分ける</th></tr>
+          <tr><td class="fn">IF</td><td class="w">条件で表示を分ける</td><td class="h">=IF(B2&gt;=80,&quot;合格&quot;,&quot;不合格&quot;)</td></tr>
+          <tr><td class="fn">IFS</td><td class="w">条件を上から順に判定して分ける</td><td class="h">=IFS(B2&gt;=80,&quot;A&quot;,B2&gt;=60,&quot;B&quot;,TRUE,&quot;C&quot;)</td></tr>
+          <tr><td class="fn">AND</td><td class="w">条件をすべて満たすかを判定する</td><td class="h">=IF(AND(A2=&quot;A支店&quot;,C2&gt;=100000),&quot;○&quot;,&quot;&quot;)</td></tr>
+          <tr><td class="fn">OR</td><td class="w">条件のどれかを満たすかを判定する</td><td class="h">=IF(OR(D2=&quot;未着手&quot;,D2=&quot;保留&quot;),&quot;要確認&quot;,&quot;&quot;)</td></tr>
+          <tr class="cat"><th colspan="3">日付・曜日</th></tr>
+          <tr><td class="fn">TODAY</td><td class="w">今日の日付を出す</td><td class="h">=TODAY()</td></tr>
+          <tr><td class="fn">DATE</td><td class="w">年・月・日から日付を作る</td><td class="h">=DATE(B1,C1,1)</td></tr>
+          <tr><td class="fn">TEXT</td><td class="w">表示の形を変える（曜日を出す）</td><td class="h">=TEXT(B3,&quot;aaa&quot;)</td></tr>
+          <tr><td class="fn">WEEKDAY</td><td class="w">曜日を番号で返す</td><td class="h">=WEEKDAY(B3)</td></tr>
+          <tr><td class="fn">EOMONTH</td><td class="w">月末の日付を出す</td><td class="h">=EOMONTH(TODAY(),0)</td></tr>
+          <tr><td class="fn">DATEDIF</td><td class="w">2つの日付のあいだの期間を数える</td><td class="h">=DATEDIF(B2,TODAY(),&quot;Y&quot;)</td></tr>
+          <tr class="cat"><th colspan="3">文字をあつかう</th></tr>
+          <tr><td class="fn">LEFT</td><td class="w">左から指定した文字数を取り出す</td><td class="h">=LEFT(A2,3)</td></tr>
+          <tr><td class="fn">RIGHT</td><td class="w">右から指定した文字数を取り出す</td><td class="h">=RIGHT(A2,4)</td></tr>
+          <tr><td class="fn">MID</td><td class="w">途中から指定した文字数を取り出す</td><td class="h">=MID(A2,4,3)</td></tr>
+          <tr><td class="fn">LEN</td><td class="w">文字数を数える</td><td class="h">=LEN(A2)</td></tr>
+          <tr><td class="fn">TRIM</td><td class="w">よけいな空白を消す</td><td class="h">=TRIM(A2)</td></tr>
+          <tr><td class="fn">SUBSTITUTE</td><td class="w">特定の文字を別の文字に置き換える</td><td class="h">=SUBSTITUTE(A2,&quot;-&quot;,&quot;&quot;)</td></tr>
+          <tr><td class="fn">TEXTJOIN</td><td class="w">複数のセルを区切り文字でつなぐ</td><td class="h">=TEXTJOIN(&quot; &quot;,TRUE,A2,B2)</td></tr>
+          <tr><td class="fn">PHONETIC</td><td class="w">ふりがなを取り出す</td><td class="h">=PHONETIC(A2)</td></tr>
+          <tr><td class="fn">ASC</td><td class="w">全角を半角にそろえる</td><td class="h">=ASC(A2)</td></tr>
+          <tr class="cat"><th colspan="3">最大・最小・順位</th></tr>
+          <tr><td class="fn">MAX</td><td class="w">いちばん大きい数を出す</td><td class="h">=MAX(C2:C20)</td></tr>
+          <tr><td class="fn">MIN</td><td class="w">いちばん小さい数を出す</td><td class="h">=MIN(C2:C20)</td></tr>
+          <tr><td class="fn">RANK</td><td class="w">順位を出す</td><td class="h">=RANK(C2,$C$2:$C$20,0)</td></tr>
+          <tr><td class="fn">LARGE</td><td class="w">大きいほうから〇番目を出す</td><td class="h">=LARGE(C2:C20,3)</td></tr>
+          <tr><td class="fn">SMALL</td><td class="w">小さいほうから〇番目を出す</td><td class="h">=SMALL(C2:C20,3)</td></tr>
+          <tr class="cat"><th colspan="3">新しい関数</th></tr>
+          <tr><td class="fn">FILTER</td><td class="w">条件に合う行だけを抜き出す</td><td class="h">=FILTER(A2:C20,A2:A20=&quot;A支店&quot;)</td></tr>
+          <tr><td class="fn">SORT</td><td class="w">並べ替えた結果を出す</td><td class="h">=SORT(A2:C20,3,-1)</td></tr>
+          <tr><td class="fn">UNIQUE</td><td class="w">重複を除いた一覧を出す</td><td class="h">=UNIQUE(A2:A20)</td></tr>
+        </table>
+      </div>
+    </div>
+  </details>
+  <!-- FXALL:END -->
+  </section>
+
 </div>
 
 <footer class="noprint">
@@ -99,5 +179,7 @@
 </footer>
 
 <script src="fx.js?v=3"></script>
+<script src="../paper-pdf.js"></script>
+<script src="fxpdf.js?v=2"></script>
 </body>
 </html>
