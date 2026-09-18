@@ -79,7 +79,9 @@ function toSyllables(kana){
     if(one==="ん"){
       var nch=kana.charAt(i+1), cands;
       prevNasalNa=false;
-      if(!nch){ cands=["nn","xn"]; }
+      /* ⭐最後の「ん」は n 1つで終わる。nn と打つ人の2つめの n は、次で1回だけ見のがす（swallowN）
+           （2026-09-18 本人「んで終わるときにnだけにしてほしい」「私はどっちもやるわ」「chiとかtiでも見分けつくのに」） */
+      if(!nch){ out.push({disp:"ん",cands:["n","xn"],endN:true}); i+=1; continue; }
       else{
         var ns=toSyllables(kana.substr(i+1,2))[0];
         var f=ns?ns.cands[0].charAt(0):"";
@@ -170,7 +172,9 @@ var STAGES=[
          "ちゃちゅちょ","にゃにゅにょ","ひゃひゅひょ","びゃびゅびょ",
          "ぴゃぴゅぴょ","みゃみゅみょ","りゃりゅりょ"]},
 
- {name:"単語",mode:"kana",shuffle:true,pick:15,fj:false,
+ /* ⭐1回30語＝タイル約100枚（2026-09-18 本人「100だと1分100だから、ちょうど1分か」→「それでいこう」）。
+      ⚠文字はタイルの約1.07倍（しゅ＝2文字で1枚）＝100/1分の人で1分と少し。前は15語＝約50枚 */
+ {name:"単語",mode:"kana",shuffle:true,pick:30,fj:false,
   desc:"ことばを1つずつ。短いので、正確さだけに集中できます。",
   items:[
     "あさごはん","でんしゃ","かいもの","せんたく","そうじ","しごと","やすみ","てんき","まいにち","ともだち","かぞく","がっこう","きょうしつ",
@@ -680,7 +684,8 @@ var LEVELS={
 function currentLevel(){
   var st=STAGES[stageIdx];
   if(st && st.challenge) return LEVELS.one;  // ミスなしチャレンジは1回でくずれる
-  if(st && !st.basic) return LEVELS.hard;    // 単語より後は、つねに3回でくずれる
+  /* ⭐単語より後も、ミスの回数は選べる（2026-09-18 本人「やっぱりほかと一緒で」「ミスなしチャレンジがあるから」）。
+     ⚠前は「単語より後は、つねに3回でくずれる」に固定していた */
   var el=document.querySelector('input[name="lv"]:checked');
   return LEVELS[el?el.value:"normal"] || LEVELS.normal;
 }
@@ -696,42 +701,88 @@ function renderLives(){
   $("lives").innerHTML=h;
 }
 
-/* ---------- 花火 ---------- */
-var fwTimers=[];
-function fireworks(bursts,onDone){
-  var host=document.querySelector(".panel");
-  var W=host.clientWidth, H=host.clientHeight;
-  for(var burst=0;burst<bursts;burst++){
-    (function(burst){
-      fwTimers.push(setTimeout(function(){
-        var cx=70+Math.random()*(W-140), cy=40+Math.random()*(H*0.55);
-        var col=BLOCKCOL[Math.floor(Math.random()*BLOCKCOL.length)];
-        var n=22+Math.floor(Math.random()*14);
-        fireworkSound(burst%6);
-        for(var i=0;i<n;i++){
-          (function(i){
-            var p=document.createElement("div");
-            p.className="fw";
-            p.style.background=col;
-            p.style.left=cx+"px"; p.style.top=cy+"px";
-            host.appendChild(p);
-            var ang=Math.PI*2*i/n, sp=50+Math.random()*80;
-            setTimeout(function(){
-              p.style.transform="translate("+(Math.cos(ang)*sp)+"px,"+(Math.sin(ang)*sp+50)+"px) scale(.35)";
-              p.style.opacity="0";
-            },12);
-            setTimeout(function(){ if(p.parentNode) p.parentNode.removeChild(p); },1300);
-          })(i);
-        }
-      }, burst*270));
-    })(burst);
-  }
-  if(onDone) fwTimers.push(setTimeout(onDone, bursts*270+1100));
+/* ---------- 紙吹雪 ---------- */
+/* ⭐花火をやめて紙吹雪にした（2026-09-18 本人「下から勢いよくパンっと出てきて、ふわふわと落ちていく感じ」→ B＝画面ぜんたい）。
+   ⭐画面の下の端からパンっと1回。上がりきったら、くるくる回って左右にゆれながら、ゆっくり落ちる。色はタイルと同じ
+   ⚠関数の名前は fireworks のまま（呼んでいる場所を変えないため）。画面の上に1枚キャンバスを重ねる（押せない＝クリックは下に通る） */
+var fwTimers=[], cfCanvas=null;
+function popSound(){
+  tone(160,0.07,0.12,"square");
+  setTimeout(function(){ tone(900,0.14,0.05,"triangle"); },30);
 }
-function stopFireworks(){
+function fireworks(bursts,onDone){
+  stopFireworks(true);
+  /* ⭐紙吹雪はタイルの枠の中だけ（2026-09-18 本人「前言撤回。紙吹雪はタイルの上でいいと思う」＝同じ日のB＝画面ぜんたいを取り消した） */
+  var host=document.querySelector("#play .panel"); if(!host) return;
+  var W=host.clientWidth, H=host.clientHeight, dpr=window.devicePixelRatio||1;
+  var cv=document.createElement("canvas"); cv.className="confetti";
+  cv.width=W*dpr; cv.height=H*dpr;
+  /* ⚠重ねる指定はここに直接書く（CSSが古いまま読まれても、画面の上に出るように） */
+  cv.style.cssText="position:absolute;left:0;top:0;z-index:5;pointer-events:none;transition:opacity .4s;width:"+W+"px;height:"+H+"px";
+  host.appendChild(cv); cfCanvas=cv;
+  var ctx=cv.getContext("2d"); ctx.scale(dpr,dpr);
+  /* ⭐左下と右下の角から、放射状に勢いよく（2026-09-18 本人「左と右角から、紙吹雪が出るほうがいいな。放射線状に」
+       「もっと早くて、上ははみ出したほうが良い」）＝枠の上の端より上まで飛んで、見えなくなってから落ちてくる */
+  var G=3400, N=Math.min(170, Math.round(W/4)), ps=[];
+  for(var i=0;i<N;i++){
+    var dir=(i%2===0) ? 1 : -1;                          // 1＝左の角から右上へ／-1＝右の角から左上へ
+    /* ⚠クラッカーの形（2/5を目指す・+1/4はみ出す）はやめた（2026-09-18 本人「最初のほうがまだまし」「私の指示は無視しよう。元に戻って、横の広がりをなくしてみて」）
+       ⭐放射状に戻して、横の広がりをおさえた＝内側へ傾ける角度を 4〜56度 → 4〜28度、横の速さの上限を 1400 → 650 */
+    var peak=H*(-0.45+Math.random()*0.65);              // どこまで上がるか（枠の上から 45% はみ出す〜枠の中 20%）
+    /* ⭐出どころは角の1点ではなく、枠の外の広い範囲（2026-09-18 本人「固まりで出てきてしまうから、もっとはみ出した範囲が元に」）
+         ＝横は角から外へ12%〜内へ6%、縦は枠の下の端から下へ8〜35%。枠の外から入ってくるので、はじめから散って見える */
+    var x0=(dir===1) ? W*(-0.12+Math.random()*0.18) : W*(1.12-Math.random()*0.18);
+    var y0=H+10+H*(0.08+Math.random()*0.27);             // 本人「あと少しだけ下の方から」で 0〜25% → 8〜35%
+    var vy=-Math.sqrt(2*G*(y0-peak));
+    var ang=(4+Math.random()*36)*Math.PI/180;           // まっすぐ上から 4〜40度 内側へ＝放射状（本人「横にない。もう少し広げて」で 28→40）
+    ps.push({
+      x:x0, y:y0,
+      vx:dir*Math.min(950, -vy*Math.tan(ang)),
+      vy:vy,
+      term:80+Math.random()*80,                          // 落ちる速さ（前より少し速い）
+      sw:18+Math.random()*34, sf:1.5+Math.random()*2.5, ph:Math.random()*6.3,
+      rot:Math.random()*6.3, vr:(Math.random()-.5)*12, flip:Math.random()*6.3, vf:5+Math.random()*9,
+      w:6+Math.random()*5, h:9+Math.random()*7, round:Math.random()<.18,
+      col:BLOCKCOL[Math.floor(Math.random()*BLOCKCOL.length)]
+    });
+  }
+  popSound();
+  var last=performance.now(), t0=last;
+  function frame(now){
+    if(!cv.parentNode) return;                           // 消されたら止まる
+    var dt=Math.min(0.04,(now-last)/1000), t=(now-t0)/1000; last=now;
+    ctx.clearRect(0,0,W,H);
+    var alive=0;
+    for(var i=0;i<ps.length;i++){
+      var p=ps[i];
+      if(p.vy<0){ p.vy+=G*dt; }                          // 上がっている間＝勢いよく
+      else { p.vy=Math.min(p.term, p.vy+G*dt*0.15); p.vx*=0.94; }   // 落ちる間＝ゆっくり
+      p.x+=p.vx*dt + (p.vy>0 ? Math.sin(t*p.sf+p.ph)*p.sw*dt : 0);
+      p.y+=p.vy*dt; p.rot+=p.vr*dt; p.flip+=p.vf*dt;
+      if(p.y>H+20 && p.vy>0) continue;          // ⚠はじめは枠の下の外にいるので、落ちてきたときだけ消す
+      alive++;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.scale(1,Math.cos(p.flip));
+      ctx.fillStyle=p.col;
+      if(p.round){ ctx.beginPath(); ctx.arc(0,0,p.w*0.55,0,6.3); ctx.fill(); }
+      else ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      ctx.restore();
+    }
+    if(alive && t<14) requestAnimationFrame(frame);
+    else if(cfCanvas===cv) stopFireworks(true);
+    else if(cv.parentNode) cv.parentNode.removeChild(cv);
+  }
+  requestAnimationFrame(frame);
+  /* ⭐結果は、紙吹雪が落ちはじめてから出す。紙吹雪はそのまま降りつづける */
+  if(onDone) fwTimers.push(setTimeout(onDone, 2600));
+}
+/* now=true はすぐ消す。ふだんは少しずつ消す（打ちはじめたときなど） */
+function stopFireworks(now){
   fwTimers.forEach(function(t){ clearTimeout(t); }); fwTimers=[];
-  var ps=document.querySelectorAll(".fw");
-  for(var i=0;i<ps.length;i++) if(ps[i].parentNode) ps[i].parentNode.removeChild(ps[i]);
+  var cv=cfCanvas; cfCanvas=null;
+  if(!cv) return;
+  if(now){ if(cv.parentNode) cv.parentNode.removeChild(cv); return; }
+  cv.style.opacity="0";
+  setTimeout(function(){ if(cv.parentNode) cv.parentNode.removeChild(cv); },400);
 }
 /* ノーミス完走：花火をひとしきり見せてから結果を出す。
    クリックかキーを押せばすぐ結果へ飛べる。 */
@@ -740,13 +791,17 @@ function celebrate(){
   var done=false;
   function teardown(){
     done=true;
-    stopFireworks();
+    fwTimers.forEach(function(t){ clearTimeout(t); }); fwTimers=[];   // ⭐紙吹雪は消さない（結果が出ても降りつづける）
     bm.classList.remove("on"); bm.onclick=null;
     document.removeEventListener("keydown",skipKey,true);
     celebrateCancel=null;
   }
   function go(){ if(done) return; teardown(); afterStage(); }
-  function skipKey(e){ e.preventDefault(); e.stopPropagation(); go(); }
+  function skipKey(e){
+    e.preventDefault(); e.stopPropagation();
+    if(swallowN && e.key==="n"){ swallowN=false; return; }   // ⭐最後の「ん」の2つめの n では飛ばさない
+    go();
+  }
   bm.onclick=go;
   document.addEventListener("keydown",skipKey,true);
   celebrateCancel=function(){ if(!done) teardown(); };   // 途中で抜けたとき用
@@ -813,6 +868,12 @@ function render(){
 
 /* ---------- 入力判定 ---------- */
 function feed(ch){
+  /* ⭐「ん」で終わったあとの2つめの n は、打ったことにしない（ミスにもしない）。
+     ⚠次のお題が n で始まるときは、次のお題の1文字目として受ける */
+  if(swallowN){
+    swallowN=false;
+    if(ch==="n" && (si>=syls.length || expectedChar()!=="n")) return;
+  }
   if(si>=syls.length) return;
   var cands=syls[si].cands, nb=buf+ch, i, hit=false;
 
@@ -833,7 +894,9 @@ function feed(ch){
 
   onMiss(ch);
 }
+var swallowN=false;   // ⭐最後の「ん」を n 1つで終えた直後だけ true
 function advance(){
+  if(si<syls.length && syls[si].endN && buf==="n") swallowN=true;
   // 「ん」の次に子音が来たときなど、確定し直す経路でも1音節は完成しているので必ず1タイル塗る
   if(si<syls.length) chars += syls[si].disp.length;   // 「きょ」なら2文字、英字は1文字
   si++; buf="";
@@ -843,7 +906,7 @@ function advance(){
 }
 function onMiss(ch){
   if(ch) showMissHint(ch, expectedChar());
-  miss++; $("sMiss").textContent=miss;
+  miss++;   /* ⭐ミスの数も打っている間は出さない（2026-09-18 本人）。終わってから showFinalStats で出す */
   var lv=currentLevel(), max=lv.max;
   var p=document.querySelector(".panel");
   p.classList.remove("shake"); void p.offsetWidth; p.classList.add("shake");
@@ -902,11 +965,18 @@ function openStage(idx){
   $("stName").setAttribute("data-n", stageLabel(idx));
   setStageColor(BLOCKCOL[idx%BLOCKCOL.length]);
   /* ⭐ステージごとの設定は、効くステージにだけ出す（2026-09-08 本人）。
-     ⚠ステージ8以降（basic なし）は、この下で自動的に「3回でくずれる」に固定されるので出さない */
-  if($("playOpts")) $("playOpts").style.display = st.basic ? "flex" : "none";
+     ⚠前は、単語より後（basic なし）は「3回でくずれる」に固定だったので出していなかった */
+  /* ⭐2026-09-18 からは、ミスの回数はチャレンジ以外ぜんぶに出す。「終わりに f j に戻る」は基礎（1〜5）だけ */
+  if($("playOpts")) $("playOpts").style.display = st.challenge ? "none" : "flex";
+  if($("optHome")) $("optHome").parentNode.style.display = st.basic ? "" : "none";
   if($("chOpts")) $("chOpts").style.display = st.challenge ? "flex" : "none";   // ⭐チャレンジだけ枚数を選ぶ
   if(document.activeElement===$("uname")) $("uname").blur();   // 名前欄にカーソルが残っていると打てないので外す
   buildKeyboard();
+  /* ⭐単語（ステージ6）からは、画面のキーボードと指の色の説明を出さない（2026-09-18 本人
+       「長文の人って指覚えてるから、キーボードをなくす」「単語からはいらないと思う」）。
+     ⭐空いたぶん、タイルの場所を高くする＝長い文でもタイルが見える。
+     ⚠基礎（basic＝1〜5）は今までどおり出す。こども用（?kids=1）は変えない */
+  $("play").classList.toggle("nokb", !st.basic && !KIDS);
   cancelCelebrate(); stopFireworks(); hideToast(); $("bigmsg").classList.remove("on");
   buildGrid();
   resetRun();
@@ -914,10 +984,10 @@ function openStage(idx){
 function resetRun(){
   clearInterval(timer); running=false; stageDone=false;
   runToken++;                       // 予約済みの古いタイマーを無効にする
-  keys=0; chars=0; miss=0; bestTower=0; itemIdx=0; lives=0; pausedMs=0; chWaiting=false;
+  keys=0; chars=0; miss=0; bestTower=0; itemIdx=0; lives=0; pausedMs=0; chWaiting=false; swallowN=false;
   clearGrid(); renderLives();
-  $("sTime").textContent="0.0秒"; $("sMiss").textContent="0";
-  $("sWpm").textContent="0"; $("sEwpm").textContent="0";
+  /* ⭐打っている間は「－」（2026-09-18 本人 A）。「0」だとミスしているのに「ミス 0」に見えるため */
+  ["sTime","sMiss","sWpm","sEwpm"].forEach(function(id){ var el=$(id); el.textContent="－"; el.classList.remove("don"); });
   justReset=true;
   $("hint").textContent="スペースでスタート　・　Esc でホームへ";
   loadItem(0);
@@ -935,15 +1005,26 @@ function showStartMsg(){
     var panel=document.querySelector(".textwrap")||document.querySelector(".panel"); if(!panel) return;
     m=document.createElement("div"); m.className="bigmsg startmsg"; m.id="startmsg";
     m.innerHTML='<em>スタート</em><span>おやゆびでスペースキー</span>';
-    m.onclick=beginRun;
+    m.onclick=pressStart;
     panel.appendChild(m);
   }
   m.classList.add("on");
   /* ⭐お題の文字は、スペースを押すまで隠す（2026-09-17 本人「押すと同時に文字が表示」） */
   if(m.parentElement) m.parentElement.classList.add("waiting");
 }
+/* 「スタート」を押したとき。チャレンジで塗りきったあとなら、次の回を作ってからすぐ始める */
+function pressStart(){
+  if(stageDone && chWaiting) nextChallengeRound();
+  beginRun();
+}
+/* 終わったあとの Enter。同じステージを新しいお題で。「スタート」を出してスペースを待つ */
+function againNow(){
+  hideToast();
+  restartStage();
+}
 function beginRun(){
   startReady=true;
+  stopFireworks();                      // ⭐紙吹雪が残っていたら、打ちはじめで消す
   if($("startmsg")){ $("startmsg").classList.remove("on"); if($("startmsg").parentElement) $("startmsg").parentElement.classList.remove("waiting"); }
   $("hint").textContent="Esc でやり直し";
 }
@@ -996,12 +1077,18 @@ function startTimer(){
   $("hint").textContent="打っています…";
   timer=setInterval(tick,100);
 }
-function tick(){
-  var sec=(Date.now()-startAt-pausedMs)/1000;
-  $("sTime").textContent=sec.toFixed(1)+"秒";
-  $("sWpm").textContent = sec>0?Math.round(chars/sec*60):0;
-  var esec=sec+miss*MISS_PENALTY;
-  $("sEwpm").textContent = esec>0?Math.round(chars/esec*60):0;
+/* ⭐打っている間は数字を動かさない（2026-09-18 本人「時間を動かすのはやめてほしかった」）。
+   ⚠前は0.1秒ごとに途中の数字を出していた。最後の数文字が入る前の数字で止まるので、小窓の数字とずれていた（例 左143／小窓146）
+   ⚠タイマー自体は止めない（終わりの時間は startAt から計算している） */
+function tick(){}
+/* ⭐打ち終わったら4つまとめて「ドン」と出す（2026-09-18 本人「終わってドンって表示してほしい」）。
+   ⭐小窓と同じ数字を入れるので、左と小窓が必ずそろう */
+function showFinalStats(sec,w,e,m){
+  var set=function(id,html){ var el=$(id); el.innerHTML=html; el.classList.remove("don"); void el.offsetWidth; el.classList.add("don"); };
+  set("sTime", sec.toFixed(1)+"秒");
+  set("sMiss", String(m));
+  set("sWpm",  w+'<span class="u">/1分</span>');
+  set("sEwpm", e+'<span class="u">/1分</span>');
 }
 /* ---------- コイン（2026-09-07 本人）----------
    もらえる数＝ミスなし10／ミス1〜2は7／ミス3つ以上は5
@@ -1074,6 +1161,7 @@ function finishStage(){
   var w=Math.round(chars/sec*60);
   var e=Math.round(chars/(sec+miss*MISS_PENALTY)*60);
   var perfect=(miss===0);
+  showFinalStats(sec,w,e,miss);
   var stName=STAGES[stageIdx].name;
 
   // 保存する前に、これまでの自己ベストを調べておく
@@ -1106,11 +1194,14 @@ function afterStage(){
   showToast();
   if(STAGES[stageIdx].challenge){
     /* ⭐塗りきったら次の回へ。枚数が1.5倍になって、タイルが小さくなる（上限400枚） */
+    /* ⭐塗ったタイルはそのまま見せて、「スタート」を出す。スペース1回で次の回が始まる
+         （2026-09-18 本人 A。前は「どれかのキー→作り直し→スペース」の2回押しだった） */
     CH.round++; chWaiting=true;
-    $("hint").textContent="キーを打つと "+CH.round+"回目（"+chCount()+"枚）へ　・　Esc 2回でホーム";
+    showStartMsg();
+    $("hint").textContent="スペースで "+CH.round+"回目（"+chCount()+"枚）へ　・　Esc 2回でホーム";
     return;
   }
-  $("hint").textContent="Esc または やり直し でもう一度　・　Esc 2回でホーム";
+  $("hint").textContent="スペースでもう一度　・　Esc 2回でホーム";
 }
 var toastTimer=null;
 function showToast(){
@@ -1120,11 +1211,29 @@ function showToast(){
       : (r.perfect ? '<span style="color:var(--gold)">★ パーフェクト</span>' : 'おつかれさま'))
     + (r.isRecord ? '<span class="trec">記録更新 ✨</span>' : '');
   $("toastSub").innerHTML =
-    "本当の速さ <b>"+r.e+"</b> 文字/分　ミス "+r.miss+" 回";
+    "本当の速さ <b>"+r.e+"</b>/1分　ミス "+r.miss+" 回";
+  placeToast();
   $("toast").classList.add("on");
+  /* ⭐自動では消さない（2026-09-18 本人「自動で消えるのをやめて」）。前は7秒で消えていた */
   clearTimeout(toastTimer);
-  toastTimer=setTimeout(hideToast, 7000);
 }
+/* ⭐結果は、お題の文字のすぐ下に出す（2026-09-18 本人「すごく下になってしまってる。文字のすぐ下くらいに」）。
+   ⚠画面の大きさで位置が変わるので、出すたびにお題の場所から計算する。画面の下からはみ出すときだけ上へ寄せる */
+function placeToast(){
+  var t=$("toast"), w=document.querySelector("#play .textwrap");
+  if(!w){ t.style.top=""; t.style.bottom=""; return; }
+  var r=w.getBoundingClientRect();
+  var top=r.bottom+12, h=t.offsetHeight||120;
+  if(top+h > window.innerHeight-8) top=Math.max(8, window.innerHeight-8-h);
+  /* ⭐横も、お題の文字の真下にそろえる（2026-09-18 本人「画面の真ん中じゃなく、文字の下に」）。
+     ⚠前は画面全体の真ん中（left:50%）だったので、左の記録欄のぶん左に寄っていた。はみ出すときだけ内側へ */
+  var half=(t.offsetWidth||260)/2, cx=r.left+r.width/2;
+  cx=Math.max(8+half, Math.min(window.innerWidth-8-half, cx));
+  t.style.left=cx+"px";
+  t.style.top=top+"px"; t.style.bottom="auto";
+}
+/* 出したままにしたので、画面の大きさが変わったら置き直す */
+window.addEventListener("resize", function(){ if($("toast").classList.contains("on")) placeToast(); });
 function hideToast(){ clearTimeout(toastTimer); $("toast").classList.remove("on"); }
 function showResult(){
   var r=lastResult; if(!r) return;
@@ -1134,11 +1243,11 @@ function showResult(){
   $("resSub").textContent = r.stage + " をクリアしました";
   if(r.isRecord){
     $("resRecord").innerHTML='最高記録が出ました ✨'+
-      '<small>本当の速さ '+r.prevBest+' → <b>'+r.e+'</b> 文字/分</small>';
+      '<small>本当の速さ '+r.prevBest+' → <b>'+r.e+'</b>/1分</small>';
     $("resRecord").style.display="block";
   }else if(r.isFirst){
     $("resRecord").innerHTML='はじめての記録 ✨'+
-      '<small>本当の速さ <b>'+r.e+'</b> 文字/分。ここが出発点です</small>';
+      '<small>本当の速さ <b>'+r.e+'</b>/1分。ここが出発点です</small>';
     $("resRecord").style.display="block";
   }else{
     $("resRecord").style.display="none";
@@ -1157,14 +1266,14 @@ function showResult(){
   $("rTime").textContent=r.sec.toFixed(1)+" 秒";
   $("rMiss").textContent=r.miss+" 回";
   $("rTower").textContent=r.tower+" / "+(r.total||r.tower)+" タイル";
-  $("rWpm").textContent=r.w+" 文字/分";
-  $("rEwpm").textContent=r.e+" 文字/分";
+  $("rWpm").textContent=r.w+"/1分";
+  $("rEwpm").textContent=r.e+"/1分";
   /* 🔴文は本人が書いた（2026-09-08）。
      ⚠「タイルが◯つ残ったのは…」の行は消した＝上のカードに数字が出ているので二度手間 */
   $("resNote").innerHTML = r.perfect
     ? "ミスがゼロなので、見かけの速さと本当の速さが同じです。<b>これがいちばん強い状態</b>です。"
     : "ミス"+r.miss+"回の場合、打ち直しに <b>およそ"+Math.round(r.miss*MISS_PENALTY)+"秒</b>かかります。<br>"+
-      "見かけは "+r.w+" 文字/分、本当の速さは <b>"+r.e+" 文字/分</b>に。<br>"+
+      "見かけは "+r.w+"/1分、本当の速さは <b>"+r.e+"/1分</b>に。<br>"+
       "<b>ゆっくりでもミスをしない人のほうが、長文にも有利で結果的に速く終わります。</b>";
   /* ⭐閉じるの行に、ひとこと（2026-09-08 本人）。ミスなしはほめる／ミスありは励ます */
   $("resCheer").textContent = pick(r.perfect ? CHEER_PERFECT : CHEER_TRY);
@@ -1391,7 +1500,7 @@ function renderStageCards(){
     /* ⭐説明は大人用だけ（2026-09-16 本人）。⚠学生用は名前だけ＝ノートPCで1画面に収めるため */
     var ds = GAKUSEI ? "" : ('<div class="ds">'+esc(s.desc||"")+'</div>');
     d.innerHTML='<div class="nm">'+esc(s.name)+'</div>'+ds+stock+
-                '<div class="best">'+(best[s.name]?("自己ベスト "+best[s.name]+" 文字/分"+
+                '<div class="best">'+(best[s.name]?("自己ベスト "+best[s.name]+"/1分"+
                   (s.name===lastRec?'<span class="rec">★ 記録更新</span>':"")):"")+'</div>';
     /* ⭐カードの真ん中のグレーの説明はやめた（2026-09-16 本人「真ん中のグレーの文字もなくそう」）。
        ⚠desc は残してある（あとで戻せる／ページの説明に使える） */
@@ -1423,7 +1532,19 @@ document.addEventListener("keydown",function(e){
   if(e.isComposing || e.keyCode===229 || e.key==="Process"){ $("imeWarn").classList.add("on"); return; }
   if(document.activeElement && document.activeElement.id==="uname") return;
   if(!$("play").classList.contains("on")) return;
-  if(stageDone && chWaiting){ e.preventDefault(); nextChallengeRound(); return; }   // ⭐チャレンジは、キーで次の回へ
+  /* ⭐終わったあとは Enter で、新しいお題にして「スタート」を出す（スペースで始まる）
+       （2026-09-18 本人「おつかれさまのあとで進めるのがやりにくい」→「スペースでスタートがあったほうがいい」）
+     ⚠チャレンジで塗りきったあとは、もう「スタート」が出ているのでスペースだけ */
+  /* ⭐「もう一度」もスペースにそろえた（2026-09-18 本人「全部スペースでもう一度でいいんじゃない？」）。
+       ⚠前は Enter だった。慣れた人のために Enter も残してある（案内には出さない） */
+  if(stageDone && !chWaiting && (e.key===" "||e.code==="Space"||e.key==="Enter")
+     && !$("ovRes").classList.contains("on") && !$("ovLog").classList.contains("on")){
+    e.preventDefault(); againNow(); return;
+  }
+  if(stageDone && chWaiting){          // ⭐チャレンジは、スペースだけで次の回へ（ほかのキーは何もしない）
+    if(e.key===" "||e.code==="Space"){ e.preventDefault(); pressStart(); }
+    return;
+  }
   if(stageDone) return;                 // 終わったあとは、打っても勝手に始まらない
   if($("ovRes").classList.contains("on")||$("ovLog").classList.contains("on")) return;
   if(e.ctrlKey||e.altKey||e.metaKey) return;
@@ -1571,14 +1692,11 @@ function showTouchNote(){
   var touch = (window.matchMedia && matchMedia("(pointer: coarse)").matches) || navigator.maxTouchPoints > 0;
   if(!touch) return;
   var n=document.createElement("div"); n.className="touchnote";
-  n.innerHTML="キーボードをつないで練習してください。<br>画面のキーボードは指の見本です。";
-  /* ⚠スマホではページが画面より横に広い（653px など）ので、見えている幅（visualViewport）の中に置く */
-  var vv=window.visualViewport;
-  if(vv && vv.width < window.innerWidth){
-    n.style.left=(vv.offsetLeft+16)+"px"; n.style.right="auto"; n.style.margin="0";
-    n.style.width=Math.max(200, vv.width-32)+"px";
-  }
-  document.body.appendChild(n);
+  n.innerHTML="キーボードをつないで練習してください。<wbr>画面のキーボードは指の見本です。";
+  /* ⭐スタートのボタンのすぐ上に出す（2026-09-17 本人「スタートの上にメッセージ表示して」）。
+     ⚠ボタンと同じ入れ物（お題のカード）の中に置く＝ボタンと一緒に動く */
+  var box=document.querySelector(".textwrap");
+  if(box){ n.classList.add("inwrap"); box.appendChild(n); } else { document.body.appendChild(n); }
   requestAnimationFrame(function(){ n.classList.add("on"); });
   setTimeout(function(){ n.classList.remove("on"); setTimeout(function(){ if(n.parentNode) n.parentNode.removeChild(n); }, 400); }, 4000);
 }
@@ -1587,3 +1705,23 @@ if(KIDS){ document.body.classList.add("kids"); if($("optSound")) $("optSound").c
 drawCoins();
 /* 画面の幅が変わったら、入る列だけ描き直す */
 window.addEventListener("resize", function(){ if(window.coinResize) clearTimeout(window.coinResize); window.coinResize=setTimeout(drawCoins,150); });
+
+/* ⭐テスト用：紙吹雪を見るボタン（2026-09-18 本人「テスト用で、紙吹雪見たい。いちいち入力しないといけないのしんどい」）
+   ⚠テスト版の札（#testBadge）があるページにだけ出る＝公開のページには出ない。結果や記録には何も残さない */
+(function(){
+  var b=document.getElementById("testBadge"); if(!b) return;
+  var btn=document.createElement("button");
+  btn.type="button"; btn.className="noprint"; btn.textContent="🎉 紙吹雪を見る";
+  btn.style.cssText="position:fixed;left:6px;bottom:10px;z-index:9999;font-size:11px;padding:3px 9px;border-radius:999px;border:1px solid #c86a8e;background:#fff;color:#c86a8e;cursor:pointer";
+  /* ⚠本人の画面で動かなかった（2026-09-18）。何が起きたかをボタンの文字に出す（原因を探すため） */
+  btn.onclick=function(){
+    btn.blur();
+    try{
+      var host=document.querySelector("#play .panel");
+      fireworks(0,null);
+      var cv=document.querySelector("canvas.confetti");
+      btn.textContent="🎉 押した（枠 "+(host?host.clientWidth+"×"+host.clientHeight:"なし")+"／紙 "+(cv?"あり":"なし")+"）";
+    }catch(err){ btn.textContent="⚠ "+err.message; }
+  };
+  document.body.appendChild(btn);
+})();

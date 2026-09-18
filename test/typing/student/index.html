@@ -19,7 +19,7 @@
      ⚠同じ日に一度「タイルタッチタイピング（TTT）」にした。また変えるかも（本人）。大人用はまだ「タイピング練習」のまま -->
 <title>【テスト】さくら🌸タッチタイピング（学生用）｜さくらツール</title>
 <link rel="stylesheet" href="../../style.css?v=140">
-<link rel="stylesheet" href="../typing.css?v=107">
+<link rel="stylesheet" href="../typing.css?v=114">
 </head>
 <!-- 🔴⭐学生用のページ（2026-09-15 本人）
      本人「大学生のパソコンが小さいから、上にいろいろ書いてあったら邪魔。もうタイピングの話だけでいい」
@@ -110,10 +110,10 @@
   </div>
 
   <div class="statsbar">
-    <div><span>時間</span><b id="sTime">0.0秒</b></div>
-    <div><span>ミス</span><b class="miss" id="sMiss">0</b></div>
-    <div><span>見かけの速さ</span><b id="sWpm">0</b></div>
-    <div><span>本当の速さ</span><b class="hl" id="sEwpm">0</b></div>
+    <div><span>時間</span><b id="sTime">－</b></div>
+    <div><span>ミス</span><b class="miss" id="sMiss">－</b></div>
+    <div><span>見かけの速さ</span><b id="sWpm">－</b></div>
+    <div><span>本当の速さ</span><b class="hl" id="sEwpm">－</b></div>
   </div>
 
   <div class="panel">
@@ -137,7 +137,7 @@
     <li>画面の<b>ローマ字をそのまま</b>打ちます。変換はしません。</li>
     <li>ミスすると<b>タイルがくずれます</b>。決めた回数までまちがえると、全部くずれて最初からになります。</li>
     <li><b>Esc</b>キーでリセット、もう一度<b>Esc</b>でステージ選択にもどります。</li>
-    <li>速さの単位は<b>文字/分</b>。<b>ひらがなの文字数</b>で数えています（打ったキーの数ではありません）。</li>
+    <li>速さは<b>1分あたりの文字数</b>（○/1分）。<b>ひらがなの文字数</b>で数えています（打ったキーの数ではありません）。</li>
     <li>記録はこの端末の中に自動で残ります（「今までの記録を見る」）。</li>
   </ul>
 </details>
@@ -150,6 +150,7 @@
   <div class="tsub" id="toastSub"></div>
   <button class="tmore primary" id="toastAgain">もう一度</button>
   <button class="tmore" id="toastMore">詳しく見る</button>
+  <div class="tkey">スペースでもう一度でもOK</div>
 </div>
 
 <div class="overlay" id="ovRes"><div class="modal">
@@ -194,6 +195,6 @@
   <div class="wrap"><span class="copy">さくらツール　© 2026 SAKURA TOOLS</span></div>
 </footer>
 
-<script src="../typing.js?v=56"></script>
+<script src="../typing.js?v=77"></script>
 </body>
 </html>
