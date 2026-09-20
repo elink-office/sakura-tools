@@ -149,6 +149,23 @@ var STAGES=[
     "frf","ftf","fgf","juj","jyj","jhj","fbf","jnj","jmj","fvf","fufu","huhu","gugu","bubu",
     "tutu","furu","yumu","nuru"
   ]},
+ /* ⭐なか指・くすり指・こ指を戻した（2026-09-19 本人「B にしよう」）。9/16 にホームポジション ランダムと入れ替わりで消えていた。
+      ⚠中身は 9/16 の控え（_もどす/2026-09-16_英語に日本語訳を出す前/typing.js）からそのまま */
+ {name:"なか指の 上・中央・下",basic:true,mode:"direct",
+  desc:"d から上の e・下の c へ。k から上の i・下の , へ。中指はいちばん長いので暴れます。",
+  items:[
+    "ded","kik","dede","kiki","dcd","k,k","deki","kide","dekide","kideki","eki","ike","kie",
+    "dei","ide","ekide","idekie"
+  ]},
+ {name:"くすり指の 上・中央・下",basic:true,mode:"direct",
+  desc:"s から上の w・下の x へ。l から上の o・下の . へ。いちばん言うことを聞かない指です。",
+  items:["sws","lol","swsw","lolo","sxs","l.l",
+         "soso","wowo","oso","sowo","wasa","sawa","wosa",
+         "owoso","sosowo","sawaso","wasowa"]},
+ {name:"こ指の 上・中央・下",basic:true,mode:"direct",
+  desc:"a から上の q・下の z へ。右の小指は p。小指は力が入りにくいので、ゆっくり確実に。",
+  items:["aza","zaza","azaz","apa","papa","popo","pipi","pupu","pepe",
+         "zapa","paza","azapa","pazapa","zopo","pozo","aqa","qaza"]},
 
 
 
@@ -249,76 +266,114 @@ var STAGES=[
     "ゆきがふったので、ながぐつをはいてでかけた。","あたらしいくつをはいて、すこしとおくまでさんぽした。","きょうのできごとを、にっきにみじかくかいた。"
   ]},
 
+ /* ⭐数字と記号（2026-09-19 本人「ホームポジションのA英数っていうのも欲しい」「記号とか、イコールとか、プラスとか、シフトを使ったもの」
+      →「英語の上に枠を増やす。数字と記号」）。お題は「タイピングの言葉の一覧」の 14・15・16（本人「おかしいのだけ伝える」→ なし）
+    ⭐画面にキーボードを出す側（basic）。Shift を使う記号は、キーと Shift の両方を光らせる
+    ⭐出る順番はランダム（2026-09-19 本人「数字、記号、記号（shift）も、出題の順番はランダムにしてね」） */
+ {name:"数字",group:"sym",basic:true,mode:"direct",shuffle:true,
+  desc:"いちばん上の段。1〜0 を、ホームポジションから指を伸ばして打ちます。",
+  items:["1212","2121","3434","7878","8989","9090","5656","6767","1357","2468","0246","1379","4545","3030","2026","1234567890","0987654321"]},
+ {name:"記号",group:"sym",basic:true,mode:"direct",shuffle:true,
+  desc:"Shift を使わない記号。- , . / ; : @ [ ] ^",
+  items:["a-b","1-2","a.b","a,b","a/b","a;b","a:b","a@b","10-5","3.14","12:30","2026/09/19","yes,no","a.b.c","sakura@mail","[a]","x^2"]},
+ {name:"記号（Shift）",group:"sym",basic:true,mode:"direct",shuffle:true,
+  desc:"Shift を使う記号。= + * ( ) ! ? % # $ & < > _ ' { }",
+  items:["a=b","1+2","2*3","(a)","yes!","why?","100%","#tag","$100","a&b","a<b","a>b","a_b","'a'","{a}","1+1=2","(1+2)*3"]},
+ /* ⚠2026-09-19 本人「やっぱり、ABCだけでいいよ」＝割合のランダムはやめて、アルファベットの順の固まりだけにした（名前も「abc」）。下は、そこに至るまでのメモ
+    ⭐abc ランダム（2026-09-19 本人「英語をね、あいうえおみたいな、abcのランダムがあってもいいんじゃないか」「やるなら英単語のうえ」
+      「英語でよく出てくるホームポジションもあるのかな？」「CVXがやっぱり使いにくいから。Qも」）
+    ⭐英語の文に出てくる割合で文字を出す＝C・V は日本語のローマ字より多め、X・Q・Z は少なめ
+      （出典：Robert Lewand『Cryptological Mathematics』2000。Wikipedia「Letter frequency」の表・2026-09-19）
+    ⚠ホームポジション ランダムは全部の文字が同じ割合（; , . / も入る）。こちらは a〜z だけ
+    ⭐画面にキーボードを出す（basic）＝日本語の「あいうえお」と同じ位置づけ */
+ /* ⭐固まりの順番も、始まりの文字もランダム（2026-09-19 本人「ランダムにだしてほしい」「順番もだけど、スタート位置も」）
+      ＝毎回、始まりの文字をずらして a〜z を5文字ずつ（最後は6文字）に切り、順番を混ぜる。z のあとは a に戻る（例 xyzabc） */
+ {name:"abc",lang:"en",group:"en",basic:true,mode:"direct",random:"abc",
+  desc:"アルファベットを5文字ずつ。始まりの文字も順番も、毎回ちがいます。",
+  items:[]},
+ /* ⭐英単語は1語だけ（2026-09-19 本人と共有の「タイピングの言葉の一覧」11。2〜4語のまとまりは「日常のことば（英語）」へ移した） */
  {name:"英単語",lang:"en",mode:"direct",shuffle:true,pick:15,
-  desc:"ふだん使う英語。単語と、2〜3語のまとまりがランダムに出ます。",
+  desc:"ふだん使う英語の単語を1つずつ。",
   items:[
-    "morning","afternoon","evening","night","today","tomorrow","yesterday","weekend","holiday",
-    "vacation","school","class","teacher","student","friend","classmate","homework","test",
-    "notebook","pencil","eraser","textbook","library","classroom","lunch","breakfast","dinner",
-    "water","juice","tea","bread","rice","fruit","apple","banana","tomato","egg","meat",
-    "vegetable","snack","station","train","bus","bike","street","shop","store","money","wallet",
-    "ticket","phone","message","email","internet","computer","camera","music","movie","game",
-    "sport","soccer","baseball","tennis","swimming","practice","club","team","hobby","travel",
-    "hotel","airport","weather","rain","snow","wind","cloud","sunny","hot","cold","warm","cool",
-    "spring","summer","autumn","winter","health","hospital","doctor","medicine","sleep","dream",
-    "happy","sad","angry","tired","hungry","thirsty","busy","free","easy","difficult",
-    "important","interesting","boring","kind","funny","quiet","careful","early","late","fast",
-    "slow","near","far","new","old","young","big","small","long","short","clean","safe","cheap",
-    "expensive","delicious","favorite","together","sometimes","always","never","often","usually",
-    "maybe","really","almost","again","still","already","soon","later","before","after",
-    "because","sorry","please","hello","goodbye","welcome","ready","sure","fine","great","nice",
-    "good","better","best","right","wrong","help","start","stop","finish","forget","remember",
-    "understand","think","know","learn","teach","study","ask","answer","talk","speak","listen",
-    "read","write","watch","look","find","choose","decide","try","need","want","like","love",
-    "enjoy","hope","wait","meet","visit","invite","call","send","bring","carry","buy","sell",
-    "use","make","take","give","get","keep","put","open","close","turn","move","change","wash",
-    "cook","eat","drink","wake","walk","run","jump","ride","drive","arrive","leave","return",
-    "stay","live","work","rest","play","smile","laugh","cry","worry","relax","hurry","share",
-    "borrow","begin","follow","thank you","good morning","good afternoon","good evening",
-    "good night","see you","see you later","excuse me","no problem","you are welcome",
-    "take care","well done","good luck","of course","not at all","just a moment","i see",
-    "me too","how are you","how much","how many","what time","right now","over there",
-    "next time","last night","this morning","every day","good idea","sounds good","let me see",
-    "never mind","by the way","after school","on the way","in a hurry","at home","go to school",
-    "have breakfast","have lunch","have dinner","do homework","take a bath","take a bus",
-    "catch the train","miss the bus","wake up early","go to bed","brush my teeth",
-    "wash my hands","clean my room","walk the dog","watch tv","listen to music","play the piano",
-    "read a book","write a letter","send a message","check the time","buy a ticket",
-    "open the window","close the door","sit down","stand up","come here","look at this",
-    "try again","slow down","hurry up","cheer up","good job","happy birthday","see you tomorrow",
-    "have a seat","talk to you","thank you again"
+    "morning","afternoon","evening","night","today","tomorrow","yesterday","weekend",
+    "holiday","vacation","school","class","teacher","student","friend","classmate",
+    "homework","test","notebook","pencil","eraser","textbook","library","classroom",
+    "lunch","breakfast","dinner","water","juice","tea","bread","rice",
+    "fruit","apple","banana","tomato","egg","meat","vegetable","snack",
+    "station","train","bus","bike","street","shop","store","money",
+    "wallet","ticket","phone","message","email","internet","computer","camera",
+    "music","movie","game","sport","soccer","baseball","tennis","swimming",
+    "practice","club","team","hobby","travel","hotel","airport","weather",
+    "rain","snow","wind","cloud","sunny","hot","cold","warm",
+    "cool","spring","summer","autumn","winter","health","hospital","doctor",
+    "medicine","sleep","dream","happy","sad","angry","tired","hungry",
+    "thirsty","busy","free","easy","difficult","important","interesting","boring",
+    "kind","funny","quiet","careful","early","late","fast","slow",
+    "near","far","new","old","young","big","small","long",
+    "short","clean","safe","cheap","expensive","delicious","favorite","together",
+    "sometimes","always","never","often","usually","maybe","really","almost",
+    "again","still","already","soon","later","before","after","because",
+    "sorry","please","hello","goodbye","welcome","ready","sure","fine",
+    "great","nice","good","better","best","right","wrong","help",
+    "start","stop","finish","forget","remember","understand","think","know",
+    "learn","teach","study","ask","answer","talk","speak","listen",
+    "read","write","watch","look","find","choose","decide","try",
+    "need","want","like","love","enjoy","hope","wait","meet",
+    "visit","invite","call","send","bring","carry","buy","sell",
+    "use","make","take","give","get","keep","put","open",
+    "close","turn","move","change","wash","cook","eat","drink",
+    "wake","walk","run","jump","ride","drive","arrive","leave",
+    "return","stay","live","work","rest","play","smile","laugh",
+    "cry","worry","relax","hurry","share","borrow","begin","follow"
   ]},
 
- {name:"日常のことば（英語）",lang:"en",mode:"direct",shuffle:true,pick:8,
-  desc:"日常の会話文。少し長めの英語を、止まらずに打ちきる練習です。",
+ /* ⭐日常のことば（英語）は2〜4語の短いまとまり・記号なし・小文字（2026-09-19 一覧の12。日本語の「日常のことば」と同じくらいの長さ） */
+ {name:"日常のことば（英語）",lang:"en",mode:"direct",shuffle:true,pick:12,
+  desc:"2〜4語の短いまとまり。ふだんの会話でよく使う言い方です。",
   items:[
-    "how was your weekend","i got up early this morning","what time do you go to school",
-    "i usually take the bus to school","the train was late again today",
-    "i forgot my notebook at home","can you help me with my homework",
-    "i have a test next monday","let us have lunch together","what do you want to eat",
-    "i am hungry and a little tired","this coffee is really good","i will call you after school",
-    "sorry i am running a little late","it is raining hard outside",
-    "do not forget your umbrella","the weather will be nice tomorrow",
-    "it is getting cold these days","i like reading books on the train",
-    "what kind of music do you like","i watched a good movie last night",
-    "my brother plays soccer every day","i want to travel abroad someday",
-    "have you ever been to okinawa","the party starts at seven","please send me a message later",
-    "i will be there in ten minutes","could you say that again please",
-    "i do not understand this question","thank you for your help today",
-    "see you at the station at noon","i am looking for my wallet","how much is this ticket",
-    "excuse me where is the restroom","can i take a picture here","i would like a cup of tea",
-    "the shop opens at ten in the morning","my phone battery is almost dead",
-    "i need to clean my room today","i went shopping with my friend",
-    "we walked in the park after dinner","i am going to bed early tonight",
-    "do you have any plans this weekend","let us meet in front of the library",
-    "i practice the piano every evening","she is good at speaking english",
-    "i want to be better at english","keep trying and you will get better",
-    "that sounds like a good idea","i am glad to hear that","take care and see you next week",
-    "please tell me if you need help","the room was very quiet last night",
-    "i left my bag on the train","we have a school festival in october",
-    "my father cooks dinner on sundays","i drink water when i wake up",
-    "let us start with an easy question","i will remember this word today",
-    "do you want to go for a walk"
+    "thank you","good morning","good afternoon","good evening","good night","see you",
+    "see you later","excuse me","no problem","you are welcome","take care","well done",
+    "good luck","of course","not at all","just a moment","i see","me too",
+    "how are you","how much","how many","what time","right now","over there",
+    "next time","last night","this morning","every day","good idea","sounds good",
+    "let me see","never mind","by the way","after school","on the way","in a hurry",
+    "at home","go to school","have breakfast","have lunch","have dinner","do homework",
+    "take a bath","take a bus","catch the train","miss the bus","wake up early","go to bed",
+    "brush my teeth","wash my hands","clean my room","walk the dog","watch tv","listen to music",
+    "play the piano","read a book","write a letter","send a message","check the time","buy a ticket",
+    "open the window","close the door","sit down","stand up","come here","look at this",
+    "try again","slow down","hurry up","cheer up","good job","happy birthday",
+    "see you tomorrow","have a seat","talk to you","thank you again","see you soon","good to see you",
+    "nice to meet you","what is this","where are you","i am home","welcome home","let us go",
+    "wait a minute","all right","thanks a lot","same here","it is okay","that is right",
+    "here you are","after you","see you next week","have a nice day","me neither","good for you",
+    "just kidding","time to go","on my way","i am ready","lunch time","so far so good",
+    "take your time","help yourself","i think so","i hope so","not yet"
+  ]},
+ /* ⭐英文（記号あり）＝大文字で始まり、' . , ? が入る（2026-09-19 一覧の13。本人「it'sくらいは中学生でも習う」「そういう簡単なのは入れよう。ピリオドも」）
+      ⚠大文字は Shift で打つ。小文字で打つとミス（ほかのステージは大文字・小文字を気にしない） */
+ {name:"英文（記号あり）",lang:"en",mode:"direct",shuffle:true,pick:8,
+  desc:"大文字・' . , ? の入った、ふつうの英語の文。",
+  items:[
+    "How was your weekend?","I got up early this morning.","What time do you go to school?","I usually take the bus to school.",
+    "The train was late again today.","I forgot my notebook at home.","Can you help me with my homework?","I have a test next Monday.",
+    "Let's have lunch together.","What do you want to eat?","I'm hungry and a little tired.","This coffee is really good.",
+    "I'll call you after school.","Sorry, I'm running a little late.","It's raining hard outside.","Don't forget your umbrella.",
+    "The weather will be nice tomorrow.","It's getting cold these days.","I like reading books on the train.","What kind of music do you like?",
+    "I watched a good movie last night.","My brother plays soccer every day.","I want to travel abroad someday.","Have you ever been to Okinawa?",
+    "The party starts at seven.","Please send me a message later.","I'll be there in ten minutes.","Could you say that again, please?",
+    "I don't understand this question.","Thank you for your help today.","See you at the station at noon.","I'm looking for my wallet.",
+    "How much is this ticket?","Excuse me, where is the restroom?","Can I take a picture here?","I'd like a cup of tea.",
+    "The shop opens at ten in the morning.","My phone battery is almost dead.","I need to clean my room today.","I went shopping with my friend.",
+    "We walked in the park after dinner.","I'm going to bed early tonight.","Do you have any plans this weekend?","Let's meet in front of the library.",
+    "I practice the piano every evening.","She's good at speaking English.","I want to be better at English.","Keep trying, and you'll get better.",
+    "That sounds like a good idea.","I'm glad to hear that.","Take care, and see you next week.","Please tell me if you need help.",
+    "The room was very quiet last night.","I left my bag on the train.","We have a school festival in October.","My father cooks dinner on Sundays.",
+    "I drink water when I wake up.","Let's start with an easy question.","I'll remember this word today.","Do you want to go for a walk?",
+    "It's sunny today.","Don't worry.","I'm tired.","That's great.",
+    "I can't wait.","It's my turn.","Don't be late.","I didn't know that.",
+    "What's your name?","Where's the station?","It's time for lunch.","I'm sorry.",
+    "That's not true.","You're right.","Let's go home.","There's a cat in the garden."
   ]}
 ];
 
@@ -338,15 +393,199 @@ STAGES.push({name:"ミスなしチャレンジ（英語）",lang:"en",mode:"mix"
 /* ⭐カードの並び順（2026-09-16 本人）。⭐日本語のあとに日本語のチャレンジ、英語のあとに英語のチャレンジ。
    ⚠記録はステージ名で持っているので、並べ替えても今までの記録は消えない */
 (function(){
-  var ORDER = ["ホームポジション","ひとさし指の 上・中央・下","ホームポジション ランダム",
+  var ORDER = ["ホームポジション","ひとさし指の 上・中央・下","なか指の 上・中央・下","くすり指の 上・中央・下","こ指の 上・中央・下","ホームポジション ランダム",
                "あいうえお","きゃきゅきょ","単語","日常のことば","日常のことば（ながめ）",
-               "ミスなしチャレンジ","英単語","日常のことば（英語）","ミスなしチャレンジ（英語）"];
+               "ミスなしチャレンジ","数字","記号","記号（Shift）","abc","英単語","日常のことば（英語）","英文（記号あり）","ミスなしチャレンジ（英語）"];
   STAGES.sort(function(a,b){ return ORDER.indexOf(a.name) - ORDER.indexOf(b.name); });
 })();
 
 /* ⭐英語の日本語訳（2026-09-16 本人「英語が苦手だからこれで覚えたい」）。
    ⭐打つ英語の上に、小さいグレーで出す。⚠訳はコードが書いた＝本人の確認まち */
 var EN_JA = {
+  /* ⭐2026-09-19 に足した訳（日常のことば（英語）の新しいもの・英文（記号あり）） */
+  "thank you":"ありがとう",
+  "good morning":"おはよう",
+  "good afternoon":"こんにちは",
+  "good evening":"こんばんは",
+  "good night":"おやすみ",
+  "see you":"またね",
+  "see you later":"あとでね",
+  "excuse me":"すみません",
+  "no problem":"問題ないよ",
+  "you are welcome":"どういたしまして",
+  "take care":"気をつけてね",
+  "well done":"よくできました",
+  "good luck":"がんばって",
+  "of course":"もちろん",
+  "not at all":"ぜんぜん平気",
+  "just a moment":"ちょっと待って",
+  "i see":"なるほど",
+  "me too":"わたしも",
+  "how are you":"元気ですか",
+  "how much":"いくら",
+  "how many":"いくつ",
+  "what time":"何時",
+  "right now":"今すぐ",
+  "over there":"あそこ",
+  "next time":"次のとき",
+  "last night":"昨日の夜",
+  "this morning":"今朝",
+  "every day":"毎日",
+  "good idea":"いい考え",
+  "sounds good":"いいね",
+  "let me see":"どれどれ",
+  "never mind":"気にしないで",
+  "by the way":"ところで",
+  "after school":"放課後",
+  "on the way":"向かう途中",
+  "in a hurry":"いそいでいる",
+  "at home":"家で",
+  "go to school":"学校へ行く",
+  "have breakfast":"朝ごはんを食べる",
+  "have lunch":"昼ごはんを食べる",
+  "have dinner":"夕ごはんを食べる",
+  "do homework":"宿題をする",
+  "take a bath":"おふろに入る",
+  "take a bus":"バスに乗る",
+  "catch the train":"電車に間に合う",
+  "miss the bus":"バスに乗りおくれる",
+  "wake up early":"早く起きる",
+  "go to bed":"ねる",
+  "brush my teeth":"歯をみがく",
+  "wash my hands":"手を洗う",
+  "clean my room":"部屋をそうじする",
+  "walk the dog":"犬の散歩をする",
+  "watch tv":"テレビを見る",
+  "listen to music":"音楽を聞く",
+  "play the piano":"ピアノをひく",
+  "read a book":"本を読む",
+  "write a letter":"手紙を書く",
+  "send a message":"メッセージを送る",
+  "check the time":"時間をたしかめる",
+  "buy a ticket":"切符を買う",
+  "open the window":"窓を開ける",
+  "close the door":"ドアを閉める",
+  "sit down":"すわる",
+  "stand up":"立つ",
+  "come here":"こっちへおいで",
+  "look at this":"これを見て",
+  "try again":"もう一度やってみる",
+  "slow down":"ゆっくりして",
+  "hurry up":"いそいで",
+  "cheer up":"元気を出して",
+  "good job":"よくやった",
+  "happy birthday":"たんじょうびおめでとう",
+  "see you tomorrow":"また明日",
+  "have a seat":"どうぞすわって",
+  "talk to you":"話しかける",
+  "thank you again":"あらためてありがとう",
+  "see you soon":"またすぐね",
+  "good to see you":"会えてうれしい",
+  "nice to meet you":"はじめまして",
+  "what is this":"これは何？",
+  "where are you":"どこにいるの？",
+  "i am home":"ただいま",
+  "welcome home":"おかえり",
+  "let us go":"行こう",
+  "wait a minute":"ちょっと待って",
+  "all right":"わかった",
+  "thanks a lot":"本当にありがとう",
+  "same here":"こちらこそ",
+  "it is okay":"大丈夫",
+  "that is right":"そのとおり",
+  "here you are":"はい、どうぞ",
+  "after you":"お先にどうぞ",
+  "see you next week":"また来週",
+  "have a nice day":"よい一日を",
+  "me neither":"わたしも〜ない",
+  "good for you":"よかったね",
+  "just kidding":"冗談だよ",
+  "time to go":"そろそろ行く時間",
+  "on my way":"今向かってる",
+  "i am ready":"準備できた",
+  "lunch time":"お昼の時間",
+  "so far so good":"今のところ順調",
+  "take your time":"ゆっくりでいいよ",
+  "help yourself":"自由にとってね",
+  "i think so":"そう思う",
+  "i hope so":"そうだといいね",
+  "not yet":"まだだよ",
+  "How was your weekend?":"週末はどうだった？",
+  "I got up early this morning.":"今朝は早く起きた",
+  "What time do you go to school?":"何時に学校へ行くの？",
+  "I usually take the bus to school.":"いつもバスで学校へ行く",
+  "The train was late again today.":"今日も電車がおくれた",
+  "I forgot my notebook at home.":"ノートを家にわすれた",
+  "Can you help me with my homework?":"宿題を手伝ってくれる？",
+  "I have a test next Monday.":"来週の月曜にテストがある",
+  "Let's have lunch together.":"いっしょにお昼を食べよう",
+  "What do you want to eat?":"何が食べたい？",
+  "I'm hungry and a little tired.":"おなかがすいて少しつかれた",
+  "This coffee is really good.":"このコーヒーは本当においしい",
+  "I'll call you after school.":"放課後に電話するね",
+  "Sorry, I'm running a little late.":"ごめん、少しおくれています",
+  "It's raining hard outside.":"外は雨がつよく降っている",
+  "Don't forget your umbrella.":"かさをわすれないで",
+  "The weather will be nice tomorrow.":"明日は天気がよくなる",
+  "It's getting cold these days.":"最近さむくなってきた",
+  "I like reading books on the train.":"電車で本を読むのが好き",
+  "What kind of music do you like?":"どんな音楽が好き？",
+  "I watched a good movie last night.":"昨日の夜いい映画を見た",
+  "My brother plays soccer every day.":"弟は毎日サッカーをしている",
+  "I want to travel abroad someday.":"いつか外国を旅行したい",
+  "Have you ever been to Okinawa?":"沖縄へ行ったことある？",
+  "The party starts at seven.":"パーティーは7時に始まる",
+  "Please send me a message later.":"あとでメッセージを送ってね",
+  "I'll be there in ten minutes.":"10分で着きます",
+  "Could you say that again, please?":"もう一度言ってもらえますか",
+  "I don't understand this question.":"この問題がわからない",
+  "Thank you for your help today.":"今日は手伝ってくれてありがとう",
+  "See you at the station at noon.":"お昼に駅で会おう",
+  "I'm looking for my wallet.":"さいふをさがしている",
+  "How much is this ticket?":"この切符はいくらですか",
+  "Excuse me, where is the restroom?":"すみません、お手洗いはどこですか",
+  "Can I take a picture here?":"ここで写真をとってもいいですか",
+  "I'd like a cup of tea.":"お茶を一杯ください",
+  "The shop opens at ten in the morning.":"お店は朝10時に開く",
+  "My phone battery is almost dead.":"スマホの電池がもうすぐ切れる",
+  "I need to clean my room today.":"今日は部屋をそうじしないと",
+  "I went shopping with my friend.":"友だちと買い物に行った",
+  "We walked in the park after dinner.":"夕食のあと公園を歩いた",
+  "I'm going to bed early tonight.":"今夜は早くねるつもり",
+  "Do you have any plans this weekend?":"今週末は予定ある？",
+  "Let's meet in front of the library.":"図書館の前で会おう",
+  "I practice the piano every evening.":"毎晩ピアノを練習している",
+  "She's good at speaking English.":"彼女は英語を話すのが上手",
+  "I want to be better at English.":"英語をもっと上手になりたい",
+  "Keep trying, and you'll get better.":"続ければ上手になるよ",
+  "That sounds like a good idea.":"それはいい考えだね",
+  "I'm glad to hear that.":"それを聞いてうれしい",
+  "Take care, and see you next week.":"気をつけて、また来週",
+  "Please tell me if you need help.":"助けが必要なら言ってね",
+  "The room was very quiet last night.":"昨夜は部屋がとても静かだった",
+  "I left my bag on the train.":"かばんを電車に置きわすれた",
+  "We have a school festival in October.":"10月に学園祭がある",
+  "My father cooks dinner on Sundays.":"父は日曜に夕食を作る",
+  "I drink water when I wake up.":"起きたら水を飲む",
+  "Let's start with an easy question.":"かんたんな問題から始めよう",
+  "I'll remember this word today.":"今日この単語を覚えよう",
+  "Do you want to go for a walk?":"散歩に行かない？",
+  "It's sunny today.":"今日は晴れている",
+  "Don't worry.":"心配しないで",
+  "I'm tired.":"つかれた",
+  "That's great.":"すごいね",
+  "I can't wait.":"待ちきれない",
+  "It's my turn.":"わたしの番だ",
+  "Don't be late.":"おくれないでね",
+  "I didn't know that.":"知らなかった",
+  "What's your name?":"名前は何ですか？",
+  "Where's the station?":"駅はどこですか？",
+  "It's time for lunch.":"お昼の時間だ",
+  "I'm sorry.":"ごめんなさい",
+  "That's not true.":"それは本当じゃない",
+  "You're right.":"そのとおりだね",
+  "Let's go home.":"家に帰ろう",
+  "There's a cat in the garden.":"庭にねこがいる",
   "morning":"朝","afternoon":"午後","evening":"夕方","night":"夜","today":"今日","tomorrow":"明日",
   "yesterday":"昨日","weekend":"週末","holiday":"休みの日","vacation":"長い休み","school":"学校","class":"授業",
   "teacher":"先生","student":"学生","friend":"友だち","classmate":"同級生","homework":"宿題","test":"テスト",
@@ -506,6 +745,12 @@ function buildKeyboard(){
       }
       row.appendChild(k);
     }
+    /* ⭐いちばん下の段の左右に Shift（2026-09-19 数字と記号のため）。Shift を使う文字は、キーと反対の手の Shift を光らせる */
+    if(r===KBROWS.length-1){
+      var sl=document.createElement("div"); sl.className="key shift"; sl.setAttribute("data-k","ShiftL"); sl.textContent="Shift";
+      var sr=document.createElement("div"); sr.className="key shift"; sr.setAttribute("data-k","ShiftR"); sr.textContent="Shift";
+      row.insertBefore(sl,row.firstChild); row.appendChild(sr); row.classList.add("withshift");
+    }
     kb.appendChild(row);
   }
   var lg=$("legend"); lg.innerHTML="";
@@ -559,9 +804,21 @@ function highlightNext(){
   for(var j=0;j<cands.length;j++){
     if(cands[j].indexOf(buf)===0 && cands[j].length>buf.length){ ch=cands[j].charAt(buf.length); break; }
   }
-  var el=document.querySelector('.key[data-k="'+ch+'"]');
+  /* ⭐Shift を使う文字は、もとのキー＋反対の手の Shift を光らせる（日本のキーボード＝JIS の並び）。大文字も同じ */
+  var base=ch, shift=false;
+  if(SHIFTED[ch]){ base=SHIFTED[ch]; shift=true; }
+  else if(ch>="A" && ch<="Z"){ base=ch.toLowerCase(); shift=true; }
+  var el=document.querySelector('.key[data-k="'+base.replace(/\\/g,"\\\\").replace(/"/g,'\\"')+'"]');
   if(el) el.classList.add("next");
+  if(shift){
+    var hand=(FINGER[base]||"l").charAt(0);
+    var sk=document.querySelector('.key[data-k="'+(hand==="l"?"ShiftR":"ShiftL")+'"]');
+    if(sk) sk.classList.add("next");
+  }
 }
+/* Shift を使う記号 → もとのキー（JIS）。⚠¥ のキーは画面のキーボードに無いので | は入れていない */
+var SHIFTED={"!":"1",'"':"2","#":"3","$":"4","%":"5","&":"6","'":"7","(":"8",")":"9",
+  "=":"-","~":"^","`":"@","{":"[","+":";","*":":","}":"]","<":",",">":".","?":"/","_":"\\"};
 
 /* ---------- タイル ----------
    ステージの総打鍵数だけタイルを用意し、打つごとにランダムなタイルを塗る。
@@ -937,6 +1194,27 @@ function onMiss(ch){
    ⭐a s d f j k l ; の8つから、毎回ちがう並びを作る。⚠4〜6文字＝タイル2〜3枚 */
 /* ⭐ホーム・上の段・下の段（数字の段なし）を完全にランダムに（2026-09-17 本人）。
    ⚠前はホームの8キー（asdfjkl;）だけだった。⚠@ [ : ] \ は日本語キーボードだけの位置なので入れていない */
+/* ⚠今は使っていない（2026-09-19 本人「ABCだけでいい」）。英語の文に出てくる割合（%）で文字を選ぶ。出典は abc のステージのメモ */
+var EN_FREQ={a:8.2,b:1.5,c:2.8,d:4.3,e:12.7,f:2.2,g:2.0,h:6.1,i:7.0,j:0.16,k:0.77,l:4.0,m:2.4,
+  n:6.7,o:7.5,p:1.9,q:0.12,r:6.0,s:6.3,t:9.1,u:2.8,v:0.98,w:2.4,x:0.15,y:2.0,z:0.074};
+function buildRandomEn(n){
+  var tot=0, k; for(k in EN_FREQ) tot+=EN_FREQ[k];
+  function pick(){ var r=Math.random()*tot; for(var c in EN_FREQ){ r-=EN_FREQ[c]; if(r<=0) return c; } return "e"; }
+  /* ⭐はじめはアルファベットの順番で5つの固まり（2026-09-19 本人「ABCの5文字の固まりでもいい」「そうしよっか」）。
+       ⭐z が1つだけ残らないように、最後は6文字（本人「固まりを4とか6とかに変更すればいい」）。そのあとをランダムで、合わせて n 個 */
+  var out=["abcde","fghij","klmno","pqrst","uvwxyz"];
+  for(var i=out.length;i<n;i++){
+    var len=4+Math.floor(Math.random()*3), s2="";
+    for(var j=0;j<len;j++) s2+=pick();
+    out.push(s2);
+  }
+  return out;
+}
+function buildAbcBlocks(){
+  var al="abcdefghijklmnopqrstuvwxyz", k=Math.floor(Math.random()*26);
+  var r=al.slice(k)+al.slice(0,k), out=[r.slice(0,5),r.slice(5,10),r.slice(10,15),r.slice(15,20),r.slice(20)];
+  return shuffled(out);
+}
 function buildRandomHome(n){
   var keys="qwertyuiopasdfghjkl;zxcvbnm,./", out=[];
   for(var i=0;i<n;i++){
@@ -955,15 +1233,15 @@ function openStage(idx){
   stageIdx=idx;
   var st=STAGES[idx];
   curItems = st.shuffle ? shuffled(st.items).slice(0, st.pick||st.items.length) : st.items.slice();
-  if(st.random) curItems = buildRandomHome(st.pick||15);   /* ⭐毎回ちがう並び */
+  if(st.random) curItems = (st.random==="abc") ? buildAbcBlocks() : (st.random==="en") ? buildRandomEn(st.pick||15) : buildRandomHome(st.pick||15);   /* ⭐毎回ちがう並び */
   $("menu").style.display="none";
   $("play").classList.add("on");
   if(st.challenge) chStart();
   $("stName").textContent = st.challenge ? chLabel() : st.name;
   /* ⭐名前の左の小さいタイル＝一覧のカードと同じ番号・同じ色（2026-09-17 本人） */
-  $("stName").style.setProperty("--tile",BLOCKCOL[idx%BLOCKCOL.length]);
+  $("stName").style.setProperty("--tile",stageColor(idx));
   $("stName").setAttribute("data-n", stageLabel(idx));
-  setStageColor(BLOCKCOL[idx%BLOCKCOL.length]);
+  setStageColor(stageColor(idx));
   /* ⭐ステージごとの設定は、効くステージにだけ出す（2026-09-08 本人）。
      ⚠前は、単語より後（basic なし）は「3回でくずれる」に固定だったので出していなかった */
   /* ⭐2026-09-18 からは、ミスの回数はチャレンジ以外ぜんぶに出す。「終わりに f j に戻る」は基礎（1〜5）だけ */
@@ -1025,6 +1303,7 @@ function againNow(){
 function beginRun(){
   startReady=true;
   stopFireworks();                      // ⭐紙吹雪が残っていたら、打ちはじめで消す
+  hideTouchNote();                      // ⭐タブレットの案内も、打ちはじめで閉じる
   if($("startmsg")){ $("startmsg").classList.remove("on"); if($("startmsg").parentElement) $("startmsg").parentElement.classList.remove("waiting"); }
   $("hint").textContent="Esc でやり直し";
 }
@@ -1032,7 +1311,7 @@ function restartStage(){
   // やり直しのたびにお題を引き直す（同じ文が続くとストレスなので）
   var st=STAGES[stageIdx];
   if(st.shuffle) curItems = shuffled(st.items).slice(0, st.pick||st.items.length);
-  if(st.random) curItems = buildRandomHome(st.pick||15);
+  if(st.random) curItems = (st.random==="abc") ? buildAbcBlocks() : (st.random==="en") ? buildRandomEn(st.pick||15) : buildRandomHome(st.pick||15);
   if(st.challenge){ curItems = buildChallengeItems(chCount()); $("stName").textContent=chLabel(); }
   buildGrid();
   resetRun();
@@ -1352,7 +1631,10 @@ function setStageColor(col){
 }
 function backToMenu(){
   /* ⭐練習ページ（play.html）からは、一覧のページへ戻る（2026-09-16 本人） */
-  if(document.body.classList.contains("playpage")){ location.href = KIDS ? "./?kids=1" : "./"; return; }
+  if(document.body.classList.contains("playpage")){
+    /* ⭐学生用は、その種類の一覧へ戻る（2026-09-19） */
+    location.href = KIDS ? "./?kids=1" : "./"; return;
+  }
   clearInterval(timer); running=false;
   cancelCelebrate(); stopFireworks(); hideToast(); $("bigmsg").classList.remove("on");
   $("play").classList.remove("on");
@@ -1459,7 +1741,42 @@ function stageColor(i){
    ⚠grid-auto-flow:column なので、行数を決めないと1行に並んでしまう */
 /* ⭐カードの番号（2026-09-16 本人「英語をABCにしてみて」）。
    ⭐日本語は 1,2,3…／英語は A,B,C…。⚠タイルの色はランダムのまま（本人「ランダムのほうがかわいい」） */
+/* ⭐学生用は、最初に3枚のカード（ホームポジション・日本語・英語）→ その中のステージ、の2段（2026-09-19 本人
+     「学生用の最初のカードを、とりあえず3つに分ける」。美佳タイプも2段で、学生は慣れている）
+   ⚠同じ日に「3枚 → 押すと中の一覧」の2段で作ったが、本人の案で「大きいカードの中に並べる」1段に変えた
+   ⚠大人用は全部並べるまま（本人「大人用は全部並べたカードでいいと思ってる」） */
+var GROUPS=[
+  {id:"home", name:"ホームポジション", ds:"指の場所を覚える"},
+  {id:"ja",   name:"日本語",         ds:"ひらがな・ことば・文"},
+  {id:"sym",  name:"数字と記号",     ds:"数字・記号・Shift"},
+  {id:"en",   name:"英語",           ds:"英単語・英語の文"}
+];
+function stageGroup(s){
+  if(s.group) return s.group;
+  if(s.lang==="en") return "en";
+  if(s.basic && s.mode==="direct") return "home";
+  return "ja";
+}
+function groupById(id){ for(var k=0;k<GROUPS.length;k++) if(GROUPS[k].id===id) return GROUPS[k]; return null; }
+/* ⭐タイルの色（2026-09-19 本人）＝カードごとに1番の色をずらし、カードの中は虹の順で回す
+     ホームポジション＝赤（ピンク）から／日本語＝むらさきから／記号と数字＝青から／英語＝水色から
+     ⚠同じ日に「日本語＝だいだい・記号＝黄・英語＝緑から」にしたが、本人「さくらタッチタイピングのピンクがなくなるから、紫スタートにしよう」
+     ⭐増えても、そのカードの中で虹の続きを回すだけ。⚠大人用・こども用は今までどおり通しで回す */
+var GROUPSTART={home:0, ja:6, sym:5, en:4};
+function stageColor(i){
+  if(document.body.classList.contains("gakusei") && !KIDS && STAGES[i]){
+    var st=GROUPSTART[stageGroup(STAGES[i])]||0;
+    return BLOCKCOL[(st + parseInt(stageLabel(i),10) - 1) % BLOCKCOL.length];
+  }
+  return BLOCKCOL[i%BLOCKCOL.length];
+}
 function stageLabel(i){
+  /* ⭐学生用は、大きいカードの中で上から順に 1・2・3…（2026-09-19 本人「中のカードは上から順に番号でOK」） */
+  if(document.body.classList.contains("gakusei") && !KIDS && STAGES[i]){
+    var g=stageGroup(STAGES[i]), n=0;
+    for(var q=0;q<=i;q++) if(stageGroup(STAGES[q])===g) n++;
+    return String(n);
+  }
   var ja=0, en=0;
   for(var k=0;k<=i && k<STAGES.length;k++){
     if(STAGES[k].lang==="en") en++; else ja++;
@@ -1488,6 +1805,34 @@ function renderStageCards(){
   /* ⭐一覧（hub）ではカードはリンク＝別のページ（play.html）へ移る。
      ⭐ブラウザの←で一覧に戻れる（2026-09-16 本人「Aで」） */
   var HUB = document.body.classList.contains("hub");
+  /* ⭐学生用は、大きいカード3枚の中にステージを並べる＝1回押せば練習（2026-09-19 本人
+       「このカードの中に、何ができるか書いてあって、クリックしたらできるってのはどうかな？カード小さすぎるし1階層で済む」）
+     ⭐大きいカードにはタイルなし。中の行の左にタイル（本人「おおきいカードのタイルはなしにしてみて」） */
+  if(HUB && GAKUSEI && !KIDS){
+    el.classList.add("bigcards");
+    /* ⭐2列（2026-09-19 本人「2列にして、日本語の下に英語は？英語はスクロールしてもよし。数字と記号も」）
+         左＝ホームポジション → 数字と記号／右＝日本語 → 英語。⚠同じ日の「3列目に数字と記号と英語」から変えた */
+    var COLS={home:0, sym:0, ja:1, en:1}, cols=[];
+    for(var ci=0;ci<2;ci++){ cols[ci]=document.createElement("div"); cols[ci].className="bigcol"; el.appendChild(cols[ci]); }
+    GROUPS.forEach(function(g){
+      var box=document.createElement("div"); box.className="bigcard";
+      box.innerHTML='<div class="bc-name">'+esc(g.name)+'</div>';
+      STAGES.forEach(function(s,i){
+        if(stageGroup(s)!==g.id) return;
+        var a=document.createElement("a"); a.className="mini"; a.href="play.html?s="+(i+1);
+        a.style.setProperty("--tile",stageColor(i));
+        var b="";
+        if(s.challenge){
+          var mx=0; logs.forEach(function(r){ if(r.stage===s.name && r.perfect && r.total>mx) mx=r.total; });
+          b = mx ? (mx+"枚") : "";
+        }else if(best[s.name]){ b = (s.name===lastRec?'<span class="rec">★ 記録更新</span> ':"")+best[s.name]+"/1分"; }   /* ⭐文字でも出す・数字の左（2026-09-19 本人「記録更新」「記録更新は、数字の左」） */
+        a.innerHTML='<span class="tl">'+stageLabel(i)+'</span><span class="mn">'+esc(s.name)+'</span><span class="mb">'+b+'</span>';
+        box.appendChild(a);
+      });
+      cols[COLS[g.id]||0].appendChild(box);
+    });
+    return;
+  }
   STAGES.forEach(function(s,i){
     var d=document.createElement(HUB ? "a" : "button");
     d.className="stage";
@@ -1529,7 +1874,10 @@ document.addEventListener("keydown",function(e){
       return;
     }
   }
-  if(e.isComposing || e.keyCode===229 || e.key==="Process"){ $("imeWarn").classList.add("on"); return; }
+  /* ⭐スペースは、キーの場所（e.code）でも見る（2026-09-19 本人「英単語、iPadにBluetoothのキーボードをつないだら、スペースを押しても進まない。PCだとできた」）。
+     ⚠原因は確かめられていない。考えられる2つ＝①日本語の入力が生きていて、スペースが「変換中」扱いで届く ②全角のスペース（　）で届く。どちらでも進むようにした */
+  var isSpace = (e.code==="Space" || e.key===" " || e.key==="　" || e.key==="Spacebar");
+  if(!isSpace && (e.isComposing || e.keyCode===229 || e.key==="Process")){ $("imeWarn").classList.add("on"); return; }
   if(document.activeElement && document.activeElement.id==="uname") return;
   if(!$("play").classList.contains("on")) return;
   /* ⭐終わったあとは Enter で、新しいお題にして「スタート」を出す（スペースで始まる）
@@ -1537,12 +1885,12 @@ document.addEventListener("keydown",function(e){
      ⚠チャレンジで塗りきったあとは、もう「スタート」が出ているのでスペースだけ */
   /* ⭐「もう一度」もスペースにそろえた（2026-09-18 本人「全部スペースでもう一度でいいんじゃない？」）。
        ⚠前は Enter だった。慣れた人のために Enter も残してある（案内には出さない） */
-  if(stageDone && !chWaiting && (e.key===" "||e.code==="Space"||e.key==="Enter")
+  if(stageDone && !chWaiting && (isSpace||e.key==="Enter")
      && !$("ovRes").classList.contains("on") && !$("ovLog").classList.contains("on")){
     e.preventDefault(); againNow(); return;
   }
   if(stageDone && chWaiting){          // ⭐チャレンジは、スペースだけで次の回へ（ほかのキーは何もしない）
-    if(e.key===" "||e.code==="Space"){ e.preventDefault(); pressStart(); }
+    if(isSpace){ e.preventDefault(); pressStart(); }
     return;
   }
   if(stageDone) return;                 // 終わったあとは、打っても勝手に始まらない
@@ -1550,14 +1898,18 @@ document.addEventListener("keydown",function(e){
   if(e.ctrlKey||e.altKey||e.metaKey) return;
   if(!startReady){                      // ⭐「スタート」の合図。スペースで始まる（このキーは数えない）
     /* ⭐スペースで始める（2026-09-17 本人「スペースでスタートがいいかも」）。ほかのキーは何もしない */
-    if(e.key===" "||e.code==="Space"){ e.preventDefault(); beginRun(); }
+    if(isSpace){ e.preventDefault(); beginRun(); }
     return;
   }
-  if(e.key.length!==1) return;
+  var ch = isSpace ? " " : e.key;
+  if(ch.length!==1) return;
   e.preventDefault();
   $("imeWarn").classList.remove("on");
   if(!running) startTimer();
-  feed(e.key.toLowerCase());
+  /* ⭐お題が大文字のときだけ、打った文字をそのまま比べる（2026-09-19 英文（記号あり））。
+     ⚠ほかは今までどおり小文字にしてから比べる＝Caps Lock が付いていても打てる */
+  var want=expectedChar();
+  feed((want && want>="A" && want<="Z") ? ch : ch.toLowerCase());
 });
 
 /* ---------- ボタン ---------- */
@@ -1688,17 +2040,56 @@ Array.prototype.forEach.call(document.querySelectorAll('input[name="chn"]'), fun
 })();
 /* ⭐スマホ・タブレット（指で操作する画面）だけ、練習ページを開いたときに数秒の案内（2026-09-17 本人）。
    ⚠入力欄が無いので、画面のキーボードは出ない＝つないだキーボードでしか打てない。一覧のページには出さない */
+/* ⭐案内は大きく、「次から表示しない」を付けた（2026-09-19 本人「今後このメッセージを出さないっていう✔をするの無理？何度も出るとうっとうしい」
+     「それができるなら、結構大きなメッセージにしてもいい」「黒っぽいのをもう少しグレーに」「画面のキーボードは指の見本です は文字が小さくてもいい」）
+   ⭐消えずに残る＝閉じるか、スペースで打ちはじめると閉じる。✔はこの端末に覚える（localStorage）
+   ⚠「画面のキーボードは指の見本です」は、キーボードが出ているステージ（1〜5）だけ */
+/* ⚠名前は関数の中で決める（showTouchNote はこの行より前で呼ばれるので、var だとまだ空＝印を見落とした） */
+function touchKey(){ return "typingTouchNoteOff"; }
+function hideTouchNote(){ var n=document.getElementById("touchnote"); if(n) n.parentNode.removeChild(n); }
+/* ⭐縦のスマホは「横向きにして」から伝える（2026-09-20 本人「スマホを横にしてキーボード繋ぐと思う」） */
+function isTall(){ return window.innerWidth < window.innerHeight; }
+function noteMain(){
+  return isTall() ? "スマホは横向きにして、<wbr>キーボードをつないでください"
+                  : "キーボードをつないで<wbr>練習してください";
+}
+/* ⭐案内は「今見えている範囲」のまん中に置く（2026-09-20）。
+     ⚠ページの中身が画面より広いので、画面に固定しただけでは中央からずれて切れる（中身676px／画面375px）。
+     ⭐visualViewport＝今見えている場所と大きさ。横にスクロールしても、そこに付いてくる */
+function placeTouchNote(){
+  var n=document.getElementById("touchnote"); if(!n) return;
+  var b=n.querySelector(".tn-main"); if(b) b.innerHTML=noteMain();
+  var vv=window.visualViewport;
+  var x=(vv? vv.offsetLeft+vv.width/2 : window.innerWidth/2);
+  var y=(vv? vv.offsetTop+vv.height/2 : window.innerHeight/2);
+  var w=(vv? vv.width : window.innerWidth)-32;
+  n.style.left=x+"px"; n.style.top=y+"px"; n.style.maxWidth=w+"px";
+}
+window.addEventListener("resize", placeTouchNote);
+window.addEventListener("orientationchange", function(){ setTimeout(placeTouchNote,300); });   /* ⚠回した直後は大きさが変わりきっていないので少し待つ */
+window.addEventListener("scroll", placeTouchNote);
+if(window.visualViewport){ visualViewport.addEventListener("resize", placeTouchNote); visualViewport.addEventListener("scroll", placeTouchNote); }
 function showTouchNote(){
   var touch = (window.matchMedia && matchMedia("(pointer: coarse)").matches) || navigator.maxTouchPoints > 0;
   if(!touch) return;
-  var n=document.createElement("div"); n.className="touchnote";
-  n.innerHTML="キーボードをつないで練習してください。<wbr>画面のキーボードは指の見本です。";
-  /* ⭐スタートのボタンのすぐ上に出す（2026-09-17 本人「スタートの上にメッセージ表示して」）。
-     ⚠ボタンと同じ入れ物（お題のカード）の中に置く＝ボタンと一緒に動く */
-  var box=document.querySelector(".textwrap");
-  if(box){ n.classList.add("inwrap"); box.appendChild(n); } else { document.body.appendChild(n); }
-  requestAnimationFrame(function(){ n.classList.add("on"); });
-  setTimeout(function(){ n.classList.remove("on"); setTimeout(function(){ if(n.parentNode) n.parentNode.removeChild(n); }, 400); }, 4000);
+  try{ if(localStorage.getItem(touchKey())==="1") return; }catch(err){}
+  /* ⭐画面のまん中に固定して、画面の幅に収める（2026-09-20 本人「今は縦で見たらメッセージが読めないから、よくわからないままテキトーに操作するようになると思う」）
+       ⚠前はタイルの枠の中に出していた＝スマホの縦だと枠ごとはみ出して文が切れていた（中身676px／画面375px） */
+  var host=document.body;
+  var kbShown = !$("play").classList.contains("nokb");
+  var n=document.createElement("div"); n.className="touchnote big"; n.id="touchnote";
+  n.innerHTML='<button type="button" class="tn-x" aria-label="閉じる">×</button>'
+    + '<b class="tn-main">'+noteMain()+'</b>'
+    + (kbShown ? '<span class="tn-sub">画面のキーボードは指の見本です</span>' : '')
+    + '<label class="tn-off"><input type="checkbox"> 次から表示しない</label>';
+  host.appendChild(n);
+  n.querySelector(".tn-x").onclick=hideTouchNote;
+  var cb=n.querySelector("input");
+  placeTouchNote();
+  cb.onchange=function(){
+    try{ if(cb.checked) localStorage.setItem(touchKey(),"1"); else localStorage.removeItem(touchKey()); }catch(err){}
+    cb.blur();   // ⚠チェックに残ると、スペースでチェックが切り替わってしまう
+  };
 }
 
 if(KIDS){ document.body.classList.add("kids"); if($("optSound")) $("optSound").checked=false; }

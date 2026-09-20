@@ -388,7 +388,7 @@ button.primary:hover{background:var(--accent-deep)}   /* ⭐ステージの色�
 }
 .record small{display:block;font-size:12px;font-weight:600;opacity:.9;margin-top:5px}
 /* ⭐記録更新はたまにしか出ない＝金メダルの色にする（2026-09-08 本人） */
-.stage .rec{
+.stage .rec, a.mini .rec{
   display:inline-block;margin-left:6px;padding:1px 7px;border-radius:9px;
   /* ⭐白抜き文字・影なし（2026-09-08 本人）。
      ⚠白い文字を読ませるには地を濃くするしかない＝薄い黄色では白が溶ける */
@@ -787,3 +787,52 @@ a.stage{display:block;text-decoration:none;color:var(--text)}
 
 /* ⭐紙吹雪（2026-09-18 本人）＝画面ぜんたいに重ねる。押せない（クリックは下に通る）。消すときは少しずつ */
 canvas.confetti{position:fixed;left:0;top:0;z-index:55;pointer-events:none;transition:opacity .4s}
+
+/* ⭐タブレットの案内を大きく・グレーに（2026-09-19 本人）。タイルの枠のまん中に重ねる。閉じるか打ちはじめるまで残る */
+.touchnote.big{
+  /* ⭐画面のまん中に固定（2026-09-20）。⚠スマホの縦でも切れないように、画面の幅から32px引いた中に収める */
+  /* ⚠right と margin:0 auto（上の .touchnote）が残ると、中心がずれる（2026-09-20） */
+  position:fixed;left:50%;right:auto;top:50%;margin:0;transform:translate(-50%,-50%);z-index:9990;
+  width:max-content;max-width:calc(100vw - 32px);box-sizing:border-box;
+  padding:22px 30px 16px;border-radius:14px;opacity:1;pointer-events:auto;
+  background:rgba(110,114,120,.95);color:#fff;text-align:center;line-height:1.5;
+  box-shadow:0 10px 28px rgba(0,0,0,.18);display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.touchnote.big b{font-size:22px;font-weight:700}
+.touchnote.big .tn-sub{font-size:13px;opacity:.9}
+.touchnote.big .tn-off{margin-top:8px;font-size:14px;display:flex;align-items:center;gap:6px;cursor:pointer}
+.touchnote.big .tn-off input{width:18px;height:18px;accent-color:#fff}
+.touchnote.big .tn-x{position:absolute;right:8px;top:6px;background:none;border:0;color:#fff;font-size:22px;line-height:1;padding:4px 8px;cursor:pointer}
+
+/* ⭐学生用：大きいカード3枚の中にステージを並べる（2026-09-19 本人）。大きいカードにタイルはなし、中の行の左にタイル */
+.stages.bigcards{display:grid !important;grid-auto-flow:row !important;grid-template-columns:repeat(auto-fit,minmax(260px,1fr)) !important;grid-template-rows:none !important;gap:18px;padding-left:0;align-items:start}
+.bigcard{background:var(--card);border:1px solid var(--line);border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:14px 14px 10px}
+.bigcard .bc-name{font-size:17px;font-weight:700;margin:0 0 8px 2px}
+a.mini{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:4px;text-decoration:none;color:var(--text);transition:background .12s}
+a.mini:hover{background:rgba(0,0,0,.04)}
+a.mini .mn{font-size:14px;font-weight:600;flex:1}
+a.mini .mb{font-size:11px;color:#dd7fa2;font-weight:600;white-space:nowrap}
+a.mini .tl{
+  flex:none;display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:4px;
+  color:#fff;font-size:13px;font-weight:700;text-shadow:0 1px 1px rgba(90,70,60,.25);
+  background-color:var(--tile,var(--accent));
+  background-image:radial-gradient(115% 78% at 50% -14%,rgba(255,255,255,.82) 0%,rgba(255,255,255,.36) 36%,rgba(255,255,255,.05) 64%,rgba(255,255,255,0) 100%),
+    linear-gradient(180deg,rgba(255,255,255,.05) 0%,rgba(255,255,255,0) 58%,rgba(255,255,255,.16) 100%);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.85),inset 0 -2px 4px rgba(120,100,70,.05),0 2px 4px rgba(85,74,58,.16),0 1px 1px rgba(85,74,58,.09);
+}
+
+/* ⭐3列目＝「数字と記号」の下に「英語」を重ねる（2026-09-19） */
+.bigcol{display:flex;flex-direction:column;gap:18px}
+/* ⭐Shift キー（2026-09-19 数字と記号）。いちばん下の段の左右。⚠左の Shift を置くので、段の左の空きは Shift の幅で埋める */
+.kbrow.withshift{padding-left:0 !important}
+.key.shift{width:58px;font-size:11px;color:var(--sub)}
+.playright .key.shift{width:51px}
+
+/* ⭐学生用は2列（2026-09-19 本人）。左＝ホームポジション・数字と記号／右＝日本語・英語 */
+.stages.bigcards{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+@media(max-width:640px){ .stages.bigcards{grid-template-columns:1fr !important} }
+
+/* ⭐行の中の「★ 記録更新」は数字の左（2026-09-19 本人）＝右に少しすき間 */
+a.mini .rec{margin:0 6px 0 0}
+/* ⚠スマホの縦は字を少し小さく（2枚目の行に折り返して読めるように） */
+@media(max-width:480px){ .touchnote.big b{font-size:18px} .touchnote.big{padding:26px 20px 14px} }   /* ⚠上を広げる＝×と文が重ならないように（2026-09-20） */

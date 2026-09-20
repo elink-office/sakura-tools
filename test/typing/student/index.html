@@ -19,7 +19,7 @@
      ⚠同じ日に一度「タイルタッチタイピング（TTT）」にした。また変えるかも（本人）。大人用はまだ「タイピング練習」のまま -->
 <title>【テスト】さくら🌸タッチタイピング（学生用）｜さくらツール</title>
 <link rel="stylesheet" href="../../style.css?v=140">
-<link rel="stylesheet" href="../typing.css?v=114">
+<link rel="stylesheet" href="../typing.css?v=123">
 </head>
 <!-- 🔴⭐学生用のページ（2026-09-15 本人）
      本人「大学生のパソコンが小さいから、上にいろいろ書いてあったら邪魔。もうタイピングの話だけでいい」
@@ -77,7 +77,9 @@
       <input id="uname" placeholder="ニックネーム" maxlength="30" aria-label="ニックネーム">
     </div>
     <button id="btnLog">今までの記録を見る</button>
-    <label class="optsound"><input type="checkbox" id="optSound"> 音を出す</label>
+    <!-- ⭐学生用は音なし（2026-09-19 本人「音なしでいい。音かわいかったけど。学生用は不要」）。⚠typing.js が探すので、消さずに隠す。
+         ⚠そもそも一覧のチェックは練習の画面（別のページ）に引き継がれず、鳴っていなかった -->
+    <label class="optsound" style="display:none"><input type="checkbox" id="optSound"> 音を出す</label>
   </div>
   <div class="stages" id="stages"></div>
 </div>
@@ -195,6 +197,6 @@
   <div class="wrap"><span class="copy">さくらツール　© 2026 SAKURA TOOLS</span></div>
 </footer>
 
-<script src="../typing.js?v=77"></script>
+<script src="../typing.js?v=96"></script>
 </body>
 </html>
