@@ -61,10 +61,11 @@ h1 small{font-size:12px;color:var(--sub);font-weight:500;margin-left:8px}
 .playopts .oglabel{margin-left:19px}
 .spacer{flex:1}
 .namebox{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--sub);white-space:nowrap}
-/* ⚠枠が大きすぎた（2026-09-08 本人）。名前は短いので、入る長さだけにする */
+/* ⚠枠が大きすぎた（2026-09-08 本人）。名前は短いので、入る長さだけにする
+   ⭐2026-09-20 本人「8桁の数値と、スペース入れて、7文字入るくらいの少し広めで」＝「12345678 あいうえおかき」で文字の幅152px＋左右の余白20px＝172px。少し余らせて190px */
 .namebox input{
   border:1px solid var(--line);border-radius:7px;padding:6px 10px;font-size:13px;
-  width:150px;background:var(--card);color:var(--text);font-family:inherit;
+  width:190px;background:var(--card);color:var(--text);font-family:inherit;
 }
 button{
   font-family:inherit;font-size:13px;cursor:pointer;border-radius:8px;
@@ -189,7 +190,7 @@ button.primary:hover{background:var(--accent-deep)}   /* ⭐ステージの色�
    ⚠あいだの空き（.spacer）が先に幅を取るので、狭いときは消してニックネーム欄を縮める */
 @media(max-width:1000px){
   .namebox{flex:0 1 auto;min-width:0}
-  .namebox input{width:130px;min-width:0}
+  .namebox input{width:170px;min-width:0}   /* ⭐狭い画面も少し広げた（2026-09-20） */
 }
 
 

@@ -993,7 +993,7 @@ function fireworks(bursts,onDone,side){   /* side＝"L"なら左の角だけ・"
   /* ⭐記録更新（片方だけ）は、ミスなしと差をつける（2026-09-20 本人「色を減らして、右だけを3割に」「早く終わるもあり」）
        ①数は3割 ②色はさくら色の2色だけ ③落ちるのが速い＝早く終わる */
   var ALL=Math.min(170, Math.round(W/4));
-  var G=3400, N=(side ? Math.round(ALL*0.2) : ALL), ps=[];   /* ⭐3割→2割（2026-09-20 本人「数を少し減らして」） */
+  var G=3400, N=(side ? Math.round(ALL*0.26) : ALL), ps=[];   /* ⭐3割→2割→2.6割（2026-09-20 本人「分量を少し増やして」） */
   var COLS=(side ? ["#e0577f","#efa3bd"] : BLOCKCOL);
   for(var i=0;i<N;i++){
     var dir=(side==="L") ? 1 : (side==="R") ? -1 : ((i%2===0) ? 1 : -1);   // 1＝左の角から右上へ／-1＝右の角から左上へ
@@ -1001,7 +1001,7 @@ function fireworks(bursts,onDone,side){   /* side＝"L"なら左の角だけ・"
        ⭐放射状に戻して、横の広がりをおさえた＝内側へ傾ける角度を 4〜56度 → 4〜28度、横の速さの上限を 1400 → 650 */
     /* ⭐どこまで上がるか。⭐片方だけ（記録更新）は基本より少し下（2026-09-20 本人「基本より少し下」）
          基本（ミスなし）＝枠の上から45%はみ出す〜枠の中20／片方だけ＝25%はみ出す〜枠の中40% */
-    var peak=side ? H*(-0.25+Math.random()*0.65) : H*(-0.45+Math.random()*0.65);
+    var peak=side ? H*(-0.35+Math.random()*0.65) : H*(-0.45+Math.random()*0.65);   /* ⭐片方だけを少し上へ（2026-09-20 本人「あと少しだけ上に」）＝枠の上から35%はみ出す〜枠の中30% */
     /* ⭐出どころは角の1点ではなく、枠の外の広い範囲（2026-09-18 本人「固まりで出てきてしまうから、もっとはみ出した範囲が元に」）
          ＝横は角から外へ12%〜内へ6%、縦は枠の下の端から下へ8〜35%。枠の外から入ってくるので、はじめから散って見える */
     var x0=(dir===1) ? W*(-0.12+Math.random()*0.18) : W*(1.12-Math.random()*0.18);
@@ -1713,6 +1713,13 @@ function stageNo(name){
   return esc(name);
 }
 function renderLogs(){
+  /* ⭐記録が無いときは、案内の1行だけにする（2026-09-20 本人「何も記録をしてないときに押したら、『まだ記録がありません…』だけのほうがいいな」「記録があるときに3つの選択肢を見たい」） */
+  (function(){
+    var has=(getLogs()||[]).length>0;
+    var b=document.getElementById("logBtns"), sub=document.getElementById("logSub");
+    if(b) b.style.display = has ? "" : "none";
+    if(sub) sub.style.display = has ? "" : "none";
+  })();
   var a=getLogs().slice().reverse();
   if(!a.length){
     $("logBody").innerHTML='<div class="empty">まだ記録がありません。<br>'+
@@ -1936,8 +1943,10 @@ document.addEventListener("keydown",function(e){
   /* ⭐スペースは、キーの場所（e.code）でも見る（2026-09-19 本人「英単語、iPadにBluetoothのキーボードをつないだら、スペースを押しても進まない。PCだとできた」）。
      ⚠原因は確かめられていない。考えられる2つ＝①日本語の入力が生きていて、スペースが「変換中」扱いで届く ②全角のスペース（　）で届く。どちらでも進むようにした */
   var isSpace = (e.code==="Space" || e.key===" " || e.key==="　" || e.key==="Spacebar");
-  if(!isSpace && (e.isComposing || e.keyCode===229 || e.key==="Process")){ $("imeWarn").classList.add("on"); return; }
+  /* ⭐ニックネームを打っているときは、何も出さない（2026-09-20 本人「ニックネームを入れるとこんなメッセージが。これ不要」）
+     ⚠前は、先に日本語入力のお知らせを出していたので、ニックネームに日本語を打つと出ていた */
   if(document.activeElement && document.activeElement.id==="uname") return;
+  if(!isSpace && (e.isComposing || e.keyCode===229 || e.key==="Process")){ $("imeWarn").classList.add("on"); return; }
   if(!$("play").classList.contains("on")) return;
   /* ⭐終わったあとは Enter で、新しいお題にして「スタート」を出す（スペースで始まる）
        （2026-09-18 本人「おつかれさまのあとで進めるのがやりにくい」→「スペースでスタートがあったほうがいい」）
@@ -1994,7 +2003,11 @@ $("toastAgain").onclick=function(){ hideToast(); restartStage(); };
 $("btnCsv").onclick=exportCsv;
 $("btnClear").onclick=function(){
   if(confirm("記録をぜんぶ消します。よろしいですか？")){
-    localStorage.removeItem(LOGKEY); renderLogs(); renderStageCards();
+    localStorage.removeItem(LOGKEY);
+    try{ localStorage.removeItem("typingRecordAt"); }catch(err){}   /* ⭐「★ 記録更新」の印も一緒に消す */
+    renderLogs(); renderStageCards();
+    /* ⭐消したらウィンドウを閉じる（2026-09-20 本人「記録を消すを押したらこれ（まだ記録がありません）は不要と思う」） */
+    $("ovLog").classList.remove("on");
   }
 };
 $("ovLog").onclick=function(e){ if(e.target===this) this.classList.remove("on"); };
