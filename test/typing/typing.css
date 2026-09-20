@@ -582,7 +582,7 @@ body.kids .coinbar{display:flex}
 .stagewrap{max-width:1120px;display:flex;gap:22px;align-items:flex-start}
 /* ⚠ボタン2つ（← トップ画面／やり直し）が1行に入る幅にする（2026-09-16） */
 .playleft{flex:0 0 268px;display:flex;flex-direction:column;gap:10px}
-.playright{flex:1 1 auto;min-width:0}
+.playright{flex:1 1 auto;min-width:0;position:relative}   /* ⭐紙吹雪をキーボードの下から出すため（2026-09-20） */
 /* ⭐2つのボタンは横並び（2026-09-16 本人）。名前・案内はその下に回す */
 .playleft .bar{flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px;margin:0}
 .playleft .bar>b,.playleft .bar>#stProg,.playleft .bar>#missHint,.playleft .bar>#hint{flex-basis:100%}
@@ -749,7 +749,7 @@ a.stage{display:block;text-decoration:none;color:var(--text)}
 .bigmsg.startmsg em{color:#fff;font-size:34px;text-shadow:0 1px 2px rgba(0,0,0,.18)}
 .bigmsg.startmsg span{color:#fff;font-size:12px;margin-top:6px;text-shadow:0 1px 1px rgba(0,0,0,.15)}
 /* ⭐スタートを押すまで、お題の文字は見せない（2026-09-17 本人）。カードの枠はそのまま */
-.textwrap.waiting > :not(.startmsg):not(.touchnote){visibility:hidden}
+.textwrap.waiting > :not(.startmsg):not(.touchnote):not(.stagenote){visibility:hidden}   /* ⭐スタートの下の説明は見せる（2026-09-20） */
 /* ⭐押す前は、お題のカードの枠・影・すりガラスも消す（2026-09-17 本人「文字の枠が残ってる」） */
 .textwrap.waiting{background:transparent !important;box-shadow:none !important;border-color:transparent !important;
   -webkit-backdrop-filter:none !important;backdrop-filter:none !important}
@@ -836,3 +836,14 @@ a.mini .tl{
 a.mini .rec{margin:0 6px 0 0}
 /* ⚠スマホの縦は字を少し小さく（2枚目の行に折り返して読めるように） */
 @media(max-width:480px){ .touchnote.big b{font-size:18px} .touchnote.big{padding:26px 20px 14px} }   /* ⚠上を広げる＝×と文が重ならないように（2026-09-20） */
+
+/* ⭐スタートの下の説明（2026-09-20 本人「説明が欲しい」）。打ちはじめると消える */
+.stagenote{
+  position:absolute;left:50%;top:calc(50% + 59px + 14px);transform:translateX(-50%);z-index:6;
+  width:max-content;max-width:calc(100% - 24px);box-sizing:border-box;text-align:center;
+  white-space:nowrap;   /* ⭐横1行（2026-09-20 本人）。⚠狭い画面だけ折り返す（下の @media） */
+  font-size:13px;line-height:1.6;color:var(--sub);background:rgba(255,255,255,.9);
+  border-radius:8px;padding:6px 12px;
+}
+.stagenote b{color:var(--text)}
+@media(max-width:760px){ .stagenote{white-space:normal;max-width:calc(100vw - 32px);font-size:12px} }

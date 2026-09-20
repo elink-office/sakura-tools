@@ -277,6 +277,7 @@ var STAGES=[
   desc:"Shift を使わない記号。- , . / ; : @ [ ] ^",
   items:["a-b","1-2","a.b","a,b","a/b","a;b","a:b","a@b","10-5","3.14","12:30","2026/09/19","yes,no","a.b.c","sakura@mail","[a]","x^2"]},
  {name:"記号（Shift）",group:"sym",basic:true,mode:"direct",shuffle:true,
+  note:"<b>Shift を押しながら</b>打つ記号です。画面のキーボードで、<b>キーと Shift の両方</b>が光ります。",
   desc:"Shift を使う記号。= + * ( ) ! ? % # $ & < > _ ' { }",
   items:["a=b","1+2","2*3","(a)","yes!","why?","100%","#tag","$100","a&b","a<b","a>b","a_b","'a'","{a}","1+1=2","(1+2)*3"]},
  /* ⚠2026-09-19 本人「やっぱり、ABCだけでいいよ」＝割合のランダムはやめて、アルファベットの順の固まりだけにした（名前も「abc」）。下は、そこに至るまでのメモ
@@ -288,11 +289,12 @@ var STAGES=[
     ⭐画面にキーボードを出す（basic）＝日本語の「あいうえお」と同じ位置づけ */
  /* ⭐固まりの順番も、始まりの文字もランダム（2026-09-19 本人「ランダムにだしてほしい」「順番もだけど、スタート位置も」）
       ＝毎回、始まりの文字をずらして a〜z を5文字ずつ（最後は6文字）に切り、順番を混ぜる。z のあとは a に戻る（例 xyzabc） */
- {name:"abc",lang:"en",group:"en",basic:true,mode:"direct",random:"abc",
+ {name:"abc",lang:"en",group:"en",basic:true,mode:"direct",random:"abc",sets:3,
   desc:"アルファベットを5文字ずつ。始まりの文字も順番も、毎回ちがいます。",
   items:[]},
  /* ⭐英単語は1語だけ（2026-09-19 本人と共有の「タイピングの言葉の一覧」11。2〜4語のまとまりは「日常のことば（英語）」へ移した） */
- {name:"英単語",lang:"en",mode:"direct",shuffle:true,pick:15,
+ /* ⭐毎回30語＝タイル約95枚（2026-09-20 本人「英単語も少ない」）。日本語の「単語」（30語・約100枚）と同じくらい。前は15語＝約47枚 */
+ {name:"英単語",lang:"en",mode:"direct",shuffle:true,pick:30,
   desc:"ふだん使う英語の単語を1つずつ。",
   items:[
     "morning","afternoon","evening","night","today","tomorrow","yesterday","weekend",
@@ -354,6 +356,8 @@ var STAGES=[
       ⚠大文字は Shift で打つ。小文字で打つとミス（ほかのステージは大文字・小文字を気にしない） */
  {name:"英文（記号あり）",lang:"en",mode:"direct",shuffle:true,pick:8,
   desc:"大文字・' . , ? の入った、ふつうの英語の文。",
+  /* ⭐スタートの前に出す説明（2026-09-20 本人「いきなりシフトが来るからビックリする。よくわからないと思う。だから、説明が欲しい」） */
+  note:"Shift を使って「<b>大文字</b>」と「<b>?</b>」　<b>'</b> は Shift＋7",   /* ⭐本人の書き方（2026-09-20「shiftを使って「大文字」と「？」　'は Shift＋7　っていう書き方は？」） */
   items:[
     "How was your weekend?","I got up early this morning.","What time do you go to school?","I usually take the bus to school.",
     "The train was late again today.","I forgot my notebook at home.","Can you help me with my homework?","I have a test next Monday.",
@@ -967,10 +971,14 @@ function popSound(){
   tone(160,0.07,0.12,"square");
   setTimeout(function(){ tone(900,0.14,0.05,"triangle"); },30);
 }
-function fireworks(bursts,onDone){
+function fireworks(bursts,onDone,side){   /* side＝"L"なら左の角だけ・"R"なら右の角だけ（2026-09-20 本人「紙吹雪、片方からっていうのもできる？」） */
   stopFireworks(true);
   /* ⭐紙吹雪はタイルの枠の中だけ（2026-09-18 本人「前言撤回。紙吹雪はタイルの上でいいと思う」＝同じ日のB＝画面ぜんたいを取り消した） */
-  var host=document.querySelector("#play .panel"); if(!host) return;
+  /* ⭐キーボードが出ているステージは、キーボードの下から出す（2026-09-20 本人）。
+       ＝タイルの枠＋キーボードをまとめた入れ物（.playright）を使う。出ていないときは今までどおりタイルの枠 */
+  var kbOn = $("kb") && $("kb").offsetParent!==null;
+  var host=(kbOn ? document.querySelector("#play .playright") : null) || document.querySelector("#play .panel");
+  if(!host) return;
   var W=host.clientWidth, H=host.clientHeight, dpr=window.devicePixelRatio||1;
   var cv=document.createElement("canvas"); cv.className="confetti";
   cv.width=W*dpr; cv.height=H*dpr;
@@ -980,27 +988,44 @@ function fireworks(bursts,onDone){
   var ctx=cv.getContext("2d"); ctx.scale(dpr,dpr);
   /* ⭐左下と右下の角から、放射状に勢いよく（2026-09-18 本人「左と右角から、紙吹雪が出るほうがいいな。放射線状に」
        「もっと早くて、上ははみ出したほうが良い」）＝枠の上の端より上まで飛んで、見えなくなってから落ちてくる */
-  var G=3400, N=Math.min(170, Math.round(W/4)), ps=[];
+  /* ⭐片方だけ（記録更新）は数を減らす。ミスなし（両方）がいちばんすごい（2026-09-20 本人
+       「左だけを少し減らして、ミスなしの時が一番すごくしたい」） */
+  /* ⭐記録更新（片方だけ）は、ミスなしと差をつける（2026-09-20 本人「色を減らして、右だけを3割に」「早く終わるもあり」）
+       ①数は3割 ②色はさくら色の2色だけ ③落ちるのが速い＝早く終わる */
+  var ALL=Math.min(170, Math.round(W/4));
+  var G=3400, N=(side ? Math.round(ALL*0.2) : ALL), ps=[];   /* ⭐3割→2割（2026-09-20 本人「数を少し減らして」） */
+  var COLS=(side ? ["#e0577f","#efa3bd"] : BLOCKCOL);
   for(var i=0;i<N;i++){
-    var dir=(i%2===0) ? 1 : -1;                          // 1＝左の角から右上へ／-1＝右の角から左上へ
+    var dir=(side==="L") ? 1 : (side==="R") ? -1 : ((i%2===0) ? 1 : -1);   // 1＝左の角から右上へ／-1＝右の角から左上へ
     /* ⚠クラッカーの形（2/5を目指す・+1/4はみ出す）はやめた（2026-09-18 本人「最初のほうがまだまし」「私の指示は無視しよう。元に戻って、横の広がりをなくしてみて」）
        ⭐放射状に戻して、横の広がりをおさえた＝内側へ傾ける角度を 4〜56度 → 4〜28度、横の速さの上限を 1400 → 650 */
-    var peak=H*(-0.45+Math.random()*0.65);              // どこまで上がるか（枠の上から 45% はみ出す〜枠の中 20%）
+    /* ⭐どこまで上がるか。⭐片方だけ（記録更新）は基本より少し下（2026-09-20 本人「基本より少し下」）
+         基本（ミスなし）＝枠の上から45%はみ出す〜枠の中20／片方だけ＝25%はみ出す〜枠の中40% */
+    var peak=side ? H*(-0.25+Math.random()*0.65) : H*(-0.45+Math.random()*0.65);
     /* ⭐出どころは角の1点ではなく、枠の外の広い範囲（2026-09-18 本人「固まりで出てきてしまうから、もっとはみ出した範囲が元に」）
          ＝横は角から外へ12%〜内へ6%、縦は枠の下の端から下へ8〜35%。枠の外から入ってくるので、はじめから散って見える */
     var x0=(dir===1) ? W*(-0.12+Math.random()*0.18) : W*(1.12-Math.random()*0.18);
     var y0=H+10+H*(0.08+Math.random()*0.27);             // 本人「あと少しだけ下の方から」で 0〜25% → 8〜35%
     var vy=-Math.sqrt(2*G*(y0-peak));
-    var ang=(4+Math.random()*36)*Math.PI/180;           // まっすぐ上から 4〜40度 内側へ＝放射状（本人「横にない。もう少し広げて」で 28→40）
+    /* ⭐片方だけ（記録更新）は角度を立てる＝内側（左）へ行きすぎない（2026-09-20 本人「左端に寄るから、もっと右に散らしたい」）
+         両方（ミスなし）は今までどおり 4〜40度 */
+    var ang=(side ? (8+Math.random()*18) : (4+Math.random()*36))*Math.PI/180;   /* ⭐片方だけは 2〜22度 → 8〜26度＝真上より少し左へ傾ける（2026-09-20 本人「あと少し、真上より左寄り」） */
+    var vx=Math.min(950, -vy*Math.tan(ang));
+    /* ⭐片方だけのときは、枠の外まで飛ばさない＝いちばん高いところで枠の中（端から12px）に収まる速さにおさえる
+       ⚠2026-09-20 に「上の辺の1/3を目指す」を試したが、全部が同じ場所へ行って固まりになったので戻した（本人「こらこら 固まりで出てきた。戻して」） */
+    if(side){
+      var tpk=-vy/G, room=(side==="R") ? (x0-12) : (W-12-x0);
+      vx=Math.max(0, Math.min(vx, room/tpk));
+    }
     ps.push({
       x:x0, y:y0,
-      vx:dir*Math.min(950, -vy*Math.tan(ang)),
+      vx:dir*vx,
       vy:vy,
-      term:80+Math.random()*80,                          // 落ちる速さ（前より少し速い）
+      term:(side? 200+Math.random()*100 : 80+Math.random()*80),   // 落ちる速さ（⭐片方だけは少し速くした・2026-09-20 本人「少しだけさっと終わらせて」）
       sw:18+Math.random()*34, sf:1.5+Math.random()*2.5, ph:Math.random()*6.3,
       rot:Math.random()*6.3, vr:(Math.random()-.5)*12, flip:Math.random()*6.3, vf:5+Math.random()*9,
       w:6+Math.random()*5, h:9+Math.random()*7, round:Math.random()<.18,
-      col:BLOCKCOL[Math.floor(Math.random()*BLOCKCOL.length)]
+      col:COLS[Math.floor(Math.random()*COLS.length)]
     });
   }
   popSound();
@@ -1013,8 +1038,11 @@ function fireworks(bursts,onDone){
     for(var i=0;i<ps.length;i++){
       var p=ps[i];
       if(p.vy<0){ p.vy+=G*dt; }                          // 上がっている間＝勢いよく
-      else { p.vy=Math.min(p.term, p.vy+G*dt*0.15); p.vx*=0.94; }   // 落ちる間＝ゆっくり
+      else { p.vy=Math.min(p.term, p.vy+G*dt*0.15); p.vx*=(side?0.86:0.94); }   // 落ちる間＝ゆっくり（⭐片方だけは横の流れを早く止める・2026-09-20）
       p.x+=p.vx*dt + (p.vy>0 ? Math.sin(t*p.sf+p.ph)*p.sw*dt : 0);
+      /* ⭐落ちる間も、枠の外へは流れない（2026-09-20）＝端まで来たら横の動きを止める */
+      if(side==="R" && p.x<12){ p.x=12; p.vx=0; }
+      if(side==="L" && p.x>W-12){ p.x=W-12; p.vx=0; }
       p.y+=p.vy*dt; p.rot+=p.vr*dt; p.flip+=p.vf*dt;
       if(p.y>H+20 && p.vy>0) continue;          // ⚠はじめは枠の下の外にいるので、落ちてきたときだけ消す
       alive++;
@@ -1210,10 +1238,15 @@ function buildRandomEn(n){
   }
   return out;
 }
-function buildAbcBlocks(){
-  var al="abcdefghijklmnopqrstuvwxyz", k=Math.floor(Math.random()*26);
-  var r=al.slice(k)+al.slice(0,k), out=[r.slice(0,5),r.slice(5,10),r.slice(10,15),r.slice(15,20),r.slice(20)];
-  return shuffled(out);
+function buildAbcBlocks(sets){
+  /* ⭐a〜z ひとまわりを1組として、何組か続ける（2026-09-20 本人「タイル少なすぎ。もっと増やして。スタート変えればいろいろあるし、同じのを繰り返してもいい」）
+     ⭐組ごとに始まりの文字を変える＝同じ並びが続かない */
+  var al="abcdefghijklmnopqrstuvwxyz", out=[];
+  for(var t=0;t<(sets||3);t++){
+    var k=Math.floor(Math.random()*26), r=al.slice(k)+al.slice(0,k);
+    out=out.concat(shuffled([r.slice(0,5),r.slice(5,10),r.slice(10,15),r.slice(15,20),r.slice(20)]));
+  }
+  return out;
 }
 function buildRandomHome(n){
   var keys="qwertyuiopasdfghjkl;zxcvbnm,./", out=[];
@@ -1233,7 +1266,7 @@ function openStage(idx){
   stageIdx=idx;
   var st=STAGES[idx];
   curItems = st.shuffle ? shuffled(st.items).slice(0, st.pick||st.items.length) : st.items.slice();
-  if(st.random) curItems = (st.random==="abc") ? buildAbcBlocks() : (st.random==="en") ? buildRandomEn(st.pick||15) : buildRandomHome(st.pick||15);   /* ⭐毎回ちがう並び */
+  if(st.random) curItems = (st.random==="abc") ? buildAbcBlocks(st.sets||3) : (st.random==="en") ? buildRandomEn(st.pick||15) : buildRandomHome(st.pick||15);   /* ⭐毎回ちがう並び */
   $("menu").style.display="none";
   $("play").classList.add("on");
   if(st.challenge) chStart();
@@ -1267,7 +1300,7 @@ function resetRun(){
   /* ⭐打っている間は「－」（2026-09-18 本人 A）。「0」だとミスしているのに「ミス 0」に見えるため */
   ["sTime","sMiss","sWpm","sEwpm"].forEach(function(id){ var el=$(id); el.textContent="－"; el.classList.remove("don"); });
   justReset=true;
-  $("hint").textContent="スペースでスタート　・　Esc でホームへ";
+  $("hint").textContent="スペースでスタート　・　Esc でホーム";
   loadItem(0);
   showStartMsg();
 }
@@ -1283,8 +1316,18 @@ function showStartMsg(){
     var panel=document.querySelector(".textwrap")||document.querySelector(".panel"); if(!panel) return;
     m=document.createElement("div"); m.className="bigmsg startmsg"; m.id="startmsg";
     m.innerHTML='<em>スタート</em><span>おやゆびでスペースキー</span>';
+    /* ⭐ステージに note があれば、スタートの下に出す（打ちはじめると消える） */
     m.onclick=pressStart;
     panel.appendChild(m);
+  }
+  var nt=document.getElementById("stagenote");
+  if(nt) nt.parentNode.removeChild(nt);
+  if(STAGES[stageIdx] && STAGES[stageIdx].note){
+    nt=document.createElement("div"); nt.id="stagenote"; nt.className="stagenote";
+    nt.innerHTML=STAGES[stageIdx].note;
+    /* ⚠お題のカード（textwrap）に入れると、その幅で折り返して4行になった（2026-09-20 本人「横1行で書いて」）。
+       ⭐タイルの枠（panel）に入れて、枠の幅いっぱいまで1行で出す */
+    (document.querySelector("#play .panel")||m.parentNode).appendChild(nt);
   }
   m.classList.add("on");
   /* ⭐お題の文字は、スペースを押すまで隠す（2026-09-17 本人「押すと同時に文字が表示」） */
@@ -1302,6 +1345,7 @@ function againNow(){
 }
 function beginRun(){
   startReady=true;
+  var nt=document.getElementById("stagenote"); if(nt) nt.parentNode.removeChild(nt);
   stopFireworks();                      // ⭐紙吹雪が残っていたら、打ちはじめで消す
   hideTouchNote();                      // ⭐タブレットの案内も、打ちはじめで閉じる
   if($("startmsg")){ $("startmsg").classList.remove("on"); if($("startmsg").parentElement) $("startmsg").parentElement.classList.remove("waiting"); }
@@ -1311,7 +1355,7 @@ function restartStage(){
   // やり直しのたびにお題を引き直す（同じ文が続くとストレスなので）
   var st=STAGES[stageIdx];
   if(st.shuffle) curItems = shuffled(st.items).slice(0, st.pick||st.items.length);
-  if(st.random) curItems = (st.random==="abc") ? buildAbcBlocks() : (st.random==="en") ? buildRandomEn(st.pick||15) : buildRandomHome(st.pick||15);
+  if(st.random) curItems = (st.random==="abc") ? buildAbcBlocks(st.sets||3) : (st.random==="en") ? buildRandomEn(st.pick||15) : buildRandomHome(st.pick||15);
   if(st.challenge){ curItems = buildChallengeItems(chCount()); $("stName").textContent=chLabel(); }
   buildGrid();
   resetRun();
@@ -1450,7 +1494,14 @@ function finishStage(){
   });
   var isRecord = (prevCount>0 && e>prevBest);
   var isFirst  = (prevCount===0);
-  if(isRecord){ try{ localStorage.setItem("typingLastRecord", stName); }catch(err){} }
+  /* ⭐「★ 記録更新」は、更新した日から1週間だけ出す（2026-09-20 本人「運用を変えたい。日数にしようか。1週間」）
+       ⚠前は、いちばん新しく更新した1つのステージに、次の更新まで出しっぱなしだった（typingLastRecord）
+     ⭐ステージごとに「最後に更新した日」を覚える */
+  if(isRecord){ try{
+    var _r={}; try{ _r=JSON.parse(localStorage.getItem("typingRecordAt")||"{}")||{}; }catch(e2){ _r={}; }
+    _r[stName]=Date.now();
+    localStorage.setItem("typingRecordAt", JSON.stringify(_r));
+  }catch(err){} }
 
   saveLog({date:new Date().toISOString(), name:($("uname").value||"わたし"),
     stage:stName, keys:keys, chars:chars, sec:Math.round(sec*10)/10,
@@ -1465,7 +1516,12 @@ function finishStage(){
   renderStageCards();
 
   if(perfect) celebrate();
-  else setTimeout(afterStage,400);
+  else {
+    /* ⭐記録を更新したときも紙吹雪（2026-09-20 本人「記録更新したときも紙吹雪ほしい」）。
+       ⚠パーフェクトのときは celebrate の中で出る */
+    if(isRecord) fireworks(0,null,"R");   /* ⭐記録更新は右から（2026-09-20 本人「右から出るようにして」） */
+    setTimeout(afterStage,400);
+  }
 }
 /* ステージが終わったあと：埋まったタイルはそのまま残す。
    リセットは「やり直し」を押したときだけ。 */
@@ -1795,7 +1851,10 @@ function layoutStages(){
 window.addEventListener("resize", layoutStages);
 function renderStageCards(){
   var logs=getLogs(), best={};
-  var lastRec=""; try{ lastRec=localStorage.getItem("typingLastRecord")||""; }catch(err){}
+  /* ⭐更新から1週間（7日）だけ「★ 記録更新」を出す（2026-09-20 本人） */
+  var RECDAYS=7, recAt={};
+  try{ recAt=JSON.parse(localStorage.getItem("typingRecordAt")||"{}")||{}; }catch(err){ recAt={}; }
+  var isNewRec=function(nm){ var t=recAt[nm]; return !!t && (Date.now()-t) < RECDAYS*24*60*60*1000; };
   logs.forEach(function(r){ if(!best[r.stage]||r.ewpm>best[r.stage]) best[r.stage]=r.ewpm; });
   var el=$("stages"); el.innerHTML="";
   /* ⭐学生用のページ（gakusei/・body.gakusei）は説明を短く（2026-09-15 本人「簡単な説明でスタートしたい」）
@@ -1825,7 +1884,7 @@ function renderStageCards(){
         if(s.challenge){
           var mx=0; logs.forEach(function(r){ if(r.stage===s.name && r.perfect && r.total>mx) mx=r.total; });
           b = mx ? (mx+"枚") : "";
-        }else if(best[s.name]){ b = (s.name===lastRec?'<span class="rec">★ 記録更新</span> ':"")+best[s.name]+"/1分"; }   /* ⭐文字でも出す・数字の左（2026-09-19 本人「記録更新」「記録更新は、数字の左」） */
+        }else if(best[s.name]){ b = (isNewRec(s.name)?'<span class="rec">★ 記録更新</span> ':"")+best[s.name]+"/1分"; }   /* ⭐文字でも出す・数字の左（2026-09-19 本人「記録更新」「記録更新は、数字の左」） */
         a.innerHTML='<span class="tl">'+stageLabel(i)+'</span><span class="mn">'+esc(s.name)+'</span><span class="mb">'+b+'</span>';
         box.appendChild(a);
       });
@@ -1846,7 +1905,7 @@ function renderStageCards(){
     var ds = GAKUSEI ? "" : ('<div class="ds">'+esc(s.desc||"")+'</div>');
     d.innerHTML='<div class="nm">'+esc(s.name)+'</div>'+ds+stock+
                 '<div class="best">'+(best[s.name]?("自己ベスト "+best[s.name]+"/1分"+
-                  (s.name===lastRec?'<span class="rec">★ 記録更新</span>':"")):"")+'</div>';
+                  (isNewRec(s.name)?'<span class="rec">★ 記録更新</span>':"")):"")+'</div>';
     /* ⭐カードの真ん中のグレーの説明はやめた（2026-09-16 本人「真ん中のグレーの文字もなくそう」）。
        ⚠desc は残してある（あとで戻せる／ページの説明に使える） */
     /* ⭐チャレンジのカードは、速さではなく「いちばん多く塗りきれた枚数」を出す */
@@ -2103,7 +2162,8 @@ window.addEventListener("resize", function(){ if(window.coinResize) clearTimeout
   var b=document.getElementById("testBadge"); if(!b) return;
   var btn=document.createElement("button");
   btn.type="button"; btn.className="noprint"; btn.textContent="🎉 紙吹雪を見る";
-  btn.style.cssText="position:fixed;left:6px;bottom:10px;z-index:9999;font-size:11px;padding:3px 9px;border-radius:999px;border:1px solid #c86a8e;background:#fff;color:#c86a8e;cursor:pointer";
+  var BST="position:fixed;bottom:10px;z-index:9999;font-size:11px;padding:3px 9px;border-radius:999px;border:1px solid #c86a8e;background:#fff;color:#c86a8e;cursor:pointer;";   /* ⚠最後の「;」がないと、あとに足す left が効かない（2026-09-20） */
+  btn.style.cssText=BST+"left:6px;";
   /* ⚠本人の画面で動かなかった（2026-09-18）。何が起きたかをボタンの文字に出す（原因を探すため） */
   btn.onclick=function(){
     btn.blur();
@@ -2115,4 +2175,10 @@ window.addEventListener("resize", function(){ if(window.coinResize) clearTimeout
     }catch(err){ btn.textContent="⚠ "+err.message; }
   };
   document.body.appendChild(btn);
+  /* ⭐片方の角だけの紙吹雪も見られるように（2026-09-20 本人「片方のボタンも作ってみて」） */
+  var btn2=document.createElement("button");
+  btn2.type="button"; btn2.className="noprint"; btn2.textContent="🎉 右だけ";
+  btn2.style.cssText=BST+"left:190px;";   /* ⚠150pxだと「紙吹雪を見る」と重なった（2026-09-20 本人） */
+  btn2.onclick=function(){ btn2.blur(); fireworks(0,null,"R"); };
+  document.body.appendChild(btn2);
 })();
