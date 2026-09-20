@@ -979,12 +979,28 @@ function fireworks(bursts,onDone,side){   /* side＝"L"なら左の角だけ・"
   var kbOn = $("kb") && $("kb").offsetParent!==null;
   var host=(kbOn ? document.querySelector("#play .playright") : null) || document.querySelector("#play .panel");
   if(!host) return;
-  var W=host.clientWidth, H=host.clientHeight, dpr=window.devicePixelRatio||1;
+  /* ⭐スマホは、ページの中身（676px）が画面（375pxなど）より広く、見えているのは一部だけ。
+       そこへ枠いっぱいに紙吹雪を出すと「左に寄った」ように見える（2026-09-20 本人）。
+     ⭐中身のほうが広いときは、枠ではなく「今見えている範囲」に出す */
+  var vv=window.visualViewport, seeW=(vv?vv.width:window.innerWidth);
+  var overflow=(host.clientWidth > seeW+8);
+  var W=overflow ? Math.round(seeW) : host.clientWidth;
+  var H=overflow ? Math.round(Math.min(vv?vv.height:window.innerHeight, host.clientHeight)) : host.clientHeight;
+  var dpr=window.devicePixelRatio||1;
   var cv=document.createElement("canvas"); cv.className="confetti";
   cv.width=W*dpr; cv.height=H*dpr;
   /* ⚠重ねる指定はここに直接書く（CSSが古いまま読まれても、画面の上に出るように） */
-  cv.style.cssText="position:absolute;left:0;top:0;z-index:5;pointer-events:none;transition:opacity .4s;width:"+W+"px;height:"+H+"px";
-  host.appendChild(cv); cfCanvas=cv;
+  if(overflow){
+    var vx0=(vv?vv.offsetLeft:0), vy0=(vv?vv.offsetTop:0);
+    var hb=host.getBoundingClientRect();
+    var top=Math.max(vy0, Math.min(hb.bottom-H, vy0));   // 見えている範囲の中に置く
+    cv.style.cssText="position:fixed;left:"+vx0+"px;top:"+top+"px;z-index:9990;pointer-events:none;transition:opacity .4s;width:"+W+"px;height:"+H+"px";
+    document.body.appendChild(cv);
+  }else{
+    cv.style.cssText="position:absolute;left:0;top:0;z-index:5;pointer-events:none;transition:opacity .4s;width:"+W+"px;height:"+H+"px";
+    host.appendChild(cv);
+  }
+  cfCanvas=cv;
   var ctx=cv.getContext("2d"); ctx.scale(dpr,dpr);
   /* ⭐左下と右下の角から、放射状に勢いよく（2026-09-18 本人「左と右角から、紙吹雪が出るほうがいいな。放射線状に」
        「もっと早くて、上ははみ出したほうが良い」）＝枠の上の端より上まで飛んで、見えなくなってから落ちてくる */
@@ -1013,8 +1029,15 @@ function fireworks(bursts,onDone,side){   /* side＝"L"なら左の角だけ・"
     var vx=Math.min(950, -vy*Math.tan(ang));
     /* ⭐片方だけのときは、枠の外まで飛ばさない＝いちばん高いところで枠の中（端から12px）に収まる速さにおさえる
        ⚠2026-09-20 に「上の辺の1/3を目指す」を試したが、全部が同じ場所へ行って固まりになったので戻した（本人「こらこら 固まりで出てきた。戻して」） */
+    var stopX=0;
     if(side){
-      var tpk=-vy/G, room=(side==="R") ? (x0-12) : (W-12-x0);
+      /* ⚠スマホは枠が細長いので、同じ角度でも横に進む距離が大きく、左に寄っていた（2026-09-20 本人「スマホ版だと、左によった感じの紙吹雪になる」）
+         ⭐横に進める上限を枠の幅で決める＝いちばん高いところで、左から30%より内側には行かない */
+      var tpk=-vy/G;
+      /* ⭐行き止まりは枠の端の少し内側。1枚ごとにばらけさせる（同じ線に紙が溜まって見えないように）
+           ⚠2026-09-20 に「左から30〜65%」にしたら、パソコンで広がりが無くなった（本人）ので戻した */
+      stopX=(side==="R") ? (12+Math.random()*W*0.10) : (W-12-Math.random()*W*0.10);
+      var room=(side==="R") ? (x0-stopX) : (stopX-x0);
       vx=Math.max(0, Math.min(vx, room/tpk));
     }
     ps.push({
@@ -1024,6 +1047,7 @@ function fireworks(bursts,onDone,side){   /* side＝"L"なら左の角だけ・"
       term:(side? 200+Math.random()*100 : 80+Math.random()*80),   // 落ちる速さ（⭐片方だけは少し速くした・2026-09-20 本人「少しだけさっと終わらせて」）
       sw:18+Math.random()*34, sf:1.5+Math.random()*2.5, ph:Math.random()*6.3,
       rot:Math.random()*6.3, vr:(Math.random()-.5)*12, flip:Math.random()*6.3, vf:5+Math.random()*9,
+      stopX:stopX,
       w:6+Math.random()*5, h:9+Math.random()*7, round:Math.random()<.18,
       col:COLS[Math.floor(Math.random()*COLS.length)]
     });
@@ -1038,11 +1062,11 @@ function fireworks(bursts,onDone,side){   /* side＝"L"なら左の角だけ・"
     for(var i=0;i<ps.length;i++){
       var p=ps[i];
       if(p.vy<0){ p.vy+=G*dt; }                          // 上がっている間＝勢いよく
-      else { p.vy=Math.min(p.term, p.vy+G*dt*0.15); p.vx*=(side?0.86:0.94); }   // 落ちる間＝ゆっくり（⭐片方だけは横の流れを早く止める・2026-09-20）
+      else { p.vy=Math.min(p.term, p.vy+G*dt*0.15); p.vx*=(side?0.7:0.94); }   // 落ちる間＝ゆっくり（⭐片方だけは横の流れをもっと早く止める・2026-09-20）
       p.x+=p.vx*dt + (p.vy>0 ? Math.sin(t*p.sf+p.ph)*p.sw*dt : 0);
-      /* ⭐落ちる間も、枠の外へは流れない（2026-09-20）＝端まで来たら横の動きを止める */
-      if(side==="R" && p.x<12){ p.x=12; p.vx=0; }
-      if(side==="L" && p.x>W-12){ p.x=W-12; p.vx=0; }
+      /* ⭐落ちる間も、行き止まりより向こうへは流れない（2026-09-20）＝左から30%のところで横の動きを止める */
+      if(side==="R" && p.x<p.stopX){ p.x=p.stopX; p.vx=0; }
+      if(side==="L" && p.x>p.stopX){ p.x=p.stopX; p.vx=0; }
       p.y+=p.vy*dt; p.rot+=p.vr*dt; p.flip+=p.vf*dt;
       if(p.y>H+20 && p.vy>0) continue;          // ⚠はじめは枠の下の外にいるので、落ちてきたときだけ消す
       alive++;
