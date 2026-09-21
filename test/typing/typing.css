@@ -886,3 +886,27 @@ body:not(.gakusei) .namerow #btnLog:hover{color:var(--text);background:transpare
 body[data-group] .lead{font-size:.8rem;line-height:1.5;margin-bottom:14px}
 
 /* ⭐練習の画面の「音を出す」（2026-09-21）。⚠上の行（.bar）に小さく置く */
+
+/* ⭐こんなときに使う（2026-09-21 本人「使い方の下にね」）。⚠使い方と同じくらい控えめに */
+.usecase{margin:22px 0 10px;padding:14px 2px 0;border-top:1px solid var(--line)}   /* ⭐上に罫線（使い方と同じ線・2026-09-21 本人「こんな時に使うの上に、使い方の上にある罫線を」） */
+.usecase h2{font-size:15px;font-weight:700;margin:0 0 8px}
+.usecase ul{margin:0 0 10px;padding-left:1.3em;font-size:13.5px;line-height:1.9}
+.usecase .usenote{margin:0;font-size:12px;color:var(--sub)}
+
+/* ⭐一般用の一覧は、座席表と同じ幅と並び（2026-09-21 本人「全体のサイズと、画像と文字のバランスも」）
+   座席表＝中身860px（ヘッダーの900pxの内側）・文章｜26px｜画像46%。⚠前は中身1020px（ヘッダーより左右60pxはみ出していた）
+   ⚠練習ページ（タイルとキーボードの幅が要る）と学生用（ノートPCで1画面に収める）は今のまま */
+body.hub:not(.gakusei) .tpwrap{max-width:900px}
+body.hub:not(.gakusei) .intro{gap:26px}
+@media(min-width:760px){ body.hub:not(.gakusei) .introimg{flex:0 0 46%;width:46%;max-width:460px} }
+
+/* ⭐記録（ミスなし50字成功・105/1分）は名前の行の右上に置く＝説明の幅がどの行も同じになる
+   （2026-09-21 本人「ホームポジションランダムや、きゃきゅきょの折り返しと位置が違うよね。きゃきゅきょに合わせて」）
+   ⚠前は記録が行の右に並んで、記録のある行だけ説明が狭くなり、折り返しが増えていた */
+.bigcards.withdesc a.mini{position:relative}
+.bigcards.withdesc a.mini .mb{position:absolute;top:10px;right:8px;margin:0}
+.bigcards.withdesc a.mini .mn{padding-right:128px}
+
+/* ⭐コラム（2026-09-21 本人）。「こんなときに使う」と同じ形・罫線つき。⚠使い方（たたみ）の下 */
+.usecase.column{margin-top:26px}
+.usecase.column p{margin:0;font-size:13.5px;line-height:1.9}

@@ -306,3 +306,39 @@ main.wrap, .site-head .wrap, .site-foot .wrap{max-width:var(--page)}
   .t-hero .lead{margin-bottom:22px}
   .t-catch{margin-bottom:14px}
 }
+
+/* =====================================================================
+   🔴⭐トップのカードに、何も書かないタイル（2026-09-15 本人「これにしてみる」）
+   - 「付箋みたいな番号をトップでやったらどうなるか見たい」「何も書かない」→「正方形」→「タイピングのタイルのような立体的に」
+   - 内側に入れて文字とそろえる形も試したが、本人「さっきのほうがいいかも」で、はみ出す形に戻した
+   - 本人「いつかもっとアプリが増えたら、グループ分けでタイルの色を変えてもいい」＝.school / .work の色を変えるだけで済む
+   ⚠左の帯は外した（タイルと二重になる）。前の帯に戻すときはこの塊を消せばよい。くわしくは ページの型.md の 5
+   ===================================================================== */
+.t-card{position:relative}
+.t-card.school,.t-card.work{border-left:1px solid var(--line)}
+.t-card::before{
+  content:"";position:absolute;left:-11px;top:20px;
+  width:28px;height:28px;border-radius:var(--radius);   /* ⭐正方形（2026-09-15 本人「正方形にして、はみ出した部分は動かさず短くしてみて」）＝はみ出し10pxはそのまま、内側を短く */
+  /* ⭐タイピングのタイル風（2026-09-15 本人「タイピングのタイルのような立体的にしたらどうかな？」）
+     上から光を重ねる（暗くしない）。⚠色は下の background-color で入れる＝background で書くと光が消える */
+  background-image:
+    radial-gradient(115% 78% at 50% -14%,
+      rgba(255,255,255,.82) 0%,
+      rgba(255,255,255,.36) 36%,
+      rgba(255,255,255,.05) 64%,
+      rgba(255,255,255,0) 100%),
+    linear-gradient(180deg,
+      rgba(255,255,255,.05) 0%,
+      rgba(255,255,255,0) 58%,
+      rgba(255,255,255,.16) 100%);
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,.85),
+    inset 0 -2px 4px rgba(120,100,70,.05),
+    0 2px 4px rgba(85,74,58,.16),
+    0 1px 1px rgba(85,74,58,.09);
+}
+.t-card.school::before{background-color:var(--pink)}
+.t-card.work::before{background-color:var(--midori)}
+/* 付箋のぶん、名前を右へ */
+.t-card .t-tool .nm{padding-left:16px;line-height:28px;margin-top:-2px}
+@media (max-width:430px){ .t-card::before{top:16px} }

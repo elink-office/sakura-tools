@@ -25,7 +25,7 @@
 </script>
 <title>【テスト】席次表メーカー｜会議・研修・大学の席次表を無料で自動作成</title>
 <meta name="description" content="席次表の作り方は簡単。名簿を貼るだけで、会議・研修・セミナー・大学の席次表が自動で作れる無料ツールです。前を向いて並ぶスクール形式で、席順は名簿順とランダムから選べます。用紙に合わせて自動で調整し、A4の1枚に収めるので、2ページに分かれません。会社名・役職（肩書き）・フリガナ・名前を1マスに並べ、敬称は様・さん・先生から選べます。Excelの名簿から複数の列をそのまま貼り付けでき、通し番号の向きも指定できます。エクセルテンプレートは不要です。PDFもこのページから作れます。名簿はブラウザの中だけで処理し、AIの学習にも使われません。">
-<link rel="stylesheet" href="../style.css?v=142">
+<link rel="stylesheet" href="../style.css?v=145">
 <link rel="stylesheet" href="seki.css?v=32">
 <link rel="stylesheet" href="../print.css?v=63" media="print">
 <style>
@@ -84,7 +84,7 @@
 </style>
 </head>
 <body>
-<div id="testBadge" style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
+<div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
 <script>
 /* 🔴⭐テスト版の印は、文字ではなく自動で出す（2026-09-12 本人「アップするたびに、
    最終更新日が表示されるようにして」）。
@@ -103,16 +103,25 @@
 
 <header class="site-head noprint">
   <div class="wrap">
-    <a class="logo" href="../"><span class="logo-mark">🌸</span><span class="logo-main">SAKURA TOOLS</span><span class="logo-sub">さくらツール</span></a>
+    <a class="logo" href="../"><span class="logo-mark"><img src="../img/logo-sakura-64.png?v=2" srcset="../img/logo-sakura-64.png?v=2 1x, ../img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA TOOLS</span><span class="logo-sub">さくらツール</span></a>
     <nav>
+      <!-- ⭐右上＝よく使う3つ＋「ツール一覧」（2026-09-21 本人「タッチタイピング、座席表、簡単スライドにして、ツール一覧にしようか」
+           「全部入れでいいと思う。だって、一覧だから」「トップには行きたい」＝トップも並びに）。⚠前＝全部並べていた（7つで狭い画面からはみ出した） -->
+      <a class="navpin" href="../">トップ</a>
+      <a class="navpin" href="../typing/">タッチタイピング</a>
+      <a class="navpin" href="../seat/">座席表</a>
+      <a class="navpin" href="../slide/">簡単スライド</a>
       <input type="checkbox" id="navtoggle" class="navtoggle">
-      <label class="navburger" for="navtoggle">無料ツール</label>
+      <label class="navburger" for="navtoggle">ツール一覧</label>
       <div class="navlist">
       <a href="../">トップ</a>
+      <a href="../typing/">タッチタイピング</a>
       <a href="../seat/">座席表</a>
-      <a href="../slide/">スライド</a>
+      <span class="now" aria-current="page">席次表</span>
+      <a href="../slide/">簡単スライド</a>
       <a href="../excel-fx/">関数早見表</a>
-      <a href="../keiri/">経理ツール</a>
+      <a href="../keiri/mitsumori/">見積書</a>
+      <a href="../keiri/seikyu/">請求書</a>
       </div>
     </nav>
   </div>

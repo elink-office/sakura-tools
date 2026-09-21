@@ -18,6 +18,27 @@
      勝手に暗く描かれるのを止める。CSSで色を指定していても起きるので、これが要る */
   color-scheme: light;
 }
+
+/* 🔴⭐上から重ねる「光」（2026-09-16 本人「立体タイルで、ほかのページの番号も対応できないのかな？」
+   「ぴくのおおきいボタンもできる？」）。
+   ⭐番号のタイル（.step）と、ピンクの大きいボタン（.primary）で同じものを使う
+     ＝弱めたい・やめたいときは、ここ1か所を直せばよい。
+   ⚠色は使う側の background（background-color）で入れる。
+     ⭐使う側で background と書くと、この光は消える。かならず background-image で足すこと。
+   ⭐もとはトップページのタイル（top.css の .t-card::before・2026-09-15 本人「これにしてみる」） */
+:root{
+  --gloss:
+    radial-gradient(115% 78% at 50% -14%,
+      rgba(255,255,255,.82) 0%,
+      rgba(255,255,255,.36) 36%,
+      rgba(255,255,255,.05) 64%,
+      rgba(255,255,255,0) 100%),
+    linear-gradient(180deg,
+      rgba(255,255,255,.05) 0%,
+      rgba(255,255,255,0) 58%,
+      rgba(255,255,255,.16) 100%);
+}
+
 input[type=checkbox],input[type=radio]{accent-color:var(--pink)}
 *{box-sizing:border-box}
 /* 🔴⭐ページ全体が横に動くのを止める（2026-09-10 本人「触ってたら横にずれる」「ふわふわする」）。
@@ -79,48 +100,48 @@ body{
 .site-head nav a[aria-current="page"]{font-weight:bold;color:var(--ink)}
 .site-head nav a:hover{font-weight:bold}
 /* ⚠ 3つ並ぶと、狭い画面でヘッダーがあふれる。ロゴと間隔を詰める（330px以下は2行になる） */
-/* ⭐⭐右上のナビ＝パソコンは並べる／スマホはハンバーガー（2026-09-08 本人）。
-   ⭐JSは使わない＝チェックボックスで開け閉めする
-   ⚠<details> は閉じていると中身を描かないので使えなかった
-   ⚠道具は増える予定。横並びは4つで限界だった（詰めるとロゴにぶつかる）
-   ⚠研究＝隠されたナビは「著しく発見されにくい」（NN/g）→ ☰ に「ツール」の文字を添える */
-/* --- パソコン：ボタンを隠して、リンクをそのまま並べる --- */
-.site-head .navburger{display:none}
+/* ⭐⭐右上＝トップ＋よく使う3つ＋「ツール一覧」（2026-09-21 本人「タッチタイピング、座席表、簡単スライドにして、ツール一覧にしようか」）
+   ⭐「ツール一覧」はどの幅でもボタン。押すと道具を全部（トップ＋7つ）出す。⭐JSは使わない＝チェックボックスで開け閉めする
+   ⚠前（2026-09-08）＝パソコンは全部並べる／スマホはハンバーガー。道具が7つになり、641〜700pxで右にはみ出したのでやめた
+   ⚠研究＝隠したメニューは使われにくい（NN/g 2016：隠す27%／見える48%／組み合わせ50%）→ よく使う3つは見せたまま、ボタンに文字を付ける
+   ⭐今いるページは、リンクではなく色つきの文字（並びがページごとにずれないように） */
+.site-head nav{position:relative;align-items:center}
+.site-head .navpin.now{font-weight:bold;color:var(--ink);cursor:default;min-width:3.2em;text-align:center}
 /* ⚠チェックボックスはどの幅でも場所を取らない（見せないが、押せる状態は保つ）*/
 .site-head .navtoggle{position:absolute;opacity:0;width:0;height:0;margin:0;pointer-events:none}
-.site-head .navlist{display:contents}
-
+.site-head .navburger{
+  display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;
+  font-size:.8rem;font-weight:700;color:var(--ink);
+  /* ⚠⚠label には共通の margin:10px 0 4px がかかる。消さないとヘッダーが14px高くなる
+     （→ 記憶/コード/label-margin-3px.md と同じ原因）*/
+  margin:0;
+  padding:3px 9px;border:1px solid var(--line);border-radius:7px;background:#fff;
+}
+.site-head .navburger::before{
+  content:"";width:14px;height:11px;flex:none;
+  background:linear-gradient(var(--ink) 0 2px,transparent 2px 4.5px,
+             var(--ink) 4.5px 6.5px,transparent 6.5px 9px,var(--ink) 9px 11px);
+}
+.site-head .navtoggle:checked ~ .navburger{border-color:var(--pink);color:var(--pink)}
+.site-head .navlist{
+  display:none;position:absolute;right:0;top:calc(100% + 7px);z-index:60;
+  background:#fff;border:1px solid var(--line);border-radius:11px;
+  box-shadow:0 10px 26px rgba(0,0,0,.16);padding:6px;min-width:170px;
+}
+.site-head .navtoggle:checked ~ .navlist{display:block}
+.site-head .navlist a,.site-head .navlist .now{
+  display:block;padding:8px 12px;border-radius:8px;
+  font-size:.88rem;min-width:0;white-space:nowrap;line-height:1.4;text-align:left;
+}
+.site-head .navlist .now{font-weight:bold;color:var(--pink);background:var(--pink-pale)}
+.site-head .navlist a:hover{background:var(--pink-pale)}
+/* ⭐狭い画面はボタンだけ（並びは一覧の中にある）。⭐トップを足して4つになったので 760 → 820px（2026-09-21 本人「トップには行きたい」）
+   ⚠780pxでロゴとの間が詰まりきる（10px）。821px以上なら40px以上あく */
+@media(max-width:820px){
+  .site-head .navpin{display:none}
+}
 @media(max-width:640px){
   .site-head .logo{font-size:.95rem}
-  /* ⚠nav の中のチェックボックスが場所を取って、ヘッダーが高くなっていた
-     ⭐nav を一列にして、チェックボックスは完全に場所を取らないようにする */
-  .site-head nav{position:relative;display:flex;align-items:center}
-  /* --- スマホ：☰ を出して、リンクは中にしまう --- */
-  .site-head .navburger{
-    display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;
-    font-size:.8rem;font-weight:700;color:var(--ink);
-    /* ⚠⚠label には共通の margin:10px 0 4px がかかる。消さないとヘッダーが14px高くなる
-       （→ 記憶/コード/label-margin-3px.md と同じ原因）*/
-    margin:0;
-    padding:3px 9px;border:1px solid var(--line);border-radius:7px;background:#fff;
-  }
-  .site-head .navburger::before{
-    content:"";width:14px;height:11px;flex:none;
-    background:linear-gradient(var(--ink) 0 2px,transparent 2px 4.5px,
-               var(--ink) 4.5px 6.5px,transparent 6.5px 9px,var(--ink) 9px 11px);
-  }
-  .site-head .navtoggle:checked ~ .navburger{border-color:var(--pink);color:var(--pink)}
-  .site-head .navlist{
-    display:none;position:absolute;right:0;top:calc(100% + 7px);z-index:60;
-    background:#fff;border:1px solid var(--line);border-radius:11px;
-    box-shadow:0 10px 26px rgba(0,0,0,.16);padding:6px;min-width:150px;
-  }
-  .site-head .navtoggle:checked ~ .navlist{display:block}
-  .site-head .navlist a{
-    display:block;padding:8px 12px;border-radius:8px;
-    font-size:.88rem;min-width:0;white-space:nowrap;line-height:1.4;text-align:left;
-  }
-  .site-head .navlist a:hover{background:var(--pink-pale)}
 }
 /* 🔴 「このサイトについて」など道具ではないページは、トップ＋道具3つで**4つ**並ぶ。
    ⚠そのままだとスマホでヘッダーが2行（62px）になり、貼り付いたまま場所を取る。
@@ -222,6 +243,8 @@ button:hover{background:var(--pink-pale)}
 .primary{
   background:var(--pink);border-color:var(--pink);color:#fff;
   font-size:1.1rem;font-weight:bold;padding:14px 30px;border-radius:999px;
+  /* ⭐番号のタイルと同じ光をのせる（2026-09-16）。⚠上の background より後ろに書くこと */
+  background-image:var(--gloss);
   /* 🔴 押せる板に見せる（2026-09-03 本人「画像のように影つけて」）。
      ⚠影は**グレー**にする。ページごとに色が違う（座席表＝桜色／席次表＝緑）ので、
        色つきの影にすると片方で浮く。グレーならどちらでも合う */
@@ -237,6 +260,7 @@ button:hover{background:var(--pink-pale)}
 @media (hover:hover){
   .primary:hover{
     background:var(--pink);border-color:var(--pink);filter:brightness(1.04);
+    background-image:var(--gloss);   /* ⚠これが無いと、乗せた瞬間に光だけ消える */
     box-shadow:0 8px 18px rgba(0,0,0,.24), 0 1px 3px rgba(0,0,0,.10);
     transform:translateY(-2px);
   }
@@ -780,6 +804,10 @@ body.screen .seat.empty{
   column-gap:.7em;line-height:1.2;white-space:nowrap;
 }
 .logo-mark{flex:0 0 auto}
+/* ⭐🌸 の絵文字を、さくらのロゴの画像にした（2026-09-21 本人「🌸と置き換えたい」）。⚠絵文字は端末で見た目が変わる。大きさは前の🌸（高さ21px）に合わせた */
+.logo-mark img{display:block;width:22px;height:22px}
+/* ⭐「さくら🌸タッチタイピング」の 🌸 もロゴの画像に（2026-09-21 本人「さくらタッチタイピングもだね」）。文字の大きさに合わせる */
+.inlogo{display:inline-block;width:1em;height:1em;vertical-align:-.12em;margin:0 .06em}
 .logo-main{letter-spacing:.06em}
 .logo-sub{font-size:.72rem;font-weight:normal;color:var(--ink-soft);letter-spacing:.12em}
 /* ⭐スマホでは日本語を出さない（ロゴが幅を取りすぎてナビが崩れるため）。
@@ -854,7 +882,15 @@ details.opt > summary > .step,
   position:absolute;top:50%;transform:translateY(-50%);
   width:38px;height:28px;margin:0;border-radius:var(--radius);   /* ⭐カードと同じ角（2026-09-14 本人「付箋の角が小さく見える」） */
   font-size:.9rem;font-weight:700;
-  box-shadow:0 1px 0 rgba(0,0,0,.08),0 3px 6px rgba(0,0,0,.16);
+  /* 🔴⭐トップのタイルと同じ立体にする（2026-09-16 本人「立体タイルで、ほかのページの番号も対応できないのかな？」）。
+     ⭐中身は top.css の .t-card::before と同じ（上から光を重ねる）。⚠色は上の .step の background で入っている＝
+       ここで background と書くと光が消えるので、かならず background-image で足す */
+  background-image:var(--gloss);
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,.85),
+    inset 0 -2px 4px rgba(120,100,70,.05),
+    0 2px 4px rgba(85,74,58,.16),
+    0 1px 1px rgba(85,74,58,.09);
 }
 /* 章：summary の左端＝カードの枠の内側 → -11px で枠の外へ10px */
 details.opt > summary > .step{left:-11px}

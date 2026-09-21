@@ -41,7 +41,7 @@
   "url": "https://sakura-tools.com/"
 }
 </script>
-<link rel="stylesheet" href="style.css?v=144">
+<link rel="stylesheet" href="style.css?v=145">
 <link rel="stylesheet" href="top.css?v=62">
 </head>
 <body>
@@ -64,17 +64,25 @@
 
 <header class="site-head">
   <div class="wrap">
-    <a class="logo" href="./"><span class="logo-mark">🌸</span><span class="logo-main">SAKURA TOOLS</span><span class="logo-sub">さくらツール</span></a>
+    <a class="logo" href="./"><span class="logo-mark"><img src="img/logo-sakura-64.png?v=2" srcset="img/logo-sakura-64.png?v=2 1x, img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA TOOLS</span><span class="logo-sub">さくらツール</span></a>
     <nav>
+      <!-- ⭐右上＝よく使う3つ＋「ツール一覧」（2026-09-21 本人「タッチタイピング、座席表、簡単スライドにして、ツール一覧にしようか」
+           「全部入れでいいと思う。だって、一覧だから」「トップには行きたい」＝トップも並びに）。⚠前＝全部並べていた（7つで狭い画面からはみ出した） -->
+      <span class="navpin now" aria-current="page">トップ</span>
+      <a class="navpin" href="typing/">タッチタイピング</a>
+      <a class="navpin" href="seat/">座席表</a>
+      <a class="navpin" href="slide/">簡単スライド</a>
       <input type="checkbox" id="navtoggle" class="navtoggle">
-      <label class="navburger" for="navtoggle">無料ツール</label>
+      <label class="navburger" for="navtoggle">ツール一覧</label>
       <div class="navlist">
+      <span class="now" aria-current="page">トップ</span>
       <a href="typing/">タッチタイピング</a>
       <a href="seat/">座席表</a>
       <a href="seki/">席次表</a>
-      <a href="slide/">スライド</a>
+      <a href="slide/">簡単スライド</a>
       <a href="excel-fx/">関数早見表</a>
-      <a href="keiri/">経理ツール</a>
+      <a href="keiri/mitsumori/">見積書</a>
+      <a href="keiri/seikyu/">請求書</a>
       </div>
     </nav>
   </div>
@@ -104,7 +112,7 @@
          ⭐カードの文は本人（2026-09-21） -->
     <a class="t-card big work" id="typing" href="typing/">
       <div class="t-tool">
-        <span class="nm">さくら🌸タッチタイピング</span>
+        <span class="nm">さくら<img class="inlogo" src="img/logo-sakura-64.png?v=2" srcset="img/logo-sakura-64.png?v=2 1x, img/logo-sakura-128.png?v=2 2x" alt="">タッチタイピング</span>
         <span class="ds">登録なし・全部無料。ホームポジションの練習や、長文にもチャレンジできる！ミスを減らす設計で、タッチタイピングへの近道に！</span>
         <img class="t-shot" src="img/typing-sample.png?v=14" width="1280" height="720" alt="ホームポジションの練習画面。タイルの枠とキーボードがあり、打つキー（f）が光っている">
       </div>
@@ -193,7 +201,7 @@
   <aside class="t-side noprint">
     <h2>無料ツール</h2>
     <ul>
-      <li><a href="typing/">さくら🌸タッチタイピング</a></li>
+      <li><a href="typing/">さくら<img class="inlogo" src="img/logo-sakura-64.png?v=2" srcset="img/logo-sakura-64.png?v=2 1x, img/logo-sakura-128.png?v=2 2x" alt="">タッチタイピング</a></li>
       <li><a href="seat/">座席表メーカー</a></li>
       <li><a href="seki/">席次表メーカー</a></li>
       <li><a href="slide/">簡単スライドメーカー</a></li>

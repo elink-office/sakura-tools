@@ -26,8 +26,8 @@
 </script>
 <title>【テスト】さくら🌸タッチタイピング　練習｜無料のタイピング練習</title>
 <meta name="description" content="登録なし・全部無料のタイピング練習です。ホームポジションから指ごとに順番に、ローマ字入力を11ステージで練習できます。早く打つことより、ミスをしないことを先に。">
-<link rel="stylesheet" href="../style.css?v=140">
-<link rel="stylesheet" href="typing.css?v=151">
+<link rel="stylesheet" href="../style.css?v=145">
+<link rel="stylesheet" href="typing.css?v=160">
 </head>
 <body class="playpage">
 <div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
@@ -84,29 +84,39 @@
 <header class="site-head noprint">
   <div class="wrap">
     <!-- ⭐練習中はロゴを押せなくする（2026-09-16 本人「間違えてさくらツール押しそう」）。一覧のページではリンクのまま -->
-    <span class="logo"><span class="logo-mark">🌸</span><span class="logo-main">SAKURA TOOLS</span><span class="logo-sub">さくらツール</span></span>
+    <span class="logo"><span class="logo-mark"><img src="../img/logo-sakura-64.png?v=2" srcset="../img/logo-sakura-64.png?v=2 1x, ../img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA TOOLS</span><span class="logo-sub">さくらツール</span></span>
     <nav>
+      <!-- ⭐右上＝よく使う3つ＋「ツール一覧」（2026-09-21 本人「タッチタイピング、座席表、簡単スライドにして、ツール一覧にしようか」
+           「全部入れでいいと思う。だって、一覧だから」「トップには行きたい」＝トップも並びに）。⚠前＝全部並べていた（7つで狭い画面からはみ出した） -->
+      <a class="navpin" href="../">トップ</a>
+      <span class="navpin now" aria-current="page">タッチタイピング</span>
+      <a class="navpin" href="../seat/">座席表</a>
+      <a class="navpin" href="../slide/">簡単スライド</a>
       <input type="checkbox" id="navtoggle" class="navtoggle">
-      <label class="navburger" for="navtoggle">無料ツール</label>
+      <label class="navburger" for="navtoggle">ツール一覧</label>
       <div class="navlist">
       <a href="../">トップ</a>
+      <span class="now" aria-current="page">タッチタイピング</span>
       <a href="../seat/">座席表</a>
       <a href="../seki/">席次表</a>
-      <a href="../slide/">スライド</a>
+      <a href="../slide/">簡単スライド</a>
       <a href="../excel-fx/">関数早見表</a>
-      <a href="../keiri/">経理ツール</a>
+      <a href="../keiri/mitsumori/">見積書</a>
+      <a href="../keiri/seikyu/">請求書</a>
       </div>
     </nav>
   </div>
-  <div class="site-sub"><div class="wrap"><span class="now-long">さくら🌸タッチタイピング</span><span class="now-short">さくらタイピング</span></div></div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">さくら<img class="inlogo" src="../img/logo-sakura-64.png?v=2" srcset="../img/logo-sakura-64.png?v=2 1x, ../img/logo-sakura-128.png?v=2 2x" alt="">タッチタイピング</span><span class="now-short">さくらタイピング</span></div></div>
 </header>
 
 <div class="tpwrap">
 
 <!-- ⭐座席表と同じ形にした（2026-09-08 本人「座席表のタイトル、リード文と同じ形にして」）。
      h1 の下にキャッチ（さくら色の太字）、その下にリード。⚠ニックネームは下の行へ移した -->
-<h1>さくら🌸タッチタイピング</h1>
-<p class="catch">早いより、ミスがない人が仕事が早い</p>
+<h1>さくら<img class="inlogo" src="../img/logo-sakura-64.png?v=2" srcset="../img/logo-sakura-64.png?v=2 1x, ../img/logo-sakura-128.png?v=2 2x" alt="">タッチタイピング</h1>
+<!-- ⭐キャッチ（2026-09-21 本人「そうね。それでいこう」）。前＝早いより、ミスがない人が仕事が早い
+     ⭐「早い」＝仕事が早く終わる（時間が短い）。文化庁「異字同訓の漢字の使い分け例」108 -->
+<p class="catch">入力ミスしない人ほど、仕事が早い</p>
 
 <div id="imeWarn">
   <b>日本語入力（IME）がオンになっています。</b><br>
@@ -125,13 +135,14 @@
        ⚠文章はコードの原案。本人が自分の言葉に直す前提 -->
   <div class="intro">
     <div class="introtext">
-      <!-- ⭐一覧のページと同じ文にそろえた（2026-09-21）。
-           ⚠前は9/8の文のままだった（9/19に直したのは index.html だけ）-->
-      <p class="lead">ミスタッチを減らしたい。タッチタイピングができるようになりたい。でも、時間に追われて焦るのはイヤ。<strong>そんな人のための、登録なし・全部無料のホームポジション練習</strong>です。</p>
+      <!-- ⭐一覧のページと同じ文（2026-09-21 本人のC案）-->
+      <p class="lead"><strong>大人のタッチタイピングは、速さよりミスを減らすことから。</strong>ホームポジションの練習が、ダウンロードなし・全部無料でできます。毎日10分、続けることがいちばん大切です。</p>
+      <!-- ⭐箇条書き＝本人の文（2026-09-21 本人「もっと短くできないかな？」→ 本人が書いた）。⚠「身に着ける」だけ「身につける」に直した -->
       <ul class="can">
-        <li>ミスタッチを減らしたい人に。ミスするとタイルが崩れるゲーム感覚。本当の速さもミスの分だけ下がるから、正確に打つほど記録が伸びる</li>
-        <li>タッチタイピングをしたい人に。キーボードの指の色を見ながら、ホームポジションから順番に。覚え方を考える必要なし。単語からは画面のキーボードが消えて、手元を見ない練習へ</li>
-        <li>焦らされたくない人に。打っている間は、時間も速さも出さない。終わってからまとめて表示するから、自分のペースで練習できる。だから安心</li>
+        <li>タッチタイピングへの近道は、<b>ホームポジションを覚える！ミスを減らす！キーボードを見ない！</b></li>   <!-- ⭐本人（2026-09-21「1つ目の箇条書きに、これを追加」） -->
+        <li>ミスするとタイルがくずれる、ゲーム感覚で正確さを身につける。</li>
+        <li>次のキー位置が画面でわかって、手元を見ずに打てる。</li>
+        <li>ミスは「本当の速さ」から引く。だからノーミスを目指せる。</li>
       </ul>
     </div>
     <img class="introimg" src="../img/typing-sample.png?v=14" width="1280" height="720"
@@ -212,7 +223,11 @@
 
 <details class="howto">
   <summary>使い方</summary>
+  <!-- ⭐はじめの2行（2026-09-21 本人「ステージ１から順に上達していけば、タッチタイピングができるようになる」
+       「FとJに指を置いて、その指の形を覚えながらタイピングしましょう」） -->
   <ul>
+    <li><b>ホームポジションの1から順番に</b>練習していけば、タッチタイピングができるようになります。</li>
+    <li>まず<b>F と J</b>に人差し指を置いて、<b>その指の形を覚えながら</b>タイピングしましょう。</li>
     <li>画面の<b>ローマ字をそのまま</b>打ちます。変換はしません。</li>
     <li>ミスすると<b>タイルがくずれます</b>。決めた回数までまちがえると、全部くずれて最初からになります。</li>
     <li><b>Esc</b>キーでリセット、もう一度<b>Esc</b>でステージ選択にもどります。</li>
@@ -282,6 +297,6 @@
     <span class="copy">さくらツール　© 2026 SAKURA TOOLS</span></div>
 </footer>
 
-<script src="typing.js?v=155"></script>
+<script src="typing.js?v=157"></script>
 </body>
 </html>
