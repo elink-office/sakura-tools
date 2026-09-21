@@ -41,11 +41,11 @@
   "url": "https://sakura-tools.com/"
 }
 </script>
-<link rel="stylesheet" href="style.css?v=140">
-<link rel="stylesheet" href="top.css?v=57">
+<link rel="stylesheet" href="style.css?v=144">
+<link rel="stylesheet" href="top.css?v=62">
 </head>
 <body>
-<div id="testBadge" style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
+<div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
 <script>
 /* 🔴⭐テスト版の印は、文字ではなく自動で出す（2026-09-12 本人「アップするたびに、
    最終更新日が表示されるようにして」）。
@@ -69,6 +69,7 @@
       <input type="checkbox" id="navtoggle" class="navtoggle">
       <label class="navburger" for="navtoggle">無料ツール</label>
       <div class="navlist">
+      <a href="typing/">タッチタイピング</a>
       <a href="seat/">座席表</a>
       <a href="seki/">席次表</a>
       <a href="slide/">スライド</a>
@@ -98,6 +99,17 @@
     <!-- 🔴 2026-09-06 本人：カードごと押せるようにした（「使ってみる」ボタンは廃止）。
          ⚠2026-09-03の「絵とボタンを別々の入口に」は撤回。入口が1つになったぶん、
            カード全体が浮く見た目で「押せる」と分かるようにする -->
+    <!-- ⭐タッチタイピング（2026-09-21 本人「左上をタッチタイピングにしよう」）。
+         ⭐理由＝検索から入り始めたら、いつも使ってもらえる道具にいちばんなりやすい（本人）。
+         ⭐カードの文は本人（2026-09-21） -->
+    <a class="t-card big work" id="typing" href="typing/">
+      <div class="t-tool">
+        <span class="nm">さくら🌸タッチタイピング</span>
+        <span class="ds">登録なし・全部無料。ホームポジションの練習や、長文にもチャレンジできる！ミスを減らす設計で、タッチタイピングへの近道に！</span>
+        <img class="t-shot" src="img/typing-sample.png?v=14" width="1280" height="720" alt="ホームポジションの練習画面。タイルの枠とキーボードがあり、打つキー（f）が光っている">
+      </div>
+    </a>
+
     <a class="t-card big school" id="seat" href="seat/">
       <div class="t-tool">
         <span class="nm">座席表メーカー</span>
@@ -106,13 +118,6 @@
       </div>
     </a>
 
-    <a class="t-card big work" id="seki" href="seki/">
-      <div class="t-tool">
-        <span class="nm">席次表メーカー</span>
-        <span class="ds">会社名・役職・フリガナ・名前を並べた席次表。用紙に合わせて自動で調整し、A4の1枚に収めます。</span>
-        <img class="t-shot" src="img/seki-sample.png?v=8" width="1280" height="720" alt="23人・5列の研修の席次表。会社名・役職・名前を並べたもの">
-      </div>
-    </a>
 
     <a class="t-card school" id="slide" href="slide/">
       <div class="t-tool">
@@ -129,6 +134,16 @@
       </div>
     </a>
 
+    <!-- ⭐2段目の先頭（2026-09-21 本人の並び）＝1段目 タッチタイピング・座席表・(スライド/早見表)、
+         2段目 席次表・見積書・請求書。⚠右下の空きが埋まる -->
+    <a class="t-card big work" id="seki" href="seki/">
+      <div class="t-tool">
+        <span class="nm">席次表メーカー</span>
+        <span class="ds">会社名・役職・フリガナ・名前を並べた席次表。用紙に合わせて自動で調整し、A4の1枚に収めます。</span>
+        <img class="t-shot" src="img/seki-sample.png?v=8" width="1280" height="720" alt="23人・5列の研修の席次表。会社名・役職・名前を並べたもの">
+      </div>
+    </a>
+
     <!-- ⭐経理は2枚に分けた（2026-09-12 本人）。⚠経理トップを経由せず直接入る。
          ⭐並び＝1段目に座席表・席次表＋右にスライド/早見表、2段目に見積書・請求書（右下は空く） -->
     <a class="t-card big work" id="mitsumori" href="keiri/mitsumori/">
@@ -142,7 +157,7 @@
     <a class="t-card big work" id="seikyu" href="keiri/seikyu/">
       <div class="t-tool">
         <span class="nm">請求書メーカー</span>
-        <span class="ds">税抜でも税込でも入力OK。源泉徴収（10.21％）を引いた差引額まで自動で計算します。インボイスにも対応。</span>
+        <span class="ds">税抜でも税込でも入力OK。源泉徴収（10.21％）を引いた差引額まで自動で計算します。インボイス（適格請求書）にも対応。</span>
         <img class="t-shot" src="img/seikyu-sample.png?v=1" width="1280" height="720" alt="A4の請求書。品目・数量・単価と、小計・消費税・合計が並んだもの">
       </div>
     </a>
@@ -178,6 +193,7 @@
   <aside class="t-side noprint">
     <h2>無料ツール</h2>
     <ul>
+      <li><a href="typing/">さくら🌸タッチタイピング</a></li>
       <li><a href="seat/">座席表メーカー</a></li>
       <li><a href="seki/">席次表メーカー</a></li>
       <li><a href="slide/">簡単スライドメーカー</a></li>

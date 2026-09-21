@@ -283,9 +283,12 @@ button.primary:hover{background:var(--accent-deep)}   /* ⭐ステージの色�
 .textwrap{
   position:relative;z-index:1;border-radius:13px;padding:16px 20px;
   align-self:center;max-width:100%;   /* 文字の幅だけ。短いお題のときはタイルが左右に見える */
-  background:rgba(255,255,255,.26);
-  backdrop-filter:blur(6px) saturate(1.35);
-  -webkit-backdrop-filter:blur(6px) saturate(1.35);
+  /* ⭐タイルを薄くしたら、ガラスの透け感が消えた（2026-09-21 本人）。
+     ⭐白の膜を薄く（.26→.18）して、背後の色を濃く見せる（saturate 1.35→1.7）
+     ⚠元の値＝background .26 / blur(6px) saturate(1.35) */
+  background:rgba(255,255,255,.18);
+  backdrop-filter:blur(7px) saturate(1.7);
+  -webkit-backdrop-filter:blur(7px) saturate(1.7);
   /* タイルが空のときでも境目が分かるように、浮かせる */
   border:1px solid rgba(255,255,255,.55);
   box-shadow:
@@ -848,3 +851,38 @@ a.mini .rec{margin:0 6px 0 0}
 }
 .stagenote b{color:var(--text)}
 @media(max-width:760px){ .stagenote{white-space:normal;max-width:calc(100vw - 32px);font-size:12px} }
+
+/* ⭐一般用のまとめカードは、名前の下に説明（2026-09-21 本人「Bでやってみて」）。
+   ⚠学生用（.bigcards だけ）は名前だけのまま＝ノートPCの1画面に収めるため */
+.bigcards.withdesc a.mini{align-items:flex-start;padding:8px 8px 9px}
+.bigcards.withdesc a.mini .tl{margin-top:1px}
+.bigcards.withdesc a.mini .mb{margin-top:4px}
+a.mini .mtx{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+a.mini .ds2{font-size:12px;font-weight:400;color:var(--sub);line-height:1.55}
+
+/* ⭐ニックネームの選択肢（2026-09-21 本人「選択できるなら」）。⚠2人目が入るまでは出ない */
+.unamepick{margin-left:6px;height:30px;max-width:150px;padding:0 6px;border:1px solid var(--line);border-radius:4px;
+  background:var(--card);color:var(--text);font-size:13px;font-family:inherit;cursor:pointer}
+
+/* ⭐一般用は「今までの記録を見る」を同じ行の右端へ、目立たせない
+   （2026-09-21 本人「同じ行の右揃えにしてメインじゃなくていい」）。⚠学生用は今までどおり */
+body:not(.gakusei) .namerow #btnLog{
+  margin-left:auto;border-color:transparent;background:transparent;color:var(--sub);
+  font-size:12px;padding:7px 2px;text-decoration:underline;text-underline-offset:3px;
+}
+body:not(.gakusei) .namerow #btnLog:hover{color:var(--text);background:transparent}
+
+/* ⭐一般用の「記録を消す」窓＝名前だけ並べる（2026-09-21 本人「名前だけでいいと思う」） */
+.namelist{display:flex;flex-direction:column}
+.namelist .nrow{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:10px 4px;border-bottom:1px solid var(--line)}
+.namelist .nrow:last-child{border-bottom:0}
+.namelist .nn{font-size:15px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.namelist .ndel{flex:none;font-size:12px;padding:5px 12px;height:auto}
+
+/* ⭐一般用のグループのページ（2026-09-21）＝カード1枚・1列 */
+.stages.bigcards.onegroup{grid-template-columns:minmax(0,760px) !important}
+/* ⭐グループのページの説明文＝学生用のトップと同じ小さい字（2026-09-21 本人「学生のハブの画面みたいに少し小さめの文字」） */
+body[data-group] .lead{font-size:.8rem;line-height:1.5;margin-bottom:14px}
+
+/* ⭐練習の画面の「音を出す」（2026-09-21）。⚠上の行（.bar）に小さく置く */
