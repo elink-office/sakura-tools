@@ -137,14 +137,14 @@ function toDirect(str){
      ⚠「ー」と小さい字だけの音は打てないので入れていない（スクリプトで確かめた） */
 var STAGES=[
  {name:"ホームポジション",basic:true,mode:"direct",
-  desc:"中央の段。左は a s d f、右は j k l。指を1本も動かさずに打てるキーだけ。",
+  desc:"キーボードを見て！FとJの突起が、ひとさしゆびのホームポジション。これを死守して、中央の段をまず覚えよう。",   /* ⭐本人の文（2026-09-21）。⚠「キーワード」→「キーボード」、読点と句点を足した */
   items:[
     "ffjj","ddkk","ssll","aass","fjfj","dkdk","slsl","asdfjkl","fjdksla","asa","kasa","saka",
     "kaja","asakasa","kasadasa"
   ]},
 
  {name:"ひとさし指の 上・中央・下",basic:true,mode:"direct",
-  desc:"f から上の r・下の v へ。j から上の u・下の m へ。伸ばしたら必ず戻る。",
+  desc:"f から上の r・下の v へ。j から上の u・下の m へ。伸ばしたら必ず戻るの繰り返し。ここが一番重要です。",   /* ⭐本人（2026-09-21） */
   items:[
     "frf","ftf","fgf","juj","jyj","jhj","fbf","jnj","jmj","fvf","fufu","huhu","gugu","bubu",
     "tutu","furu","yumu","nuru"
@@ -178,7 +178,7 @@ var STAGES=[
   items:[]},
 
  {name:"あいうえお",basic:true,mode:"kana",shuffle:true,
-  desc:"五十音と濁点・半濁点。ローマ字は2文字。を8本の指がぜんぶ動きます。",
+  desc:"50音をランダムに出題。ここが日本語入力の基本です。8本の指を全部つかって、最後にホームポジションに戻りましょう。",   /* ⭐本人（2026-09-21「あいうえおの意味がわからない」） */
   items:["あいうえお","かきくけこ","さしすせそ","たちつてと","なにぬねの",
          "はひふへほ","まみむめも","やゆよ","らりるれろ","わをん",
          "がぎぐげご","ざじずぜぞ","だぢづでど","ばびぶべぼ","ぱぴぷぺぽ"]},
@@ -385,13 +385,15 @@ var STAGES=[
    本人「タイルの数を決めて、最後まで行けるかどうか」「1回目は少し大きいタイル、2回目はもっと、3回目はもっと」
    ⭐お題はステージ6〜11の言葉からランダム（本人「ホームポジションはなし」）
    🟡本の一節（青空文庫）・聞いたことのない言葉は、あとで足す（本人「今決めない。また依頼する」）
-   ⭐1回まちがえたら、その回をやり直し。塗りきったら次の回は1.5倍（上限400枚）。
+   ⭐1回まちがえたら、その回をやり直し。塗りきったら次の回は10枚ふえる（上限400枚・2026-09-21に1.5倍から変えた）。
      タイルの大きさは buildGrid が枚数から自動で決める＝枚数を増やすだけで小さくなる */
 STAGES.push({name:"ミスなしチャレンジ",mode:"mix",challenge:"ja",
-  desc:"決めた数のタイルを、1回もまちがえずに塗りきれるか。長めの文が出ます。塗りきるたびにタイルが増えて、小さくなります。",
+  /* ⭐説明は本人の文（2026-09-21）。⚠「塗りきるたびにタイルが増えて、小さくなります」は外した（本人「いらないと思う」） */
+  desc:"自分が決めたタイルの数だけ、1回も間違えずに埋めることができるのか！？やればやるほどチャレンジタイルが増えていきます！",
   items:[]});
 STAGES.push({name:"ミスなしチャレンジ（英語）",lang:"en",mode:"mix",challenge:"en",
-  desc:"英語でおなじ挑戦。1回もまちがえずに塗りきれるか。塗りきるたびにタイルが増えて、小さくなります。",
+  /* ⭐英語も同じ感じで（2026-09-21 本人） */
+  desc:"自分が決めたタイルの数だけ、英語を1回も間違えずに埋めることができるのか！？やればやるほどチャレンジタイルが増えていきます！",
   items:[]});
 
 /* ⭐カードの並び順（2026-09-16 本人）。⭐日本語のあとに日本語のチャレンジ、英語のあとに英語のチャレンジ。
@@ -701,7 +703,14 @@ var startAt=0, keys=0, chars=0, miss=0, timer=null, running=false, pausedMs=0;  
 var bestTower=0, lives=0;   // bestTower = その回いちばん多く塗れたタイル数
 var lastResult=null, runToken=0, celebrateCancel=null, stageDone=false, justReset=true;
 var MISS_PENALTY=2.5;   // ミス1回あたりの実質ロス（秒）
-var LOGKEY="typingLogs_v1";
+/* ⭐記録の箱を入口ごとに分ける（2026-09-21 本人「学生用は学生用にしたい」
+     「将来的に学校に配れたら配りたいし、そのページを知っている人だけのものにしたい」）
+   ⭐学生用は頭に gk_ を付ける。一般用は今までどおり（今までの記録が消えないように）
+   ⚠同じ端末で両方を使っても、自己ベスト・名前・記録は混ざらない
+   ⚠学生用でこれまでに作った記録は、古い箱（一般用側）に残る */
+var BOX = document.body.classList.contains("gakusei") ? "gk_" : "";
+function K(name){ return BOX + name; }
+var LOGKEY=K("typingLogs_v1");
 
 /* ---------- 音 ---------- */
 var actx=null;
@@ -721,6 +730,33 @@ function crashSound(){
   tone(90,0.5,0.13,"sawtooth");
   setTimeout(function(){ tone(60,0.45,0.10,"square"); },70);
   setTimeout(function(){ tone(140,0.3,0.06,"sawtooth"); },160);
+}
+/* ⭐クラッカーの音（2026-09-21 本人「じゃ、クラッカー🎉の音もいるね」）。
+   ⭐「ポンッ」＋紙が散るシャーという音。音の出どころは作らない＝その場で作る（ファイルなし）
+   ⚠鳴るのは「音を出す」にチェックが入っているときだけ。⭐チェックは覚えない（開き直すとオフ）
+   ⭐記録更新（片方だけ）は小さめ・短め。ミスなし（両方）はしっかり鳴らす */
+function crackerSound(side){
+  if(!$("optSound") || !$("optSound").checked) return;
+  try{
+    if(!actx) actx=new (window.AudioContext||window.webkitAudioContext)();
+    if(actx.state==="suspended") actx.resume();
+    var t0=actx.currentTime, small=!!side, vol=small?0.5:1;
+    /* ポンッ＝短い破裂音（高いところから急に下がる） */
+    var o=actx.createOscillator(), g=actx.createGain();
+    o.type="triangle"; o.frequency.setValueAtTime(900,t0);
+    o.frequency.exponentialRampToValueAtTime(120,t0+0.09);
+    g.gain.setValueAtTime(0.28*vol,t0);
+    g.gain.exponentialRampToValueAtTime(0.001,t0+0.16);
+    o.connect(g); g.connect(actx.destination); o.start(t0); o.stop(t0+0.18);
+    /* シャー＝紙が散る音（ざらざらした音を短く） */
+    var dur=small?0.5:0.9, rate=actx.sampleRate, buf=actx.createBuffer(1,Math.floor(rate*dur),rate), d=buf.getChannelData(0);
+    for(var i=0;i<d.length;i++){ var k=1-i/d.length; d[i]=(Math.random()*2-1)*k*k; }
+    var src=actx.createBufferSource(); src.buffer=buf;
+    var bp=actx.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=2600; bp.Q.value=0.7;
+    var ng=actx.createGain(); ng.gain.setValueAtTime(0.16*vol,t0+0.02);
+    ng.gain.exponentialRampToValueAtTime(0.001,t0+dur);
+    src.connect(bp); bp.connect(ng); ng.connect(actx.destination); src.start(t0+0.02);
+  }catch(e){}
 }
 function fireworkSound(i){
   setTimeout(function(){ tone(220+i*90,0.05,0.05); },0);
@@ -827,7 +863,11 @@ var SHIFTED={"!":"1",'"':"2","#":"3","$":"4","%":"5","&":"6","'":"7","(":"8",")"
 /* ---------- タイル ----------
    ステージの総打鍵数だけタイルを用意し、打つごとにランダムなタイルを塗る。
    全部塗ればステージ完走（＝ノーミス）。ミスするとその分だけ戻る。 */
-var BLOCKCOL=["#e0577f","#ef8a3c","#e2b52c","#43a877","#2ea9bd","#4a6bcf","#8a5cd0"];
+/* ⭐タイルの色を少し薄くしてみた（2026-09-21 本人「生徒用と一般用、どっちも、タイルの色を少し薄いのも見てみたい」）。
+   ⚠**戻す可能あり**。元の色＝
+     ["#e0577f","#ef8a3c","#e2b52c","#43a877","#2ea9bd","#4a6bcf","#8a5cd0"]
+   ⭐今の色＝元の色に**白を20%**混ぜたもの */
+var BLOCKCOL=["#e67999","#f2a163","#e8c456","#69b992","#58baca","#6e89d8","#a17ad9"];
 var cells=[], order=[], filled=0, cellTotal=0;
 
 /* ⭐お題i番の音節。チャレンジはお題ごとに かな／英字 が混ざるので、お題が持っている印で分ける。
@@ -868,7 +908,10 @@ function buildGrid(){
     var r=Math.ceil(cellTotal/c), sz=Math.min(W/c, H/r);
     if(!best || sz>best.sz) best={c:c,r:r,sz:sz};
   }
-  var size=Math.min(best.sz,48), cols=best.c, rows=best.r;   // タイルが少ないステージほど大きくなる
+  /* ⭐ミスなしチャレンジは上限なし＝枠いっぱいに広げてタイルを大きく（2026-09-21 本人「ミスなしでさ、今50枚だと中心に揃ってるけど、
+       それを全体に広げてタイルを大きくしたら？」）。⚠ほかのステージは今までどおり48pxまで */
+  var CAP = (STAGES[stageIdx] && STAGES[stageIdx].challenge) ? 9999 : 48;
+  var size=Math.min(best.sz,CAP), cols=best.c, rows=best.r;   // タイルが少ないステージほど大きくなる
   host.style.width=(cols*size)+"px"; host.style.height=(rows*size)+"px";
 
   for(var i=0;i<cellTotal;i++){
@@ -973,6 +1016,11 @@ function popSound(){
 }
 function fireworks(bursts,onDone,side){   /* side＝"L"なら左の角だけ・"R"なら右の角だけ（2026-09-20 本人「紙吹雪、片方からっていうのもできる？」） */
   stopFireworks(true);
+  /* ⭐ミスなし（両方）は、左→右で一瞬ずらして2回鳴らす（2026-09-21 本人「紙吹雪、ミスなしだと２つだから、
+       音も一瞬ずらして出そう。紙吹雪もそれと合わせて一瞬ずらそう」）。⭐ずらす幅＝0.14秒 */
+  /* ⭐音はやめた（2026-09-21 本人「おとね、なくていいや。やめよう。クラッカーも」）。
+     ⭐**紙吹雪の左→右のずらし（0.14秒）はそのまま**（本人「紙吹雪のタイミングはいまのでいいよ」） */
+  var LAG=0.14;
   /* ⭐紙吹雪はタイルの枠の中だけ（2026-09-18 本人「前言撤回。紙吹雪はタイルの上でいいと思う」＝同じ日のB＝画面ぜんたいを取り消した） */
   /* ⭐キーボードが出ているステージは、キーボードの下から出す（2026-09-20 本人）。
        ＝タイルの枠＋キーボードをまとめた入れ物（.playright）を使う。出ていないときは今までどおりタイルの枠 */
@@ -982,7 +1030,9 @@ function fireworks(bursts,onDone,side){   /* side＝"L"なら左の角だけ・"
   /* ⭐スマホは、ページの中身（676px）が画面（375pxなど）より広く、見えているのは一部だけ。
        そこへ枠いっぱいに紙吹雪を出すと「左に寄った」ように見える（2026-09-20 本人）。
      ⭐中身のほうが広いときは、枠ではなく「今見えている範囲」に出す */
-  var vv=window.visualViewport, seeW=(vv?vv.width:window.innerWidth);
+  /* ⚠画面が裏に回っていると幅が0になる（紙吹雪の入れ物が0×0になって消える）。
+     ⭐0のときは枠の幅を使う（2026-09-21） */
+  var vv=window.visualViewport, seeW=(vv&&vv.width)||window.innerWidth||host.clientWidth;
   var overflow=(host.clientWidth > seeW+8);
   var W=overflow ? Math.round(seeW) : host.clientWidth;
   var H=overflow ? Math.round(Math.min(vv?vv.height:window.innerHeight, host.clientHeight)) : host.clientHeight;
@@ -1047,12 +1097,13 @@ function fireworks(bursts,onDone,side){   /* side＝"L"なら左の角だけ・"
       term:(side? 200+Math.random()*100 : 80+Math.random()*80),   // 落ちる速さ（⭐片方だけは少し速くした・2026-09-20 本人「少しだけさっと終わらせて」）
       sw:18+Math.random()*34, sf:1.5+Math.random()*2.5, ph:Math.random()*6.3,
       rot:Math.random()*6.3, vr:(Math.random()-.5)*12, flip:Math.random()*6.3, vf:5+Math.random()*9,
+      delay:(side ? 0 : (dir===1 ? 0 : LAG)),   /* ⭐右の角ぶんは一瞬あとから（2026-09-21 本人） */
       stopX:stopX,
       w:6+Math.random()*5, h:9+Math.random()*7, round:Math.random()<.18,
       col:COLS[Math.floor(Math.random()*COLS.length)]
     });
   }
-  popSound();
+  /* ⚠前からあった小さい「ポン」は外した＝クラッカーの音と重なるため（2026-09-21） */
   var last=performance.now(), t0=last;
   function frame(now){
     if(!cv.parentNode) return;                           // 消されたら止まる
@@ -1061,6 +1112,7 @@ function fireworks(bursts,onDone,side){   /* side＝"L"なら左の角だけ・"
     var alive=0;
     for(var i=0;i<ps.length;i++){
       var p=ps[i];
+      if(p.delay && t<p.delay){ alive++; continue; }   /* ⭐出番が来るまでは出さない（2026-09-21） */
       if(p.vy<0){ p.vy+=G*dt; }                          // 上がっている間＝勢いよく
       else { p.vy=Math.min(p.term, p.vy+G*dt*0.15); p.vx*=(side?0.7:0.94); }   // 落ちる間＝ゆっくり（⭐片方だけは横の流れをもっと早く止める・2026-09-20）
       p.x+=p.vx*dt + (p.vy>0 ? Math.sin(t*p.sf+p.ph)*p.sw*dt : 0);
@@ -1514,7 +1566,7 @@ function finishStage(){
   // 保存する前に、これまでの自己ベストを調べておく
   var prevBest=0, prevCount=0;
   getLogs().forEach(function(r){
-    if(r.stage===stName){ prevCount++; if(r.ewpm>prevBest) prevBest=r.ewpm; }
+    if(r.stage===stName && isMine(r)){ prevCount++; if(r.ewpm>prevBest) prevBest=r.ewpm; }   /* ⭐同じニックネームの記録だけを見る（2026-09-21） */
   });
   var isRecord = (prevCount>0 && e>prevBest);
   var isFirst  = (prevCount===0);
@@ -1522,9 +1574,9 @@ function finishStage(){
        ⚠前は、いちばん新しく更新した1つのステージに、次の更新まで出しっぱなしだった（typingLastRecord）
      ⭐ステージごとに「最後に更新した日」を覚える */
   if(isRecord){ try{
-    var _r={}; try{ _r=JSON.parse(localStorage.getItem("typingRecordAt")||"{}")||{}; }catch(e2){ _r={}; }
-    _r[stName]=Date.now();
-    localStorage.setItem("typingRecordAt", JSON.stringify(_r));
+    var _r={}; try{ _r=JSON.parse(localStorage.getItem(K("typingRecordAt"))||"{}")||{}; }catch(e2){ _r={}; }
+    _r[recKey(stName)]=Date.now();   /* ⭐名前ごと（2026-09-21）。⚠古い印（名前なし）は読まれなくなるだけ */
+    localStorage.setItem(K("typingRecordAt"), JSON.stringify(_r));
   }catch(err){} }
 
   saveLog({date:new Date().toISOString(), name:($("uname").value||"わたし"),
@@ -1538,12 +1590,13 @@ function finishStage(){
               isRecord:isRecord,isFirst:isFirst,prevBest:prevBest,
               challenge:!!STAGES[stageIdx].challenge};
   renderStageCards();
+  if(typeof renderNamePick==="function") renderNamePick();   /* ⭐新しい名前が増えたら選択肢に足す（2026-09-21） */
 
   if(perfect) celebrate();
   else {
     /* ⭐記録を更新したときも紙吹雪（2026-09-20 本人「記録更新したときも紙吹雪ほしい」）。
        ⚠パーフェクトのときは celebrate の中で出る */
-    if(isRecord) fireworks(0,null,"R");   /* ⭐記録更新は右から（2026-09-20 本人「右から出るようにして」） */
+    if(isRecord) fireworks(0,null,"L");   /* ⭐記録更新は左から（2026-09-21 本人「紙吹雪、ピンクのヤツを左から出してみて」）。⚠2026-09-20は右だった */
     setTimeout(afterStage,400);
   }
 }
@@ -1552,7 +1605,7 @@ function finishStage(){
 function afterStage(){
   showToast();
   if(STAGES[stageIdx].challenge){
-    /* ⭐塗りきったら次の回へ。枚数が1.5倍になって、タイルが小さくなる（上限400枚） */
+    /* ⭐塗りきったら次の回へ。枚数が10枚ふえて、タイルが小さくなる（上限400枚・2026-09-21） */
     /* ⭐塗ったタイルはそのまま見せて、「スタート」を出す。スペース1回で次の回が始まる
          （2026-09-18 本人 A。前は「どれかのキー→作り直し→スペース」の2回押しだった） */
     CH.round++; chWaiting=true;
@@ -1713,6 +1766,13 @@ function backToMenu(){
   /* ⭐練習ページ（play.html）からは、一覧のページへ戻る（2026-09-16 本人） */
   if(document.body.classList.contains("playpage")){
     /* ⭐学生用は、その種類の一覧へ戻る（2026-09-19） */
+    /* ⭐グループのページ（/typing/japanese/ など）から来たら、そこへ戻る（2026-09-21） */
+    try{
+      var ref=document.referrer ? new URL(document.referrer) : null;
+      if(ref && ref.origin===location.origin && /\/typing\/(home|japanese|symbol|english)\/(index\.html)?$/.test(ref.pathname)){
+        location.href = ref.pathname; return;
+      }
+    }catch(err){}
     location.href = KIDS ? "./?kids=1" : "./"; return;
   }
   clearInterval(timer); running=false;
@@ -1726,6 +1786,18 @@ function backToMenu(){
 
 /* ---------- 記録 ---------- */
 function getLogs(){ try{ return JSON.parse(localStorage.getItem(LOGKEY)||"[]"); }catch(e){ return []; } }
+/* ⭐ニックネームごとに自己ベストを分ける（2026-09-21 本人「みんなが混じってもそんなものだというのは変わってない。でも選択できるならと思って」）
+   ⚠記録（typingLogs_v1）は前から1回ごとに名前を持っている＝今までの記録もそのまま使える
+   ⚠名前を入れていない人は、前から「わたし」として保存されている */
+function curName(){ var el=$("uname"); return (el && el.value) ? el.value : "わたし"; }
+function isMine(r){ return (r.name||"わたし") === curName(); }
+function recKey(stageName){ return curName()+"\t"+stageName; }
+/* ⭐記録に出てくる名前を、古い順に集める */
+function logNames(){
+  var seen={}, out=[];
+  getLogs().forEach(function(r){ var n=r.name||"わたし"; if(!seen[n]){ seen[n]=1; out.push(n); } });
+  return out;
+}
 function saveLog(rec){
   var a=getLogs(); a.push(rec);
   if(a.length>500) a=a.slice(a.length-500);
@@ -1736,11 +1808,55 @@ function stageNo(name){
   for(var i=0;i<STAGES.length;i++){ if(STAGES[i].name===name) return stageLabel(i); }
   return esc(name);
 }
+/* ⭐一般用は、1回ごとの記録を見せない＝名前だけ並べて、その人のぶんを消す
+   （2026-09-21 本人「今までの記録は見せないで、ニックネームを選択したら、それだけ消える」「名前だけでいいと思う。全部消すも作ろう」）
+   ⚠学生用は今までどおり（表＋CSV＋ぜんぶ消す） */
+function clearName(nm){
+  var a=getLogs().filter(function(r){ return (r.name||"わたし")!==nm; });
+  try{ localStorage.setItem(LOGKEY, JSON.stringify(a)); }catch(e){}
+  /* ⭐「★ 記録更新」の印も、その名前のぶんだけ消す */
+  try{
+    var _r=JSON.parse(localStorage.getItem(K("typingRecordAt"))||"{}")||{};
+    Object.keys(_r).forEach(function(k){ if(k.indexOf(nm+"\t")===0) delete _r[k]; });
+    localStorage.setItem(K("typingRecordAt"), JSON.stringify(_r));
+  }catch(e2){}
+  /* ⭐今えらんでいる名前を消したら、欄を空にする（＝「わたし」に戻る） */
+  if(curName()===nm && $("uname")){ $("uname").value=""; try{ localStorage.setItem(K("typingName"),""); }catch(e3){} }
+}
+function renderNameClear(){
+  var names=logNames(), h='<div class="namelist">';
+  names.forEach(function(n,i){
+    h+='<div class="nrow"><span class="nn">'+esc(n)+'</span>'+
+       '<button type="button" class="ndel" data-i="'+i+'">消す</button></div>';
+  });
+  h+='</div>';
+  $("logBody").innerHTML=h;
+  Array.prototype.forEach.call($("logBody").querySelectorAll(".ndel"), function(b){
+    b.onclick=function(){
+      var nm=names[parseInt(this.getAttribute("data-i"),10)];
+      if(!confirm("「"+nm+"」の記録を消します。よろしいですか？")) return;
+      clearName(nm);
+      renderStageCards();
+      if(typeof renderNamePick==="function") renderNamePick();
+      if(!getLogs().length){ $("ovLog").classList.remove("on"); return; }   /* ⭐ぜんぶ無くなったら窓を閉じる */
+      renderLogs();
+    };
+  });
+}
 function renderLogs(){
   /* ⭐記録が無いときは、案内の1行だけにする（2026-09-20 本人「何も記録をしてないときに押したら、『まだ記録がありません…』だけのほうがいいな」「記録があるときに3つの選択肢を見たい」） */
   (function(){
     var has=(getLogs()||[]).length>0;
     var b=document.getElementById("logBtns"), sub=document.getElementById("logSub");
+    /* ⭐一般用はCSVを出さない（2026-09-21 本人「記録はCSVにしなくていい」）。⚠学生用は今までどおりCSVあり */
+    var csv=document.getElementById("btnCsv");
+    if(csv) csv.style.display = document.body.classList.contains("gakusei") ? "" : "none";
+    /* ⭐一般用は「ぜんぶ消す」（名前ごとの「消す」が一覧に並ぶため）。2026-09-21 本人「全部消すも作ろう」 */
+    var cl=document.getElementById("btnClear");
+    if(cl) cl.textContent = document.body.classList.contains("gakusei") ? "記録を消す" : "ぜんぶ消す";
+    /* ⭐一般用は窓の「閉じる」を出さない（2026-09-21 本人「記録を消すの中の閉じるは不要」）。⚠右上の×で閉じる。学生用は残す */
+    var cw=document.getElementById("btnCloseLog");
+    if(cw) cw.style.display = document.body.classList.contains("gakusei") ? "" : "none";
     if(b) b.style.display = has ? "" : "none";
     if(sub) sub.style.display = has ? "" : "none";
   })();
@@ -1750,6 +1866,8 @@ function renderLogs(){
       '打ち終わるたびに、ここへ自動でたまっていきます。</div>';
     return;
   }
+  /* ⭐一般用は名前だけ（2026-09-21 本人）。⚠学生用はこの下の表 */
+  if(!document.body.classList.contains("gakusei")){ renderNameClear(); return; }
   /* ⭐ステージは番号だけ（2026-09-08 本人「ステージは１２３４で表示。横スクロールなし」）。
      ⚠名前のままだと「日常のことば（ながめ）」で横に伸びていた */
   var h='<table class="logtbl"><tr>'+
@@ -1806,7 +1924,7 @@ function exportCsv(){
      ⚠授業で集めると、日付だけでは全員が同じファイル名になり、開くまで誰のか分からない。
      ⭐ファイル名に使えない記号と空白は外す。長い名前は20字まで。 */
   var _nm="";
-  try{ _nm=(localStorage.getItem("typingName")||"").trim(); }catch(e){}
+  try{ _nm=(localStorage.getItem(K("typingName"))||"").trim(); }catch(e){}
   _nm=_nm.replace(/[\\\\/:*?"<>|]/g,"").replace(/[ 　]+/g,"").slice(0,20);
   a2.download="タイピング記録_"+(_nm?_nm+"_":"")+t.getFullYear()+("0"+(t.getMonth()+1)).slice(-2)+("0"+t.getDate()).slice(-2)+".csv";
   document.body.appendChild(a2); a2.click(); document.body.removeChild(a2);
@@ -1850,16 +1968,43 @@ function groupById(id){ for(var k=0;k<GROUPS.length;k++) if(GROUPS[k].id===id) r
      ⚠同じ日に「日本語＝だいだい・記号＝黄・英語＝緑から」にしたが、本人「さくらタッチタイピングのピンクがなくなるから、紫スタートにしよう」
      ⭐増えても、そのカードの中で虹の続きを回すだけ。⚠大人用・こども用は今までどおり通しで回す */
 var GROUPSTART={home:0, ja:6, sym:5, en:4};
+/* ⭐カードごとに始まりの色をずらすのは、まとめカードの一覧ぜんぶ（学生用＋一般用）。
+   2026-09-21 本人「学生用にカードの色を合わせたほうがいいよね？英語」
+   ⚠前は学生用だけだった＝一般用の英語が橙から始まっていた（学生用は水色から）
+   ⚠一般用の番号は A・B・C のまま（2026-09-16 本人）。だから番号ではなく「カードの中の順番」で色を決める */
+function stageNoInGroup(i){
+  var g=stageGroup(STAGES[i]), n=0;
+  for(var q=0;q<=i;q++) if(stageGroup(STAGES[q])===g) n++;
+  return n;
+}
 function stageColor(i){
-  if(document.body.classList.contains("gakusei") && !KIDS && STAGES[i]){
+  if(!KIDS && STAGES[i]){
     var st=GROUPSTART[stageGroup(STAGES[i])]||0;
-    return BLOCKCOL[(st + parseInt(stageLabel(i),10) - 1) % BLOCKCOL.length];
+    return BLOCKCOL[(st + stageNoInGroup(i) - 1) % BLOCKCOL.length];
   }
   return BLOCKCOL[i%BLOCKCOL.length];
 }
+/* ⭐練習アドレスの名前（2026-09-21 本人「いいよ」）。⚠**公開したら変えない**（渡したリンクが切れる）
+   ⭐ステージの名前（name）から引く。⚠ステージの名前を変えたら、ここも直す */
+var SLUG={
+  "ホームポジション":"home", "ひとさし指の 上・中央・下":"index-finger", "なか指の 上・中央・下":"middle-finger",
+  "くすり指の 上・中央・下":"ring-finger", "こ指の 上・中央・下":"little-finger", "ホームポジション ランダム":"home-random",
+  "あいうえお":"aiueo", "きゃきゅきょ":"kya", "単語":"word", "日常のことば":"phrase", "日常のことば（ながめ）":"phrase-long",
+  "数字":"number", "記号":"symbol", "記号（Shift）":"symbol-shift",
+  "abc":"abc", "英単語":"en-word", "日常のことば（英語）":"en-phrase", "英文（記号あり）":"en-sentence",
+  "ミスなしチャレンジ":"challenge", "ミスなしチャレンジ（英語）":"en-challenge"
+};
+function stageSlug(i){ var s=STAGES[i]; return (s && SLUG[s.name]) || String(i+1); }
+function stageFromSlug(v){
+  for(var k=0;k<STAGES.length;k++) if(SLUG[STAGES[k].name]===v) return k;
+  if(/^\d+$/.test(v)) return parseInt(v,10)-1;   /* ⚠前の番号のリンク */
+  return 0;
+}
 function stageLabel(i){
-  /* ⭐学生用は、大きいカードの中で上から順に 1・2・3…（2026-09-19 本人「中のカードは上から順に番号でOK」） */
-  if(document.body.classList.contains("gakusei") && !KIDS && STAGES[i]){
+  /* ⭐学生用は、大きいカードの中で上から順に 1・2・3…（2026-09-19 本人「中のカードは上から順に番号でOK」）
+     ⭐一般用のグループのページも同じ（2026-09-21）。⚠英語は A・B・C のまま */
+  var _gp=document.body.getAttribute("data-group")||"";
+  if(((document.body.classList.contains("gakusei")) || (_gp && _gp!=="en")) && !KIDS && STAGES[i]){
     var g=stageGroup(STAGES[i]), n=0;
     for(var q=0;q<=i;q++) if(stageGroup(STAGES[q])===g) n++;
     return String(n);
@@ -1884,9 +2029,9 @@ function renderStageCards(){
   var logs=getLogs(), best={};
   /* ⭐更新から1週間（7日）だけ「★ 記録更新」を出す（2026-09-20 本人） */
   var RECDAYS=7, recAt={};
-  try{ recAt=JSON.parse(localStorage.getItem("typingRecordAt")||"{}")||{}; }catch(err){ recAt={}; }
-  var isNewRec=function(nm){ var t=recAt[nm]; return !!t && (Date.now()-t) < RECDAYS*24*60*60*1000; };
-  logs.forEach(function(r){ if(!best[r.stage]||r.ewpm>best[r.stage]) best[r.stage]=r.ewpm; });
+  try{ recAt=JSON.parse(localStorage.getItem(K("typingRecordAt"))||"{}")||{}; }catch(err){ recAt={}; }
+  var isNewRec=function(nm){ var t=recAt[recKey(nm)]; return !!t && (Date.now()-t) < RECDAYS*24*60*60*1000; };
+  logs.forEach(function(r){ if(!isMine(r)) return; if(!best[r.stage]||r.ewpm>best[r.stage]) best[r.stage]=r.ewpm; });   /* ⭐名前ごと（2026-09-21） */
   var el=$("stages"); el.innerHTML="";
   /* ⭐学生用のページ（gakusei/・body.gakusei）は説明を短く（2026-09-15 本人「簡単な説明でスタートしたい」）
      ⚠文はコードの原案。本人が直す前提 */
@@ -1898,27 +2043,41 @@ function renderStageCards(){
   /* ⭐学生用は、大きいカード3枚の中にステージを並べる＝1回押せば練習（2026-09-19 本人
        「このカードの中に、何ができるか書いてあって、クリックしたらできるってのはどうかな？カード小さすぎるし1階層で済む」）
      ⭐大きいカードにはタイルなし。中の行の左にタイル（本人「おおきいカードのタイルはなしにしてみて」） */
-  if(HUB && GAKUSEI && !KIDS){
+  /* ⭐一般用も同じまとめカードにした（2026-09-21 本人「カードが増えたから、カードを生徒用のようにまとめたい」）。
+     ⭐違いは1つだけ＝**一般用は名前の下に説明**（本人がBを選んだ）。学生用は名前だけのまま
+     ⚠「○問から毎回○問」は出さない（本人「削除」） */
+  if(HUB && !KIDS){
     el.classList.add("bigcards");
+    if(!GAKUSEI) el.classList.add("withdesc");
+    /* ⭐グループのページ（/typing/japanese/ など・2026-09-21 本人「私も、グループごとがいいと思う」）
+         ＝そのグループのカード1枚だけ。練習ページは1つ上（../play.html）
+       ⚠カードの見出しは押しても何も起きない（本人「何も起きないでいいと思う」） */
+    var GP=document.body.getAttribute("data-group")||"";
+    var PLAY=GP ? "../play.html" : "play.html";
+    if(GP) el.classList.add("onegroup");
     /* ⭐2列（2026-09-19 本人「2列にして、日本語の下に英語は？英語はスクロールしてもよし。数字と記号も」）
          左＝ホームポジション → 数字と記号／右＝日本語 → 英語。⚠同じ日の「3列目に数字と記号と英語」から変えた */
     var COLS={home:0, sym:0, ja:1, en:1}, cols=[];
-    for(var ci=0;ci<2;ci++){ cols[ci]=document.createElement("div"); cols[ci].className="bigcol"; el.appendChild(cols[ci]); }
+    if(!GP) for(var ci=0;ci<2;ci++){ cols[ci]=document.createElement("div"); cols[ci].className="bigcol"; el.appendChild(cols[ci]); }
     GROUPS.forEach(function(g){
+      if(GP && g.id!==GP) return;
       var box=document.createElement("div"); box.className="bigcard";
       box.innerHTML='<div class="bc-name">'+esc(g.name)+'</div>';
       STAGES.forEach(function(s,i){
         if(stageGroup(s)!==g.id) return;
-        var a=document.createElement("a"); a.className="mini"; a.href="play.html?s="+(i+1);
+        var a=document.createElement("a"); a.className="mini"; a.href=PLAY+"?s="+stageSlug(i);
         a.style.setProperty("--tile",stageColor(i));
         var b="";
         if(s.challenge){
-          var mx=0; logs.forEach(function(r){ if(r.stage===s.name && r.perfect && r.total>mx) mx=r.total; });
-          b = mx ? (mx+"枚") : "";
+          var mx=0; logs.forEach(function(r){ if(r.stage===s.name && isMine(r) && r.perfect && r.total>mx) mx=r.total; });
+          b = mx ? ("ミスなし"+mx+"字成功") : "";   /* ⭐「50枚」だと分かりにくい（2026-09-21 本人「ミスなし50字成功にしよう」） */
         }else if(best[s.name]){ b = (isNewRec(s.name)?'<span class="rec">★ 記録更新</span> ':"")+best[s.name]+"/1分"; }   /* ⭐文字でも出す・数字の左（2026-09-19 本人「記録更新」「記録更新は、数字の左」） */
-        a.innerHTML='<span class="tl">'+stageLabel(i)+'</span><span class="mn">'+esc(s.name)+'</span><span class="mb">'+b+'</span>';
+        var mid = GAKUSEI ? ('<span class="mn">'+esc(s.name)+'</span>')
+          : ('<span class="mtx"><span class="mn">'+esc(s.name)+'</span><span class="ds2">'+esc(s.desc||"")+'</span></span>');
+        a.innerHTML='<span class="tl">'+stageLabel(i)+'</span>'+mid+'<span class="mb">'+b+'</span>';
         box.appendChild(a);
       });
+      if(GP){ el.appendChild(box); return; }
       cols[COLS[g.id]||0].appendChild(box);
     });
     return;
@@ -1926,7 +2085,7 @@ function renderStageCards(){
   STAGES.forEach(function(s,i){
     var d=document.createElement(HUB ? "a" : "button");
     d.className="stage";
-    if(HUB) d.href = "play.html?s=" + (i+1) + (KIDS ? "&kids=1" : "");   /* ⭐こども用の印は持ち回る */
+    if(HUB) d.href = "play.html?s=" + stageSlug(i) + (KIDS ? "&kids=1" : "");   /* ⭐こども用の印は持ち回る */
     /* ⭐カードの左のタイルに、タイピングのタイルの7色を順に入れる（2026-09-15 本人「タイルの色にしたらいいかなと思って」）
        ⚠前は STAGE の文字をピンクの濃さの階段にしていた（stageColor・2026-09-08）。色はタイルに移した */
     d.style.setProperty("--tile",BLOCKCOL[i%BLOCKCOL.length]);
@@ -1942,7 +2101,7 @@ function renderStageCards(){
     /* ⭐チャレンジのカードは、速さではなく「いちばん多く塗りきれた枚数」を出す */
     if(s.challenge){
       var mx=0;
-      logs.forEach(function(r){ if(r.stage===s.name && r.perfect && r.total>mx) mx=r.total; });
+      logs.forEach(function(r){ if(r.stage===s.name && isMine(r) && r.perfect && r.total>mx) mx=r.total; });
       d.querySelector(".best").textContent = mx ? ("いちばん多く塗りきった "+mx+" 枚") : "";
     }
     if(!HUB) d.onclick=function(){ openStage(i); };
@@ -2028,7 +2187,7 @@ $("btnCsv").onclick=exportCsv;
 $("btnClear").onclick=function(){
   if(confirm("記録をぜんぶ消します。よろしいですか？")){
     localStorage.removeItem(LOGKEY);
-    try{ localStorage.removeItem("typingRecordAt"); }catch(err){}   /* ⭐「★ 記録更新」の印も一緒に消す */
+    try{ localStorage.removeItem(K("typingRecordAt")); }catch(err){}   /* ⭐「★ 記録更新」の印も一緒に消す */
     renderLogs(); renderStageCards();
     /* ⭐消したらウィンドウを閉じる（2026-09-20 本人「記録を消すを押したらこれ（まだ記録がありません）は不要と思う」） */
     $("ovLog").classList.remove("on");
@@ -2050,15 +2209,44 @@ document.addEventListener("click",function(e){
   b.parentElement.classList.add("on");
 });
 
-$("uname").value=localStorage.getItem("typingName")||"";
-$("uname").oninput=function(){ localStorage.setItem("typingName",this.value); };
+$("uname").value=localStorage.getItem(K("typingName"))||"";
+$("uname").oninput=function(){ localStorage.setItem(K("typingName"),this.value); renderStageCards(); };
+/* ⭐名前の選択肢（2026-09-21 本人「選択できるならと思って」）。
+   ⭐**2人目が入るまでは出さない**＝1人で使う人の画面は今までどおり。
+   ⚠学生用には出さない（1人1台のため） */
+function renderNamePick(){
+  if(document.body.classList.contains("gakusei")) return;
+  var box=document.querySelector(".namebox"); if(!box || !$("uname")) return;
+  var names=logNames(), cur=curName();
+  if($("uname").value && names.indexOf(cur)<0) names.push(cur);
+  var sel=document.getElementById("unamePick");
+  if(names.length<2){ if(sel) sel.style.display="none"; return; }
+  if(!sel){
+    sel=document.createElement("select");
+    sel.id="unamePick"; sel.className="unamepick"; sel.title="ニックネームを選ぶ";
+    box.appendChild(sel);
+    sel.onchange=function(){
+      if(this.value==="__new"){ $("uname").value=""; localStorage.setItem(K("typingName"),""); $("uname").focus(); }
+      else { $("uname").value=this.value; localStorage.setItem(K("typingName"),this.value); }
+      renderStageCards(); renderNamePick();
+    };
+  }
+  sel.style.display="";
+  var h="";
+  names.forEach(function(n){ h+='<option value="'+esc(n)+'"'+(n===cur?" selected":"")+'>'+esc(n)+'</option>'; });
+  h+='<option value="__new">＋ 新しい名前</option>';
+  sel.innerHTML=h;
+}
+renderNamePick();
 
 renderStageCards();
 /* こども用は、音を最初から消しておく（2026-09-07 本人・教室で30台が一斉に鳴らないように） */
 /* ---------- ミスなしチャレンジ（2026-09-15 本人）---------- */
 var CH={base:50, round:1}, chWaiting=false;
-/* ⭐回ごとの枚数＝選んだ枚数 × 1.5 の(回-1)乗。上限400（小さくなりすぎると見えない） */
-function chCount(){ return Math.min(400, Math.round(CH.base*Math.pow(1.5, CH.round-1))); }
+/* ⭐回ごとの枚数＝選んだ枚数（スタート地点）＋ 10枚ずつ。上限400（小さくなりすぎると見えない）
+   （2026-09-21 本人「1.5倍じゃなくて、少しずつ枚数増やしたほうがよくない？」「全部10ずつでいいよ。タイルの数はスタート地点」）
+   ⚠前は 1.5倍ずつ（50→75→113→169…＝3回目から急に壁になった） */
+function chCount(){ return Math.min(400, CH.base + 10*(CH.round-1)); }
 function chLabel(){ return STAGES[stageIdx].name+"　"+CH.round+"回目（"+chCount()+"枚）"; }
 /* ⭐お題の置き場＝ステージ6〜11（ホームポジション1〜5は入れない・本人） */
 /* ⭐日本語は「日常のことば（ながめ）」だけ。枚数の端数は「日常のことば」で合わせる
@@ -2125,11 +2313,19 @@ Array.prototype.forEach.call(document.querySelectorAll('input[name="chn"]'), fun
   sw.appendChild(left); sw.appendChild(right);
 })();
 
-/* ⭐練習ページは、URLの ?s=3 のステージをすぐ開く（2026-09-16 本人） */
+/* ⭐「音を出す」は画面から外した（2026-09-21 本人「おとね、なくていいや。やめよう」）。
+   ⚠部品（#optSound）はHTMLに残っているが、どのページでも隠す＝音は鳴らない。
+   ⭐音を出す関数（tone・crackerSound）は残してある＝またやるときのため */
+(function(){
+  var op=document.querySelector(".opts .optsound"); if(op) op.style.display="none";
+})();
+/* ⭐練習ページは、URLの ?s=home のステージをすぐ開く（2026-09-16 本人・2026-09-21 番号から名前へ）
+   ⚠番号（?s=3）だとステージを足したときに、渡したリンクが別のステージを指す。名前ならずれない
+   ⚠前の番号のリンク（?s=3）も開けるように残してある */
 (function(){
   if(!document.body.classList.contains("playpage")) return;
-  var m = /[?&]s=(\d+)/.exec(location.search || "");
-  var i = m ? parseInt(m[1],10)-1 : 0;
+  var m = /[?&]s=([^&#]+)/.exec(location.search || "");
+  var i = m ? stageFromSlug(decodeURIComponent(m[1])) : 0;
   if(i<0 || i>=STAGES.length) i=0;
   openStage(i);
   showTouchNote();
@@ -2214,8 +2410,8 @@ window.addEventListener("resize", function(){ if(window.coinResize) clearTimeout
   document.body.appendChild(btn);
   /* ⭐片方の角だけの紙吹雪も見られるように（2026-09-20 本人「片方のボタンも作ってみて」） */
   var btn2=document.createElement("button");
-  btn2.type="button"; btn2.className="noprint"; btn2.textContent="🎉 右だけ";
+  btn2.type="button"; btn2.className="noprint"; btn2.textContent="🎉 左だけ";
   btn2.style.cssText=BST+"left:190px;";   /* ⚠150pxだと「紙吹雪を見る」と重なった（2026-09-20 本人） */
-  btn2.onclick=function(){ btn2.blur(); fireworks(0,null,"R"); };
+  btn2.onclick=function(){ btn2.blur(); fireworks(0,null,"L"); };
   document.body.appendChild(btn2);
 })();

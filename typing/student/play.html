@@ -18,8 +18,8 @@
 <!-- ⭐名前は「タッチタイピング」（2026-09-15 本人「とりあえずタッチタイピングだけにしておいて」）。
      ⚠同じ日に一度「タイルタッチタイピング（TTT）」にした。また変えるかも（本人）。大人用はまだ「タイピング練習」のまま -->
 <title>さくら🌸タッチタイピング　練習（学生用）｜さくらツール</title>
-<link rel="stylesheet" href="../../style.css?v=140">
-<link rel="stylesheet" href="../typing.css?v=128">
+<link rel="stylesheet" href="../../style.css?v=145">
+<link rel="stylesheet" href="../typing.css?v=160">
 </head>
 <!-- 🔴⭐学生用のページ（2026-09-15 本人）
      本人「大学生のパソコンが小さいから、上にいろいろ書いてあったら邪魔。もうタイピングの話だけでいい」
@@ -28,16 +28,15 @@
      ⚠typing.js が使う部品（id）は大人用と同じ名前で全部置く。消すと動かなくなる
      ⭐body.gakusei ＝ステージの説明を短くする（typing.js の renderStageCards） -->
 <body class="gakusei playpage">
-
 <!-- ⭐学生用はヘッダーのリンクを全部なくす（2026-09-16 本人「ヘッダーのリンク全部消そう」）。
      ⭐ロゴだけはトップへのリンクを残す（2026-09-16 本人「気づいた人は他を見ていい」）。⚠太字は style.css の .site-head a が付けている＝リンクを外すと細くなる -->
 <header class="site-head noprint">
   <div class="wrap">
     <!-- ⭐練習中はロゴを押せなくする（2026-09-16 本人「間違えてさくらツール押しそう」）。一覧のページではリンクのまま -->
-    <span class="logo"><span class="logo-mark">🌸</span><span class="logo-main">SAKURA TOOLS</span><span class="logo-sub">さくらツール</span></span>
+    <span class="logo"><span class="logo-mark"><img src="../../img/logo-sakura-64.png?v=2" srcset="../../img/logo-sakura-64.png?v=2 1x, ../../img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA TOOLS</span><span class="logo-sub">さくらツール</span></span>
   </div>
   <!-- ⭐練習ページの帯は、名前＋近道のひとこと（2026-09-17 本人「トップはなくして、各ページは残してほしい」）。前は帯にひとことも入れていた（2026-09-16）。⭐練習中もずっと見えるので、ページの見出しは置かない -->
-  <div class="site-sub"><div class="wrap"><span class="band-name">さくら🌸タッチタイピング</span><span class="band-note">タッチタイピングへの近道は、<b>ホームポジションを覚える！</b>　<b>ミスを減らす！</b>　<b>キーボードを見ない！</b></span></div></div>
+  <div class="site-sub"><div class="wrap"><span class="band-name">さくら<img class="inlogo" src="../../img/logo-sakura-64.png?v=2" srcset="../../img/logo-sakura-64.png?v=2 1x, ../../img/logo-sakura-128.png?v=2 2x" alt="">タッチタイピング</span><span class="band-note">タッチタイピングへの近道は、<b>ホームポジションを覚える！</b>　<b>ミスを減らす！</b>　<b>キーボードを見ない！</b></span></div></div>
 </header>
 
 <div class="tpwrap">
@@ -92,7 +91,7 @@
 
   <!-- ⭐ミスなしチャレンジだけ出す（2026-09-15 本人）。枚数を変えると1回目から -->
   <div class="playopts" id="chOpts" style="display:none">
-    <span class="oglabel" style="margin-left:0">タイルの数</span>
+    <span class="oglabel" style="margin-left:0">スタートの枚数</span>
     <label><input type="radio" name="chn" value="50" checked> 50枚</label>
     <label><input type="radio" name="chn" value="100"> 100枚</label>
     <label><input type="radio" name="chn" value="200"> 200枚</label>
@@ -189,6 +188,6 @@
   <div class="wrap"><span class="copy">さくらツール　© 2026 SAKURA TOOLS</span></div>
 </footer>
 
-<script src="../typing.js?v=128"></script>
+<script src="../typing.js?v=157"></script>
 </body>
 </html>
