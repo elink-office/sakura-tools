@@ -1853,7 +1853,7 @@
     }
     if (credit) {
       x.font = '15px sans-serif'; x.fillStyle = '#c3b2ba'; x.textAlign = 'right';
-      x.fillText('さくらツール　sakura-tools.com', W - pad, H - pad - 8);
+      x.fillText('さくらツールズ　sakura-tools.com', W - pad, H - pad - 8);
       x.textAlign = 'left';
     }
     if (state.sample) {
