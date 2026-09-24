@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- ⭐まだどこともつなげない（2026-09-24 作り始め）。トップのカード・サイトマップにも入れていない -->
+<meta name="robots" content="noindex,nofollow">
+<!-- ⭐題名（2026-09-24 本人「私もBと思った！」＝キャッチ・こんなときに使うとそろえる） -->
+<title>【テスト】進行タイマー｜司会・発表・授業の残り時間を色で知らせる無料タイマー</title>
+<meta name="description" content="始まりと終わりの時刻を入れるだけ。たった時間が青・緑・黄・赤の帯で伸びていく無料の進行タイマーです。途中で開いても今の時刻の位置から始まります。ウィンドウを小さくすると帯だけになります。">
+<link rel="icon" href="../../favicon.ico?v=1" sizes="any">
+<link rel="icon" type="image/png" href="../../favicon-32.png?v=1">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png?v=1">
+<link rel="stylesheet" href="../../style.css?v=145">
+<link rel="stylesheet" href="progress.css?v=8">
+</head>
+<body>
+<div id="testBadge" style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
+<script>
+(function(){
+  var b = document.getElementById('testBadge');
+  if(!b) return;
+  var d = new Date(document.lastModified), z = function(n){ return (n<10?'0':'') + n; };
+  b.textContent = 'テスト版 ' + z(d.getMonth()+1) + '/' + z(d.getDate()) +
+                  ' ' + z(d.getHours()) + ':' + z(d.getMinutes());
+})();
+</script>
+
+<header class="site-head noprint">
+  <div class="wrap">
+    <a class="logo" href="../../"><span class="logo-mark"><img src="../../img/logo-sakura-64.png?v=2" srcset="../../img/logo-sakura-64.png?v=2 1x, ../../img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA tools</span><span class="logo-sub">さくらツールズ</span></a>
+    <nav>
+      <!-- ⭐右上はほかのページと同じ形＝トップ・タッチタイピング・座席表・簡単スライド＋［ツール一覧］（2026-09-24 本人「右上のツールリストが、無料ツールになってる。ツール一覧にしておこう」）
+           ⚠シフト表★の古いヘッダーを写していた。⚠進行タイマーは公開するときに一覧へ足す（ページの型 1057行＝make_test.py の TOOLS） -->
+      <a class="navpin" href="../../">トップ</a>
+      <a class="navpin" href="../../typing/">タッチタイピング</a>
+      <a class="navpin" href="../../seat/">座席表</a>
+      <a class="navpin" href="../../slide/">簡単スライド</a>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">ツール一覧</label>
+      <div class="navlist">
+      <a href="../../">トップ</a>
+      <a href="../../typing/">タッチタイピング</a>
+      <a href="../../seat/">座席表</a>
+      <a href="../../seki/">席次表</a>
+      <a href="../../slide/">簡単スライド</a>
+      <a href="../../excel-fx/">関数早見表</a>
+      <a href="../../keiri/mitsumori/">見積書</a>
+      <a href="../../keiri/seikyu/">請求書</a>
+      </div>
+    </nav>
+  </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">進行タイマー</span><span class="now-short">進行タイマー</span></div></div>
+</header>
+
+<main class="wrap">
+  <h1>進行タイマー</h1>
+  <!-- ⭐キャッチと下の説明（2026-09-24 本人「セミナーや司会で、残りの時間を色の帯で見る」「下に簡単な説明を書いて。パワポの上に表示とか、原稿見ながら色で判別とか」→ 1行目と3行目は本人の文に差し替え）  -->
+  <p class="catch">セミナーや司会で、残りの時間を色の帯で見る</p>
+  <ul class="can-do">
+    <li>発表者や司会者用に、時間の帯だけを小さく表示できるから、進行しやすい</li>
+    <li>原稿を見ながらでも、目の端に入る色で残りが分かる</li>
+    <li>午前・午後など、プログラムを複数組んでおけて、当日も臨機応変に対応できる</li>
+  </ul>
+
+  <!-- ⭐帯が主役。数字は小さく（2026-09-05 本人「話してたら時間見ないから、色で知りたい」） -->
+  <section class="tb-stage" id="stage" aria-live="off">
+    <!-- ⭐細長いタイル（2026-09-24 本人「バーを細長いタイルにできない？１つずつ消えていくみたいな」）
+         ⭐進行タイマー＝左から伸びる。帯は予定の110％ぶん（2026-09-24 本人「進行なら左から順に伸びていくほうがいい」「100％じゃなくて110％くらい」）
+         ⚠止める仕組みは外した（2026-09-24 本人「それを使うことがあるだろうか」「10分で作業も、予定の中に組んでるよ」） -->
+    <div class="tb-track" id="track"></div>
+    <!-- ⭐今どれを出しているかの名前（2026-09-24 午前・午後A など） -->
+    <div class="tb-info"><span><b class="tb-name" id="planName"></b><span id="remain">残り 90分</span></span><span id="endAt"></span></div>
+  </section>
+  <!-- ⭐帯だけを小さいウィンドウに出す（2026-09-24 本人「どこかにボタンを置いて、ウィンドウを小さくするにすると、バーだけになるとかできる？」）
+       Chrome・Edge・Firefox＝いちばん手前に浮かぶ窓（Document Picture-in-Picture）／それ以外＝別の小さい窓 -->
+  <p class="tb-mini noprint">
+    <button type="button" id="miniBtn">帯だけを小さく出す</button>
+    <button type="button" id="miniBack" hidden>帯をここに戻す</button>
+    <span class="hint" id="miniMsg" hidden>帯は小さいウィンドウに出ています。</span>
+  </p>
+
+  <!-- ⭐保存と時間の設定を分けて、左右に横並び（2026-09-24 本人「保存と時間の設定を分けて、左と右に小さいウィンドウで横並びにしたい」）。スマホの幅では縦に積む -->
+  <div class="tb-panels tb-set noprint">
+  <details class="opt tb-pl" id="chSave" open>
+    <!-- ⭐説明は「？」で（2026-09-24 本人「保存に関しては説明書き入れよう。？でいいよ」） -->
+    <!-- ⭐保存はサイトの作法にそろえる（2026-09-24 本人「同じ作法で」）＝ページの型 4-c
+         見出し「データに名前を付けて保存 n/20」／[新しい名前で保存][上書き][削除]／「保存済のデータ」は0件のとき出さない／🔒は画面と？の1行目
+         ⚠章を最後に置く（4-c の1）は守っていない＝本人が「保存と時間の設定を左右に横並び」と決めたため
+         ⭐画面の保存（チェック）は付けない＝いつも自動で残る（本人「画面の保存はそれでいいと思う。個人情報ないから」）
+         ⭐置き場は〇のカウントダウンタイマーとは別（本人「進行タイマーとは別だと思うよ」） -->
+    <summary>データに名前を付けて保存<span id="planCount" class="cnt">0/20</span>&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
+    <div class="body">
+      <!-- ⭐？の中は箇条書き（2026-09-24 本人）。1行目の🔒はページの型 13-b のまま段落 -->
+      <div class="tip-body" hidden>
+        <p>🔒 保存先もインターネットではありません。使っている端末のブラウザの中だけに残るので、ほかの人からは見えません。パソコン・タブレット・スマホ、どれでも同じです。</p>
+        <ul>
+          <li>1日の研修なら「午前」「午後A」「午後B」のように、休憩までのひとまとまりごとに名前を付けて保存しておけます。当日は「保存済のデータ」から選ぶだけです。</li>
+          <li>休憩が延びて始まりが遅れたときは、「今から」を押してください。終わりの時刻はそのままで、帯が合わせて縮みます。</li>
+          <li>「上書き」は、選んでいるデータを今の設定に置きかえます。保存できるのは20件までです。</li>
+          <li>同じパソコンでも、別のブラウザ（ChromeとEdgeなど）には出ません。</li>
+        </ul>
+      </div>
+      <p class="safe">🔒 保存したものは、使っている端末の中だけに残ります。</p>
+      <!-- ⭐名前を付けて保存しておき、選んで出す（2026-09-24 本人「休憩時間までのものを作っておいて、それを表示したい」「午前と、午後Aと午後Bとか」） -->
+      <div class="tb-row" id="plansRow" hidden>
+        <label for="plans" class="tb-lbl-long">保存済のデータ</label>
+        <select id="plans"><option value="">（選ぶ）</option></select>
+      </div>
+      <!-- ⭐名前の欄を広く・ボタンは下へ（2026-09-24 本人「名前は箱が小さいね」「保存するも下でいいから入力欄を大きくしよう」） -->
+      <div class="tb-row">
+        <label for="name">名前</label>
+        <input type="text" id="name" maxlength="20" placeholder="例：午後A" class="tb-name-in">
+      </div>
+      <div class="tb-row tb-save-row">
+        <!-- ⭐ボタンの左を名前の欄の左にそろえる（2026-09-24 本人「名前の枠と、新しい名前の左をそろえて」）。見えない見出しの幅ぶん空ける -->
+        <span class="tb-sp" aria-hidden="true"></span>
+        <button type="button" id="saveBtn">新しい名前で保存</button>
+        <button type="button" id="overBtn">上書き</button>
+        <button type="button" id="delBtn">削除</button>
+      </div>
+      <p class="hint" id="saveMsg"></p>
+    </div>
+  </details>
+
+  <details class="opt tb-pl" id="ch1" open>
+    <summary>時間の設定</summary>
+    <div class="body">
+      <!-- ⭐開始時刻で組む＝途中で開いても今の位置から出る（2026-09-05 本人「毎回引き算して入力している」の対策）
+           ⭐始まりが遅れても、終わりの時刻はそのまま（2026-09-24 本人「終わりの時間はそのままだろうね」「終わりの時間も入力できるとありがたい」） -->
+      <div class="tb-row">
+        <label for="start">始まり</label>
+        <input type="time" id="start">
+        <button type="button" id="nowBtn">今から</button>
+      </div>
+      <!-- ⭐1枚〇分は終わりの横、色は1行に（2026-09-24 本人「縦に長いから、1枚○分を、長さの横にして色も横でいい」） -->
+      <div class="tb-row">
+        <label for="end">終わり</label>
+        <input type="time" id="end">
+        <span class="hint" id="lenMsg"></span>
+        <!-- ⭐はじめは1枚＝1分。短い時間のときに変える（2026-09-24 本人） -->
+        <!-- ⭐「1枚」→「1ブロック」（2026-09-24 本人「1枚→1ブロックにしよう」） --><span class="tb-sub"><label for="tile">1ブロック</label>
+        <select id="tile">
+          <option value="10">10秒</option>
+          <option value="30">30秒</option>
+          <option value="60">1分</option>
+          <option value="300">5分</option>
+          <option value="600">10分</option>
+        </select></span>
+      </div>
+      <p class="hint" id="tileMsg"></p>
+      <!-- ⭐色は 青→緑→黄→過ぎたら赤。青は50％・緑は80％まで（2026-09-24 本人） -->
+      <div class="tb-row">
+        <label>色</label>
+        <span class="tb-cs">
+        <span class="tb-c"><i class="tb-dot tb-dot-b"></i>〜<input type="number" id="pG" min="1" max="99" step="1" inputmode="numeric" aria-label="青の終わり（％）">％</span>
+        <span class="tb-c"><i class="tb-dot tb-dot-g"></i>〜<input type="number" id="pY" min="1" max="99" step="1" inputmode="numeric" aria-label="緑の終わり（％）">％</span>
+        <span class="tb-c"><i class="tb-dot tb-dot-y"></i>〜終わりまで</span>
+        <span class="tb-c"><i class="tb-dot tb-dot-r"></i>過ぎたとき</span>
+        </span>
+      </div>
+    </div>
+  </details>
+  </div>
+
+  <p class="hint tb-note">ウィンドウを小さくすると、帯だけになります。パソコンの画面の端に置いて使えます。</p>
+  <p class="hint tb-note" id="wakeMsg"></p>
+
+  <!-- ⭐こんなときに使う（2026-09-24 本人「授業で役立つとき…司会の場合は…1日のセミナーなら…そういう具体例を挙げてみて」「コラムである必要はないね」「こんな時に使うっていいと思う！」）
+       ⚠コラム（緊張して小さな数字が見られない）はやめた。本人「授業の時緊張はしないよ。熱をもって話をすると、ちいさな時計を見れない。だって、画面じゃなくて人をみて話するから」 -->
+  <section class="tb-column tb-usecase noprint">
+    <h2>こんなときに使う</h2>
+    <ul>
+      <!-- ⭐見出しのあとと、文の切れ目で改行（2026-09-24 本人「ツメツメなので、適宜改行して」） -->
+      <li><b>90分の授業</b><br>
+        前回の復習 → 説明 → 課題、の流れなら、色の区切りを授業に合わせておけます。<br>
+        たとえば「青＝復習と説明」「緑＝課題」「黄＝まとめ」。<br>
+        説明が長引いても、帯を見れば課題の時間を削っていることにすぐ気づいて、ペースを戻せます。</li>
+      <li><b>発表会・会議の司会</b><br>
+        発表者が4人で、1人10分、40分で終わらせたいとき。<br>
+        「1ブロック」を10分にすれば、1ブロックが発表者1人分になります。<br>
+        今は何人目の時間か、押しているかが、ブロックの位置で分かります。</li>
+      <li><b>1日のセミナー・研修</b><br>
+        午前・午後A・午後Bを、休憩までで区切って保存しておきます。<br>
+        休憩が延びても「今から」を押せば、終わりの時刻はそのままで帯が縮みます。<br>
+        押した分は、次の休憩で調整できます。</li>
+      <li><b>自分の発表</b><br>
+        パワーポイントの発表者ツールの上に、帯だけを小さく出しておけます。<br>
+        原稿や聞いている人を見ながらでも、目の端の色で残りが分かります。</li>
+    </ul>
+  </section>
+</main>
+
+<footer class="noprint">
+  <div class="wrap"><span class="fnav"><a href="../../about/">運営者情報</a>　<a href="../../contact/">お問い合わせ</a>　<a href="../../privacy/">プライバシーポリシー</a></span>
+    <span class="copy">さくらツールズ　© 2026 SAKURA tools</span></div>
+</footer>
+
+<script src="progress.js?v=7"></script>
+<script src="../../tip.js?v=3"></script>
+</body>
+</html>

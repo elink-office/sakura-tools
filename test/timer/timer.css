@@ -1,0 +1,335 @@
+/* カウントダウンタイマー（2026-09-24 作成中）
+   ⭐色は style.css の変数を通す（--pink など）。赤だけここで決める */
+:root{
+  color-scheme: light;
+  --tm-ring:#2a7fd4;          /* ⭐ふだん＝青（2026-09-24 本人「緑をさ、あおにしてみて」）。⚠前＝信号機の緑 #12a26e／その前はさくら色 */
+  --tm-red:#e2403f;           /* ⭐残りが少ない＝赤（2026-09-24 本人「赤にするタイミング」） */
+}
+
+/* ===== 設定の画面 ===== */
+/* ⭐幅はほかのツールと同じ＝.wrap 900px のまま（ページの型 7-a）。⚠前は 640px にしぼっていた（2026-09-24 本人「全体の幅が狭くない？」） */
+/* ⭐①と②の箱は同じ高さ（2026-09-24 本人「①と②の箱のサイズは一緒にして」） */
+.tm-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:stretch}
+.tm-grid > details.opt{margin:0}
+.tm-fxbox{margin-top:14px}
+.tm-left{min-width:0}
+.tm-left .tm-start{margin:16px 0 0}
+.tm-side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.tm-side details.opt{margin:0}
+.tm-quickbox{margin:0 0 14px;padding:0 0 12px;border-bottom:1px dashed var(--line)}
+.tm-quickbox[hidden]{display:none}
+.tm-quickbox .tm-quick{margin:0}
+.tm-grid .tm-card{margin:0}
+.tm-grid + .tm-card{margin-top:14px}
+@media (max-width:700px){ .tm-grid{grid-template-columns:1fr} }
+.tm-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:14px 20px;margin:0 0 14px}
+.tm-h{font-size:1rem;margin:0 0 10px;color:var(--ink)}
+.tm-time{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap}
+.tm-num{display:inline-flex;align-items:baseline;gap:4px}
+.tm-num input{
+  width:2.4em;font-size:44px;font-weight:700;text-align:center;padding:4px 0;
+  border:2px solid var(--line);border-radius:12px;color:var(--ink);background:var(--pink-pale);
+  font-variant-numeric:tabular-nums;font-family:inherit;
+}
+.tm-num input:focus{outline:none;border-color:var(--pink);background:#fff}
+.tm-num span{font-size:16px;color:var(--ink-soft);font-weight:700}
+.tm-num.sm input{font-size:20px;width:2.2em;border-radius:9px;padding:3px 0}
+.tm-num.sm span{font-size:14px}
+.tm-warn{margin:12px 0 0;font-size:.95rem;color:var(--ink);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tm-warnchk{display:inline-flex;align-items:center;gap:6px;cursor:pointer;margin:0;font-weight:normal}
+.tm-warnchk input{width:18px;height:18px;margin:0}
+.tm-warn.off .tm-num,.tm-warn.off .tm-warnrest{opacity:.4}
+.tm-msg{color:var(--bad);font-size:.88rem;margin:10px 0 0;min-height:0}
+.tm-msg:empty{display:none}
+.tm-hint{font-size:.82rem;color:var(--ink-soft);margin:10px 0 0}
+.tm-hint.center{text-align:center}
+
+.tm-seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--bg)}
+.tm-seg button{border:0;background:transparent;border-radius:999px;padding:7px 16px;font-size:.92rem;color:var(--ink-soft)}
+.tm-seg button.on{background:#fff;color:var(--pink);font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+
+.tm-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px dashed var(--line);flex-wrap:wrap}
+.tm-row:first-of-type{border-top:0}
+.tm-lbl{font-size:.95rem}
+.tm-lbl small{color:var(--ink-soft);font-size:.8rem;margin-left:4px}
+.tm-row select{font-size:.95rem;padding:6px 10px;border-radius:8px;border:1px solid var(--line);min-width:9em;font-family:inherit}
+.tm-row[hidden]{display:none}
+.tm-text{font-size:.95rem;padding:6px 10px;border-radius:8px;border:1px solid var(--line);width:14em;max-width:100%;font-family:inherit}
+.tm-text:focus{outline:none;border-color:var(--pink)}
+/* 保存（形は座席表の⑦と同じ。共通の .pick .btn-row .cnt .saving を使う） */
+.tm-quick{margin:0 0 14px}
+.tm-save{margin-top:22px}
+.tm-save .cls-box details.opt.sub{margin:10px 0 0}
+.tm-save .pick{margin-top:10px}
+.tm-save .pick select{margin-left:6px;font-size:.95rem;padding:6px 10px;border-radius:8px;border:1px solid var(--line);font-family:inherit}
+.tm-try{margin-top:10px;font-size:.82rem;color:var(--ink-soft);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tm-try button{font-size:.82rem;padding:4px 12px}
+
+.tm-start{text-align:center;margin:16px 0 0}
+.tm-start + .tm-hint.center{margin:6px 0 16px}
+.tm-start .primary{font-size:1.25rem;padding:14px 48px}
+
+/* ===== 動いている間の画面 ===== */
+.tm-run{
+  position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3vmin;container-type:size;
+  background:linear-gradient(180deg,#fdf3f6 0%,#f7f4fb 55%,#f2f7fb 100%);
+  padding:16px;overflow:hidden;
+}
+.tm-run[hidden]{display:none}
+.tm-fs{position:absolute;top:12px;right:12px;font-size:13px;padding:6px 12px;opacity:.75}
+.tm-fs:hover{opacity:1}
+
+/* 丸の大きさ＝画面の小さいほうに合わせる（ボタンのぶんを引く） */
+.tm-stage{
+  --S:min(78cqmin, 92cqw, calc(100cqh - 150px), 720px);
+  position:relative;width:var(--S);height:var(--S);
+}
+/* ⭐保存した名前＝時計の右に縦書き（2026-09-24 本人「上にすると画面が小さくなるから、右に置こう。縦書きで」） */
+.tm-run.has-title .tm-stage{--S:min(78cqmin, 76cqw, calc(100cqh - 150px), 720px)}
+.tm-title{
+  position:absolute;left:calc(100% + max(12px, 3cqmin));top:50%;transform:translateY(-50%);
+  writing-mode:vertical-rl;white-space:nowrap;font-weight:800;color:var(--ink);letter-spacing:.08em;line-height:1.2;
+  font-size:var(--tfs, calc(var(--S)*0.075));
+}
+.tm-title[hidden]{display:none}
+.tm-ring{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.tm-ring circle{fill:none;stroke-width:8}
+.tm-ring .bg{stroke:#ece6ea}
+.tm-ring .fg{stroke:var(--tm-ring);stroke-linecap:round;transition:stroke .6s}
+.tm-run.red .tm-ring .fg{stroke:var(--tm-red)}
+/* ⭐「できた」を押したら、残りの輪をグレーに（2026-09-24 本人「グレーアウトして（リングより少し濃いめ）」）。赤・緑どちらのときも */
+.tm-run.done .tm-ring .fg{stroke:#cbc4c9}
+.tm-run.view-tile .tm-ring{display:none}
+
+.tm-read{
+  position:absolute;inset:0;display:flex;align-items:baseline;justify-content:center;
+  padding-top:calc(var(--S)*0.36);
+  color:#2b2f3a;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em;
+}
+.tm-read .d{font-size:calc(var(--S)*0.25)}
+.tm-read .u{font-size:calc(var(--S)*0.075);color:var(--ink-soft);margin:0 .15em 0 .1em}
+/* ⭐数字は赤くしない。黒のまま（2026-09-24 本人「文字が赤くなるのはやめよう」） */
+
+/* タイル：時間がたつと1枚ずつ埋まる（タイピングのタイルと同じ光の重ね方） */
+.tm-tiles{position:absolute;inset:0;display:none;pointer-events:none;grid-template-columns:repeat(10,1fr);gap:4px;padding:2px;border-radius:18px}
+.tm-run.view-tile .tm-tiles{display:grid}
+.tm-tile{border-radius:var(--tr,5px);background:#ece6ea;transition:background-color .35s, transform .35s}
+.tm-tile.on{background-color:var(--c);background-image:var(--gloss)}
+/* ⭐赤は「赤になってから埋まったマス」だけ＝全部は赤くしない（2026-09-24 本人「全部じゃなくて赤の分量を増やすっていうのはどう？せっかくきれいなタイルなのにな～」）
+   ⚠前は赤になったとき、埋まっていたマスまで全部赤にしていた */
+.tm-tile.on.hot{background-color:var(--tm-red)}
+.tm-tile.pop{transition:transform 1.1s cubic-bezier(.12,.8,.3,1), opacity 1.1s ease-in;opacity:0}
+.tm-tile.shine{animation:tmShine .9s ease-out both}
+@keyframes tmShine{0%{transform:scale(1)}40%{transform:scale(1.15);filter:brightness(1.35)}100%{transform:scale(1)}}
+/* タイルの上の数字は、すりガラスを敷いて読めるように */
+.tm-run.view-tile .tm-read{
+  inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);padding:.12em .35em;border-radius:22px;
+  background:rgba(255,255,255,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);align-items:baseline;
+}
+
+/* 終わったときの文字 */
+.tm-result{
+  position:absolute;left:50%;top:calc(var(--S)*0.2);transform:translateX(-50%);
+  font-size:calc(var(--S)*0.075);font-weight:800;white-space:nowrap;color:var(--pink);
+  animation:tmPop .5s cubic-bezier(.2,1.6,.4,1) both;
+}
+.tm-result.lose{color:var(--tm-red)}
+.tm-run.view-tile .tm-result{top:calc(var(--S)*0.12);background:rgba(255,255,255,.8);padding:.1em .5em;border-radius:14px}
+@keyframes tmPop{from{transform:translateX(-50%) scale(.4);opacity:0}to{transform:translateX(-50%) scale(1);opacity:1}}
+
+.tm-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.tm-b{font-size:clamp(14px,2.4cqmin,22px);font-weight:700;padding:.7em 1.5em;border-radius:999px;border:0;box-shadow:0 3px 0 rgba(0,0,0,.12)}
+.tm-b:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.12)}
+.tm-b.pause{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.tm-b.done{background:var(--pink);color:#fff}
+.tm-b.done:hover{background:#b85c80}
+.tm-b.back{background:#fff;color:var(--ink-soft);border:1px solid var(--line)}
+.tm-b[disabled]{opacity:.35;pointer-events:none}
+
+/* ===== 仕掛け ===== */
+.fx{position:fixed;inset:0;z-index:200;pointer-events:none;overflow:hidden;container-type:size}
+/* ⭐中の大きさは cq 単位＝本番は画面いっぱい、見本は16:9の枠が基準になる */
+.fx canvas{position:absolute;inset:0;width:100%;height:100%}
+/* 花火の夜空（明るい画面だと色が沈むので、うしろを暗くする） */
+.fx .night{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(20,18,50,.82),rgba(5,5,20,.92));opacity:0;transition:opacity .5s}
+.fx .night.on{opacity:1}
+.fx .flash{position:absolute;inset:0;background:#fff;opacity:0}
+.fx .flash.go{animation:tmFlash .7s ease-out}
+@keyframes tmFlash{0%{opacity:0}8%{opacity:.45}100%{opacity:0}}
+.fx .boom{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);font-weight:900;color:#ff5a1f;
+  font-size:min(18cqmin,150px);-webkit-text-stroke:4px #fff;paint-order:stroke;text-shadow:0 6px 0 rgba(0,0,0,.2);
+  animation:tmBoom 1.6s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes tmBoom{0%{transform:translate(-50%,-50%) scale(.2) rotate(-12deg);opacity:0}25%{opacity:1;transform:translate(-50%,-50%) scale(1.15) rotate(-6deg)}75%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(-6deg)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.05) rotate(-6deg)}}
+
+/* 爆弾・くす玉の絵（SVG）。⭐あとで画像に差し替えるときは、この入れ物の中身だけ変える */
+.fx .pic{position:absolute;left:50%;top:44%;width:min(42cqmin,340px);transform:translate(-50%,-50%)}
+.fx .pic svg{width:100%;height:auto;overflow:visible;display:block}
+/* ⭐爆弾は横からコロコロ転がってくる（2026-09-24 本人）。回る中心＝爆弾の丸の中心 */
+.fx .bomb{animation:tmRoll 1.6s cubic-bezier(.25,.75,.35,1) both}
+.fx .bomb,.fx .bomb svg{transform-origin:46% 59%}
+@keyframes tmRoll{
+  0%{transform:translate(calc(-50% - 75cqw),-50%) rotate(-1080deg)}
+  82%{transform:translate(calc(-50% + 2.5cqw),-50%) rotate(25deg)}
+  92%{transform:translate(calc(-50% - .8cqw),-50%) rotate(-8deg)}
+  100%{transform:translate(-50%,-50%) rotate(0deg)}
+}
+/* 止まったら、赤く光ってふくらむ。直前はもっと速く */
+.fx .bomb.tense svg{animation:tmTense .42s ease-in-out infinite alternate;filter:drop-shadow(0 0 14px rgba(255,50,20,.75))}
+.fx .bomb.tense2 svg{animation-duration:.14s;filter:drop-shadow(0 0 28px rgba(255,40,10,.95)) saturate(1.4)}
+@keyframes tmTense{from{transform:scale(1)}to{transform:scale(1.14)}}
+.fx .bomb.gone{opacity:0;transition:opacity .08s}
+.fx .spark{animation:tmSpark .12s linear infinite alternate;transform-box:fill-box;transform-origin:center}
+@keyframes tmSpark{from{transform:scale(.7);opacity:.7}to{transform:scale(1.3);opacity:1}}
+
+.fx .kusu{top:-7cqh;   /* ⭐もう少し上（2026-09-24 本人「くす玉、もう少し上でもいいや」）。⚠前は top:0 */
+  transform:translate(-50%,0);width:min(82cqw,106cqh,850px);   /* ⭐少し小さく（2026-09-24 本人）。⚠前は min(96cqw,125cqh,1000px) */animation:tmHang .6s cubic-bezier(.3,1.4,.5,1) both}
+@keyframes tmHang{from{transform:translate(-50%,-110%)}to{transform:translate(-50%,0)}}
+.fx .kusu .half{transition:transform .9s cubic-bezier(.3,1.3,.5,1);transform-box:view-box}
+.fx .kusu .half.l{transform-origin:250px -175px}
+.fx .kusu .half.r{transform-origin:250px -175px}
+.fx .kusu.open .half.l{transform:rotate(42deg)}
+.fx .kusu.open .half.r{transform:rotate(-42deg)}
+.fx .kusu .banner{transform:scaleY(0);transform-origin:250px 0px;transform-box:view-box;transition:transform .7s .25s cubic-bezier(.3,1.2,.5,1)}
+.fx .kusu.open .banner{transform:scaleY(1)}
+.fx .kusu.bye{transition:opacity .6s;opacity:0}
+
+/* 画面が揺れる。⭐もっと激しく・大きくなったり小さくなったり・爆発と同じくらい長く（2026-09-24 本人）
+   ＝2.4秒。はじめが一番強く、だんだんおさまる */
+.tm-run.shake .tm-stage,.tm-set.shake{animation:tmShake 2.4s cubic-bezier(.3,.1,.3,1) 1}
+@keyframes tmShake{
+  0%  {transform:translate(0,0) rotate(0) scale(1)}
+  4%  {transform:translate(-30px,10px) rotate(-3.5deg) scale(1.16)}
+  9%  {transform:translate(32px,-14px) rotate(3.5deg) scale(.86)}
+  14% {transform:translate(-28px,-8px) rotate(-3deg) scale(1.14)}
+  19% {transform:translate(26px,12px) rotate(3deg) scale(.88)}
+  25% {transform:translate(-24px,6px) rotate(-2.6deg) scale(1.12)}
+  31% {transform:translate(22px,-10px) rotate(2.4deg) scale(.9)}
+  38% {transform:translate(-18px,-6px) rotate(-2deg) scale(1.09)}
+  45% {transform:translate(16px,8px) rotate(1.8deg) scale(.93)}
+  53% {transform:translate(-13px,4px) rotate(-1.4deg) scale(1.06)}
+  61% {transform:translate(11px,-5px) rotate(1.1deg) scale(.95)}
+  70% {transform:translate(-8px,-3px) rotate(-.8deg) scale(1.04)}
+  79% {transform:translate(6px,3px) rotate(.6deg) scale(.97)}
+  88% {transform:translate(-3px,1px) rotate(-.3deg) scale(1.02)}
+  100%{transform:translate(0,0) rotate(0) scale(1)}
+}
+
+@media (max-width:480px){
+  .tm-card{padding:16px}
+  .tm-num input{font-size:38px}
+  .tm-lbl{flex:1 1 100%}
+  .tm-row select,.tm-text{min-width:0;flex:1 1 100%;width:auto}
+}
+@media (prefers-reduced-motion: reduce){
+  .tm-run.shake .tm-stage{animation:none}
+}
+
+/* ===== サンプル（ページの型 12-a） ===== */
+.tm-sample{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:14px 0 0;padding-top:12px;border-top:1px dashed var(--line)}
+.tm-segwrap{text-align:center}
+#viewHint{text-align:center}
+#sampleNote{margin:8px 0 0;color:var(--ink)}
+
+/* ===== 幕（カーテンが閉まる）⭐3つの部品＝上の飾り幕・左のカーテン・右のカーテン
+   （2026-09-24 本人「緞帳よりカーテンが締まるにしてみて」「上の幕は別で。３つのパーツがあるといいかも笑」）
+   ⚠前＝上から下りる緞帳（その前は、ひだのカーテンが上から下りていた）
+   ⭐順番＝①上の飾り幕がすっと下りる ②左右のカーテンが真ん中へ閉まる（少しはねる）
+   ⭐下の端はボタンの上で止める＝もどるが見えたまま押せる ===== */
+.fx .curtain{position:absolute;left:0;right:0;top:0;height:var(--ch,88cqh);overflow:hidden}
+.fx .curtain .side{position:absolute;top:0;bottom:16px;width:51%;
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.3) 0%,rgba(0,0,0,0) 20%,rgba(0,0,0,0) 82%,rgba(0,0,0,.28) 100%),
+    repeating-linear-gradient(90deg,#0f1a36 0,#1f3263 2.4%,#33508f 3.9%,#1f3263 5.6%,#0f1a36 7.6%);   /* ⭐紺（2026-09-24 本人「紺色にしてみて（きれいすぎて笑）」）。⚠前は赤 */
+  box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.fx .curtain .side::after{content:"";position:absolute;left:0;right:0;bottom:-16px;height:18px;
+  background:repeating-linear-gradient(90deg,#e8bd4d 0 5px,#b8862a 5px 7px,transparent 7px 10px);
+  -webkit-mask:linear-gradient(180deg,#000 55%,transparent);mask:linear-gradient(180deg,#000 55%,transparent)}
+.fx .curtain .side::before{content:"";position:absolute;left:0;right:0;bottom:-2px;height:6px;background:#d9a93a;z-index:1}
+.fx .curtain .side.l{left:0;transform:translateX(-102%);animation:tmCurL 1.5s .2s cubic-bezier(.45,0,.2,1) forwards}   /* ⭐上の幕が出たらすぐ閉まる（2026-09-24 本人）。⚠前は 2.1s・0.45秒待ち */
+.fx .curtain .side.r{right:0;transform:translateX(102%);animation:tmCurR 1.5s .2s cubic-bezier(.45,0,.2,1) forwards;
+  box-shadow:-6px 8px 24px rgba(0,0,0,.35)}
+/* 真ん中の合わせ目に影 */
+.fx .curtain .side.l{box-shadow:6px 8px 24px rgba(0,0,0,.35)}
+@keyframes tmCurL{0%{transform:translateX(-102%)}84%{transform:translateX(1.5%)}93%{transform:translateX(-.5%)}100%{transform:translateX(0)}}
+@keyframes tmCurR{0%{transform:translateX(102%)}84%{transform:translateX(-1.5%)}93%{transform:translateX(.5%)}100%{transform:translateX(0)}}
+/* 上の飾り幕（波形のすそ・金の縁・房）＝JS が SVG で描く */
+.fx .curtain .valance{position:absolute;left:0;top:0;z-index:2;display:block;
+  transform:translateY(-110%);animation:tmVal .5s cubic-bezier(.3,1.3,.5,1) forwards;filter:drop-shadow(0 5px 6px rgba(0,0,0,.35))}
+@keyframes tmVal{to{transform:translateY(0)}}
+/* ためしのときは開いて消える */
+.fx .curtain.open .side.l{animation:tmCurLo 1.2s cubic-bezier(.5,0,.8,.4) forwards}
+.fx .curtain.open .side.r{animation:tmCurRo 1.2s cubic-bezier(.5,0,.8,.4) forwards}
+.fx .curtain.open .valance{animation:tmValo .5s .9s ease-in forwards}
+@keyframes tmCurLo{from{transform:translateX(0)}to{transform:translateX(-102%)}}
+@keyframes tmCurRo{from{transform:translateX(0)}to{transform:translateX(102%)}}
+@keyframes tmValo{from{transform:translateY(0)}to{transform:translateY(-110%)}}
+
+
+/* ⭐②の中の呼び出しは1行（ラベルを左に）＝②が伸びてスタートが画面の外に出ないように */
+.tm-quick.row.tight{align-items:center;flex-wrap:wrap;gap:8px}
+.tm-quick.row.tight > div{flex-direction:row;align-items:center;gap:6px}
+.tm-quick.row.tight > div:not(.pick) > label{display:none}
+.tm-quick.row.tight .pick label{margin:0;height:auto}
+.tm-quick select{height:34px !important}
+.tm-quick .pick label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}   /* 見出しは選ぶ欄の中に出す（1行に収めるため） */
+.tm-quick select{max-width:11em}
+.tm-quick.row.tight{flex-wrap:nowrap}
+#sampleMsg:empty{display:none}
+/* すき間を少しずつ詰める＝保存あり・サンプルありでもスタートが画面の中（高さ657pxで確かめる） */
+.tm-set .lead{margin-bottom:12px}
+.tm-set .tip-guide{margin-bottom:10px}
+.tm-sample{margin-top:10px;padding-top:8px}
+.tm-quickbox{margin-bottom:10px;padding-bottom:10px}
+
+
+/* ===== 幕の前の「残念」＋タイマーのグレー ===== */
+.tm-run.gray .tm-stage{filter:grayscale(1);opacity:.5;transition:filter .3s,opacity .3s}
+/* すりガラス（画面の上に1枚かぶせる） */
+.fx .frost{position:absolute;left:0;right:0;top:0;background:rgba(236,239,244,.5);
+  -webkit-backdrop-filter:blur(14px) saturate(.5);backdrop-filter:blur(14px) saturate(.5);animation:tmFrost .3s ease-out both}
+@keyframes tmFrost{from{opacity:0}to{opacity:1}}
+.fx .zannen{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) scale(.15);
+  font-weight:900;font-size:min(25cqmin,18cqw,240px);   /* ⭐あと少しだけ小さく（2026-09-24 本人「大きすぎちゃった笑」）。⚠前は min(30cqmin,21cqw,290px) */
+  letter-spacing:.04em;color:#d8342f;white-space:nowrap;   /* ⭐赤系（2026-09-24 本人「残念の文字は赤系」） */
+  
+  -webkit-text-stroke:5px #fff;paint-order:stroke;text-shadow:0 6px 16px rgba(0,0,0,.18);
+  animation:tmZannen .38s cubic-bezier(.2,1.3,.4,1) forwards}   /* ⭐すばやく（前は .9s） */
+@keyframes tmZannen{0%{transform:translate(-50%,-50%) scale(.15);opacity:0}25%{opacity:1}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
+
+/* 見本のしるし（左上） */
+.tm-demo{position:absolute;top:12px;left:12px;font-size:13px;font-weight:700;color:#fff;background:var(--pink);padding:5px 12px;border-radius:999px;opacity:.9}
+.tm-demo[hidden]{display:none}
+.fx .frost.bye{transition:opacity .6s;opacity:0}
+
+/* ===== 見本＝16:9 の枠（プロジェクターの形） ===== */
+.tm-demoback{position:fixed;inset:0;z-index:99;background:rgba(20,22,32,.72)}
+.tm-demoback[hidden]{display:none}
+.tm-run.framed{inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(94vw, calc((100vh - 40px) * 16 / 9));aspect-ratio:16/9;height:auto;
+  border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.45);outline:3px solid #fff}
+.tm-run.framed .tm-fs{display:none}
+.tm-run .fx{position:absolute;z-index:5}
+
+/* ===== タイルの枠＝16:9（画面に合わせる） ===== */
+.tm-run.view-tile .tm-stage{
+  --W:min(92cqw, calc((100cqh - 150px) * 16 / 9), 1500px);
+  width:var(--W);height:calc(var(--W) * 9 / 16);
+  --S:calc(var(--W) * 9 / 16 * 1.15);   /* 数字の大きさの基準（丸のときの一辺の代わり）＝少し大きく */
+}
+.tm-run.view-tile.has-title .tm-stage{--W:min(82cqw, calc((100cqh - 150px) * 16 / 9), 1500px)}
+.fx .zannen{text-align:center;line-height:1.12}
+
+/* ③の行＝見出し｜選ぶ｜文字 を横1行に */
+.tm-fxbox .tm-row{justify-content:flex-start;gap:14px;flex-wrap:nowrap}
+.tm-fxbox .tm-lbl{flex:0 0 auto;min-width:20.5em;white-space:nowrap}   /* ⭐見出しは1行（2026-09-24 本人）。そろえるため幅は同じ */
+.tm-ctl{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}
+.tm-ctl select{min-width:9em}
+.tm-extra{display:inline-flex;align-items:center;gap:6px}
+.tm-extra[hidden]{display:none}
+.tm-extra small{font-size:.8rem;color:var(--ink-soft);white-space:nowrap}
+@media (max-width:700px){
+  .tm-fxbox .tm-row{flex-wrap:wrap}
+  .tm-fxbox .tm-lbl{flex:1 1 100%}
+}
+/* ⭐欄ははじめ空。うすいグレーで見本の言葉（2026-09-24 本人「薄いグレーで『みんな/よくできました』」「見えないからさ」） */
+.tm-text::placeholder{color:#b9bdc3;opacity:1}

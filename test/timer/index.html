@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- ⭐タブのマーク（ほかのページと同じ）。⚠入れ忘れていて地球儀になっていた（2026-09-24 本人） -->
+<link rel="icon" href="../favicon.ico?v=1" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png?v=1">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png?v=1">
+<!-- ⭐作成中（2026-09-24）。どこともつなげない＝トップのカード・サイトマップ・右上のツール一覧に入れていない -->
+<meta name="robots" content="noindex,nofollow">
+<title>【テスト】カウントダウンタイマー｜大きく映せる無料タイマー</title>
+<meta name="description" content="時間を打ち込むだけの、丸が減っていくカウントダウンタイマー。残り時間が少なくなると色が変わり、間に合ったら紙吹雪、時間切れで爆弾などの仕掛けも選べます。">
+<link rel="stylesheet" href="../style.css?v=145">
+<link rel="stylesheet" href="timer.css?v=45">
+</head>
+<body>
+<div id="testBadge" style="position:fixed;right:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
+<script>
+(function(){
+  var b = document.getElementById('testBadge');
+  if(!b) return;
+  var d = new Date(document.lastModified), z = function(n){ return (n<10?'0':'') + n; };
+  b.textContent = 'テスト版 ' + z(d.getMonth()+1) + '/' + z(d.getDate()) +
+                  ' ' + z(d.getHours()) + ':' + z(d.getMinutes());
+})();
+</script>
+
+<header class="site-head noprint">
+  <div class="wrap">
+    <a class="logo" href="../"><span class="logo-mark"><img src="../img/logo-sakura-64.png?v=2" srcset="../img/logo-sakura-64.png?v=2 1x, ../img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA tools</span><span class="logo-sub">さくらツールズ</span></a>
+    <nav>
+      <a class="navpin" href="../">トップ</a>
+      <a class="navpin" href="../typing/">タッチタイピング</a>
+      <a class="navpin" href="../seat/">座席表</a>
+      <a class="navpin" href="../slide/">簡単スライド</a>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">ツール一覧</label>
+      <div class="navlist">
+      <a href="../">トップ</a>
+      <a href="../typing/">タッチタイピング</a>
+      <a href="../seat/">座席表</a>
+      <a href="../seki/">席次表</a>
+      <a href="../slide/">簡単スライド</a>
+      <a href="../excel-fx/">関数早見表</a>
+      <a href="../keiri/mitsumori/">見積書</a>
+      <a href="../keiri/seikyu/">請求書</a>
+      </div>
+    </nav>
+  </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">カウントダウンタイマー</span><span class="now-short">タイマー</span></div></div>
+</header>
+
+<main class="wrap tm-set" id="setScreen">
+  <h1>カウントダウンタイマー</h1>
+  <!-- ⭐2文目（2026-09-24 本人「できたときや、間に合わなかったときの文字をオリジナルで設定できます。っていうのを上に入れてほしい」） -->
+  <p class="lead">時間を打ち込んで、スタートを押すだけ。丸が減っていき、残りが少なくなると赤に変わります。<br>できたときや、間に合わなかったときの文字をオリジナルで設定できます。</p>
+
+  <p class="tip-guide"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
+
+  <!-- ⭐左＝①時間／右＝呼び出し・②見せ方・③仕掛け。スタートはその下＝スクロールせずに押せる
+       （2026-09-24 本人「時間と見せ方を隣に」「ボタンは絶対にスクロールしたくない」「呼び出しの行は②でもいいよ」）
+       ⭐②③はシャッター＝たたんで始める（本人「見せ方とか仕掛けとか、子どもに見せたくないからシャッターにしたい」） -->
+  <div class="tm-grid">
+  <!-- ⭐章の番号は付箋（ページの型 2・2-0）。保存したデータの利用がいちばん最後 -->
+  <section class="card tm-card">
+    <h2><span class="step">1</span>時間</h2>
+    <!-- ⭐時間は自分で打つ（2026-09-16 本人）。ボタンで選ぶ形ではない -->
+    <div class="tm-time">
+      <label class="tm-num"><input id="inMin" type="text" inputmode="numeric" maxlength="2" value="3" autocomplete="off" aria-label="分"><span>分</span></label>
+      <label class="tm-num"><input id="inSec" type="text" inputmode="numeric" maxlength="2" value="00" autocomplete="off" aria-label="秒"><span>秒</span></label>
+    </div>
+    <!-- ⭐赤にする時点は使う人が決める。はじめは残り1分（2026-09-24 本人）。
+         ⭐設定した時間より長いときは、最初から赤で始める（打ち込んだとおりに動く・自動で変えない） -->
+    <!-- ⭐赤にするかはチェックで外せる（2026-09-24 本人「残り○秒を赤にする。これ、一応チェックを入れて外せるようにしておいて」）。はじめはチェックあり -->
+    <p class="tm-warn"><label class="tm-warnchk"><input type="checkbox" id="warnOn" checked> 残り</label>
+      <label class="tm-num sm"><input id="inWarnMin" type="text" inputmode="numeric" maxlength="2" value="1" autocomplete="off" aria-label="赤にする時点の分"><span>分</span></label>
+      <label class="tm-num sm"><input id="inWarnSec" type="text" inputmode="numeric" maxlength="2" value="00" autocomplete="off" aria-label="赤にする時点の秒"><span>秒</span></label>
+      <span class="tm-warnrest">で赤にする</span>
+    </p>
+    <p class="tm-msg" id="setMsg" role="alert"></p>
+  </section>
+
+
+    <!-- ⭐②見せ方は開いて始める（2026-09-24 本人「見せ方は開いててもいいよ。慣れると2つしかないっていうのは子供はわかる。それより、褒められるときに紙吹雪なのか何なのかが見えないほうが良い」）＝③仕掛けだけたたむ -->
+    <details class="opt" id="optView" open>
+      <summary><span class="step">2</span>見せ方</summary>
+      <div class="body">
+      <!-- ⭐呼び出しは②の中のいちばん上（本人「呼び出しの行は②でもいいよ」＝①に置くと①が伸びてスタートが下に落ちるため。⚠ページの型 4-c の6「①に置く」から外した）。0件のときは出さない -->
+      <div class="tm-quickbox" id="recallRow" hidden>
+        <div class="row tight tm-quick">
+        <div class="pick"><label for="selSaved2">保存済のデータ</label>
+          <select id="selSaved2" aria-label="保存済のデータ"><option value="">保存済のデータ</option></select></div>
+        <div><label>&nbsp;</label>
+          <button class="mini" id="loadSaved2" type="button">このデータを自動入力</button></div>
+        <div><label>&nbsp;</label>
+          <button class="mini" id="delSaved2" type="button">削除</button></div>
+      </div>
+      </div>
+      <!-- ⭐丸／タイルの切り替えは中央ぞろえ（2026-09-24 本人） -->
+      <div class="tm-segwrap">
+        <div class="tm-seg" id="segView" role="radiogroup" aria-label="見せ方">
+        <button type="button" data-v="ring" class="on" role="radio" aria-checked="true">丸が減る</button>
+        <button type="button" data-v="tile" role="radio" aria-checked="false">タイルが埋まる</button>
+      </div>
+      </div>
+      <p class="tm-hint" id="viewHint">時間がたつと、丸が時計回りに減っていきます。</p>
+      <!-- ⚠サンプルはやめた（2026-09-24 本人「サンプルはなしにしよう。仕掛けで見れるから」＝③の「見本を見る」で見られる） -->
+      </div>
+    </details>
+  </div>
+
+
+
+  <!-- ⭐スタートは①②の下・中央ぞろえ（2026-09-24 本人「スタートボタンは中央揃えのまま」「ボタンは絶対にスクロールしたくない」「展開するとスタートがズレるのが嫌」）
+       ⭐③仕掛けはスタートの下＝開いてもスタートは動かない（本人「仕掛けを④の上に」） -->
+  <p class="tm-start"><button type="button" class="primary" id="startBtn">▶ スタート</button></p>
+  <p class="tm-hint center">音は鳴りません。スタートすると画面いっぱいに大きく出ます。</p>
+
+  <details class="opt tm-fxbox" id="optFx">
+    <summary><span class="step">3</span>仕掛け</summary>
+    <div class="body">
+    <!-- ⭐仕掛けはオン／オフで切り替える。同じページの中（2026-09-16 本人）。
+         ⭐間に合った（できた）＝お祝い／0になった＝爆発（2026-09-24 本人） -->
+    <!-- ⭐横に1行で並べる＝「間に合ったとき｜くす玉｜文字」「時間切れのとき｜幕が閉まる｜文字」（2026-09-24 本人「よこにながいからさ…横に配置して」）
+         ⭐くす玉の文字（2026-09-24 本人「文字を先生が入力できるようにしたい」）・幕の前の言葉（本人「残念の言葉もくす玉みたいに書けるようにして」）は、それを選んだときだけ出す。「/」で2行 -->
+    <div class="tm-row">
+      <span class="tm-lbl">間に合ったとき<small>（「できた」を押したとき）</small></span>
+      <div class="tm-ctl">
+        <select id="selWin">
+          <option value="none">なし</option>
+          <option value="confetti" selected>紙吹雪</option>
+          <option value="fireworks">花火</option>
+          <option value="kusudama">くす玉</option>
+        </select>
+        <span class="tm-extra" id="kusuRow" hidden>
+          <input id="inKusu" class="tm-text" type="text" maxlength="16" value="" placeholder="みんな/よくできました" autocomplete="off" aria-label="くす玉の文字">
+          <small>改行したい場所に/</small>
+        </span>
+      </div>
+    </div>
+    <div class="tm-row">
+      <span class="tm-lbl">時間切れのとき<small>（0になったとき）</small></span>
+      <div class="tm-ctl">
+        <select id="selLose">
+          <option value="none">なし</option>
+          <option value="bomb" selected>爆弾</option>
+          <!-- ⚠ガラスにヒビは中止（本人「ガラスにひびは中止」）／「画面が揺れる」はやめた（本人「揺れるのはいまいちだった」） -->
+          <option value="curtain">幕が閉まる</option>
+        </select>
+        <span class="tm-extra" id="zanRow" hidden>
+          <input id="inZan" class="tm-text" type="text" maxlength="16" value="" placeholder="ざんねん" autocomplete="off" aria-label="幕の前の言葉">
+          <small>改行したい場所に/</small>
+        </span>
+      </div>
+    </div>
+    <!-- ⭐見本を見る＝モニターと同じ横長（16:9）の枠の中で、本番と同じ画面を動かす。全画面にはしない
+         ⭐5秒に固定（2026-09-24 本人「見本を見る（モニターの形）に変更で」「見本は5秒に固定で行こう」）＝設定した時間の表示のまま5秒で0まで進む
+         （2026-09-24 本人「6秒に縮めるのが目的じゃなくて、どんなふうに見えるかが見たい」「ブラウザサイズではなく」「プロジェクター（横長）」）
+         ⚠前＝6秒に縮めて流す［間に合ったとき］［時間切れのとき］／その前＝仕掛けだけを出す「ためしに見る」 -->
+    <div class="tm-try">
+      <button type="button" id="demoBtn">見本を見る（モニターの形）</button>
+    </div>
+    <p class="tm-hint">本番と同じ画面を、モニターと同じ横長（16:9）の枠の中で、5秒に縮めて動かします。<br>「できた」ボタンを押すと、間に合ったときの仕掛けも見られます。</p>
+    </div>
+  </details>
+
+  <!-- ⭐保存（ページの型 3・4-c・4-d・14-4＝座席表の⑦と同じ形）。章は最後・シャッター・ボタンは mini・名前は押したときに聞く
+       ⭐画面の保存（最後に入れた内容）はチェックなしで自動のまま（2026-09-24 本人「基本的に個人情報はないから」）
+       ⭐名前はスタートしたとき時計の右に縦書きで出る（本人「そのタイトルがそのまま時計に…右に置こう。縦書きで」） -->
+  <section class="card tm-card tm-save">
+    <h2><span class="step">4</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+    <div class="tip-body" hidden>
+      <p>🔒 <strong>保存先もインターネットではありません。</strong>使っている端末のブラウザの中だけに残るので、ほかの人からは見えません。パソコン・タブレット・スマホ、どれでも同じです。</p>
+      <ul>
+        <li><strong>名前を付けて、<b style="font-size:inherit">20件</b>まで保存できます。</strong></li>
+        <li>呼び出すのは、②見せ方の中の<strong>「このデータを自動入力」</strong>から。時間・見せ方・仕掛けが入るので、あとは「スタート」を押すだけです。</li>
+        <li>呼び出したデータの名前は、スタートしたとき時計の右に出ます。</li>
+      </ul>
+    </div>
+
+    <p class="hint">保存したデータは、<b>カウントダウンタイマー</b>で使えます。</p>
+
+    <p class="safe">🔒 <strong>保存したものは、使っている端末の中だけに残ります。</strong></p>
+
+    <div class="cls-box">
+      <details class="opt sub">
+        <summary>データに名前を付けて保存<span id="saveCount" class="cnt">0/20</span></summary>
+        <div class="body">
+          <p class="hint">時間・赤にする時点・見せ方・仕掛け・くす玉の文字を、まとめて残すときに使います。</p>
+          <p class="btn-row">
+            <button class="mini" id="saveNew" type="button">新しい名前で保存</button>
+            <button class="mini" id="saveOver" type="button">上書き</button>
+            <button class="mini" id="saveDel" type="button">削除</button>
+          </p>
+          <div class="pick"><label for="selSaved">保存済のデータ</label>
+            <select id="selSaved"><option value="">－</option></select></div>
+          <p><span class="saving" id="saveMsg"></span></p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ⭐読みものはシャッター（ページの型 1-b）。「こんなときに」は使い方の中（章を作らない）。例は学校と職場の両方（1-c）
+       （2026-09-24 本人「使い方 こんな時に使うの文章を書いてね」） -->
+  <details class="howto">
+    <summary>使い方</summary>
+    <div class="body">
+      <p>決めた時間を、丸やタイルで大きくモニターに映すタイマーです。登録もインストールもいりません。音は鳴らないので、授業中や会議中でもそのまま使えます。</p>
+
+      <h3>こんなときに</h3>
+      <ul>
+        <li>小テストや作業の時間を区切る</li>
+        <li>給食や片付け、準備の時間を、みんなに見えるようにする</li>
+        <li>グループの話し合いや、発表・スピーチの持ち時間を映す</li>
+        <li>会議や研修で、休憩や作業の残り時間を出しておく</li>
+        <li>イベントや集まりで、始まるまでの時間を出しておく</li>
+      </ul>
+      <p class="hint">数字を読まなくても、<b>色と減り方で残りが分かる</b>ように作っています。</p>
+
+      <h3>時間を決める</h3>
+      <ul>
+        <li>①に分と秒を打ちます。99分59秒まで決められます。</li>
+        <li>「残り〇分〇秒で赤にする」で、色が変わる時点を決めます。<b>決めた時間より長くすると、最初から赤</b>で始まります。</li>
+        <li>赤にしたくないときは、チェックを外してください。</li>
+      </ul>
+
+      <h3>見せ方</h3>
+      <ul>
+        <li><b>丸が減る</b>：時間がたつと、丸が時計回りに減っていきます。ふだんは青、残りが少なくなると赤です。</li>
+        <li><b>タイルが埋まる</b>：1秒で1マスずつ埋まっていきます。赤になってからのマスだけが赤く埋まり、0になるとはじけ飛びます。</li>
+      </ul>
+
+      <h3>仕掛け</h3>
+      <ul>
+        <li>間に合ったとき（「できた」を押したとき）は、紙吹雪・花火・くす玉から選べます。</li>
+        <li>時間切れのとき（0になったとき）は、爆弾・幕から選べます。</li>
+        <li>くす玉の垂れ幕と、幕の前の言葉は、自分で打てます。<code>/</code> を入れたところで2行になります。</li>
+        <li>③はたたんだままスタートできます。<b>何が出るかを見せずに</b>始められます。</li>
+        <li>「見本を見る」を押すと、本番と同じ画面を、モニターの形（16:9）の枠の中で5秒に縮めて確かめられます。</li>
+      </ul>
+
+      <h3>動かしているとき</h3>
+      <ul>
+        <li>スタートを押すと、画面いっぱいに出ます。</li>
+        <li>ボタンは3つです。一時停止（もう一度押すと再開）・できた（間に合ったとき）・もどる（設定の画面へ）。</li>
+        <li>パソコンなら、スペースキーでも一時停止と再開ができます。</li>
+        <li>動いているあいだは、画面が暗くならないようにしています（対応している機種のみ）。</li>
+      </ul>
+
+      <h3>保存について</h3>
+      <ul>
+        <li>最後に入れた内容は、自動で残ります。次に開いたときも、そのまま使えます。</li>
+        <li>④で名前を付けると、<b>20件まで</b>保存できます。呼び出すのは②の「このデータを自動入力」から。呼び出した名前は、スタートすると時計の右に出ます。</li>
+        <li>保存したものは、使っている端末の中だけに残り、インターネットには送りません。名簿のような個人の情報を入れる欄もありません。だから、学校や職場の端末でも安心して使えます。</li>
+      </ul>
+    </div>
+  </details>
+</main>
+
+<!-- ⚠見本の小窓はやめた（2026-09-24 本人「見本いらないや」）。戻すときは _もどす/2026-09-24_見本を外して色を変える前 -->
+
+<!-- ===== 動いている間の画面（丸と数字とボタン3つだけ） ===== -->
+<div class="tm-demoback" id="demoBack" hidden></div>
+<div class="tm-run" id="runScreen" hidden>
+  <button type="button" class="tm-fs" id="fsBtn" title="全画面">⛶ 全画面</button>
+  <div class="tm-demo" id="demoBadge" hidden>見本（モニターの形 16:9・5秒）</div>
+  <div class="tm-stage" id="stage">
+    <div class="tm-title" id="runTitle" hidden></div>
+    <svg class="tm-ring" id="ring" viewBox="0 0 100 100" aria-hidden="true">
+      <circle class="bg" cx="50" cy="50" r="45"/>
+      <circle class="fg" id="ringFg" cx="50" cy="50" r="45"/>
+    </svg>
+    <div class="tm-tiles" id="tiles" aria-hidden="true"></div>
+    <div class="tm-read" id="readout" aria-live="off">
+      <span class="d" id="dMin">03</span><span class="u">分</span><span class="d" id="dSec">00</span><span class="u">秒</span>
+    </div>
+    <div class="tm-result" id="result" hidden></div>
+  </div>
+  <!-- ⭐ボタンは3つ＝一時停止／できた／もどる（2026-09-24 本人「私もボタン3つだと思う」） -->
+  <div class="tm-btns" id="runBtns">
+    <button type="button" class="tm-b pause" id="pauseBtn">❚❚ 一時停止</button>
+    <button type="button" class="tm-b done" id="doneBtn">✔ できた！</button>
+    <button type="button" class="tm-b back" id="backBtn">↩ もどる</button>
+  </div>
+</div>
+
+<!-- 仕掛けを重ねる場所（押せない＝クリックは下に通る） -->
+<div class="fx" id="fx" aria-hidden="true"></div>
+
+<script src="timer.js?v=49"></script>
+<script src="../tip.js?v=3"></script>
+</body>
+</html>
