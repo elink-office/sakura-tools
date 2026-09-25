@@ -1,0 +1,8 @@
+/* 先生におすすめ（/teacher/）だけの見た目。⭐カードそのものは top.css のものを使う（新しい見た目を作らない）
+   ⭐ここにあるのは「開いてすぐ使える／じっくり作る」の見出しだけ（2026-09-25 作成・見出しの言葉は仮） */
+.t-group{font-size:1.02rem;margin:6px 0 14px;color:var(--ink)}
+.t-group::before{content:none}
+.t-group small{font-weight:normal;font-size:.82rem;color:var(--ink-soft);margin-left:8px}
+@media (max-width:430px){
+  .t-group small{display:block;margin:2px 0 0}
+}

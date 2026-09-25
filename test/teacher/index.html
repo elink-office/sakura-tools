@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8">
+<link rel="icon" href="../favicon.ico?v=2" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png?v=2">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="max-image-preview:large">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SAKURA tools">
+<meta property="og:title" content="先生におすすめの無料ツール｜さくらツールズ">
+<meta property="og:description" content="授業ですぐ使えるタイマー・くす玉・スライドと、名簿のコピペで作れる座席表。登録なし・全部無料。子どもの名前を入れても、使っている端末の中だけで完結します。">
+<!-- ⚠og:url と og:image は、いまは test の住所（2026-09-25）。知り合いの先生にLINEで test を送るため。
+     ⚠公開用の /teacher/ はまだ無い＝そこを書くと、LINEが無いページを見に行くおそれがある。
+     🔴公開するときに https://sakura-tools.com/teacher/ と /img/ogp-teacher.png に戻す（img も一緒に上げる） -->
+<meta property="og:url" content="https://sakura-tools.com/test/teacher/">
+<!-- ⭐先生向けの絵＝タイピングの白地のOGPと同じ形（さくら＋「さくらツールズ」＋先生におすすめ｜登録なし・全部無料）2026-09-25 本人「やってみて」 -->
+<meta property="og:image" content="https://sakura-tools.com/test/img/ogp-teacher.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9296990556079874" crossorigin="anonymous"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GCK29PTKBG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GCK29PTKBG');
+</script>
+<!-- ⭐先生におすすめ（2026-09-25 本人「先生におすすめツールとか作ったらいいかな？そうすれば宣伝しやすい」）。
+     ⭐知り合いの先生に1本のURLで送る・その先生がさらに回す、のためのページ。フォルダ名は teacher（本人）
+     ⚠ここの文はぜんぶ仮。⭐言葉はゆうこさんが決める -->
+<title>【テスト】先生におすすめの無料ツール｜さくらツールズ</title>
+<meta name="description" content="授業ですぐ使えるタイマー・くす玉・スライドと、名簿のコピペで作れる座席表。登録なし・全部無料。子どもの名前を入れても、使っている端末の中だけで完結します。">
+<link rel="stylesheet" href="../style.css?v=145">
+<link rel="stylesheet" href="../top.css?v=62">
+<link rel="stylesheet" href="teacher.css?v=1">
+</head>
+<body>
+<div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
+<script>
+(function(){
+  var b = document.getElementById('testBadge');
+  if(!b) return;
+  var d = new Date(document.lastModified), z = function(n){ return (n<10?'0':'') + n; };
+  b.textContent = 'テスト版 ' + z(d.getMonth()+1) + '/' + z(d.getDate()) +
+                  ' ' + z(d.getHours()) + ':' + z(d.getMinutes());
+})();
+</script>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="logo" href="../"><span class="logo-mark"><img src="../img/logo-sakura-64.png?v=2" srcset="../img/logo-sakura-64.png?v=2 1x, ../img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA tools</span><span class="logo-sub">さくらツールズ</span></a>
+    <nav>
+      <a class="navpin" href="../">トップ</a>
+      <a class="navpin" href="../typing/">タッチタイピング</a>
+      <a class="navpin" href="../seat/">座席表</a>
+      <a class="navpin" href="../slide/">簡単スライド</a>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">ツール一覧</label>
+      <div class="navlist">
+      <a href="../">トップ</a>
+      <a href="../typing/">タッチタイピング</a>
+      <a href="../seat/">座席表</a>
+      <a href="../slide/">簡単スライド</a>
+      <a href="../kusudama/">くす玉メーカー</a>
+      <a href="../timer/">カウントダウンタイマー</a>
+      <a href="../timer/progress/">進行タイマー</a>
+      <a href="../excel-fx/">関数早見表</a>
+      <a href="../seki/">席次表</a>
+      <a href="../keiri/mitsumori/">見積書</a>
+      <a href="../keiri/seikyu/">請求書</a>
+      </div>
+    </nav>
+  </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">先生におすすめ</span><span class="now-short">先生</span></div></div>
+</header>
+
+<main class="wrap">
+  <div class="t-hero">
+    <h1>先生におすすめの無料ツール</h1>
+    <p class="t-catch">
+      <span>明日の授業から、開いてすぐ使える</span>
+    </p>
+    <p class="lead">登録なし・全部無料。子どもの名前を入れても、<strong>使っている端末の中だけ</strong>で完結します。</p>
+  </div>
+
+  <!-- ⭐上＝開いてすぐ使える／下＝じっくり作る（2026-09-25 本人「カウントダウンタイマーとかスライドとかくす玉はすぐ使えるから」）
+       ⭐知らない先生がDMで開いたとき、まず数秒で試せるものを上に。⚠見出しの言葉は仮 -->
+  <h2 class="t-group">開いてすぐ使える<small>準備なし。開いたらそのまま授業で</small></h2>
+  <!-- ⭐並び＝簡単スライド→カウントダウンタイマー→くす玉→進行タイマー（2026-09-25 本人） -->
+  <div class="t-cards">
+
+    <a class="t-card school" id="slide" href="../slide/">
+      <div class="t-tool">
+        <span class="nm">簡単スライドメーカー</span>
+        <span class="ds">スライド作りに時間をかけない。文字も写真も、ボタンひとつでモニター表示。パワーポイントはもう不要！</span>
+      </div>
+    </a>
+
+    <a class="t-card school" id="timer" href="../timer/">
+      <div class="t-tool">
+        <span class="nm">カウントダウンタイマー</span>
+        <span class="ds">時間を打つだけ。丸やタイルが減っていき、残りが少なくなると赤に。間に合ったら紙吹雪、時間切れには幕が閉まる！</span>
+      </div>
+    </a>
+
+    <a class="t-card school" id="kusudama" href="../kusudama/">
+      <div class="t-tool">
+        <span class="nm">くす玉メーカー</span>
+        <span class="ds">名前を打って「3・2・1」でパカッ！金・銀・銅のくす玉で、優勝や表彰、代表の発表を盛り上げよう。</span>
+      </div>
+    </a>
+
+    <!-- ⭐進行タイマーは今は外した（2026-09-25 本人「そうすると、並びが現時点できれいになる」）＝上3枚・下3枚。右の「ほかのツール」にだけ残す -->
+
+  </div>
+
+  <h2 class="t-group">じっくり使う<small>名簿を貼って、一度作れば使い回せる</small></h2>
+  <!-- ⭐並び＝タッチタイピング→座席表→席次表（2026-09-25 本人） -->
+  <div class="t-cards">
+
+    <a class="t-card big work" id="typing" href="../typing/">
+      <div class="t-tool">
+        <span class="nm">さくら<img class="inlogo" src="../img/logo-sakura-64.png?v=2" srcset="../img/logo-sakura-64.png?v=2 1x, ../img/logo-sakura-128.png?v=2 2x" alt="">タッチタイピング</span>
+        <span class="ds">登録なし・全部無料。ホームポジションの練習や、長文にもチャレンジできる！ミスを減らす設計で、タッチタイピングへの近道に！</span>
+        <img class="t-shot" src="../img/typing-sample.png?v=14" width="1280" height="720" alt="ホームポジションの練習画面。タイルの枠とキーボードがあり、打つキー（f）が光っている">
+      </div>
+    </a>
+
+    <a class="t-card big school" id="seat" href="../seat/">
+      <div class="t-tool">
+        <span class="nm">座席表メーカー</span>
+        <span class="ds">名簿のコピペで、簡単席替え。席の形、30人・40人でも思いどおり。そのうえPDFもモニター表示もボタンひとつ！</span>
+        <img class="t-shot" src="../img/seat-sample.png?v=10" width="1280" height="720" alt="33人・6列の教室の座席表。3人の班やかぎ型の班も作れる">
+      </div>
+    </a>
+
+    <!-- 🟡席次表・タイピング・関数早見表は、載せるかどうか本人が決める（2026-09-25 いったん全部載せた） -->
+    <a class="t-card big work" id="seki" href="../seki/">
+      <div class="t-tool">
+        <span class="nm">席次表メーカー</span>
+        <span class="ds">会社名・役職・フリガナ・名前を並べた席次表。用紙に合わせて自動で調整し、A4の1枚に収めます。</span>
+        <img class="t-shot" src="../img/seki-sample.png?v=8" width="1280" height="720" alt="23人・5列の研修の席次表。会社名・役職・名前を並べたもの">
+      </div>
+    </a>
+
+    <!-- ⭐関数早見表は外した（2026-09-25 本人「先生関数覚える暇ないよ多分」）。右の「ほかのツール」にだけ残す -->
+
+  </div>
+
+  <div class="t-ad noprint"></div>
+
+  <div class="t-lower">
+  <div>
+
+  <!-- ⭐回ってきたURLを開いた先生が気にすること＝子どもの名前を入れて大丈夫か（2026-09-25 カイ） -->
+  <section class="t-about">
+    <h2>子どもの名前を入れて大丈夫？</h2>
+    <p>名簿は、<strong>使っている端末のブラウザの中だけ</strong>で処理しています。インターネットに送ることも、AIの学習に使われることもありません。だから、いつもの名簿をそのまま貼って大丈夫です。</p>
+    <p>パソコン・タブレット・スマホ、どれで開いても同じです。</p>
+  </section>
+
+  <section class="t-about">
+    <h2>名簿は一度入れれば使い回せる</h2>
+    <p>保存した名簿は、<strong>座席表メーカー・席次表メーカー・簡単スライドメーカー</strong>で共通です。座席表で保存したクラスの名簿を、スライドでもそのまま呼び出せます。</p>
+  </section>
+
+  </div>
+
+  <aside class="t-side noprint">
+    <h2>先生におすすめ</h2>
+    <ul>
+      <li><a href="../slide/">簡単スライドメーカー</a></li>
+      <li><a href="../timer/">カウントダウンタイマー</a></li>
+      <li><a href="../kusudama/">くす玉メーカー</a></li>
+      <li><a href="../typing/">さくらタッチタイピング</a></li>
+      <li><a href="../seat/">座席表メーカー</a></li>
+      <li><a href="../seki/">席次表メーカー</a></li>
+    </ul>
+
+    <h2>ほかのツール</h2>
+    <ul>
+      <li><a href="../timer/progress/">進行タイマー</a></li>
+      <li><a href="../excel-fx/">Excel関数 早見表</a></li>
+      <li><a href="../keiri/mitsumori/">見積書メーカー</a></li>
+      <li><a href="../keiri/seikyu/">請求書メーカー</a></li>
+    </ul>
+
+    <div class="t-ad"></div>
+  </aside>
+
+  </div>
+
+</main>
+
+<footer>
+  <div class="wrap"><span class="fnav"><a href="../about/">運営者情報</a>　<a href="../contact/">お問い合わせ</a>　<a href="../privacy/">プライバシーポリシー</a></span>
+    <span class="copy">さくらツールズ　© 2026 SAKURA tools</span>
+  </div>
+</footer>
+
+</body>
+</html>
