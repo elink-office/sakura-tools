@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="../favicon.ico?v=2" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png?v=2">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
+<!-- ⭐作成中（2026-09-24）。どこともつなげない＝トップのカード・サイトマップ・右上のツール一覧に入れていない
+     ⭐日本向けだけ（本人「くす玉は完全に日本だと思ってる。出て来るのが縦書きだし」）
+     ⭐道具の名前＝「くす玉メーカー」（2026-09-24 本人「くす玉メーカーだね」＝座席表メーカーとそろう）。⚠前は「くす玉で発表」 -->
+<meta name="robots" content="noindex,nofollow">
+<title>【テスト】くす玉メーカー｜優勝や表彰を盛り上げる無料ツール</title>
+<meta name="description" content="名前を打って、スタートを押すだけ。「3・2・1」のあと、くす玉が割れて名前が出ます。金・銀・銅のくす玉で、優勝や表彰、代表の発表を盛り上げられます。">
+<link rel="stylesheet" href="../style.css?v=145">
+<link rel="stylesheet" href="kusudama.css?v=4">
+</head>
+<body>
+<div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
+<script>
+(function(){
+  var b = document.getElementById('testBadge');
+  if(!b) return;
+  var d = new Date(document.lastModified), z = function(n){ return (n<10?'0':'') + n; };
+  b.textContent = 'テスト版 ' + z(d.getMonth()+1) + '/' + z(d.getDate()) +
+                  ' ' + z(d.getHours()) + ':' + z(d.getMinutes());
+})();
+</script>
+
+<header class="site-head noprint">
+  <div class="wrap">
+    <a class="logo" href="../"><span class="logo-mark"><img src="../img/logo-sakura-64.png?v=2" srcset="../img/logo-sakura-64.png?v=2 1x, ../img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA tools</span><span class="logo-sub">さくらツールズ</span></a>
+    <nav>
+      <a class="navpin" href="../">トップ</a>
+      <a class="navpin" href="../typing/">タッチタイピング</a>
+      <a class="navpin" href="../seat/">座席表</a>
+      <a class="navpin" href="../slide/">簡単スライド</a>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">ツール一覧</label>
+      <div class="navlist">
+      <a href="../">トップ</a>
+      <a href="../typing/">タッチタイピング</a>
+      <a href="../seat/">座席表</a>
+      <a href="../slide/">簡単スライド</a>
+      <span class="now" aria-current="page">くす玉メーカー</span>
+      <a href="../timer/">カウントダウンタイマー</a>
+      <a href="../timer/progress/">進行タイマー</a>
+      <a href="../excel-fx/">関数早見表</a>
+      <a href="../seki/">席次表</a>
+      <a href="../keiri/mitsumori/">見積書</a>
+      <a href="../keiri/seikyu/">請求書</a>
+      </div>
+    </nav>
+  </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">くす玉メーカー</span><span class="now-short">くす玉</span></div></div>
+</header>
+
+<main class="wrap ks-set" id="setScreen">
+  <h1>くす玉メーカー</h1>
+  <p class="lead">名前を打って、スタートを押すだけ。「3・2・1」のあと、くす玉が割れて名前が出ます。<br>優勝や表彰、代表の発表を、みんなで盛り上げられます。</p>
+  <p class="tip-guide"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
+
+  <div class="ks-grid">
+  <section class="card ks-card">
+    <h2><span class="step">1</span>くす玉の中身</h2>
+    <!-- ⭐呼び出しは①に置く。0件のときは出さない（ページの型 4-c の6） -->
+    <div class="row tight ks-quick" id="recallRow" hidden>
+      <div class="pick"><label for="selSaved2">保存済のデータ</label>
+        <select id="selSaved2" aria-label="保存済のデータ"><option value="">保存済のデータ</option></select></div>
+      <div><label>&nbsp;</label><button class="mini" id="loadSaved2" type="button">このデータを自動入力</button></div>
+      <div><label>&nbsp;</label><button class="mini" id="delSaved2" type="button">削除</button></div>
+    </div>
+
+    <!-- ⭐くす玉は1〜3個。はじめは3個（2026-09-24 本人） -->
+    <div class="ks-countrow">
+      <span class="ks-lbl">くす玉の数</span>
+      <div class="ks-seg" id="segCount" role="radiogroup" aria-label="くす玉の数">
+        <button type="button" data-n="1" role="radio">1個</button>
+        <button type="button" data-n="2" role="radio">2個</button>
+        <button type="button" data-n="3" role="radio" class="on">3個</button>
+      </div>
+    </div>
+    <!-- ⭐1個ずつ 金・銀・銅 を選ぶ＝同率の金、銀2人と金1人なども（本人「3人まで、同率で金とか、銀2人金1人とか選択肢欲しい」）。
+         ⭐見出しの欄（第3位など）は置かない（本人「なくていいかも」）。上から順に出る -->
+    <ol class="ks-items" id="items"></ol>
+    <p class="tm-hint">上から順に出ます。改行したい場所に/</p>
+
+    <!-- ⭐画面の保存は①のいちばん下・チェックを入れたときだけ（ページの型 2・3＝名前が入るため） -->
+    <div class="save-in1">
+      <p class="save-head"><label><input type="checkbox" id="save"> この画面を保存する</label><button type="button" class="tip-btn" aria-label="説明"></button></p>
+      <div class="tip-body" hidden>
+        <p>残るのは<strong>この端末の中だけ</strong>です。どこにも送信されません。チェックを外すと、残していたものを消します。</p>
+        <p><strong>共用の端末では外しておいてください。</strong>打った名前がこの端末に残ります。</p>
+      </div>
+      <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。<br>⚠共用の端末で使ったときは、このチェックを外して、この画面を閉じてください。</p>
+      <p><span class="saving" id="savingLabel"></span></p>
+    </div>
+  </section>
+
+  <section class="card ks-card">
+    <h2><span class="step">2</span>出し方</h2>
+    <!-- ⭐AとBは選べる。はじめはA（本人「ひとつずつ出した方が楽しいと思う！」「ひとつずつの方が適している時もある！」） -->
+    <div class="ks-segwrap">
+      <div class="ks-seg" id="segMode" role="radiogroup" aria-label="出し方">
+        <button type="button" data-m="one" role="radio" class="on">1つずつ出す</button>
+        <button type="button" data-m="row" role="radio">並べて出す</button>
+      </div>
+    </div>
+    <p class="tm-hint center" id="modeHint">1つずつ真ん中に下りてきて、順番に割れます。</p>
+    <div class="ks-try">
+      <button type="button" id="demoBtn">見本を見る（モニターの形）</button>
+    </div>
+    <p class="tm-hint">本番と同じ画面を、モニターと同じ横長（16:9）の枠の中で動かします。</p>
+  </section>
+  </div>
+
+  <p class="tm-start"><button type="button" class="primary" id="startBtn">▶ スタート</button></p>
+  <p class="tm-hint center">スタートすると画面いっぱいに出ます。「次へ」かスペースキーで進みます。</p>
+
+  <!-- ⭐保存（ページの型 3・4-c・4-d・14-4＝座席表の⑦と同じ形）。章は最後・シャッター・ボタンは mini・名前は押したときに聞く -->
+  <section class="card ks-card ks-save">
+    <h2><span class="step">3</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+    <div class="tip-body" hidden>
+      <p>🔒 <strong>保存先もインターネットではありません。</strong>使っている端末のブラウザの中だけに残るので、ほかの人からは見えません。パソコン・タブレット・スマホ、どれでも同じです。</p>
+      <ul>
+        <li><strong>名前を付けて、<b style="font-size:inherit">20件</b>まで保存できます。</strong></li>
+        <li>呼び出すのは①の<strong>「このデータを自動入力」</strong>から。くす玉の数・色・文字と出し方が入ります。</li>
+      </ul>
+    </div>
+    <p class="hint">保存したデータは、<b>くす玉メーカー</b>で使えます。</p>
+    <p class="safe">🔒 <strong>保存したものは、使っている端末の中だけに残ります。</strong></p>
+    <div class="cls-box">
+      <details class="opt sub">
+        <summary>データに名前を付けて保存<span id="saveCount" class="cnt">0/20</span></summary>
+        <div class="body">
+          <p class="hint">くす玉の数・色・文字と出し方を、まとめて残すときに使います。</p>
+          <p class="btn-row">
+            <button class="mini" id="saveNew" type="button">新しい名前で保存</button>
+            <button class="mini" id="saveOver" type="button">上書き</button>
+            <button class="mini" id="saveDel" type="button">削除</button>
+          </p>
+          <div class="pick"><label for="selSaved">保存済のデータ</label>
+            <select id="selSaved"><option value="">－</option></select></div>
+          <p><span class="saving" id="saveMsg"></span></p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <details class="howto">
+    <summary>使い方</summary>
+    <div class="body">
+      <p>名前を打ったくす玉を、大きくモニターに映して割る道具です。登録もインストールもいりません。「3・2・1」を画面に大きく出すので、みんなで声を合わせて数えられます。</p>
+
+      <h3>こんなときに</h3>
+      <ul>
+        <li>クラスや学年の大会で、優勝や入賞を発表する</li>
+        <li>学級代表や係、リーダーを発表する</li>
+        <li>社内の表彰や、MVPの発表</li>
+        <li>送別会・忘年会・誕生日会などで、名前を出して盛り上げる</li>
+      </ul>
+      <p class="hint">答えが決まっている発表のための道具です。<b>先生や幹事が、出す名前を先に打っておきます</b>。</p>
+
+      <h3>くす玉の中身</h3>
+      <ul>
+        <li>くす玉は1〜3個です。1個ずつ、金・銀・銅から色を選べます。同率の金を2つ、のような組み方もできます。</li>
+        <li>垂れ幕の文字は、改行したい場所に <code>/</code> を入れると2行になります。長いときは字が小さくなります。</li>
+        <li>上に書いたくす玉から、順番に出ます。</li>
+      </ul>
+
+      <h3>出し方</h3>
+      <ul>
+        <li><b>1つずつ出す</b>：1つずつ真ん中に下りてきて、順番に割れます。</li>
+        <li><b>並べて出す</b>：はじめから並んで吊るされていて、順番に割れます。最後はみんなの名前が並びます。</li>
+        <li>割れたときの紙吹雪は、銅は1色、銀は2色、金はたくさんの色で多めに出ます。</li>
+      </ul>
+
+      <h3>動かしているとき</h3>
+      <ul>
+        <li>スタートを押すと、画面いっぱいに出ます。</li>
+        <li>「次へ」を押すと「3・2・1」が出て、くす玉が割れます。もう一度押すと、次のくす玉に進みます。</li>
+        <li>パソコンなら、スペースキーでも進めます。「もどる」で設定の画面に戻ります。</li>
+      </ul>
+
+      <h3>保存について</h3>
+      <ul>
+        <li>「この画面を保存する」にチェックを入れたときだけ、打った内容が残ります。</li>
+        <li>③で名前を付けると、<b>20件まで</b>保存できます。</li>
+        <li>保存したものは、使っている端末の中だけに残り、インターネットには送りません。だから、名前を打っても安心して使えます。共用の端末では、使い終わったらチェックを外してください。</li>
+      </ul>
+    </div>
+  </details>
+</main>
+
+<!-- ===== 動かしている画面 ===== -->
+<div class="ks-demoback" id="demoBack" hidden></div>
+<div class="ks-run" id="runScreen" hidden>
+  <button type="button" class="tm-fs" id="fsBtn" title="全画面">⛶ 全画面</button>
+  <div class="tm-demo" id="demoBadge" hidden>見本（モニターの形 16:9）</div>
+  <div class="ks-stage" id="stage"></div>
+  <div class="ks-321" id="cnt" aria-live="polite"></div>
+  <div class="ks-btns">
+    <button type="button" class="ks-b next" id="nextBtn">▶ 次へ</button>
+    <button type="button" class="ks-b back" id="backBtn">↩ もどる</button>
+  </div>
+  <div class="fx" id="fx" aria-hidden="true"></div>
+</div>
+
+<script src="kusudama.js?v=17"></script>
+<script src="../tip.js?v=3"></script>
+</body>
+</html>

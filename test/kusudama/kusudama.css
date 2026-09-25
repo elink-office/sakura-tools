@@ -1,0 +1,105 @@
+/* くす玉で発表（2026-09-24 作成中）
+   ⭐部品はカウントダウンタイマー（timer）のくす玉をコピーして使う。タイマーのファイルには触らない */
+:root{ color-scheme: light; }
+
+/* ===== 設定の画面 ===== */
+.ks-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:14px;align-items:stretch}
+.ks-grid .ks-card{margin:0}
+@media (max-width:760px){ .ks-grid{grid-template-columns:1fr} }
+.ks-card{padding:14px 20px}
+.ks-set .lead{margin-bottom:12px}
+.ks-set .tip-guide{margin-bottom:10px}
+.tm-hint{font-size:.82rem;color:var(--ink-soft);margin:10px 0 0}
+.tm-hint.center{text-align:center}
+.tm-start{text-align:center;margin:16px 0 0}
+.tm-start .primary{font-size:1.25rem;padding:14px 48px}
+.tm-start + .tm-hint.center{margin:6px 0 16px}
+
+.ks-quick{margin:0 0 12px;padding:0 0 10px;border-bottom:1px dashed var(--line)}
+.ks-quick.row.tight{align-items:center;flex-wrap:nowrap;gap:8px}
+.ks-quick.row.tight > div{flex-direction:row;align-items:center;gap:6px}
+.ks-quick.row.tight > div:not(.pick) > label{display:none}
+.ks-quick .pick label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.ks-quick select{height:34px !important;max-width:11em;font-size:.95rem;border-radius:8px;border:1px solid var(--line);padding:4px 8px;font-family:inherit}
+.ks-quick[hidden]{display:none}
+
+.ks-countrow{display:flex;align-items:center;gap:12px;margin:0 0 10px}
+.ks-lbl{font-size:.95rem}
+.ks-seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--bg)}
+.ks-seg button{border:0;background:transparent;border-radius:999px;padding:6px 14px;font-size:.92rem;color:var(--ink-soft)}
+.ks-seg button.on{background:#fff;color:var(--pink);font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.ks-segwrap{text-align:center}
+
+.ks-items{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.ks-items li{display:flex;align-items:center;gap:10px}
+.ks-no{font-size:.82rem;color:var(--ink-soft);width:3.2em;flex:0 0 auto}
+.ks-color{display:inline-flex;gap:4px;flex:0 0 auto}
+.ks-color button{width:34px;height:34px;border-radius:50%;border:2px solid transparent;padding:0;font-size:.8rem;font-weight:700;color:#fff;
+  text-shadow:0 1px 1px rgba(0,0,0,.35);box-shadow:inset 0 -3px 5px rgba(0,0,0,.18);opacity:.45}
+.ks-color button.on{opacity:1;border-color:var(--ink);transform:scale(1.06)}
+.ks-color .gold{background:radial-gradient(circle at 35% 30%,#ffe98a,#f2b82c 55%,#c98a10)}
+.ks-color .silver{background:radial-gradient(circle at 35% 30%,#ffffff,#c4cad2 55%,#8a929c)}
+.ks-color .bronze{background:radial-gradient(circle at 35% 30%,#f6c89a,#c47a3a 55%,#8a4f1e)}
+.ks-text{flex:1 1 auto;min-width:0;font-size:.95rem;padding:7px 10px;border-radius:8px;border:1px solid var(--line);font-family:inherit}
+.ks-text:focus{outline:none;border-color:var(--pink)}
+.ks-text::placeholder{color:#b9bdc3;opacity:1}
+
+.save-in1{margin-top:14px;padding-top:12px;border-top:1px dashed #dcdfe3}
+.save-head{margin:0 0 4px}
+.save-head label{font-weight:bold;display:inline-block;margin:0}
+
+.ks-try{margin-top:14px;text-align:center}
+.ks-save{margin-top:22px}
+.ks-save .cls-box details.opt.sub{margin:10px 0 0}
+.ks-save .pick{margin-top:10px}
+.ks-save .pick select{margin-left:6px;font-size:.95rem;padding:6px 10px;border-radius:8px;border:1px solid var(--line);font-family:inherit}
+#saveMsg:empty{display:none}
+
+/* ===== 動かしている画面 ===== */
+.ks-run{position:fixed;inset:0;z-index:100;overflow:hidden;container-type:size;
+  background:radial-gradient(ellipse at 50% 30%,#fffaf0 0%,#fdf1f4 50%,#f1f3fa 100%)}
+.ks-run[hidden]{display:none}
+.tm-fs{position:absolute;top:12px;right:12px;font-size:13px;padding:6px 12px;opacity:.75;z-index:30}
+.tm-demo{position:absolute;top:12px;left:12px;font-size:13px;font-weight:700;color:#fff;background:var(--pink);padding:5px 12px;border-radius:999px;opacity:.9;z-index:30}
+.tm-demo[hidden]{display:none}
+.ks-stage{position:absolute;inset:0}
+.ks-btns{position:absolute;left:0;right:0;bottom:3cqh;display:flex;gap:12px;justify-content:center;z-index:25}
+.ks-b{font-size:clamp(14px,2.4cqmin,22px);font-weight:700;padding:.7em 1.6em;border-radius:999px;border:0;box-shadow:0 3px 0 rgba(0,0,0,.12)}
+.ks-b:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.12)}
+.ks-b.next{background:var(--pink);color:#fff}
+.ks-b.next:hover{background:#b85c80}
+.ks-b.back{background:#fff;color:var(--ink-soft);border:1px solid var(--line)}
+.ks-b[disabled]{opacity:.35;pointer-events:none}
+.fx{position:absolute;inset:0;z-index:20;pointer-events:none;overflow:hidden;container-type:size}
+.fx canvas{position:absolute;inset:0;width:100%;height:100%}
+
+/* 見本＝16:9 の枠 */
+.ks-demoback{position:fixed;inset:0;z-index:99;background:rgba(20,22,32,.72)}
+.ks-demoback[hidden]{display:none}
+.ks-run.framed{inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(94vw, calc((100vh - 40px) * 16 / 9));aspect-ratio:16/9;height:auto;
+  border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.45);outline:3px solid #fff}
+.ks-run.framed .tm-fs{display:none}
+
+/* ===== くす玉（タイマーのくす玉と同じ作り） ===== */
+.ks-stage .kusu{position:absolute;top:-25cqh;   /* ⭐玉を大きくしたぶん上へ＝玉の下の端は前より少し上（2026-09-24 本人）。⚠-7cqh→-12cqh→-25cqh。並べるときは JS で -8cqh */
+  transform:translate(-50%,-110%);z-index:5}
+.ks-stage .kusu.in{animation:ksHang .6s cubic-bezier(.3,1.4,.5,1) forwards}
+@keyframes ksHang{from{transform:translate(-50%,-110%)}to{transform:translate(-50%,0)}}
+.ks-stage .kusu.out{animation:ksOut .5s ease-in forwards}
+@keyframes ksOut{from{transform:translate(-50%,0);opacity:1}to{transform:translate(-50%,-30%);opacity:0}}
+.ks-stage .kusu svg{width:100%;height:auto;overflow:visible;display:block}
+.ks-stage .kusu .half{transition:transform .9s cubic-bezier(.3,1.3,.5,1);transform-box:view-box;transform-origin:250px -230px}
+.ks-stage .kusu.open .half.l{transform:rotate(30deg)}   /* ⚠玉を大きくしたので 42°だと画面の外まで開いて見えなくなる */
+.ks-stage .kusu.open .half.r{transform:rotate(-30deg)}
+.ks-stage .kusu .banner{transform:scaleY(0);transform-origin:250px 0px;transform-box:view-box;transition:transform .7s .25s cubic-bezier(.3,1.2,.5,1)}
+.ks-stage .kusu.open .banner{transform:scaleY(1)}
+
+/* 3・2・1 */
+.ks-321{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);z-index:22;pointer-events:none;
+  font-weight:900;font-size:min(38cqmin,330px);line-height:1;color:#e2403f;
+  -webkit-text-stroke:8px #fff;paint-order:stroke;text-shadow:0 8px 20px rgba(0,0,0,.2)}
+.ks-321 span{display:inline-block;animation:ks321 .8s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes ks321{0%{transform:scale(.2);opacity:0}25%{opacity:1}60%{transform:scale(1)}100%{transform:scale(1.08);opacity:.0}}
+
+@media (prefers-reduced-motion: reduce){ .ks-321 span{animation-duration:.01s} }
