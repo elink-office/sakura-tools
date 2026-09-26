@@ -868,6 +868,37 @@ var SHIFTED={"!":"1",'"':"2","#":"3","$":"4","%":"5","&":"6","'":"7","(":"8",")"
      ["#e0577f","#ef8a3c","#e2b52c","#43a877","#2ea9bd","#4a6bcf","#8a5cd0"]
    ⭐今の色＝元の色に**白を20%**混ぜたもの */
 var BLOCKCOL=["#e67999","#f2a163","#e8c456","#69b992","#58baca","#6e89d8","#a17ad9"];
+/* ⭐タイルの色を選べる（2026-09-27 本人「色がたくさんあるのをうっとうしいと思う人もいるかなと思って」）。
+   ⭐カラフル＝BLOCKCOL の7色。単色＝7色から1色取り出して、濃い・ふつう・薄いの3段。グレー＝モノトーン。
+   ⭐効くのは 練習のタイル・ステージの番号のタイル（とページの色）。⚠紙吹雪は BLOCKCOL のまま（本人「紙吹雪は今のままでいいよ」） */
+var TILEPICK=[
+  ["colorful","カラフル",null],
+  ["pink","ピンク",BLOCKCOL[0]], ["orange","オレンジ",BLOCKCOL[1]], ["yellow","きいろ",BLOCKCOL[2]],
+  ["green","みどり",BLOCKCOL[3]], ["cyan","みずいろ",BLOCKCOL[4]], ["blue","あお",BLOCKCOL[5]],
+  ["purple","むらさき",BLOCKCOL[6]], ["gray","グレー","#9ba1a8"]
+];
+var TILEKEY=K("typingTileColor");
+var tileChoice="colorful";
+try{ tileChoice=localStorage.getItem(TILEKEY)||"colorful"; }catch(e){}
+function hexMix(hex, to, t){
+  var a=parseInt(hex.slice(1),16), r=(a>>16)&255, g=(a>>8)&255, b=a&255;
+  function m(c){ var v=Math.round(c+(to-c)*t).toString(16); return v.length<2 ? "0"+v : v; }
+  return "#"+m(r)+m(g)+m(b);
+}
+function tileCols(){
+  for(var i=0;i<TILEPICK.length;i++){
+    var p=TILEPICK[i];
+    /* ⭐3段＝ふつう・薄い・もっと薄い（2026-09-27 本人「薄めてください」）。⚠前は黒を16%混ぜた濃い段があり、スタートがどす黒く見えた */
+    if(p[0]===tileChoice && p[2]) return [p[2], hexMix(p[2],255,.2), hexMix(p[2],255,.38)];
+  }
+  return BLOCKCOL;
+}
+/* ⭐ページの色（スタート・ラジオなど）。1色を選んだときは、どのステージでも「ふつう」に固定（2026-09-27 本人「すすめて」）。
+   ⭐カラフルのときは今までどおりステージの色 */
+function pageColor(i){
+  for(var k=0;k<TILEPICK.length;k++){ if(TILEPICK[k][0]===tileChoice && TILEPICK[k][2]) return TILEPICK[k][2]; }
+  return stageColor(i);
+}
 var cells=[], order=[], filled=0, cellTotal=0;
 
 /* ⭐お題i番の音節。チャレンジはお題ごとに かな／英字 が混ざるので、お題が持っている印で分ける。
@@ -933,7 +964,8 @@ function buildGrid(){
 function fillOne(){
   if(filled>=cellTotal) return;
   var c=cells[order[filled]];
-  c.firstChild.style.backgroundColor=BLOCKCOL[Math.floor(Math.random()*BLOCKCOL.length)];
+  var tc=tileCols();
+  c.firstChild.style.backgroundColor=tc[Math.floor(Math.random()*tc.length)];
   c.classList.add("on");
   filled++;
   if(filled>bestTower) bestTower=filled;
@@ -1350,7 +1382,7 @@ function openStage(idx){
   /* ⭐名前の左の小さいタイル＝一覧のカードと同じ番号・同じ色（2026-09-17 本人） */
   $("stName").style.setProperty("--tile",stageColor(idx));
   $("stName").setAttribute("data-n", stageLabel(idx));
-  setStageColor(stageColor(idx));
+  setStageColor(pageColor(idx));
   /* ⭐ステージごとの設定は、効くステージにだけ出す（2026-09-08 本人）。
      ⚠前は、単語より後（basic なし）は「3回でくずれる」に固定だったので出していなかった */
   /* ⭐2026-09-18 からは、ミスの回数はチャレンジ以外ぜんぶに出す。「終わりに f j に戻る」は基礎（1〜5）だけ */
@@ -1980,9 +2012,11 @@ function stageNoInGroup(i){
 function stageColor(i){
   if(!KIDS && STAGES[i]){
     var st=GROUPSTART[stageGroup(STAGES[i])]||0;
-    return BLOCKCOL[(st + stageNoInGroup(i) - 1) % BLOCKCOL.length];
+    var tc=tileCols();
+    return tc[(st + stageNoInGroup(i) - 1) % tc.length];
   }
-  return BLOCKCOL[i%BLOCKCOL.length];
+  var tk=tileCols();
+  return tk[i%tk.length];
 }
 /* ⭐練習アドレスの名前（2026-09-21 本人「いいよ」）。⚠**公開したら変えない**（渡したリンクが切れる）
    ⭐ステージの名前（name）から引く。⚠ステージの名前を変えたら、ここも直す */
@@ -2088,7 +2122,8 @@ function renderStageCards(){
     if(HUB) d.href = "play.html?s=" + stageSlug(i) + (KIDS ? "&kids=1" : "");   /* ⭐こども用の印は持ち回る */
     /* ⭐カードの左のタイルに、タイピングのタイルの7色を順に入れる（2026-09-15 本人「タイルの色にしたらいいかなと思って」）
        ⚠前は STAGE の文字をピンクの濃さの階段にしていた（stageColor・2026-09-08）。色はタイルに移した */
-    d.style.setProperty("--tile",BLOCKCOL[i%BLOCKCOL.length]);
+    var tcs=tileCols();
+    d.style.setProperty("--tile",tcs[i%tcs.length]);
     d.setAttribute("data-n", stageLabel(i));   /* ⭐番号はタイルの中に出す。英語は A・B・C（2026-09-16 本人） */
     var stock = (s.shuffle && !GAKUSEI) ? '<div class="no" style="margin-top:6px;color:var(--sub);font-weight:400;line-height:1.5">'+s.items.length+'問から毎回'+(s.pick||s.items.length)+'問</div>' : '';
     /* ⭐説明は大人用だけ（2026-09-16 本人）。⚠学生用は名前だけ＝ノートPCで1画面に収めるため */
@@ -2311,6 +2346,42 @@ Array.prototype.forEach.call(document.querySelectorAll('input[name="chn"]'), fun
   toLeft.forEach(function(q){ var el = sw.querySelector(q); if(el) left.appendChild(el); });
   toRight.forEach(function(q){ var el = sw.querySelector(q); if(el) right.appendChild(el); });
   sw.appendChild(left); sw.appendChild(right);
+})();
+
+/* ⭐タイルの色を選ぶ行（2026-09-27 本人「練習の画面の設定の下がいい」「すっきり1行がいい」→ 小さな四角を9つ＝案A）。
+   ⭐置き場＝左の列のいちばん下（「ミスしても最後まで」の下）。⭐HTMLは触らず、JSで入れる＝どのページでも同じ形になる
+   ⚠四角を押したら blur する＝そのままスペースを押すと、もう一度押したことになるため */
+(function(){
+  var left=document.querySelector(".playleft"); if(!left) return;
+  var row=document.createElement("div"); row.className="tilecol noprint"; row.id="tileCol";
+  var h='<span class="oglabel">タイルの色</span><span class="sw" role="radiogroup" aria-label="タイルの色">';
+  TILEPICK.forEach(function(p){
+    var bg = p[2] ? "background-color:"+p[2] : "background-image:linear-gradient(135deg,"+BLOCKCOL.join(",")+")";
+    h+='<button type="button" role="radio" data-c="'+p[0]+'" title="'+p[1]+'" aria-label="'+p[1]+'" style="'+bg+'"></button>';
+  });
+  row.innerHTML=h+"</span>";
+  left.appendChild(row);
+  function mark(){
+    [].forEach.call(row.querySelectorAll("button[data-c]"), function(b){
+      var on=(b.getAttribute("data-c")===tileChoice);
+      b.classList.toggle("on", on); b.setAttribute("aria-checked", on ? "true" : "false");
+    });
+  }
+  row.addEventListener("click", function(e){
+    var b=e.target.closest ? e.target.closest("button[data-c]") : null; if(!b) return;
+    tileChoice=b.getAttribute("data-c");
+    try{ localStorage.setItem(TILEKEY, tileChoice); }catch(e2){}
+    mark(); b.blur();
+    /* ⭐塗ってあるタイルも、選んだ色に塗り直す */
+    var tc=tileCols();
+    cells.forEach(function(c){ if(c.classList.contains("on") && c.firstChild) c.firstChild.style.backgroundColor=tc[Math.floor(Math.random()*tc.length)]; });
+    /* ⭐名前の左のタイルとページの色も */
+    if(STAGES[stageIdx] && $("stName")){
+      $("stName").style.setProperty("--tile", stageColor(stageIdx));
+      setStageColor(pageColor(stageIdx));
+    }
+  });
+  mark();
 })();
 
 /* ⭐「音を出す」は画面から外した（2026-09-21 本人「おとね、なくていいや。やめよう」）。
