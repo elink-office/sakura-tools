@@ -462,3 +462,12 @@ setCount(3); setMode("one");
 screenLoad();
 refreshSaved();
 })();
+
+/* ⭐①と②のシャッターは一緒に開け閉めする（2026-09-26 本人「①を閉じると②も同時に閉じるにしてほしい」）
+   ＝どちらを押しても、もう片方が同じになる。いつも同じなので、①②の高さもそろえたまま（閉じたときは帯だけ） */
+(function(){
+  var a=document.getElementById("optItems"), b=document.getElementById("optMode");
+  if(!a || !b) return;
+  function sync(from, to){ from.addEventListener("toggle", function(){ if(to.open!==from.open) to.open=from.open; }); }
+  sync(a,b); sync(b,a);
+})();

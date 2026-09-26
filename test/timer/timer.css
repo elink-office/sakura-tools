@@ -333,3 +333,33 @@
 }
 /* ⭐欄ははじめ空。うすいグレーで見本の言葉（2026-09-24 本人「薄いグレーで『みんな/よくできました』」「見えないからさ」） */
 .tm-text::placeholder{color:#b9bdc3;opacity:1}
+
+/* ⭐①時間は横いっぱい・中は2列（2026-09-26 本人「①を横に太くして、その中で、2列にして、必要な時だけ呼び出しを表示」）
+   ＝左に時間と赤にする時点／右に保存したデータの呼び出し
+   ⭐時間は左揃え。呼び出しは出てくるときだけ右の端に（2026-09-26 本人「時間は左揃えでいいよ。出てくるときに右に表示でしょ？」） */
+.tm-main{margin:0 0 14px}
+.tm-cols{display:flex;justify-content:flex-start;align-items:center;gap:32px;flex-wrap:wrap}
+.tm-colL{flex:0 0 auto}
+.tm-main .tm-colR{flex:0 1 auto;margin:0 0 0 auto;padding:4px 0 4px 32px;border-bottom:0;border-left:1px dashed var(--line)}
+.tm-main .tm-colR[hidden]{display:none}
+.tm-recallttl{margin:0 0 8px;font-size:.88rem;font-weight:700;color:var(--ink-soft)}
+@media (max-width:700px){
+  .tm-cols{flex-direction:column;align-items:stretch;gap:14px}
+  .tm-main .tm-colR{margin:0;padding:12px 0 0;border-left:0;border-top:1px dashed var(--line)}
+  .tm-main .tm-quick.row.tight{flex-wrap:wrap}   /* スマホでは削除ボタンが枠からはみ出したので折り返す */
+}
+
+/* ⭐②呼び出し＝①の右・同じ高さ。0件のときはグレー（2026-09-26 本人） */
+.tm-recall .tm-quick{margin:6px 0 0}
+.tm-recall .tm-recallnone{display:none;margin:10px 0 0}
+.tm-recall.empty .tm-quick{opacity:.45;pointer-events:none}
+.tm-recall.empty .tm-recallnone{display:block}
+.tm-recall .tm-quick.row.tight{flex-wrap:wrap}
+/* ⭐②の見た目（2026-09-26 本人「見た目がおかしいよ」）
+   ＝①①「保存済のデータ」の字が下で切れていた（高さ34pxに上下8pxのすき間＋16pxの字）→ すき間をなくして、字をボタンと同じ大きさに
+   ＝②①と同じ高さに伸びて下がすかすか → 中身を②の中の上下まん中に。選ぶ欄は横に広げる */
+.tm-recall{display:flex;flex-direction:column}
+.tm-recall .tm-quick{margin:auto 0}
+.tm-recall .tm-quick .pick{flex:1 1 7em;min-width:0}   /* 削除だけ次の行に落ちないように、選ぶ欄は縮んでよい */
+.tm-recall .tm-quick select{max-width:none;width:100%;padding:0 28px 0 10px !important;font-size:.88rem;line-height:32px}
+.tm-recall .tm-recallnone{margin:-6px 0 auto}

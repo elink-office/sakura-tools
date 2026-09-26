@@ -16,7 +16,7 @@ var C=2*Math.PI*45;                 // 丸の周の長さ（SVG の r=45）
    ⚠60分（3600マス）を超えるときだけ、1マスを2秒・3秒…にして3600マスに収める */
 var TILE_MAX=3600, TILE_N=100, tileStep=1;
 
-var rate=1, demoTimer=0;   // rate＝時計の速さ（見本は6秒で終わるように速くする）
+var rate=1, demoTimer=0, demoTiles=false, DEMO_TILES=60, tilePre=0;   // rate＝時計の速さ（見本は6秒で終わるように速くする）
 var total=0, warnAt=60, deadline=0, remainStored=0, running=false, finished=false, raf=0, endTimer=0;
 var view="ring", tileOrder=[], tilesOn=0, wakeLock=null;
 
@@ -43,6 +43,7 @@ function loadSaved(){
 }
 function save(){
   if(sampleOn) return;             // ⭐サンプルの間は保存しない（ページの型 12-a）
+  if(PEEK) return;                 // 🟡今だけの見本（?sample）の間も、最後に入れた内容を書きかえない
   try{
     localStorage.setItem(KEY, JSON.stringify({
       m:num("inMin",99), s:num("inSec",59), wm:num("inWarnMin",99), ws:num("inWarnSec",59), wo:$("warnOn").checked,
@@ -66,20 +67,10 @@ function num(id,max){
   el.addEventListener("keydown",function(e){ if(e.key==="Enter") start(); });
 });
 
-function setView(v){
-  view=(v==="tile") ? "tile" : "ring";
-  Array.prototype.forEach.call($("segView").querySelectorAll("button"),function(b){
-    var on=b.getAttribute("data-v")===view;
-    b.classList.toggle("on",on); b.setAttribute("aria-checked",on?"true":"false");
-  });
-  $("viewHint").textContent = view==="tile"
-    ? "時間がたつと、タイルが1枚ずつ埋まっていきます。0になると、はじけ飛びます。"
-    : "時間がたつと、丸が時計回りに減っていきます。";
-}
-$("segView").addEventListener("click",function(e){
-  var b=e.target.closest("button"); if(!b) return;
-  setView(b.getAttribute("data-v")); save();
-});
+/* ⭐タイルはやめた＝見せ方は丸だけ（2026-09-26 本人「どっちにしてもマス、微妙なんだよね」「やめようかな」→「①を横に太くして、その中で2列」「番号も詰める」）
+   ⚠前にタイルで保存したデータも、丸で動く。タイルの仕組み（buildTiles など）は view が "tile" にならないので動かない。
+   戻すときは _もどす/2026-09-26_タイルをやめて①を横長にする前 */
+function setView(){ view="ring"; }
 /* 赤にするのチェック＝外したら時間の欄をうすく・押せなく */
 function showWarn(){
   var on=$("warnOn").checked;
@@ -95,11 +86,13 @@ $("selLose").addEventListener("change",function(){ showKusuRow(); save(); });
 $("inZan").addEventListener("input",save);
 /* ⭐見本を見る＝16:9 の枠の中で本番と同じ画面を動かす（時間は縮めない） */
 $("demoBtn").addEventListener("click",function(){ start({demo:true}); });
+/* ⭐見本：間に合ったとき＝途中で自動で「できた」（2026-09-26 本人「私いつも忘れる。押すのを」） */
+$("demoWinBtn").addEventListener("click",function(){ start({demo:true, win:true}); });
 /* ⭐「ためしに見る」の仕掛けは、どこかを押すか Esc で消える（2026-09-24 本人「幕、確認したらどうやって閉じるかわかんない」）
    ＝幕・ヒビのように残るものは、少し待っても自分で消える（tryAutoClear） */
 document.addEventListener("click",function(e){
   if(!$("runScreen").hidden) return;
-  if(e.target.closest("#demoBtn")) return;
+  if(e.target.closest("#demoBtn,#demoWinBtn")) return;
   if($("fx").children.length) clearFx();
 });
 document.addEventListener("keydown",function(e){
@@ -110,8 +103,16 @@ document.addEventListener("keydown",function(e){
    ⭐名前は［新しい名前で保存］を押したときに聞く（簡単スライドと同じ prompt）
    ⭐呼び出しは①の「このデータを自動入力」。④の「保存済のデータ」は上書き・削除の相手を選ぶもの ===== */
 var STORE="sakura-tools-countdown-v1", LIMIT=20, loadedId="";
-function loadStore(){ try{ var d=JSON.parse(localStorage.getItem(STORE)||"null"); if(d && d.items) return d; }catch(e){} return {v:1,items:[]}; }
-function writeStore(d){ try{ localStorage.setItem(STORE, JSON.stringify(d)); return true; }catch(e){ return false; } }
+/* 🟡今だけの見本（2026-09-26 本人「今だけ、サンプルで、保存の内容を書ける？どこに表示されるのか見たい」）
+   ＝アドレスの最後に ?sample を付けたときだけ、保存が2件あるように見せる。本当の保存（ブラウザの中）には書かない・読まない
+   ⚠見終わったら、この仕込み（PEEK と下の3か所の if(PEEK)）を外す */
+var PEEK=/[?&]sample\b/.test(location.search);
+var PEEK_ITEMS=[
+  {id:"peek1", name:"小テスト 10分", m:10, s:0, wm:1, ws:0, wo:true, view:"ring", win:"kusudama", lose:"volcano", kusu:"みんな/よくできました", zan:""},
+  {id:"peek2", name:"給食の準備", m:15, s:0, wm:3, ws:0, wo:true, view:"ring", win:"confetti", lose:"curtain", kusu:"", zan:"ざんねん"}
+];
+function loadStore(){ if(PEEK) return {v:1,items:PEEK_ITEMS.slice()}; try{ var d=JSON.parse(localStorage.getItem(STORE)||"null"); if(d && d.items) return d; }catch(e){} return {v:1,items:[]}; }
+function writeStore(d){ if(PEEK) return true; try{ localStorage.setItem(STORE, JSON.stringify(d)); return true; }catch(e){ return false; } }
 function findItem(id){ if(!id) return null; var d=loadStore(); for(var i=0;i<d.items.length;i++) if(d.items[i].id===id) return d.items[i]; return null; }
 function current(name){
   return {name:name, m:num("inMin",99), s:num("inSec",59), wm:num("inWarnMin",99), ws:num("inWarnSec",59), wo:$("warnOn").checked,
@@ -127,7 +128,10 @@ function refreshSaved(keep){
   var d=loadStore(), k=(keep!=null) ? keep : loadedId;
   if(!findItem(loadedId)) loadedId="";
   fillSel($("selSaved"), k); fillSel($("selSaved2"), k);
-  $("recallRow").hidden = d.items.length===0;
+  /* ⭐②呼び出しは0件でも出したまま。中をグレーにして押せなくする（2026-09-26 本人「使わないときはグレーアウト②のまま」） */
+  var none=d.items.length===0;
+  $("recallRow").classList.toggle("empty", none);
+  $("selSaved2").disabled=none; $("loadSaved2").disabled=none; $("delSaved2").disabled=none;
   $("saveCount").textContent=d.items.length+"/"+LIMIT;
 }
 function applyItem(it){
@@ -204,13 +208,21 @@ function start(opt){
   opt=(opt && opt.demo) ? opt : {};
   var m=num("inMin",99), s=num("inSec",59);
   total=m*60+s;
-  if(total<=0){ $("setMsg").textContent="時間を入れてください。"; $("inMin").focus(); return; }
+  if(total<=0 && !opt.demo){ $("setMsg").textContent="時間を入れてください。"; $("inMin").focus(); return; }
   $("setMsg").textContent="";
   warnAt=$("warnOn").checked ? num("inWarnMin",99)*60+num("inWarnSec",59) : 0;   // チェックを外したら赤にしない
   save();
   clearFx();
   clearTimeout(demoTimer);
-  rate=opt.demo ? Math.max(1,(m*60+s)/5) : 1;   // ⭐見本は5秒で0まで（2026-09-24 本人「見本は5秒に固定で行こう」）
+  /* ⭐見本は5秒で0まで（2026-09-24 本人「見本は5秒に固定で行こう」）
+     ⭐時間切れの見本は3秒（2026-09-26 本人「間に合わなかったときは、3秒にして」） */
+  var demoSec=opt.win ? 5 : 3;
+  /* ⭐見本は設定した時間を使わず、見本の秒数から数える（2026-09-26 本人「設定時間無視して、3秒からだよ。飛び出す見本だから」）
+     ⚠前は設定した時間を見本の秒数に早送りしていた（10秒なら10→0を3秒で） */
+  if(opt.demo) total=demoSec;
+  demoTiles=!!opt.demo;
+  rate=1;
+  $("demoBadge").textContent="見本（"+demoSec+"秒）";
   $("demoBadge").hidden=!opt.demo;
   /* 見本＝枠に入れる。仕掛けの入れ物（fx）も枠の中へ移す＝仕掛けも枠の大きさで出る */
   $("runScreen").classList.toggle("framed", !!opt.demo);
@@ -239,6 +251,7 @@ function start(opt){
   draw(total);
   resume();
   if(!opt.demo) keepAwake(true);
+  if(opt.win) demoTimer=setTimeout(function(){ if(running) doneNow(); }, 2600);   // 5秒のうち2.6秒のところで「できた」
 }
 /* ⭐スタートは自動で全画面（2026-09-24 本人「スタートしても全画面にならないよ。勝手になったほうがいいね」）
    ⚠全画面はボタンを押した直後しか頼めない（ブラウザの決まり）ので、押したその場で頼む */
@@ -284,7 +297,7 @@ function draw(remain){
   fg.style.opacity=frac>0.001 ? 1 : 0;           // ⚠0のとき、丸い端だけが点で残るので消す
   /* ⭐赤にする。設定した時間より長ければ最初から赤（打ち込んだとおり） */
   $("runScreen").classList.toggle("red", warnAt>0 && shown<=warnAt);
-  if(view==="tile") fillTiles(Math.floor((total-remain)/tileStep+1e-6));
+  if(view==="tile") fillTiles(tilePre+Math.floor((total-remain)/tileStep+1e-6));
 }
 
 /* ===== タイル ===== */
@@ -292,6 +305,10 @@ function buildTiles(){
   var box=$("tiles"); box.innerHTML="";
   tileStep=Math.max(1, Math.ceil(total/TILE_MAX));
   TILE_N=Math.max(1, Math.ceil(total/tileStep));
+  /* ⭐見本は60マス（1分に設定したときと同じ並び）（2026-09-26 本人「見本のタイルが…おおきすぎること」＝3秒だと3マスだった）
+     ⭐最後の数秒だけを見せる＝はじめから（60－見本の秒数）マス埋まっていて、残りを1秒1マスで埋める（本人「60マスでいいんだけど、最後の3秒からでいい」） */
+  tilePre=0;
+  if(demoTiles){ TILE_N=DEMO_TILES; tileStep=1; tilePre=Math.max(0,DEMO_TILES-total); }
   /* 並べ方＝できるだけ正方形。マスが多いほど、すき間と角を小さく */
   /* ⭐枠は16:9の横長（2026-09-24 本人「タイルの時さ、画面に合わせて16：9にできないのかな？」）＝横の列を多めにして、1マスをほぼ正方形に */
   var cols=Math.max(1,Math.round(Math.sqrt(TILE_N*16/9)));
@@ -314,7 +331,9 @@ function fillTiles(n){
   /* 赤になってから埋まるマスだけ赤。⚠「今が赤か」で決めると、画面が裏にあって一度にたくさん埋まったとき全部赤になる
      ⭐何番目のマスか（＝埋まるときの残り秒）で決める */
   while(tilesOn<n){ var t=kids[tileOrder[tilesOn]]; t.classList.add("on");
-    if(warnAt>0 && total-tilesOn*tileStep<=warnAt) t.classList.add("hot"); tilesOn++; }
+    /* ⭐見本は、はじめから埋まっているマスは赤にしない＝赤は見本の数秒で埋まるマスだけ（2026-09-26 本人「赤になるのが多いね」） */
+    var hot=demoTiles ? (warnAt>0 && tilesOn>=tilePre) : (warnAt>0 && total-tilesOn*tileStep<=warnAt);
+    if(hot) t.classList.add("hot"); tilesOn++; }
 }
 /* ⭐0になったら、はじける（2026-09-24 本人「崩れるんじゃなくてさ、はじけるにしよう」。⚠前は下へくずれ落ちていた）
    ＝真ん中から外へ、いっせいに飛び散る。回りながら大きくなって消える */
@@ -430,6 +449,7 @@ function runWin(kind, isTry){
 function runLose(kind, isTry){
   if(isTry) clearFx();
   if(kind==="bomb") bomb(isTry);
+  else if(kind==="volcano") volcano(isTry);
   else if(kind==="curtain") curtain(isTry);
 }
 /* 仕掛けの入れ物（fx）の大きさと位置。本番＝画面いっぱい、見本＝16:9 の枠 */
@@ -551,7 +571,8 @@ function fireworks(){
       ring(r.x,r.y, big?120:60, speed*0.48, cc, null, big?2.4:1.6);
       if(big) ring(r.x,r.y, 60, speed*0.24, "#ffffff", fwCol(), 2.0);   // 大きいのは八重芯
     }
-    stars.push({flash:true,x:r.x,y:r.y,age:0,life:big?0.45:0.28,s:big?80:36});
+    /* ⭐大玉の割れる瞬間の光は小さく（2026-09-26 本人「最後の大玉の前の光が大きすぎる」）。⚠前は big＝半径80・0.45秒（4倍まで広がる） */
+    stars.push({flash:true,x:r.x,y:r.y,age:0,life:big?0.3:0.28,s:big?40:36});
   }
   for(var k=0;k<SHOTS;k++) later(function(){ launch(false); }, 200+k*GAP+Math.random()*160);
   later(function(){ launch(false); launch(false); }, 200+SHOTS*GAP+120);
@@ -783,6 +804,216 @@ function explosion(cx,cy,size){
     }
     ctx.globalCompositeOperation="source-over"; ctx.globalAlpha=1;
     if(t<2.4 && (alive || t<1.1)) return true;
+    if(c.cv.parentNode) c.cv.remove();
+    return false;
+  });
+}
+
+/* ----- 火山：下からせり上がって、ゴゴゴ → 噴火。岩がこっちへ飛んでくる -----
+   ⭐迫力満点で・文字はなし・石（岩）がこっちに飛んでくる（2026-09-25 本人。知り合いの先生からのリクエスト）
+   ＝①せり上がる（1秒）②ゴゴゴと震えて火口が赤く光る ③2.2秒で噴火＝溶岩の噴水・煙・岩
+   ⭐岩は奥から手前へ（遠近）＝小さく出て、大きくなりながら左右にそれて画面の外へ抜ける
+   ⭐直し（2026-09-26 本人「手前に飛んできすぎ」「石っぽくない」「溶岩もやりすぎ」「ゴゴゴはいい」「目の前よりそらして」）
+     ＝まん中に当たる岩はやめた・岩は灰色の石・溶岩の噴水はひかえめ
+   ⚠数字は揺らさない（爆弾と同じ）＝揺れるのは火山の絵だけ */
+function volcano(isTry){
+  var c=makeCanvas(), ctx=c.ctx, W=c.W, H=c.H, S=Math.min(W,H);
+  var HOT=["#ff2a1a","#ff5a1f","#ff8a00","#ffc400","#ffe45c"];
+  var ERUPT=2.2, END=8.2;
+  var peakY=H*0.46, cw=Math.max(W*0.07, S*0.09);     // 火口の高さ・火口の半分の幅
+  var lava=[], smoke=[], rocks=[], sparks=[], impacts=[], slope=0;
+  /* 岩の遠近：カメラ z=0、火口は奥の z=Z0 */
+  var F=H*0.55, Z0=8, HX=W/2, HY=H*0.42, G=5.5;
+  function rockShape(){
+    var n=7+Math.floor(Math.random()*3), pts=[];
+    for(var i=0;i<n;i++){ var a=i/n*Math.PI*2+Math.random()*0.35; var q=0.75+Math.random()*0.3; pts.push([Math.cos(a)*q, Math.sin(a)*q*0.85]); }
+    return pts;
+  }
+  function addRock(){
+    var Yc=(peakY-HY)*Z0/F, vz=-(3+Math.random()*2.4), r;
+    /* ⭐目の前には来ない。左右にそれて、画面の外へ抜ける（2026-09-26 本人「目の前よりそらして」） */
+    var side=Math.random()<.5?-1:1;
+    r={X:side*Math.random()*0.3,Y:Yc,Z:Z0,vx:side*(2.2+Math.random()*3.8),vy:-(2.5+Math.random()*4),vz:vz,R:0.07+Math.random()*0.15};
+    r.pts=rockShape(); r.rot=Math.random()*6.3; r.vr=(Math.random()-.5)*7;
+    rocks.push(r);
+  }
+  /* ⭐手前に飛んでくる小さめの石を2つ（2026-09-26 本人「石が手前に飛んでくるの、小さめのを2つくらい」「グレーのいしでいいよ」）
+     ⭐小さいところから、だんだん大きく。ぶつからずに下へ落ちる（本人「急に出てきた。小さいサイズから手前に飛んでくる感じ」「ぶつからずにおちるくらいがいい」）
+     ⚠遠近の計算（1/距離）だと最後の一瞬で急に大きくなる＝画面の上で大きさと道すじを直接決める
+     ＝火口から出て、山なりに上がり、大きくなりながら横へ、最後は画面の下へ落ちる（2.2秒）。いちばん大きくて画面の短い辺の12% */
+  var fronts=[];
+  function addFrontRock(side){
+    fronts.push({age:0, D:2.2, side:side, pts:rockShape(), rot:Math.random()*6.3, vr:side*(1.5+Math.random())});
+  }  function addSmoke(x,y,big){
+    smoke.push({x:x+(Math.random()-.5)*cw, y:y, vx:(Math.random()-.5)*40, vy:-(big?120+Math.random()*160:40+Math.random()*50),
+                r:(big?S*0.07:S*0.035)*(0.7+Math.random()*0.6), gr:big?S*0.12:S*0.05, age:0, life:big?4+Math.random()*2.5:1.8,
+                col:Math.random()<.5?"60,52,50":"95,86,82"});
+  }
+  /* 岩が飛ぶ時間を先に決めておく（噴火のあと2.4秒のあいだに、はじめ多く） */
+  var plan=[];
+  for(var k=0;k<22;k++) plan.push({t:ERUPT+0.05+Math.pow(Math.random(),1.6)*2.6});
+  plan.push({t:ERUPT+0.4, front:-1}); plan.push({t:ERUPT+1.3, front:1});
+  plan.sort(function(a,b){ return a.t-b.t; });
+  function drawMountain(off, glow, dx, dy){
+    var cx=W/2+dx, py=peakY+off+dy, base=H+20+off;
+    ctx.save();
+    /* 山のかたち（すそが広い） */
+    ctx.beginPath();
+    ctx.moveTo(-W*0.05+dx, base);
+    ctx.quadraticCurveTo(W*0.30+dx, py+(base-py)*0.62, cx-cw, py);
+    ctx.quadraticCurveTo(cx, py+cw*0.34, cx+cw, py);
+    ctx.quadraticCurveTo(W*0.70+dx, py+(base-py)*0.62, W*1.05+dx, base);
+    ctx.closePath();
+    var g=ctx.createLinearGradient(0,py,0,base);
+    g.addColorStop(0,"#4a3530"); g.addColorStop(.35,"#2c1f1c"); g.addColorStop(1,"#140d0b");
+    ctx.fillStyle=g; ctx.fill();
+    /* 左の斜面に光、右に影＝立体に見せる */
+    ctx.clip();
+    var sh=ctx.createLinearGradient(cx-W*0.4,0,cx+W*0.4,0);
+    sh.addColorStop(0,"rgba(255,140,90,.10)"); sh.addColorStop(.5,"rgba(0,0,0,0)"); sh.addColorStop(1,"rgba(0,0,0,.35)");
+    ctx.fillStyle=sh; ctx.fillRect(0,py,W,base-py);
+    /* ⭐流れる溶岩の線はやめた（2026-09-26 本人「流れる溶岩がわざとっぽい」）
+       ＝火口の下の斜面が、溶岩でぼんやり赤く照らされるだけにする */
+    if(slope>0){
+      ctx.save(); ctx.translate(cx, py); ctx.scale(1, 1.7);
+      var sr=cw*3.2, lg=ctx.createRadialGradient(0,0,0,0,0,sr);
+      lg.addColorStop(0,"rgba(255,120,30,"+(0.55*slope)+")"); lg.addColorStop(.45,"rgba(200,50,10,"+(0.28*slope)+")"); lg.addColorStop(1,"rgba(120,20,0,0)");
+      ctx.fillStyle=lg; ctx.beginPath(); ctx.arc(0,0,sr,0,6.3); ctx.fill();
+      ctx.restore();
+    }
+    ctx.restore();
+    /* 火口の光 */
+    if(glow>0){
+      var R=cw*(1.6+glow*1.8), rg=ctx.createRadialGradient(cx,py,0,cx,py,R);
+      rg.addColorStop(0,"rgba(255,230,140,"+(0.95*glow)+")"); rg.addColorStop(.35,"rgba(255,110,20,"+(0.7*glow)+")"); rg.addColorStop(1,"rgba(255,40,0,0)");
+      ctx.globalCompositeOperation="lighter"; ctx.fillStyle=rg; ctx.beginPath(); ctx.arc(cx,py,R,0,6.3); ctx.fill();
+      ctx.globalCompositeOperation="source-over";
+    }
+  }
+  /* ⭐石っぽく（2026-09-26 本人「石っぽくない」）＝灰色のゴツゴツ。光るふち・ひびはやめた。
+     面ごとに明るさを変える（左上が明るい）＋細かい粒 */
+  function drawRock(x,y,r,rot,pts){
+    ctx.save(); ctx.translate(x,y); ctx.rotate(rot);
+    var n=pts.length;
+    function P(i){ return pts[(i+n)%n]; }
+    ctx.beginPath(); ctx.moveTo(pts[0][0]*r,pts[0][1]*r); for(var i=1;i<n;i++) ctx.lineTo(pts[i][0]*r,pts[i][1]*r); ctx.closePath();
+    ctx.fillStyle="#6f6861"; ctx.fill();
+    ctx.save(); ctx.clip();
+    /* ⭐面を放射状に切ると傘のように見えた（2026-09-26）＝ふちの一部だけを、明るい面・暗い面として欠けたように塗る */
+    function chip(i0,cnt,ix,iy,col){
+      ctx.beginPath(); ctx.moveTo(ix*r,iy*r);
+      for(var c2=0;c2<=cnt;c2++){ var q=P(i0+c2); ctx.lineTo(q[0]*r*1.02,q[1]*r*1.02); }
+      ctx.closePath(); ctx.fillStyle=col; ctx.fill();
+    }
+    chip(Math.floor(n*0.55), 2, -0.2,-0.25, "rgba(200,192,182,.45)");   // 左上の明るい欠け
+    chip(0, 2, 0.15,0.2, "rgba(20,17,15,.35)");                           // 右下の暗い欠け
+    chip(Math.floor(n*0.25), 1, 0.05,0.1, "rgba(60,54,50,.3)");    /* 丸みの陰：左上が明るく、右下が暗い */
+    var sh=ctx.createRadialGradient(-r*0.35,-r*0.4,r*0.05,0,0,r*1.1);
+    sh.addColorStop(0,"rgba(255,250,240,.22)"); sh.addColorStop(.55,"rgba(0,0,0,0)"); sh.addColorStop(1,"rgba(0,0,0,.45)");
+    ctx.fillStyle=sh; ctx.fillRect(-r*1.2,-r*1.2,r*2.4,r*2.4);
+    /* ざらざら（小さい粒） */
+    if(r>10){
+      for(var k=0;k<pts.length;k++){ var s=pts[k];
+        ctx.fillStyle=k%2 ? "rgba(30,26,24,.35)" : "rgba(220,212,200,.25)";
+        ctx.beginPath(); ctx.arc(s[1]*r*0.45, s[0]*r*0.4, Math.max(0.8,r*0.035), 0, 6.3); ctx.fill(); }
+    }
+    ctx.restore();
+    ctx.beginPath(); ctx.moveTo(pts[0][0]*r,pts[0][1]*r); for(var i2=1;i2<n;i2++) ctx.lineTo(pts[i2][0]*r,pts[i2][1]*r); ctx.closePath();
+    ctx.strokeStyle="rgba(25,20,18,.7)"; ctx.lineWidth=Math.max(0.8,r*0.03); ctx.stroke();
+    ctx.restore();
+  }
+  loop(function(dt,t){
+    ctx.clearRect(0,0,W,H);
+    /* 空が暗く赤く（少し透かして、うしろの時間は見える） */
+    var sky=Math.min(1,t/1.2)*(t>END-1.6 ? Math.max(0,(END-t)/1.6) : 1);
+    var sg=ctx.createLinearGradient(0,0,0,H);
+    sg.addColorStop(0,"rgba(30,8,6,"+(0.55*sky)+")"); sg.addColorStop(1,"rgba(120,20,5,"+(0.6*sky)+")");
+    ctx.fillStyle=sg; ctx.fillRect(0,0,W,H);
+    /* せり上がり（はじめ）・沈む（おわり） */
+    var up=Math.min(1,t/1.0), e=1-Math.pow(1-up,3), off=(1-e)*H*0.7;
+    if(t>END-1.4) off=Math.pow((t-(END-1.4))/1.4,2)*H*0.75;
+    /* ゴゴゴ（噴火に向けて強く）。⭐これはいい（2026-09-26 本人） */
+    var amp=0;
+    if(t>0.9 && t<ERUPT) amp=S*0.004+S*0.012*((t-0.9)/(ERUPT-0.9));
+    else if(t>=ERUPT) amp=S*0.02*Math.max(0,1-(t-ERUPT)/1.8);
+    var dx=(Math.random()-.5)*2*amp, dy=(Math.random()-.5)*2*amp;
+    var glow=t<0.9 ? 0 : t<ERUPT ? 0.25+0.45*((t-0.9)/(ERUPT-0.9))*(0.8+Math.random()*0.2) : Math.max(0.35, 1-(t-ERUPT)/4);
+    /* 噴火の前から煙がちょろちょろ */
+    if(t>0.6 && t<ERUPT && Math.random()<dt*6) addSmoke(W/2, peakY+off, false);
+    /* 噴火 */
+    if(t>=ERUPT && t<ERUPT+2.4){
+      var inten=t<ERUPT+0.5 ? 1 : Math.max(0.15, 1-(t-ERUPT-0.5)/1.9);
+      var nl=Math.round(dt*200*inten);
+      for(var i=0;i<nl;i++){
+        var a=-Math.PI/2+(Math.random()-.5)*0.6, v=H*(0.55+Math.random()*0.55)*(0.6+inten*0.4);
+        lava.push({x:W/2+(Math.random()-.5)*cw*1.2, y:peakY+off, vx:Math.cos(a)*v, vy:Math.sin(a)*v, age:0, life:1.2+Math.random()*1.2,
+                   s:S*(0.003+Math.random()*0.006), col:HOT[Math.floor(Math.random()*HOT.length)]});
+      }
+      if(Math.random()<dt*30*inten) addSmoke(W/2, peakY+off, true);
+    }
+    if(t>=ERUPT && t-dt<ERUPT) impacts.push({flash:true, age:0, life:0.4});
+    slope=t<ERUPT ? 0 : Math.min(1,(t-ERUPT)/1.2);
+    while(plan.length && t>=plan[0].t){ var pl=plan.shift(); if(pl.front) addFrontRock(pl.front); else addRock(); }
+    /* 煙（うしろ） */
+    for(var m=smoke.length-1;m>=0;m--){
+      var p=smoke[m]; p.age+=dt; if(p.age>p.life){ smoke.splice(m,1); continue; }
+      p.x+=p.vx*dt; p.y+=p.vy*dt; p.vy*=Math.pow(0.6,dt); p.r+=p.gr*dt;
+      var k=p.age/p.life, al=(k<0.15 ? k/0.15 : 1-(k-0.15)/0.85)*0.55*(t>END-1.6?sky:1);
+      var gg=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r);
+      gg.addColorStop(0,"rgba("+p.col+","+al+")"); gg.addColorStop(1,"rgba("+p.col+",0)");
+      ctx.fillStyle=gg; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,6.3); ctx.fill();
+    }
+    drawMountain(off, glow, dx, dy);
+    /* 溶岩の噴水 */
+    ctx.globalCompositeOperation="lighter";
+    for(var l=lava.length-1;l>=0;l--){
+      var d=lava[l]; d.age+=dt; if(d.age>d.life){ lava.splice(l,1); continue; }
+      d.vy+=H*1.1*dt; d.x+=d.vx*dt; d.y+=d.vy*dt;
+      ctx.globalAlpha=Math.min(1,(1-d.age/d.life)*1.5); ctx.fillStyle=d.col;
+      ctx.beginPath(); ctx.arc(d.x+dx,d.y+dy,d.s,0,6.3); ctx.fill();
+    }
+    ctx.globalAlpha=1; ctx.globalCompositeOperation="source-over";
+    /* 岩：遠いものから描く */
+    rocks.sort(function(a,b){ return b.Z-a.Z; });
+    for(var r=rocks.length-1;r>=0;r--){
+      var o=rocks[r];
+      o.vy+=G*dt; o.X+=o.vx*dt; o.Y+=o.vy*dt; o.Z+=o.vz*dt; o.rot+=o.vr*dt;
+      var z=Math.max(0.05,o.Z);
+      o.sx=HX+o.X*F/z; o.sy=HY+o.Y*F/z; o.sr=o.R*F/z;
+      if(o.Z<0.2 || o.sr>S*0.16 || o.sx<-o.sr*2 || o.sx>W+o.sr*2 || o.sy>H+o.sr*2){ rocks.splice(r,1); continue; }
+    }
+    /* 火の粉（岩のうしろ）*/
+    ctx.globalCompositeOperation="lighter";
+    for(var f=sparks.length-1;f>=0;f--){
+      var s=sparks[f]; s.age+=dt; if(s.age>s.life){ sparks.splice(f,1); continue; }
+      s.vx*=Math.pow(0.3,dt); s.vy=s.vy*Math.pow(0.3,dt)+200*dt; s.x+=s.vx*dt; s.y+=s.vy*dt;
+      ctx.globalAlpha=1-s.age/s.life; ctx.fillStyle=s.col; ctx.beginPath(); ctx.arc(s.x,s.y,s.s,0,6.3); ctx.fill();
+    }
+    ctx.globalAlpha=1; ctx.globalCompositeOperation="source-over";
+    for(var r2=0;r2<rocks.length;r2++){
+      var o2=rocks[r2], sx2=o2.sx, sy2=o2.sy, sr2=o2.sr;
+      /* 火の尾 */
+      if(Math.random()<0.25) sparks.push({x:sx2,y:sy2,vx:(Math.random()-.5)*60,vy:(Math.random()-.5)*60,age:0,life:0.35+Math.random()*0.3,s:Math.max(2,Math.min(sr2*0.1,S*0.01)),col:HOT[1+Math.floor(Math.random()*3)]});
+      drawRock(sx2,sy2,sr2,o2.rot,o2.pts);
+    }
+    /* 手前に飛んでくる石（いちばん前に描く） */
+    for(var fi=fronts.length-1;fi>=0;fi--){
+      var fr=fronts[fi]; fr.age+=dt; var u=fr.age/fr.D;
+      if(u>=1){ fronts.splice(fi,1); continue; }
+      var fx0=W/2, fy0=peakY;
+      var fxp=fx0+fr.side*W*0.2*u;
+      var fyp=fy0-H*0.3*4*u*(1-u)+H*0.95*u*u*u;    // 山なりに上がって、最後は画面の下へ落ちる
+      var fsz=S*(0.012+0.108*Math.pow(u,1.15));    // 小さいところから、だんだん大きく
+      fr.rot+=fr.vr*dt;
+      drawRock(fxp,fyp,fsz,fr.rot,fr.pts);
+    }
+    /* 光：噴火の瞬間 */
+    for(var h=impacts.length-1;h>=0;h--){
+      var im=impacts[h]; im.age+=dt; if(im.age>im.life){ impacts.splice(h,1); continue; }
+      var kk=im.age/im.life;
+      ctx.fillStyle="rgba(255,200,120,"+(0.3*(1-kk))+")"; ctx.fillRect(0,0,W,H);
+    }
+    if(t<END) return true;
     if(c.cv.parentNode) c.cv.remove();
     return false;
   });
