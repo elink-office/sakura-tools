@@ -5,8 +5,8 @@
 <meta name="robots" content="noindex,nofollow">
 <meta charset="utf-8">
 <!-- ⭐タブのマーク＝さくらのロゴ（2026-09-22 本人「タブのマークと題名も変更できるならして」） -->
-<link rel="icon" href="../../favicon.ico?v=2" sizes="any">
-<link rel="icon" type="image/png" href="../../favicon-32.png?v=2">
+<link rel="icon" href="../../favicon.ico?v=3" sizes="any">
+<link rel="icon" type="image/png" href="../../favicon-32.png?v=3">
 <link rel="apple-touch-icon" href="../../apple-touch-icon.png?v=2">
 <!-- ⭐LINEなどに出る絵と題名（2026-09-25 本人「LINEで送るときのOGP…ピンク地に白の四角になるから変」）。白地の絵にした -->
 <meta property="og:type" content="website">
@@ -32,8 +32,8 @@
 <!-- ⭐名前は「タッチタイピング」（2026-09-15 本人「とりあえずタッチタイピングだけにしておいて」）。
      ⚠同じ日に一度「タイルタッチタイピング（TTT）」にした。また変えるかも（本人）。大人用はまだ「タイピング練習」のまま -->
 <title>さくらタッチタイピング（学生用）｜さくらツールズ</title>
-<link rel="stylesheet" href="../../style.css?v=145">
-<link rel="stylesheet" href="../typing.css?v=160">
+<link rel="stylesheet" href="../../style.css?v=147">
+<link rel="stylesheet" href="../typing.css?v=162">
 </head>
 <!-- 🔴⭐学生用のページ（2026-09-15 本人）
      本人「大学生のパソコンが小さいから、上にいろいろ書いてあったら邪魔。もうタイピングの話だけでいい」
@@ -80,6 +80,11 @@
       <input id="uname" placeholder="ニックネーム" maxlength="30" aria-label="ニックネーム">
     </div>
     <button id="btnLog">今までの記録を見る</button>
+    <!-- ⭐友だちにこのアプリを教える（2026-09-26 本人。前＝友だちに教える）。⭐一番右・ほかのボタンより弱い見た目（本人「同列だと強すぎる」）
+         ⭐送る中身＝題名「さくら🌸タッチタイピング」／文「速さより、正確さ。コツコツ練習すれば、3か月前の自分とは別人に。無料の練習アプリ」
+         ／URL＝一般用のタイピングのトップ（本人「がくせいようではない」）
+         ⭐共有の画面が出る端末（スマホ・Chrome・Edge・Safari）はその画面、出ないブラウザ（Firefoxのパソコン版など）はURLをコピー -->
+    <button type="button" class="sharebtn" id="btnShare">友だちにこのアプリを教える</button>
     <!-- ⭐学生用は音なし（2026-09-19 本人「音なしでいい。音かわいかったけど。学生用は不要」）。⚠typing.js が探すので、消さずに隠す。
          ⚠そもそも一覧のチェックは練習の画面（別のページ）に引き継がれず、鳴っていなかった -->
     <label class="optsound" style="display:none"><input type="checkbox" id="optSound"> 音を出す</label>
@@ -204,5 +209,35 @@
 </footer>
 
 <script src="../typing.js?v=157"></script>
+<script>
+/* ⭐友だちに教える（2026-09-26）。⚠学生用のページだけにある */
+(function(){
+  var b = document.getElementById('btnShare');
+  if(!b) return;
+  var data = {
+    title: 'さくら🌸タッチタイピング',
+    text: '速さより、正確さ。コツコツ練習すれば、3か月前の自分とは別人に。無料の練習アプリ',
+    url: 'https://sakura-tools.com/typing/'
+  };
+  var label = b.textContent;
+  function flash(msg){ b.textContent = msg; setTimeout(function(){ b.textContent = label; }, 2500); }
+  b.addEventListener('click', function(){
+    /* ⭐共有の画面はスマホ・タブレット（指で触る画面）だけ。PCはコピーだけ（2026-09-26 本人「Bがいい」）
+       ⚠PC（Windows）の共有の画面は、連絡先やアプリがたくさん並ぶ。サイトの側からは減らせない */
+    var touch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    if(touch && navigator.share){
+      navigator.share(data).catch(function(){});   /* ⭐やめたときは何も出さない */
+      return;
+    }
+    var all = [data.title, data.text, data.url].join(String.fromCharCode(10));
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(all).then(function(){ flash('コピーしました。貼り付けできます。');   /* ⭐本人（2026-09-26）。⚠コピーするのは題名・文・URLの3行なので「URLを」は付けない */ },
+                                             function(){ prompt('このURLをコピーしてください', data.url); });
+    }else{
+      prompt('このURLをコピーしてください', data.url);
+    }
+  });
+})();
+</script>
 </body>
 </html>

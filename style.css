@@ -135,6 +135,8 @@ body{
 }
 .site-head .navlist .now{font-weight:bold;color:var(--pink);background:var(--pink-pale)}
 .site-head .navlist a:hover{background:var(--pink-pale)}
+/* ⭐ツールと記事一覧のあいだの棒線（2026-09-26 本人） */
+.site-head .navlist .navsep{display:block;height:1px;background:var(--line);margin:6px 8px}
 /* ⭐狭い画面はボタンだけ（並びは一覧の中にある）。⭐トップを足して4つになったので 760 → 820px（2026-09-21 本人「トップには行きたい」）
    ⚠780pxでロゴとの間が詰まりきる（10px）。821px以上なら40px以上あく */
 @media(max-width:820px){
@@ -907,3 +909,9 @@ details.opt.sub > summary{flex-wrap:wrap;row-gap:2px}
   margin-left:.6em;font-weight:normal;font-size:.85em;color:var(--ink-soft);
   font-variant-numeric:tabular-nums;white-space:nowrap;
 }
+
+/* ⭐1カラムで読むページの幅（2026-09-26 本人「ほかの1カラムの記事は同じようにそろえる」）
+   ⭐記事・運営者情報・お問い合わせ・プライバシーポリシー。<main class="wrap yomu"> を付けたページだけに効く
+   ⭐37rem＝592px・画面の中央（noteに近い形＝1カラム・中央・620px を 2026-09-26 に実測して決めた）
+   ⚠.read はツールのページの下の読みものにも使っているので、そちらは触らない */
+main.yomu > *{max-width:37rem;margin-left:auto;margin-right:auto}

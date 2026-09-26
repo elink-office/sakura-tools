@@ -910,3 +910,12 @@ body.hub:not(.gakusei) .intro{gap:26px}
 /* ⭐コラム（2026-09-21 本人）。「こんなときに使う」と同じ形・罫線つき。⚠使い方（たたみ）の下 */
 .usecase.column{margin-top:26px}
 .usecase.column p{margin:0;font-size:13.5px;line-height:1.9}
+
+/* ⭐友だちに教える（2026-09-26 本人）＝名前の行の一番右。ボタンより弱い、文字のリンクの見た目（本人「同列だと強すぎる」） */
+.namerow .sharebtn{margin-left:auto;background:none;border:0;padding:0 12px 0 2px;color:var(--sub);
+  font-size:13px;text-decoration:none;cursor:pointer;box-shadow:none;position:relative}
+/* ⭐色は薄いグレー・下線の右端を矢印のように折り返す（2026-09-26 本人「色は薄いグレーでいいよ」「アンダーラインの右側に矢印っぽく角付けて。折り返す感じ」） */
+.namerow .sharebtn::after{content:"";position:absolute;left:2px;right:0;bottom:7px;height:1px;background:currentColor}
+.namerow .sharebtn::before{content:"";position:absolute;right:0;bottom:7px;width:8px;height:1px;background:currentColor;
+  transform-origin:right center;transform:rotate(35deg)}
+.namerow .sharebtn:hover{color:var(--pink,#c86a8e)}
