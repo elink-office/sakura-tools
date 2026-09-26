@@ -12,7 +12,7 @@
 <title>【テスト】カウントダウンタイマー｜大きく映せる無料タイマー</title>
 <meta name="description" content="時間を打ち込むだけの、丸が減っていくカウントダウンタイマー。残り時間が少なくなると色が変わり、間に合ったら紙吹雪、時間切れで爆弾などの仕掛けも選べます。">
 <link rel="stylesheet" href="../style.css?v=145">
-<link rel="stylesheet" href="timer.css?v=51">
+<link rel="stylesheet" href="timer.css?v=53">
 </head>
 <body>
 <div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
@@ -135,9 +135,22 @@
           <option value="none">なし</option>
           <option value="bomb" selected>爆弾</option>
           <option value="volcano">火山</option>
+          <option value="volcano2">火山（ドッカーン）</option>
           <!-- ⚠ガラスにヒビは中止（本人「ガラスにひびは中止」）／「画面が揺れる」はやめた（本人「揺れるのはいまいちだった」） -->
           <option value="curtain">幕が閉まる</option>
         </select>
+        <!-- ⭐爆弾を選んだときだけ、小さい爆弾を増やす数（2026-09-26 本人「全部で５個だから、小さい爆弾を４つまで追加」「デフォルトは１個の時と、増やすを１～４にしよう」「置き場所はそれで」）
+             ⚠前は「爆弾（ドンドンドーン）」という別の選択肢だった＝「爆弾」＋増やす2個 と同じ -->
+        <span class="tm-extra" id="bombRow" hidden>
+          <label for="selBombs">小さい爆弾を増やす</label>
+          <select id="selBombs">
+            <option value="0" selected>なし</option>
+            <option value="1">1個</option>
+            <option value="2">2個</option>
+            <option value="3">3個</option>
+            <option value="4">4個</option>
+          </select>
+        </span>
         <span class="tm-extra" id="zanRow" hidden>
           <input id="inZan" class="tm-text" type="text" maxlength="16" value="" placeholder="ざんねん" autocomplete="off" aria-label="幕の前の言葉">
           <small>改行したい場所に/</small>
@@ -222,7 +235,7 @@
       <h3>仕掛け</h3>
       <ul>
         <li>間に合ったとき（「できた」を押したとき）は、紙吹雪・花火・くす玉から選べます。</li>
-        <li>時間切れのとき（0になったとき）は、爆弾・火山・幕から選べます。</li>
+        <li>時間切れのとき（0になったとき）は、爆弾・火山・火山（ドッカーン）・幕から選べます。爆弾は、小さい爆弾を4個まで増やせます（ドン・ドン…と先に爆発して、最後に大きいのがドーン）。</li>
         <li>くす玉の垂れ幕と、幕の前の言葉は、自分で打てます。<code>/</code> を入れたところで2行になります。</li>
         <li>③はたたんだままスタートできます。<b>何が出るかを見せずに</b>始められます。</li>
         <li>「見本：間に合ったとき」「見本：時間切れのとき」を押すと、本番と同じ画面を、横長（16:9）の枠の中で確かめられます。見本の時間はサンプルです。「間に合ったとき」は途中で自動で「できた」になります。</li>
@@ -276,7 +289,7 @@
 <!-- 仕掛けを重ねる場所（押せない＝クリックは下に通る） -->
 <div class="fx" id="fx" aria-hidden="true"></div>
 
-<script src="timer.js?v=65"></script>
+<script src="timer.js?v=76"></script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>

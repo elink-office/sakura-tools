@@ -363,3 +363,18 @@
 .tm-recall .tm-quick .pick{flex:1 1 7em;min-width:0}   /* 削除だけ次の行に落ちないように、選ぶ欄は縮んでよい */
 .tm-recall .tm-quick select{max-width:none;width:100%;padding:0 28px 0 10px !important;font-size:.88rem;line-height:32px}
 .tm-recall .tm-recallnone{margin:-6px 0 auto}
+
+/* ⭐爆弾（ドンドンドーン）の小さい爆弾（2026-09-26 本人）＝大きいのの左右・少し下。左からと右から、少しおくれて転がってくる */
+.fx .bomb.mini{width:min(19cqmin,150px);top:60%}
+.fx .bomb.mini.l{left:24%;animation:tmRoll 1.6s cubic-bezier(.25,.75,.35,1) .3s both}
+.fx .bomb.mini.r{left:76%;animation:tmRollR 1.6s cubic-bezier(.25,.75,.35,1) .55s both}
+@keyframes tmRollR{
+  0%{transform:translate(calc(-50% + 75cqw),-50%) rotate(1080deg)}
+  82%{transform:translate(calc(-50% - 2.5cqw),-50%) rotate(-25deg)}
+  92%{transform:translate(calc(-50% + .8cqw),-50%) rotate(8deg)}
+  100%{transform:translate(-50%,-50%) rotate(0deg)}
+}
+/* ⭐小さい爆弾は4個まで（2026-09-26）。3つ目＝左上・4つ目＝右上 */
+.fx .bomb.mini.l2{left:12%;top:30%;animation:tmRoll 1.6s cubic-bezier(.25,.75,.35,1) .8s both}
+.fx .bomb.mini.r2{left:88%;top:30%;animation:tmRollR 1.6s cubic-bezier(.25,.75,.35,1) 1.05s both}
+#bombRow label{font-size:.88rem;color:var(--ink-soft);margin:0 4px 0 0}
