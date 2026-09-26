@@ -1,0 +1,166 @@
+/* ランダム指名メーカー（2026-09-26 作成中）
+   ⭐設定の画面の部品は、くす玉メーカー（kusudama.css）と同じ形。くす玉のファイルには触らない */
+:root{ color-scheme: light; }
+input[type=checkbox], input[type=radio]{ accent-color: var(--pink); }
+
+/* ===== 設定の画面 ===== */
+.pk-set .lead{margin-bottom:10px}
+.pk-sample{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;margin:14px 0 14px}
+.pk-set .tip-guide{margin-bottom:10px}
+.tm-hint{font-size:.82rem;color:var(--ink-soft);margin:8px 0 0}
+.tm-hint.center{text-align:center}
+.tm-start{text-align:center;margin:18px 0 0}
+.tm-start .primary{font-size:1.25rem;padding:14px 48px}
+.tm-start + .tm-hint.center{margin:6px 0 18px}
+
+/* 選ぶ欄は共通の .seg（style.css）を使う（2026-09-26） */
+
+.pk-recall{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 12px;padding:0 0 10px;border-bottom:1px dashed var(--line)}
+.pk-recall[hidden]{display:none}
+.pk-recall select{height:34px;max-width:14em;font-size:.95rem;border-radius:8px;border:1px solid var(--line);padding:4px 8px;font-family:inherit}
+.pk-lbl{font-weight:700;margin:0 0 6px;font-size:.95rem}
+.pk-lbl.pk-gap{margin-top:18px}
+#names{min-height:150px;width:100%}
+.pk-count{display:flex;align-items:center;gap:10px;margin:6px 0 0;font-size:.9rem;color:var(--ink-soft)}
+.pk-numrow{margin:0}
+.pk-numrow input{width:5.5em;font-size:1rem;padding:6px 8px;border-radius:8px;border:1px solid var(--line);font-family:inherit;margin:0 4px}
+
+.pk-line{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:0 0 12px}
+.pk-lbl2{font-size:.95rem;min-width:7em}
+.pk-unit{font-size:.95rem}
+.pk-try{margin-top:14px;text-align:center}
+
+.pk-rows{list-style:none;margin:0 0 6px;padding:0;display:flex;flex-direction:column;gap:6px}
+.pk-rows li{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pk-rows select{font-size:.92rem;padding:5px 8px;border-radius:8px;border:1px solid var(--line);font-family:inherit;background:#fff;max-width:14em}
+.pk-rows .mvbtn{width:28px;height:26px;padding:0;font-size:11px;color:#9a9ea4;background:#f2f3f5;border:0;border-radius:4px;box-shadow:none}
+
+.save-in1{margin-top:14px;padding-top:12px;border-top:1px dashed #dcdfe3}
+.save-head{margin:0 0 4px}
+.save-head label{font-weight:bold;display:inline-block;margin:0}
+.pk-save{margin-top:22px}
+.pk-save .cls-box details.opt.sub{margin:10px 0 0}
+.pk-save .pick{margin-top:10px}
+.pk-save .pick select{margin-left:6px;font-size:.95rem;padding:6px 10px;border-radius:8px;border:1px solid var(--line);font-family:inherit}
+#saveMsg:empty{display:none}
+
+/* ===== 動かしている画面 ===== */
+.pk-run{position:fixed;inset:0;z-index:100;overflow:hidden;container-type:size;
+  background:radial-gradient(ellipse at 50% 30%,#fffaf6 0%,#f7eef3 55%,#eef0f6 100%)}
+.pk-run[hidden]{display:none}
+.pk-top{position:absolute;left:0;right:0;top:0;height:9cqh;display:flex;align-items:center;justify-content:center;gap:3cqw;
+  font-size:min(3.4cqh,26px);color:var(--ink);z-index:5;pointer-events:none}
+.pk-round{position:absolute;left:2cqw;font-weight:800;color:var(--pink)}
+.pk-left{position:absolute;right:12cqw;color:var(--ink-soft)}
+.pk-msg{font-weight:700}
+.pk-fs{position:absolute;top:12px;right:12px;font-size:13px;padding:6px 12px;opacity:.75;z-index:30}
+.pk-demo{position:absolute;bottom:12px;left:12px;font-size:13px;font-weight:700;color:#fff;background:var(--pink);padding:5px 12px;border-radius:999px;opacity:.9;z-index:30}
+.pk-demo[hidden]{display:none}
+/* ⚠スマホの見本の枠では、ボタンと重なるので上の帯の下へ（2026-09-26 点検） */
+@media (max-width:600px){ .pk-demo{bottom:auto;top:calc(9cqh + 4px);left:8px;font-size:10px;padding:3px 8px} }
+.pk-stage{position:absolute;left:0;right:0;top:9cqh;bottom:13cqh}
+.pk-btns{position:absolute;left:0;right:0;bottom:2.5cqh;display:flex;gap:12px;justify-content:center;z-index:25}
+.pk-b{font-size:clamp(14px,2.4cqmin,22px);font-weight:700;padding:.7em 1.6em;border-radius:999px;border:0;box-shadow:0 3px 0 rgba(0,0,0,.12)}
+.pk-b:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.12)}
+.pk-b.next,.pk-b.shuf{background:var(--pink);color:#fff}
+.pk-b.next:hover,.pk-b.shuf:hover{background:#b85c80}
+.pk-b.back{background:#fff;color:var(--ink-soft);border:1px solid var(--line)}
+.pk-b[disabled]{opacity:.35;pointer-events:none}
+.pk-b[hidden]{display:none}
+
+.pk-demoback{position:fixed;inset:0;z-index:99;background:rgba(20,22,32,.72)}
+.pk-demoback[hidden]{display:none}
+.pk-run.framed{inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:min(94vw, calc((100vh - 40px) * 16 / 9));aspect-ratio:16/9;height:auto;
+  border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.45);outline:3px solid #fff}
+.pk-run.framed .pk-fs{display:none}
+
+/* ===== トランプ =====
+   ⭐段＝マーク（♠♥♦♣）、列＝番号。子どもが「ハートの3」と言える（2026-09-26 本人「マークのほうがいいね」）
+   ⭐裏の色も段ごとに変える（本人「カードの色行で変えて、縦の列に番号を付ける」）。色だけに頼らず、裏にもマークと番号を出す */
+.pk-grid{position:absolute;display:grid}
+.pk-rowlbl,.pk-collbl{display:flex;align-items:center;justify-content:center;font-weight:800;line-height:1}
+.pk-collbl{color:var(--ink-soft)}
+/* ⭐裏の色は全部同じ（さくら色）。マークの色は本物のトランプと同じ＝♠♣ 黒・♥♦ 赤
+   （2026-09-26 本人「カードは、色が一緒でマークを別にしてみて。なんか同じ色がグループに見えてきた」）。前の形＝段ごとに紺・赤・橙・緑 */
+.s0,.s3{--sc:#2b2f36}   /* ♠♣ 黒 */
+.s1,.s2{--sc:#d2465a}   /* ♥♦ 赤 */
+.pk-rowlbl{color:var(--sc)}
+.pk-card{position:relative;perspective:900px;cursor:pointer}
+.pk-card .in{position:absolute;inset:0;transition:transform .6s cubic-bezier(.3,1.2,.5,1);transform-style:preserve-3d}
+.pk-card.up .in,.pk-card.done .in{transform:rotateY(180deg)}
+.pk-card .bk,.pk-card .fc{position:absolute;inset:0;border-radius:6%/4.3%;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.18)}
+.pk-card .bk{background-color:var(--pink);color:#fff;font-weight:800;
+  background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.08) 0 6px,transparent 6px 12px);
+  border:3px solid #fff;outline:1px solid rgba(0,0,0,.08)}
+/* ⭐裏のまん中は無地・座標は右下に小さく（2026-09-26 本人「本当はさ、カードも一緒にしたいんだけどね～」→「右下にしてみて」）
+   ＝遠くからは全部同じ柄に見える。座標は左のマークと上の番号でも言える */
+.pk-card .bk .bn{position:absolute;right:8%;bottom:5%;line-height:1;opacity:.9}
+.pk-card .fc{background:#fff;transform:rotateY(180deg);border:2px solid var(--sc);flex-direction:column;padding:4%}
+.pk-card .fc .cn{position:absolute;left:7%;top:5%;color:var(--sc);font-weight:800;line-height:1}
+.pk-card .fc .nm{font-weight:800;color:var(--ink);text-align:center;line-height:1.15;word-break:keep-all;overflow-wrap:anywhere}
+.pk-card.done{cursor:default}
+.pk-card.done .fc{background:#e7e8eb;border-color:#c9ccd1;box-shadow:none}
+.pk-card.done .fc .nm,.pk-card.done .fc .cn{color:#8a8f97}
+.pk-card.lock{cursor:default}
+.pk-card.up .fc{box-shadow:0 0 0 4px rgba(200,106,142,.35),0 6px 16px rgba(0,0,0,.2)}
+@media (hover:hover){ .pk-card:not(.up):not(.done):not(.lock):hover .bk{filter:brightness(1.12)} }
+.pk-card.gather{transition:transform .45s ease-in}
+
+/* ===== ビンゴ ===== */
+.pk-bingo{position:absolute;inset:0;display:grid;grid-template-columns:34% 66%}
+.pk-mach{position:relative}
+/* ⭐ビンゴの抽選機＝針金のカゴ型（2026-09-26 本人「かご型いいね」）
+   ＝金色の針金の丸いカゴが、脚（Aの字）の上で軸ごとくるくる回る。ハンドルもいっしょに回る。中の玉は回すと舞い上がり、止まると下にたまる
+   ⚠前の形（ガラスの丸＋ハンドルが横）はガチャガチャに見えた。控え＝_もどす6-09-26_ビンゴをカゴ型にする前\ */
+.pk-gara{position:absolute;left:46%;top:14%;width:min(20cqw,40cqh);aspect-ratio:1;transform:translateX(-50%)}
+.pk-stand{position:absolute;left:-12%;top:0;width:124%;height:auto;overflow:visible;z-index:1}
+.pk-dome{position:absolute;inset:4%;border-radius:50%;z-index:2;overflow:hidden;
+  background:radial-gradient(circle at 40% 35%,rgba(255,250,235,.55),rgba(255,236,190,.25) 70%,rgba(200,160,60,.18))}
+.pk-mix{position:absolute;inset:0}
+@keyframes pkTurn{to{transform:rotate(360deg)}}
+.pk-dome i{position:absolute;width:17%;aspect-ratio:1;border-radius:50%;box-shadow:inset -3px -4px 6px rgba(0,0,0,.2);
+  left:var(--rx);top:var(--ry);transition:left .5s ease,top .5s cubic-bezier(.5,0,.8,1.4)}
+/* ⭐玉は縦に回る（2026-09-26 本人「右側で回してるのに、玉が左右に回ってる」）
+   ＝軸が左右なので、玉はカゴの壁に持ち上げられて上へ行き、てっぺんから落ちてくる。横にはほとんど動かない */
+.pk-gara.spin .pk-dome i{animation:pkTumble var(--tt) cubic-bezier(.45,.05,.55,.95) infinite;animation-delay:var(--td)}
+@keyframes pkTumble{0%{top:var(--ry)}45%{top:var(--hy);left:var(--sx)}60%{top:var(--hy)}100%{top:var(--ry)}}
+@keyframes pkJig{from{transform:translate(0,0)}to{transform:translate(var(--jx),var(--jy))}}
+.pk-wire{position:absolute;inset:0;width:100%;height:100%;z-index:3;overflow:visible}
+.pk-dome i{background:radial-gradient(circle at 34% 28%,#fff 0 12%,color-mix(in srgb,var(--bc) 18%,#fff) 45%,color-mix(in srgb,var(--bc) 50%,#9aa0a8) 100%)}   /* カゴの中の玉も同じうすい色 */
+/* 受け皿に落ちる玉 */
+.pk-drop{position:absolute;left:50%;top:86%;z-index:4;transform:translate(-50%,-50%);animation:pkDrop .8s cubic-bezier(.5,0,.6,1) both}
+@keyframes pkDrop{0%{top:84%}55%{top:106%}72%{top:101%}86%{top:106%}93%{top:104.5%}100%{top:106%}}
+.pk-right{position:relative;display:flex;flex-direction:column}
+.pk-cur{flex:0 0 58%;display:flex;align-items:center;justify-content:center;gap:2cqw}
+.pk-hist{flex:1 1 auto;display:flex;flex-wrap:wrap;align-content:flex-start;justify-content:center;gap:.8cqh;padding:0 3cqw;overflow:hidden}
+.pk-histlbl{font-size:min(2.4cqh,18px);color:var(--ink-soft);text-align:center;margin:0 0 .6cqh}
+/* ⭐玉は、うすい色を玉ぜんたいに（2026-09-26 本人「ビンゴの玉がさ、ビリヤードみたいなんだよね～笑」「色をすごく薄くして全体に着けてみたら」）
+   ＝前は濃い色の玉に白い丸（ビリヤードの玉の形）。いまは白い丸をやめて、字を玉にそのまま書く */
+.pk-ball{position:relative;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 34% 28%,#fff 0 10%,color-mix(in srgb,var(--bc) 14%,#fff) 38%,color-mix(in srgb,var(--bc) 30%,#fff) 72%,color-mix(in srgb,var(--bc) 50%,#9aa0a8) 100%);
+  box-shadow:0 14px 18px -8px rgba(0,0,0,.3),inset -5px -7px 12px rgba(0,0,0,.08)}
+.pk-ball::after{content:"";position:absolute;left:16%;top:9%;width:34%;height:22%;border-radius:50%;
+  background:radial-gradient(ellipse at 50% 40%,rgba(255,255,255,.95),rgba(255,255,255,0) 70%);transform:rotate(-28deg);pointer-events:none;z-index:2}
+.pk-ball .t{width:84%;height:84%;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  text-align:center;font-weight:800;color:var(--ink);line-height:1.1;word-break:keep-all;overflow-wrap:anywhere;padding:4%;position:relative;z-index:1}
+.pk-drop .t{display:none}
+.pk-ball.roll{animation:pkRoll 1s cubic-bezier(.25,.9,.35,1.05) both}
+@keyframes pkRoll{from{transform:translateX(-45cqw) rotate(-540deg) scale(.35);opacity:.3}60%{opacity:1}to{transform:none}}
+.pk-hist .pk-ball{box-shadow:0 2px 4px rgba(0,0,0,.18)}
+.pk-hist .pk-ball.new{animation:pkIn .4s ease-out both}
+@keyframes pkIn{from{transform:scale(.3);opacity:0}to{transform:none;opacity:1}}
+
+@media (prefers-reduced-motion: reduce){
+  .pk-card .in{transition-duration:.01s}
+  .pk-ball.roll{animation-duration:.01s}
+  .pk-gara.spin i,.pk-gara.spin .pk-mix,.pk-drop{animation:none}
+}
+
+/* ⭐班＝数字は大きく、「班」は小さく（2026-09-26 本人） */
+/* ⭐「班」は数字の下の端にそろえる（本人「数字に合わせて、班を下揃えに」）
+   ＝数字は並びの線（ベースライン）の上に乗るが、漢字は線より0.1字ぶん下にはみ出す（実測：100pxで数字0px・班10px）。その分だけ上げる */
+.hw{display:inline-block;line-height:1;white-space:nowrap}
+.hn{font-size:1em;line-height:1}
+.hs{font-size:.4em;line-height:1;margin-left:.04em;position:relative;top:-.1em}

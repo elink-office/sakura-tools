@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="../favicon.ico?v=3" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png?v=3">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
+<!-- ⭐作成中（2026-09-26）。どこともつなげない＝トップのカード・サイトマップ・ほかのページの「ツール一覧」に入れていない
+     ⭐きっかけ＝先生からのリクエスト（本人経由・決定ログ 2026-09-26「ランダムで当てるアプリ」）
+     ⚠道具の名前・フォルダ名は random（2026-09-26 本人「pickに違和感。ランダムの方が良くない？」＝pick から変えた）。置き場は設計室で決める -->
+<meta name="robots" content="noindex,nofollow">
+<title>【テスト】ランダム指名メーカー｜トランプとビンゴで名前・番号・班を選ぶ</title>
+<meta name="description" content="名簿を貼るだけで、トランプをめくる・ビンゴの玉が転がる形で、名前・番号・班をランダムに選べます。1回に1〜5人。全員に一周するまで同じ人は出ません。登録なし・無料。">
+<link rel="stylesheet" href="../style.css?v=149">
+<link rel="stylesheet" href="random.css?v=14">
+</head>
+<body>
+<div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
+<script>
+(function(){
+  var b = document.getElementById('testBadge');
+  if(!b) return;
+  var d = new Date(document.lastModified), z = function(n){ return (n<10?'0':'') + n; };
+  b.textContent = 'テスト版 ' + z(d.getMonth()+1) + '/' + z(d.getDate()) +
+                  ' ' + z(d.getHours()) + ':' + z(d.getMinutes());
+})();
+</script>
+
+<header class="site-head noprint">
+  <div class="wrap">
+    <a class="logo" href="../"><span class="logo-mark"><img src="../img/logo-sakura-64.png?v=2" srcset="../img/logo-sakura-64.png?v=2 1x, ../img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA tools</span><span class="logo-sub">さくらツールズ</span></a>
+    <nav>
+      <a class="navpin" href="../">トップ</a>
+      <a class="navpin" href="../typing/">タッチタイピング</a>
+      <a class="navpin" href="../seat/">座席表</a>
+      <a class="navpin" href="../slide/">簡単スライド</a>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">ツール一覧</label>
+      <div class="navlist">
+      <a href="../">トップ</a>
+      <a href="../typing/">タッチタイピング</a>
+      <a href="../seat/">座席表</a>
+      <a href="../slide/">簡単スライド</a>
+      <a href="../kusudama/">くす玉メーカー</a>
+      <span class="now" aria-current="page">ランダム指名メーカー</span>
+      <a href="../timer/">カウントダウンタイマー</a>
+      <a href="../timer/progress/">進行タイマー</a>
+      <a href="../excel-fx/">関数早見表</a>
+      <a href="../seki/">席次表</a>
+      <a href="../keiri/mitsumori/">見積書</a>
+      <a href="../keiri/seikyu/">請求書</a>
+      <!-- ⭐ツールではないので棒線で分けて下に（2026-09-26 本人「棒線引いて分けて載せればいいね」） -->
+      <span class="navsep" aria-hidden="true"></span>
+      <a href="../articles/">記事一覧</a>
+      </div>
+    </nav>
+  </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">ランダム指名メーカー</span><span class="now-short">ランダム指名</span></div></div>
+</header>
+
+<main class="wrap pk-set" id="setScreen">
+  <h1>ランダム指名メーカー</h1>
+  <p class="catch">めくって当てる、トランプとビンゴの指名くじ</p>
+  <div class="intro i169">
+    <div class="intro-txt">
+    <p class="lead"><strong>登録なし・全部無料。</strong>名簿を貼るだけで、トランプやビンゴの形で名前・番号・班を選べます。一周するまで同じ人には当たりません。</p>
+    <ul class="can-do">
+      <li><strong>名前・番号・班</strong>から選べる</li>
+      <li>1回に<strong>1〜5人</strong>、まとめて選べる</li>
+      <li>一周するまで<strong>同じ人は出ない</strong></li>
+    </ul>
+    </div>
+    <figure class="t-sample noprint"><img src="../img/random-sample.png?v=1" width="1280" height="720" alt="トランプの形のランダム指名。伏せたカードをめくると名前が出て、前にめくったカードはグレーで残る"></figure>
+  </div>
+
+  <!-- ⭐サンプルのボタンは①の上（ページの型 12-a） -->
+  <div class="pk-sample noprint">
+    <button type="button" id="sample1Btn">サンプル①（名前・トランプ）</button>
+    <button type="button" id="sample2Btn">サンプル②（班・ビンゴ）</button>
+    <button type="button" id="sampleClear" hidden>サンプルを消す</button>
+    <span class="saving" id="sampleMsg"></span>
+  </div>
+  <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
+
+  <details class="opt" id="opt1">
+    <summary><span class="step">1</span>選ぶもの</summary>
+    <div class="body">
+      <div class="segwrap">
+        <div class="seg" id="segSrc" role="radiogroup" aria-label="選ぶもの">
+          <button type="button" data-v="name" role="radio" class="on">名前</button>
+          <button type="button" data-v="num" role="radio">番号</button>
+          <button type="button" data-v="han" role="radio">班</button>
+        </div>
+      </div>
+
+      <div id="srcName">
+        <!-- ⭐呼び出しは①に置く。0件のときは出さない（ページの型 4-c の6）。名簿の箱は座席表・席次表・簡単スライドと共通 -->
+        <div class="pk-recall" id="recallRow" hidden>
+          <select id="clsSel" aria-label="保存済の名簿"></select>
+          <button class="mini" id="clsLoad" type="button">この名簿を読み込む</button>
+        </div>
+        <p class="pk-lbl">名前（1行に1人）<button type="button" class="tip-btn" aria-label="説明"></button></p>
+        <div class="tip-body" hidden>
+          <p>🔒 <strong>名簿はインターネットに送りません。</strong>使っている端末のブラウザの中だけで選んでいるので、名前がどこかに保存されることも、AIの学習に使われることもありません。パソコン・タブレット・スマホ、どれでも同じです。</p>
+          <ul>
+            <li>Excelの名前の列を、そのまま貼れます。出席番号や男女の列がいっしょに入っていても、名前だけを使います。</li>
+            <li>座席表メーカー・席次表メーカー・簡単スライドで保存した名簿は、この上の「保存済の名簿」から読み込めます。</li>
+            <li>トランプは52枚まで、ビンゴは99個までです。</li>
+          </ul>
+        </div>
+        <textarea id="names" rows="6" placeholder="あいざわ ゆい&#10;いのうえ そうた&#10;うえだ りこ"></textarea>
+        <p class="pk-count"><span id="nameCount">0人</span><button type="button" class="mini" id="namesClear">消す</button></p>
+      </div>
+
+      <div id="srcNum" hidden>
+        <p class="pk-numrow"><label>人数 <input type="number" id="numN" min="1" max="99" value="35" inputmode="numeric"> 人</label></p>
+        <p class="tm-hint">1から、入れた人数までの番号が並びます。出席番号でなくても使えます。</p>
+      </div>
+
+      <div id="srcHan" hidden>
+        <p class="pk-numrow"><label>班の数 <input type="number" id="hanN" min="1" max="52" value="8" inputmode="numeric"> 班</label></p>
+        <p class="tm-hint">「1班」「2班」…が並びます。座席表の班とは別です。</p>
+      </div>
+
+      <p class="safe">🔒 <strong>使っている端末の中だけで完結しています。</strong>安心してご利用ください。</p>
+
+      <!-- ⭐画面の保存は①のいちばん下・チェックを入れたときだけ（ページの型 2・3＝名前が入るため） -->
+      <div class="save-in1">
+        <p class="save-head"><label><input type="checkbox" id="save"> この画面を保存する</label><button type="button" class="tip-btn" aria-label="説明"></button></p>
+        <div class="tip-body" hidden>
+          <p>🔒 残るのは<strong>使っている端末の中だけ</strong>です。どこにも送信されません。チェックを外すと、残していたものを消します。③先生の指定は保存しません。</p>
+          <p><strong>共用の端末では外しておいてください。</strong>貼った名前が使っている端末に残ります。</p>
+        </div>
+        <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。<br>⚠共用の端末で使ったときは、このチェックを外して、この画面を閉じてください。</p>
+        <p><span class="saving" id="savingLabel"></span></p>
+      </div>
+    </div>
+  </details>
+
+  <details class="opt" id="opt2">
+    <summary><span class="step">2</span>選び方</summary>
+    <div class="body">
+      <div class="pk-line">
+        <span class="pk-lbl2">1回に選ぶ数</span>
+        <div class="seg" id="segK" role="radiogroup" aria-label="1回に選ぶ数">
+          <button type="button" data-v="1" role="radio" class="on">1</button>
+          <button type="button" data-v="2" role="radio">2</button>
+          <button type="button" data-v="3" role="radio">3</button>
+          <button type="button" data-v="4" role="radio">4</button>
+          <button type="button" data-v="5" role="radio">5</button>
+        </div>
+        <span class="pk-unit" id="kUnit">人</span>
+      </div>
+      <div class="pk-line">
+        <span class="pk-lbl2">見せ方</span>
+        <div class="seg" id="segView" role="radiogroup" aria-label="見せ方">
+          <button type="button" data-v="card" role="radio" class="on">トランプ</button>
+          <button type="button" data-v="bingo" role="radio">ビンゴ</button>
+        </div>
+      </div>
+      <p class="tm-hint" id="viewHint"></p>
+      <div class="pk-try"><button type="button" id="demoBtn">見本を見る（モニターの形）</button></div>
+    </div>
+  </details>
+
+  <!-- ⭐③はシャッター・はじめは閉じている。子どもから見えないように（2026-09-26 本人「当てたい人の指定は見えないようにシャッターで隠すよ」）
+       ⭐その場だけ＝保存しない（本人「当てない人や当てたい人はその場だけ」） -->
+  <details class="opt" id="opt3">
+    <summary><span class="step">3</span>先生の指定</summary>
+    <div class="body">
+      <p class="hint">使うときだけ開いてください。③の指定は保存できません。ページを閉じると消えます。</p>
+      <p class="pk-lbl">当てたい<span class="pk-u">人</span><button type="button" class="tip-btn" aria-label="説明"></button></p>
+      <div class="tip-body" hidden>
+        <p>選んだ<span class="pk-u">人</span>を、決めた順番で必ず出します。どのカードをめくっても、その順番になったら、その<span class="pk-u">人</span>が出ます。</p>
+        <ul>
+          <li>順番は1<span class="pk-u">人</span>ずつ数えます。3<span class="pk-u">人</span>ずつ選ぶとき、5番目は2回目の2<span class="pk-u">人</span>目です。</li>
+          <li>効くのは1周目だけです。シャッフルしたあとは、ふつうのランダムに戻ります。</li>
+        </ul>
+      </div>
+      <ul class="pk-rows" id="forceRows"></ul>
+      <p><button type="button" class="mini" id="forceAdd">＋ 当てたい<span class="pk-u">人</span>を足す</button></p>
+
+      <p class="pk-lbl pk-gap">当てない<span class="pk-u">人</span></p>
+      <p class="tm-hint">欠席者やこの時間に当てたくない<span class="pk-u">人</span>など。当てない<span class="pk-u">人</span>は、いちばん最後に選ばれます。</p>
+      <ul class="pk-rows" id="exRows"></ul>
+      <p><button type="button" class="mini" id="exAdd">＋ 当てない<span class="pk-u">人</span>を足す</button></p>
+    </div>
+  </details>
+
+  <p class="tm-start"><button type="button" class="primary" id="startBtn">▶ スタート</button></p>
+  <p class="tm-hint center">スタートするとモニター画面いっぱいに出ます。「もどる」で、設定の画面に戻ります。</p>
+
+  <!-- ⭐保存（ページの型 3・4-c・4-d・14-4）。名簿の箱（sakura-tools-rosters-v1）は座席表・席次表・簡単スライドと共通 -->
+  <section class="card pk-save">
+    <h2><span class="step">4</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+    <div class="tip-body" hidden>
+      <p>🔒 <strong>保存先もインターネットではありません。</strong>使っている端末のブラウザの中だけに残るので、ほかの人からは見えません。パソコン・タブレット・スマホ、どれでも同じです。</p>
+      <ul>
+        <li>①の名前を、名簿として<b style="font-size:inherit">20件</b>まで保存できます。</li>
+        <li>座席表メーカー・席次表メーカー・簡単スライドで保存した名簿と、同じ置き場です。どこで保存しても、①の「保存済の名簿」に出ます。</li>
+        <li>番号と班は、数を入れるだけなので保存しません。</li>
+      </ul>
+    </div>
+    <p class="hint">保存した名簿は、ランダム指名メーカー・座席表メーカー・席次表メーカー・簡単スライドで使えます。</p>
+    <p class="safe">🔒 <strong>保存したものは、使っている端末の中だけに残ります。</strong></p>
+    <div class="cls-box">
+      <details class="opt sub">
+        <summary>名簿データに名前を付けて保存<span id="saveCount" class="cnt">0/20</span></summary>
+        <div class="body">
+          <p class="btn-row">
+            <button class="mini" id="saveNew" type="button">新しい名前で保存</button>
+            <button class="mini" id="saveOver" type="button">上書き</button>
+            <button class="mini" id="saveDel" type="button">削除</button>
+          </p>
+          <div class="pick"><label for="selSaved">保存済の名簿</label>
+            <select id="selSaved"><option value="">－</option></select></div>
+          <p><span class="saving" id="saveMsg"></span></p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <details class="howto">
+    <summary>使い方</summary>
+    <div class="body">
+      <ol>
+        <li>①で、選ぶもの（名前・番号・班）を決めます。名前は、Excelの名前の列を貼るだけです。</li>
+        <li>②で、1回に選ぶ数と、見せ方（トランプ・ビンゴ）を選びます。</li>
+        <li>スタートを押すと、モニター画面いっぱいに出ます。モニターに映して使います。</li>
+      </ol>
+      <p class="sub">トランプ</p>
+      <ul>
+        <li>カードは伏せて並びます。段はマーク（♠♥♦♣）、列は番号なので、「ハートの3」のように席から言えます。</li>
+        <li>めくったカードに名前が出ます。選ぶ数だけめくったあと、次のカードをめくると、前にめくったカードは名前が見えたままグレーになり、もうめくれません。</li>
+        <li>全部めくり終わったら「シャッフル」で伏せ直して、2周目に入ります。</li>
+      </ul>
+      <p class="sub">ビンゴ</p>
+      <ul>
+        <li>「回す」を押すと、選ぶ数だけ玉が転がってきます。玉に名前が入っています。</li>
+        <li>出た玉は下に並んでいきます。全部出たら「シャッフル」で2周目です。</li>
+      </ul>
+      <p class="sub">こんなときに</p>
+      <ul>
+        <li>授業で発表する人・音読する人を当てる</li>
+        <li>「どの班からいく？」の順番決め</li>
+        <li>3人いっしょに前に出てもらう、いっしょに朗読してもらう</li>
+        <li>会議や研修で、話す順番を決める</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="howto">
+    <summary>よくある質問</summary>
+    <div class="body">
+      <p class="sub">同じ人ばかり当たりませんか？</p>
+      <p>全員に一周するまで、同じ人は出ません。ふつうのくじは、同じ人が続けて当たることがあります。ランダム指名メーカーは、一度当たった人をその周から外すので、偏りません。</p>
+      <p class="sub">ネットにつながっていないと使えませんか？</p>
+      <p>ページを開いたあとは、使っている端末の中だけで動いています。選ぶたびに通信はしません。</p>
+      <p class="sub">名前が外に送られることはありますか？</p>
+      <p>ありません。名前はブラウザの中だけで使い、どこにも送りません。だから、クラスの名簿をそのまま貼っても安心です。</p>
+      <p class="sub">AIの学習に使われませんか？</p>
+      <p>使われません。名前はどこにも送らないので、学習に使われることもありません。</p>
+      <p class="sub">学校や会社の決まりで、クラウドのサービスが使えません</p>
+      <p>ランダム指名メーカーは、名前をクラウドに置きません。使っている端末のブラウザの中だけで動きます。</p>
+    </div>
+  </details>
+
+  <details class="howto">
+    <summary>データの扱い</summary>
+    <div class="body">
+      <ul>
+        <li>①に貼った名前は、使っている端末のブラウザの中だけで使います。インターネットには送りません。</li>
+        <li>「この画面を保存する」にチェックを入れたときだけ、①②の内容が使っている端末に残ります。</li>
+        <li>③先生の指定は、どこにも残しません。ページを閉じると消えます。</li>
+        <li>④で保存した名簿は、座席表メーカー・席次表メーカー・簡単スライドと同じ置き場に残ります。</li>
+      </ul>
+    </div>
+  </details>
+</main>
+
+<footer class="noprint">
+  <div class="wrap"><span class="fnav"><a href="../about/">運営者情報</a>　<a href="../contact/">お問い合わせ</a>　<a href="../privacy/">プライバシーポリシー</a></span>
+    <span class="copy">さくらツールズ　© 2026 SAKURA tools</span></div>
+</footer>
+
+<!-- ===== 動かしている画面 ===== -->
+<div class="pk-demoback" id="demoBack" hidden></div>
+<div class="pk-run" id="runScreen" hidden>
+  <div class="pk-top">
+    <span class="pk-round" id="roundLbl">1周目</span>
+    <span class="pk-msg" id="runMsg"></span>
+    <span class="pk-left" id="leftLbl"></span>
+  </div>
+  <button type="button" class="pk-fs" id="fsBtn" title="全画面">⛶ 全画面</button>
+  <div class="pk-demo" id="demoBadge" hidden>見本（モニターの形 16:9）</div>
+  <div class="pk-stage" id="stage"></div>
+  <div class="pk-btns">
+    <button type="button" class="pk-b next" id="nextBtn">▶ 次へ</button>
+    <button type="button" class="pk-b shuf" id="shufBtn" hidden>シャッフル</button>
+    <button type="button" class="pk-b back" id="backBtn">↩ もどる</button>
+  </div>
+</div>
+
+<script src="random.js?v=16"></script>
+<script src="../tip.js?v=3"></script>
+</body>
+</html>
