@@ -599,6 +599,28 @@ body.kids .coinbar{display:flex}
 .playleft .playopts .oglabel{margin-left:0}
 .playleft .statsbar{flex-direction:column;gap:6px;margin:0}
 .playleft .statsbar div{flex-direction:row;justify-content:space-between;align-items:center;gap:10px}
+/* ⭐時間・ミス・速さは 2×2（2026-09-27 本人「2×2で並べる案もあるよ」「細くしてもいい」）。
+   ⭐4段に積んでいた高さを半分にして、下にタイルの色の行を入れる。⚠900px以下は今までどおり横1列 */
+@media(min-width:901px){
+  .playleft .statsbar{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .playleft .statsbar div{flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;padding:6px 12px;line-height:1.25}   /* ⚠左12px＝下の設定（padding-left:13px）と字の左端をそろえる（2026-09-17 の決まり） */
+}
+/* ⭐タイルの色（2026-09-27 本人）＝小さな四角を9つ・1行。選んでいる四角に桜色の枠 */
+.tilecol{display:flex;align-items:center;gap:8px;font-size:12px;line-height:1}
+.tilecol .oglabel{margin-left:0;white-space:nowrap;color:var(--sub)}
+.tilecol .sw{display:flex;gap:6px;flex-wrap:nowrap}
+.tilecol button{
+  width:16px;height:16px;padding:0;margin:0;flex:0 0 auto;cursor:pointer;
+  border:1px solid rgba(0,0,0,.1);border-radius:4px;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.6);
+}
+.tilecol button.on{box-shadow:0 0 0 2px #fff,0 0 0 4px #c86a8e}
+/* ⚠スマホ（375px）でも1行に収める＝四角とすき間を少し詰める */
+@media(max-width:430px){
+  .tilecol{gap:6px}
+  .tilecol .sw{gap:4px}
+  .tilecol button{width:14px;height:14px}   /* ⚠左の余白13pxを足したので、もう一段詰めた（2026-09-27） */
+}
 @media(max-width:900px){
   .stagewrap{flex-direction:column;max-width:var(--stagew)}
   .playleft{flex:1 1 auto;width:100%}
@@ -674,6 +696,23 @@ a.stage{display:block;text-decoration:none;color:var(--text)}
 .playleft .playopts .oglabel{font-size:12px;font-weight:400}
 /* ⭐左の設定の左端を、上の箱（時間・ミス…）の中の字の左端にそろえる（2026-09-17 本人） */
 .playleft .playopts{padding-left:13px}
+.playleft .tilecol{padding-left:13px}   /* ⭐タイルの色も同じ左端に（2026-09-27） */
+/* ⭐ボタン（← トップ画面・やり直し）とステージの名前の間を少し開ける（2026-09-27 本人「線なくてもいいから、ホームポジションの上も少し開けて」） */
+.playleft .bar > #stName{margin-top:8px}
+
+/* ⭐左の列のまとまりの間に細い線（2026-09-27 本人「全部くっついてるから、単元ごとにわかるようにしたい」→ 線「やってみて」）。
+   ⭐まとまり＝ボタンと名前／時間・ミス・速さ／終わりに fj に戻る／ノーミスチェック／タイルの色（本人「ノーミスチェックの上もまとまりかな」）
+   ⭐型14-3と同じ＝線はかたまりの区切りに入れる */
+.playleft > .statsbar,
+.playleft > .playopts,
+.playleft > .tilecol{border-top:1px solid var(--line);padding-top:10px}
+@media(min-width:901px){
+  /* ⭐「ノーミスチェック」の上にも線。左の余白ぶん外へ出して、線は列の幅いっぱいに */
+  .playleft .playopts .oglabel{
+    align-self:stretch;border-top:1px solid var(--line);
+    margin:4px 0 0 -13px;padding:9px 0 0 13px;
+  }
+}
 
 /* ⭐練習ページの名前（ひとさし指の上・中央・下 など）の左に、小さいタイル（2026-09-17 本人「サイズは小さくていいから、タイルをおいて（トップと同じ色）」）。
    ⭐形と色は一覧のカードのタイルと同じ（上の .stage::before と共通）。ここでは大きさと置き方だけ変える */
@@ -910,3 +949,12 @@ body.hub:not(.gakusei) .intro{gap:26px}
 /* ⭐コラム（2026-09-21 本人）。「こんなときに使う」と同じ形・罫線つき。⚠使い方（たたみ）の下 */
 .usecase.column{margin-top:26px}
 .usecase.column p{margin:0;font-size:13.5px;line-height:1.9}
+
+/* ⭐友だちに教える（2026-09-26 本人）＝名前の行の一番右。ボタンより弱い、文字のリンクの見た目（本人「同列だと強すぎる」） */
+.namerow .sharebtn{margin-left:auto;background:none;border:0;padding:0 12px 0 2px;color:var(--sub);
+  font-size:13px;text-decoration:none;cursor:pointer;box-shadow:none;position:relative}
+/* ⭐色は薄いグレー・下線の右端を矢印のように折り返す（2026-09-26 本人「色は薄いグレーでいいよ」「アンダーラインの右側に矢印っぽく角付けて。折り返す感じ」） */
+.namerow .sharebtn::after{content:"";position:absolute;left:2px;right:0;bottom:7px;height:1px;background:currentColor}
+.namerow .sharebtn::before{content:"";position:absolute;right:0;bottom:7px;width:8px;height:1px;background:currentColor;
+  transform-origin:right center;transform:rotate(35deg)}
+.namerow .sharebtn:hover{color:var(--pink,#c86a8e)}
