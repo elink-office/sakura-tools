@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="icon" href="../favicon.ico?v=2" sizes="any">
-<link rel="icon" type="image/png" href="../favicon-32.png?v=2">
+<link rel="icon" href="../favicon.ico?v=3" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png?v=3">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
 <!-- ⭐作成中（2026-09-24）。どこともつなげない＝トップのカード・サイトマップ・右上のツール一覧に入れていない
      ⭐日本向けだけ（本人「くす玉は完全に日本だと思ってる。出て来るのが縦書きだし」）
@@ -12,8 +12,8 @@
 <meta name="robots" content="noindex,nofollow">
 <title>【テスト】くす玉メーカー｜優勝や表彰を盛り上げる無料ツール</title>
 <meta name="description" content="名前を打って、スタートを押すだけ。「3・2・1」のあと、くす玉が割れて名前が出ます。金・銀・銅のくす玉で、優勝や表彰、代表の発表を盛り上げられます。">
-<link rel="stylesheet" href="../style.css?v=145">
-<link rel="stylesheet" href="kusudama.css?v=8">
+<link rel="stylesheet" href="../style.css?v=154">
+<link rel="stylesheet" href="kusudama.css?v=12">
 </head>
 <body>
 <div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
@@ -42,13 +42,19 @@
       <a href="../typing/">タッチタイピング</a>
       <a href="../seat/">座席表</a>
       <a href="../slide/">簡単スライド</a>
-      <span class="now" aria-current="page">くす玉メーカー</span>
+      <a href="../random/">ランダム指名</a>
       <a href="../timer/">カウントダウンタイマー</a>
+      <span class="now" aria-current="page">くす玉メーカー</span>
       <a href="../timer/progress/">進行タイマー</a>
       <a href="../excel-fx/">関数早見表</a>
       <a href="../seki/">席次表</a>
+      <a href="../bus/">バスの座席表</a>
+      <a href="../shinkansen/">新幹線の座席表</a>
       <a href="../keiri/mitsumori/">見積書</a>
       <a href="../keiri/seikyu/">請求書</a>
+      <!-- ⭐ツールではないので棒線で分けて下に（2026-09-26 本人「棒線引いて分けて載せればいいね」） -->
+      <span class="navsep" aria-hidden="true"></span>
+      <a href="../articles/">記事一覧</a>
       </div>
     </nav>
   </div>
@@ -57,7 +63,12 @@
 
 <main class="wrap ks-set" id="setScreen">
   <h1>くす玉メーカー</h1>
-  <p class="lead">名前を打って、スタートを押すだけ。「3・2・1」のあと、くす玉が割れて名前が出ます。<br>優勝や表彰、代表の発表を、みんなで盛り上げられます。</p>
+  <div class="intro i169">
+    <div class="intro-txt">
+    <p class="lead">名前を打って、スタートを押すだけ。「3・2・1」のあと、くす玉が割れて名前が出ます。<br>優勝や表彰、代表の発表を、みんなで盛り上げられます。</p>
+    </div>
+    <figure class="t-sample noprint"><img src="../img/kusudama-sample.png?v=2" width="1280" height="720" alt="くす玉が3つ並んで割れたところ。垂れ幕に「第3位 2年1組」「優勝 2年2組」「準優勝 2年3組」"></figure>
+  </div>
   <p class="tip-guide"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
 
   <!-- ⭐①②はシャッター。はじめは開いている（2026-09-26 本人「展開しっぱなしでもいいけど、シャッターにしておいて（こどもたちに見られるのは嫌）」「最初からしまってるより開いていてほしい。あとは使う人が締めたりする」） -->
@@ -76,7 +87,7 @@
     <!-- ⭐くす玉は1〜3個。はじめは3個（2026-09-24 本人） -->
     <div class="ks-countrow">
       <span class="ks-lbl">くす玉の数</span>
-      <div class="ks-seg" id="segCount" role="radiogroup" aria-label="くす玉の数">
+      <div class="seg" id="segCount" role="radiogroup" aria-label="くす玉の数">
         <button type="button" data-n="1" role="radio">1個</button>
         <button type="button" data-n="2" role="radio">2個</button>
         <button type="button" data-n="3" role="radio" class="on">3個</button>
@@ -91,8 +102,8 @@
     <div class="save-in1">
       <p class="save-head"><label><input type="checkbox" id="save"> この画面を保存する</label><button type="button" class="tip-btn" aria-label="説明"></button></p>
       <div class="tip-body" hidden>
-        <p>残るのは<strong>この端末の中だけ</strong>です。どこにも送信されません。チェックを外すと、残していたものを消します。</p>
-        <p><strong>共用の端末では外しておいてください。</strong>打った名前がこの端末に残ります。</p>
+        <p>🔒 残るのは<strong>使っている端末の中だけ</strong>です。どこにも送信されません。チェックを外すと、残していたものを消します。</p>
+        <p><strong>共用の端末では外しておいてください。</strong>打った名前が使っている端末に残ります。</p>
       </div>
       <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。<br>⚠共用の端末で使ったときは、このチェックを外して、この画面を閉じてください。</p>
       <p><span class="saving" id="savingLabel"></span></p>
@@ -104,13 +115,15 @@
     <summary><span class="step">2</span>出し方</summary>
     <div class="body">
     <!-- ⭐AとBは選べる。はじめはA（本人「ひとつずつ出した方が楽しいと思う！」「ひとつずつの方が適している時もある！」） -->
-    <div class="ks-segwrap">
-      <div class="ks-seg" id="segMode" role="radiogroup" aria-label="出し方">
+    <div class="segwrap">
+      <div class="seg" id="segMode" role="radiogroup" aria-label="出し方">
         <button type="button" data-m="one" role="radio" class="on">1つずつ出す</button>
         <button type="button" data-m="row" role="radio">並べて出す</button>
       </div>
     </div>
     <p class="tm-hint center" id="modeHint">1つずつ真ん中に下りてきて、順番に割れます。</p>
+    <!-- ⭐カウントダウンを出すか（2026-09-26 本人「カウントダウンをなしにするっていうもの追加にしたい」→「それで！」）。はじめは出す -->
+    <p class="ks-cd"><label><input type="checkbox" id="cdOn" checked> カウントダウン（3・2・1）を出す</label></p>
     <div class="ks-try">
       <button type="button" id="demoBtn">見本を見る（モニターの形）</button>
     </div>
@@ -120,7 +133,7 @@
   </div>
 
   <p class="tm-start"><button type="button" class="primary" id="startBtn">▶ スタート</button></p>
-  <p class="tm-hint center">スタートすると画面いっぱいに出ます。「次へ」かスペースキーで進みます。</p>
+  <p class="tm-hint center">スタートするとモニター画面いっぱいに出ます。「次へ」かスペースキーで進みます。</p>
 
   <!-- ⭐保存（ページの型 3・4-c・4-d・14-4＝座席表の⑦と同じ形）。章は最後・シャッター・ボタンは mini・名前は押したときに聞く -->
   <section class="card ks-card ks-save">
@@ -182,9 +195,10 @@
 
       <h3>動かしているとき</h3>
       <ul>
-        <li>スタートを押すと、画面いっぱいに出ます。</li>
+        <li>スタートを押すと、モニター画面いっぱいに出ます。</li>
         <li>「次へ」を押すと「3・2・1」が出て、くす玉が割れます。もう一度押すと、次のくす玉に進みます。</li>
-        <li>パソコンなら、スペースキーでも進めます。「もどる」で設定の画面に戻ります。</li>
+        <li>②の「カウントダウン（3・2・1）を出す」のチェックを外すと、「次へ」を押したらすぐに割れます。</li>
+        <li>パソコンなら、スペースキーでも進めます。右上の「✕ とじる」で設定の画面に戻ります。</li>
       </ul>
 
       <h3>保存について</h3>
@@ -197,21 +211,26 @@
   </details>
 </main>
 
+<footer class="noprint">
+  <div class="wrap"><span class="fnav"><a href="../about/">運営者情報</a>　<a href="../contact/">お問い合わせ</a>　<a href="../privacy/">プライバシーポリシー</a></span>
+    <span class="copy">さくらツールズ　© 2026 SAKURA tools</span></div>
+</footer>
+
 <!-- ===== 動かしている画面 ===== -->
 <div class="ks-demoback" id="demoBack" hidden></div>
 <div class="ks-run" id="runScreen" hidden>
-  <button type="button" class="tm-fs" id="fsBtn" title="全画面">⛶ 全画面</button>
+  <!-- ⭐右上＝窓と同じ並び（全画面・✕ とじる）。角は必ず「✕ とじる」（2026-09-27 本人の約束事・ページの型 14-7） -->
+  <div class="run-tr"><button type="button" class="run-fs" id="fsBtn" title="全画面">⛶ 全画面</button><button type="button" class="run-close" id="backBtn">✕ とじる</button></div>
   <div class="tm-demo" id="demoBadge" hidden>見本（モニターの形 16:9）</div>
   <div class="ks-stage" id="stage"></div>
   <div class="ks-321" id="cnt" aria-live="polite"></div>
   <div class="ks-btns">
     <button type="button" class="ks-b next" id="nextBtn">▶ 次へ</button>
-    <button type="button" class="ks-b back" id="backBtn">↩ もどる</button>
   </div>
   <div class="fx" id="fx" aria-hidden="true"></div>
 </div>
 
-<script src="kusudama.js?v=18"></script>
+<script src="kusudama.js?v=20"></script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>

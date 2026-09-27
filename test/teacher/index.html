@@ -3,8 +3,8 @@
 <head>
 <meta name="robots" content="noindex,nofollow">
 <meta charset="utf-8">
-<link rel="icon" href="../favicon.ico?v=2" sizes="any">
-<link rel="icon" type="image/png" href="../favicon-32.png?v=2">
+<link rel="icon" href="../favicon.ico?v=3" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png?v=3">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="max-image-preview:large">
@@ -34,9 +34,9 @@
      ⚠ここの文はぜんぶ仮。⭐言葉はゆうこさんが決める -->
 <title>【テスト】先生におすすめの無料ツール｜さくらツールズ</title>
 <meta name="description" content="授業ですぐ使えるタイマー・くす玉・スライドと、名簿のコピペで作れる座席表。登録なし・全部無料。子どもの名前を入れても、使っている端末の中だけで完結します。">
-<link rel="stylesheet" href="../style.css?v=145">
+<link rel="stylesheet" href="../style.css?v=154">
 <link rel="stylesheet" href="../top.css?v=62">
-<link rel="stylesheet" href="teacher.css?v=1">
+<link rel="stylesheet" href="teacher.css?v=3">
 </head>
 <body>
 <div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
@@ -65,13 +65,19 @@
       <a href="../typing/">タッチタイピング</a>
       <a href="../seat/">座席表</a>
       <a href="../slide/">簡単スライド</a>
-      <a href="../kusudama/">くす玉メーカー</a>
+      <a href="../random/">ランダム指名</a>
       <a href="../timer/">カウントダウンタイマー</a>
+      <a href="../kusudama/">くす玉メーカー</a>
       <a href="../timer/progress/">進行タイマー</a>
       <a href="../excel-fx/">関数早見表</a>
       <a href="../seki/">席次表</a>
+      <a href="../bus/">バスの座席表</a>
+      <a href="../shinkansen/">新幹線の座席表</a>
       <a href="../keiri/mitsumori/">見積書</a>
       <a href="../keiri/seikyu/">請求書</a>
+      <!-- ⭐ツールではないので棒線で分けて下に（2026-09-26 本人「棒線引いて分けて載せればいいね」） -->
+      <span class="navsep" aria-hidden="true"></span>
+      <a href="../articles/">記事一覧</a>
       </div>
     </nav>
   </div>
@@ -87,11 +93,61 @@
     <p class="lead">登録なし・全部無料。子どもの名前を入れても、<strong>使っている端末の中だけ</strong>で完結します。</p>
   </div>
 
+  <!-- ⭐先生用ツール一覧（2026-09-27 本人「開いてすぐ使えるの上に、ドロップダウンリストで、先生用ツール一覧も欲しい」）
+       ⭐押すと下に浮いて開く（ヘッダーの「ツール一覧」と同じ見た目）。⭐開いてもカードは下にずれない
+       ⚠箱（details.opt.sub）はやめた（2026-09-27 本人「この箱が嫌だな。右にシャッターボタンがあるとわかりにくい。開いてすぐ使えると一緒だし」）
+         ＝しるし（▼）は文字のすぐ右・ボタンは左寄せで小さく
+       ⭐中身はカードと同じ2つのまとまり・同じ並び。⚠カードを足したら、ここにも1行足す -->
+  <details class="t-list" id="tList">
+    <summary>先生用ツール一覧</summary>
+    <div class="t-list-pop">
+      <div class="t-list-grp">
+        <p>開いてすぐ使える</p>
+        <ul>
+          <li><a href="../random/">ランダム指名メーカー</a></li>
+          <li><a href="../kusudama/">くす玉メーカー</a></li>
+          <li><a href="../slide/">簡単スライドメーカー</a></li>
+          <li><a href="../timer/">カウントダウンタイマー</a></li>
+        </ul>
+      </div>
+      <div class="t-list-grp">
+        <p>じっくり使う</p>
+        <ul>
+          <li><a href="../seat/">座席表メーカー</a></li>
+          <li><a href="../bus/">バスの座席表メーカー</a></li>
+          <li><a href="../shinkansen/">新幹線の座席表メーカー</a></li>
+          <li><a href="../seki/">席次表メーカー</a></li>
+          <li><a href="../typing/">さくらタッチタイピング</a></li>
+        </ul>
+      </div>
+    </div>
+  </details>
+
   <!-- ⭐上＝開いてすぐ使える／下＝じっくり作る（2026-09-25 本人「カウントダウンタイマーとかスライドとかくす玉はすぐ使えるから」）
        ⭐知らない先生がDMで開いたとき、まず数秒で試せるものを上に。⚠見出しの言葉は仮 -->
   <h2 class="t-group">開いてすぐ使える<small>準備なし。開いたらそのまま授業で</small></h2>
-  <!-- ⭐並び＝簡単スライド→カウントダウンタイマー→くす玉→進行タイマー（2026-09-25 本人） -->
+  <!-- ⭐並び＝ランダム指名（大）→くす玉（大）→簡単スライド→カウントダウンタイマー（2026-09-27）。前＝簡単スライド→カウントダウンタイマー→くす玉→進行タイマー（2026-09-25 本人） -->
   <div class="t-cards">
+
+    <!-- ⭐ランダム指名（2026-09-27 本人「先生用のページに掲載したい」）。⭐すぐ使える道具なので上の段。絵つきで左に大きく。⚠カードの文は仮 -->
+    <a class="t-card big school" id="random" href="../random/">
+      <div class="t-tool">
+        <span class="nm">ランダム指名メーカー</span>
+        <span class="ds">名簿を貼るだけで、トランプやビンゴで指名。一周するまで同じ人には当たらないから、順番決めも公平に！</span>
+        <img class="t-shot" src="../img/random-sample.png?v=2" width="1280" height="720" alt="トランプの形のランダム指名。伏せたカードが並び、めくると名前が出る">
+      </div>
+    </a>
+
+    <!-- ⭐くす玉も絵つきの大きいカードに（2026-09-27 本人「先生って、ビジュアル大事だと思っててさ。カード大きくなってもいいからこれもカードに入れたい」）
+         ⭐並び＝ランダム指名（大）・くす玉（大）・右にスライドとカウントダウンタイマー（小2つ）
+         ⚠進行タイマーのカードはまた外した（右の「ほかのツール」にだけ残す）。2026-09-25「並びが現時点できれいになる」→ 09-27 空きを埋めるため戻した → 09-27 くす玉が大きくなって、また外すと並びがそろう -->
+    <a class="t-card big school" id="kusudama" href="../kusudama/">
+      <div class="t-tool">
+        <span class="nm">くす玉メーカー</span>
+        <span class="ds">名前を打って「3・2・1」でパカッ！金・銀・銅のくす玉で、優勝や表彰、代表の発表を盛り上げよう。</span>
+        <img class="t-shot" src="../img/kusudama-sample.png?v=2" width="1280" height="720" alt="くす玉が3つ並んで割れたところ。垂れ幕に「第３位 ２年１組」「優勝 ２年２組」「準優勝 ２年３組」">
+      </div>
+    </a>
 
     <a class="t-card school" id="slide" href="../slide/">
       <div class="t-tool">
@@ -107,34 +163,35 @@
       </div>
     </a>
 
-    <a class="t-card school" id="kusudama" href="../kusudama/">
-      <div class="t-tool">
-        <span class="nm">くす玉メーカー</span>
-        <span class="ds">名前を打って「3・2・1」でパカッ！金・銀・銅のくす玉で、優勝や表彰、代表の発表を盛り上げよう。</span>
-      </div>
-    </a>
-
-    <!-- ⭐進行タイマーは今は外した（2026-09-25 本人「そうすると、並びが現時点できれいになる」）＝上3枚・下3枚。右の「ほかのツール」にだけ残す -->
 
   </div>
 
   <h2 class="t-group">じっくり使う<small>名簿を貼って、一度作れば使い回せる</small></h2>
-  <!-- ⭐並び＝タッチタイピング→座席表→席次表（2026-09-25 本人） -->
+  <!-- ⭐並び＝座席表→バス→新幹線／席次表→タッチタイピング（2026-09-27 本人「座席、バス、新幹線を上に。下が席次とタイピングで」）。前＝タイピング→座席表→席次表（2026-09-25） -->
   <div class="t-cards">
-
-    <a class="t-card big work" id="typing" href="../typing/">
-      <div class="t-tool">
-        <span class="nm">さくら<img class="inlogo" src="../img/logo-sakura-64.png?v=2" srcset="../img/logo-sakura-64.png?v=2 1x, ../img/logo-sakura-128.png?v=2 2x" alt="">タッチタイピング</span>
-        <span class="ds">登録なし・全部無料。ホームポジションの練習や、長文にもチャレンジできる！ミスを減らす設計で、タッチタイピングへの近道に！</span>
-        <img class="t-shot" src="../img/typing-sample.png?v=14" width="1280" height="720" alt="ホームポジションの練習画面。タイルの枠とキーボードがあり、打つキー（f）が光っている">
-      </div>
-    </a>
 
     <a class="t-card big school" id="seat" href="../seat/">
       <div class="t-tool">
         <span class="nm">座席表メーカー</span>
         <span class="ds">名簿のコピペで、簡単席替え。席の形、30人・40人でも思いどおり。そのうえPDFもモニター表示もボタンひとつ！</span>
         <img class="t-shot" src="../img/seat-sample.png?v=10" width="1280" height="720" alt="33人・6列の教室の座席表。3人の班やかぎ型の班も作れる">
+      </div>
+    </a>
+
+    <!-- ⭐バス・新幹線（2026-09-27 本人「すぐ使うものではないから下でいい」）＝座席表の隣（2026-09-27 本人「座席、バス、新幹線を上に。下が席次とタイピングで」）。⚠カードの文は仮 -->
+    <a class="t-card big school" id="bus" href="../bus/">
+      <div class="t-tool">
+        <span class="nm">バスの座席表メーカー</span>
+        <span class="ds">名簿を貼って、バスの形を選ぶだけ。前の席の指定や、隣にしない設定も簡単。遠足のバスの席がA4の1枚に！</span>
+        <img class="t-shot" src="../img/bus-card.png?v=1" width="760" height="428" alt="遠足のバスの座席表。班ごとに色の枠で分かれ、先生は前の通路側">
+      </div>
+    </a>
+
+    <a class="t-card big school" id="shinkansen" href="../shinkansen/">
+      <div class="t-tool">
+        <span class="nm">新幹線の座席表メーカー</span>
+        <span class="ds">旅行会社からの号車と列を入れるだけ。号車がまたがっても1枚に。修学旅行の新幹線の座席を、班ごとに！</span>
+        <img class="t-shot" src="../img/shinkansen-card.png?v=1" width="760" height="428" alt="修学旅行の新幹線の座席表。5号車の席が、班ごとに色の枠で分かれている">
       </div>
     </a>
 
@@ -147,7 +204,17 @@
       </div>
     </a>
 
+    <a class="t-card big work" id="typing" href="../typing/">
+      <div class="t-tool">
+        <span class="nm">さくら<img class="inlogo" src="../img/logo-sakura-64.png?v=2" srcset="../img/logo-sakura-64.png?v=2 1x, ../img/logo-sakura-128.png?v=2 2x" alt="">タッチタイピング</span>
+        <span class="ds">登録なし・全部無料。ホームポジションの練習や、長文にもチャレンジできる！ミスを減らす設計で、タッチタイピングへの近道に！</span>
+        <img class="t-shot" src="../img/typing-sample.png?v=14" width="1280" height="720" alt="ホームポジションの練習画面。タイルの枠とキーボードがあり、打つキー（f）が光っている">
+      </div>
+    </a>
+
+
     <!-- ⭐関数早見表は外した（2026-09-25 本人「先生関数覚える暇ないよ多分」）。右の「ほかのツール」にだけ残す -->
+
 
   </div>
 
@@ -165,7 +232,7 @@
 
   <section class="t-about">
     <h2>名簿は一度入れれば使い回せる</h2>
-    <p>保存した名簿は、<strong>座席表メーカー・席次表メーカー・簡単スライドメーカー</strong>で共通です。座席表で保存したクラスの名簿を、スライドでもそのまま呼び出せます。</p>
+    <p>保存した名簿は、<strong>座席表メーカー・席次表メーカー・簡単スライドメーカー・ランダム指名メーカー・バスと新幹線の座席表メーカー</strong>で共通です。座席表で保存したクラスの名簿を、スライドでもそのまま呼び出せます。</p>
   </section>
 
   </div>
@@ -176,9 +243,12 @@
       <li><a href="../slide/">簡単スライドメーカー</a></li>
       <li><a href="../timer/">カウントダウンタイマー</a></li>
       <li><a href="../kusudama/">くす玉メーカー</a></li>
+      <li><a href="../random/">ランダム指名メーカー</a></li>
       <li><a href="../typing/">さくらタッチタイピング</a></li>
       <li><a href="../seat/">座席表メーカー</a></li>
       <li><a href="../seki/">席次表メーカー</a></li>
+      <li><a href="../bus/">バスの座席表メーカー</a></li>
+      <li><a href="../shinkansen/">新幹線の座席表メーカー</a></li>
     </ul>
 
     <h2>ほかのツール</h2>
@@ -202,5 +272,13 @@
   </div>
 </footer>
 
+<!-- ⭐先生用ツール一覧：外を押す・Esc で閉じる（ヘッダーの一覧と同じふるまい） -->
+<script>
+(function(){
+  var d=document.getElementById("tList"); if(!d) return;
+  document.addEventListener("click",function(e){ if(d.open && !d.contains(e.target)) d.open=false; });
+  document.addEventListener("keydown",function(e){ if(e.key==="Escape" && d.open){ d.open=false; d.querySelector("summary").focus(); } });
+})();
+</script>
 </body>
 </html>

@@ -1,0 +1,117 @@
+/* バスの座席表メーカー（2026-09-27 作成中）
+   ⭐設定の画面の部品は、ランダム指名メーカーと同じ形（ページの型 14）。あちらのファイルには触らない
+   ⭐紙＝A4たて1枚。大きさは mm で決めて、画面では --pxmm（1mm が何点か）を掛けて描く（ページの型 16-b） */
+:root{ color-scheme: light; }
+input[type=checkbox], input[type=radio]{ accent-color: var(--pink); }
+
+/* ===== 設定の画面 ===== */
+.bs-set .lead{margin-bottom:10px}
+.bs-sample{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;margin:14px 0 14px}
+.bs-set .tip-guide{margin-bottom:10px}
+.tm-hint{font-size:.82rem;color:var(--ink-soft);margin:8px 0 0}
+.tm-hint.center{text-align:center}
+.tm-hint:empty{display:none}
+
+.bs-recall{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 12px;padding:0 0 10px;border-bottom:1px dashed var(--line)}
+.bs-recall[hidden]{display:none}
+.bs-recall select{height:34px;max-width:14em;font-size:.95rem;border-radius:8px;border:1px solid var(--line);padding:4px 8px;font-family:inherit}
+.bs-lbl{font-weight:700;margin:0 0 6px;font-size:.95rem}
+.bs-lbl.bs-gap,.bs-lbl2.bs-gap{margin-top:18px}
+.bs-lbl2{font-size:.95rem;min-width:5em;margin:0}
+#names{min-height:150px;width:100%}
+.bs-count{display:flex;align-items:center;gap:10px;margin:6px 0 0;font-size:.9rem;color:var(--ink-soft)}
+
+.bs-line{display:flex;align-items:center;flex-wrap:wrap;gap:10px 16px;margin:0 0 12px}
+.bs-line[hidden]{display:none}
+.bs-line label{margin:0;display:inline-flex;align-items:center;gap:4px;font-size:.95rem}
+.bs-line input[type=number]{width:4.5em;font-size:1rem;padding:6px 8px;border-radius:8px;border:1px solid var(--line);font-family:inherit}
+.bs-line input[type=text]{width:9em;font-size:1rem;padding:6px 8px;border-radius:8px;border:1px solid var(--line);font-family:inherit}
+.bs-line select{font-size:.95rem;padding:6px 8px;border-radius:8px;border:1px solid var(--line);font-family:inherit;background:#fff}
+.chk-inline{display:inline-flex;align-items:center;gap:6px}
+
+.bs-rows{list-style:none;margin:0 0 6px;padding:0;display:flex;flex-direction:column;gap:6px}
+.bs-rows li{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bs-rows input{font-size:.92rem;padding:5px 8px;border-radius:8px;border:1px solid var(--line);font-family:inherit;width:11em}
+.bs-rows input::-webkit-calendar-picker-indicator{width:10px;height:10px;padding:0;margin:0;opacity:.5}
+.bs-rows select{font-size:.92rem;padding:5px 8px;border-radius:8px;border:1px solid var(--line);font-family:inherit;background:#fff}
+.bs-rows .mvbtn{width:28px;height:26px;padding:0;font-size:11px;color:#9a9ea4;background:#f2f3f5;border:0;border-radius:4px;box-shadow:none}
+/* ⭐ほかのページの「▶ スタート」と同じ形（ページの型 8-a）＝上18px・ボタン20px・下に案内の1行（6px）・その下22px */
+.bs-go{text-align:center;margin:18px 0 0}
+.bs-gomsg{margin:6px 0 22px}
+.bs-go .primary{font-size:1.25rem;padding:14px 48px}
+
+.save-in1{margin-top:14px;padding-top:12px;border-top:1px dashed #dcdfe3}
+.save-head{margin:0 0 4px}
+.save-head label{font-weight:bold;display:inline-block;margin:0}
+.bs-save{margin-top:22px}
+.bs-save .cls-box details.opt.sub{margin:10px 0 0}
+.bs-save .pick{margin-top:10px}
+.bs-save .pick select{margin-left:6px;font-size:.95rem;padding:6px 10px;border-radius:8px;border:1px solid var(--line);font-family:inherit}
+#saveMsg:empty{display:none}
+
+/* ④ 席に入っていない人（押して席に入れる） */
+.bs-chips{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:8px 0 10px;padding:8px 10px;background:var(--bg);border-radius:var(--radius)}
+.bs-chips[hidden]{display:none}
+.bs-chips-lbl{font-size:.8rem;color:var(--ink-soft);margin-right:4px}
+.bs-chip{font-size:.85rem;padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;box-shadow:none;font-weight:normal}
+.bs-chip.on,.bs-chip.on:hover{background:var(--pink);color:#fff;border-color:var(--pink)}
+.bs-selrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 10px;font-size:.9rem}
+.bs-selrow[hidden]{display:none}
+.print-line{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:12px 0 0}
+
+/* ===== 紙（A4たて） =====
+   ⭐幅と高さは bus.js の fitSheet が px で入れる。--pxmm ＝ 画面の 1mm が何点か（ページの型 16-b）
+   🔴⚠画面用の目盛りは必ず @media screen で囲む */
+#sheetBox{margin:8px 0 0;overflow:hidden}
+.sheet{font-family:"Noto Sans JP",sans-serif;box-sizing:border-box;display:flex;flex-direction:column;--mm:calc(var(--pxmm,3.7795)*1px)}
+@media screen{
+  .sheet{padding:calc(12*var(--pxmm,3.7795)*1px)}
+  .sheet-credit{font-size:calc(3.2*var(--pxmm,3.7795)*1px);margin-top:auto}
+}
+.sheet-head{margin-bottom:calc(2*var(--mm))}
+.bus{display:grid;justify-content:center;align-content:start;
+  grid-template-columns:calc(7*var(--mm)) calc(34*var(--mm)) calc(34*var(--mm)) calc(22*var(--mm)) calc(34*var(--mm)) calc(34*var(--mm)) calc(7*var(--mm));   /* ⭐右にも列の番号 */
+  gap:calc(1.5*var(--mm)) calc(1.5*var(--mm));margin:calc(2*var(--mm)) auto 0}
+.bus>*{height:calc(var(--sh,16)*var(--mm));box-sizing:border-box;min-width:0}
+.bus .front{height:calc(9*var(--mm));grid-column:span 2;border:1px solid #333;border-radius:calc(1.2*var(--mm));background:#efefef;
+  display:flex;align-items:center;justify-content:center;font-size:calc(3.2*var(--mm));color:#333}
+.bus .front.door{border-radius:calc(6*var(--mm)) calc(1.2*var(--mm)) calc(1.2*var(--mm)) calc(1.2*var(--mm));border-color:#c9ccd1;background:#f8f8f9}   /* ⭐入口はうすく・字は濃いまま（本人）。運転席は今のまま */
+.bus .front.drv{border-radius:calc(1.2*var(--mm)) calc(6*var(--mm)) calc(1.2*var(--mm)) calc(1.2*var(--mm))}
+.bus .blank{height:calc(9*var(--mm))}
+.bus .num{display:flex;align-items:center;justify-content:center;font-size:calc(4.4*var(--mm));color:#555}   /* ⭐太字はやめた（2026-09-27 本人「サイズはいいけど、太字はやめよう」） */   /* ⭐列の番号は大きく（本人「このままだと結局目で見て数えるようになる」） */
+.bus .aisle{display:flex;align-items:center;justify-content:center}
+/* ⭐席の枠はうすい線・名前は太く濃く（2026-09-27 本人「席の枠は薄い線にして。名前を強調したい」） */
+.bus .seat{border:1px solid #c9ccd1;border-radius:calc(1.2*var(--mm));background:#fff;position:relative;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden}
+.bus .seat .cd{position:absolute;left:calc(1*var(--mm));top:calc(.6*var(--mm));font-size:calc(2.4*var(--mm));color:#999;line-height:1}
+.bus .seat .nm{font-size:calc(var(--fs,3.8)*var(--mm));white-space:nowrap;line-height:1.2;color:#111;font-weight:700;padding:0 calc(1*var(--mm))}
+.bus .seat.hojo{width:calc(16*var(--mm));height:calc(var(--sh,16)*var(--mm)*.8);border-style:dashed;background:#fafafa}
+.bus .seat.hojo .cd{font-size:calc(2*var(--mm))}
+.bus .backrow{grid-column:2 / 7;display:flex;gap:calc(1.5*var(--mm))}
+.bus .backrow .seat{flex:1 1 0;height:100%}
+/* 選んでいる席（画面だけ。PDFの前に外す） */
+.bus .seat.sel{box-shadow:inset 0 0 0 3px var(--pink);background:#fdeef4}
+@media (hover:hover){ .bus .seat:hover{background:#fbf3f6} }
+
+/* ===== 詳しい条件（離す・隣にする・班）2026-09-27 ===== */
+.bs-and{font-size:.9rem;color:var(--ink-soft)}
+#sepRows select,#adjRows select{max-width:10em}
+.bs-warn{margin:6px 0 10px;font-size:.88rem;color:#b3261e;font-weight:700}
+.bs-warn[hidden]{display:none}
+/* 班の色＝枠の線（2026-09-27 本人「塗りつぶしでなくて、枠だけに線に」）。色は HAN_COLORS。⭐白黒でも分かるように右上に「1班」（字も班の色） */
+.bus .seat.hg{border:calc(.8*var(--mm)) solid var(--hc)}   /* ⚠.6mm だと画面で1点に丸められて細かった */
+.bus .seat .hb{position:absolute;right:calc(1*var(--mm));top:calc(.5*var(--mm));font-size:calc(2.4*var(--mm));color:var(--hc,#555);font-weight:700;line-height:1}
+/* 条件を守れていない席＝赤い枠（紙には出さない＝PDFのときは描かない） */
+.bus .seat.bad{box-shadow:inset 0 0 0 2px #d9534f}
+
+/* ===== 班の一覧（名前ごとに班を選ぶ・2026-09-27）＝左の線が班の色 ===== */
+.bs-hanlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(11.5em,1fr));gap:6px 10px;margin:10px 0 0;max-height:24em;overflow:auto;padding:2px}
+.bs-hi{display:flex;align-items:center;justify-content:space-between;gap:6px;margin:0;font-size:.88rem;padding:3px 6px 3px 8px;border-left:4px solid var(--hc,#e3e5e8);background:#fff;border-radius:4px}
+.bs-hi span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.bs-hi select{font-size:.85rem;padding:2px 4px;border-radius:6px;border:1px solid var(--line);background:#fff;font-family:inherit}
+#hanMsg:empty{display:none}
+
+/* 班でまとめ直す（2026-09-27） */
+.bs-regroup{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 10px}
+.bs-regroup[hidden]{display:none}
+#regroupMsg:empty{display:none}

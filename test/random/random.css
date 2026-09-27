@@ -46,12 +46,12 @@ input[type=checkbox], input[type=radio]{ accent-color: var(--pink); }
 
 /* ===== 動かしている画面 ===== */
 .pk-run{position:fixed;inset:0;z-index:100;overflow:hidden;container-type:size;
-  background:radial-gradient(ellipse at 50% 30%,#fffaf6 0%,#f7eef3 55%,#eef0f6 100%)}
+  background:#fff}   /* ⭐地は白（2026-09-27 本人「白にしてみて。トランプは、少し影がついてるから大丈夫と思う」）。前＝うすいピンクのぼかし→いつものグレー（--bg） */
 .pk-run[hidden]{display:none}
 .pk-top{position:absolute;left:0;right:0;top:0;height:9cqh;display:flex;align-items:center;justify-content:center;gap:3cqw;
   font-size:min(3.4cqh,26px);color:var(--ink);z-index:5;pointer-events:none}
 .pk-round{position:absolute;left:2cqw;font-weight:800;color:var(--pink)}
-.pk-left{position:absolute;right:12cqw;color:var(--ink-soft)}
+.pk-left{position:absolute;right:max(12cqw,220px);color:var(--ink-soft)}   /* ⚠右上の「全画面・✕ とじる」と重ならない */
 .pk-msg{font-weight:700}
 .pk-fs{position:absolute;top:12px;right:12px;font-size:13px;padding:6px 12px;opacity:.75;z-index:30}
 .pk-demo{position:absolute;bottom:12px;left:12px;font-size:13px;font-weight:700;color:#fff;background:var(--pink);padding:5px 12px;border-radius:999px;opacity:.9;z-index:30}
@@ -73,7 +73,7 @@ input[type=checkbox], input[type=radio]{ accent-color: var(--pink); }
 .pk-run.framed{inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);
   width:min(94vw, calc((100vh - 40px) * 16 / 9));aspect-ratio:16/9;height:auto;
   border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.45);outline:3px solid #fff}
-.pk-run.framed .pk-fs{display:none}
+.pk-run.framed .pk-fs,.pk-run.framed .run-fs{display:none}   /* 見本では全画面は出さない（✕ とじるは出す） */
 
 /* ===== トランプ =====
    ⭐段＝マーク（♠♥♦♣）、列＝番号。子どもが「ハートの3」と言える（2026-09-26 本人「マークのほうがいいね」）
@@ -116,6 +116,8 @@ input[type=checkbox], input[type=radio]{ accent-color: var(--pink); }
    ⚠前の形（ガラスの丸＋ハンドルが横）はガチャガチャに見えた。控え＝_もどす6-09-26_ビンゴをカゴ型にする前\ */
 .pk-gara{position:absolute;left:46%;top:14%;width:min(20cqw,40cqh);aspect-ratio:1;transform:translateX(-50%)}
 .pk-stand{position:absolute;left:-12%;top:0;width:124%;height:auto;overflow:visible;z-index:1}
+/* ⭐皿の手前＝落ちてきた玉（.pk-drop z-index 4）より前（2026-09-27） */
+.pk-cupfront{position:absolute;left:-12%;top:0;width:124%;height:auto;overflow:visible;z-index:5;pointer-events:none}
 .pk-dome{position:absolute;inset:4%;border-radius:50%;z-index:2;overflow:hidden;
   background:radial-gradient(circle at 40% 35%,rgba(255,250,235,.55),rgba(255,236,190,.25) 70%,rgba(200,160,60,.18))}
 .pk-mix{position:absolute;inset:0}
@@ -164,3 +166,7 @@ input[type=checkbox], input[type=radio]{ accent-color: var(--pink); }
 .hw{display:inline-block;line-height:1;white-space:nowrap}
 .hn{font-size:1em;line-height:1}
 .hs{font-size:.4em;line-height:1;margin-left:.04em;position:relative;top:-.1em}
+
+/* ⭐「出た人（班）」の見出しは、下に1つ並んでから出す（2026-09-27 本人「何もないと『出た人』っていうのが違和感がある。2つ目を置くときに『出た人』を書いておくっていうのはどう？」）
+   ＝1つ目の玉のときは下の並びが空なので見出しも見せない。場所は取ったまま（visibility）＝玉の位置がずれない */
+.pk-right:has(.pk-hist:empty) .pk-histlbl{visibility:hidden}

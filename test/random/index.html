@@ -12,8 +12,8 @@
 <meta name="robots" content="noindex,nofollow">
 <title>【テスト】ランダム指名メーカー｜トランプとビンゴで名前・番号・班を選ぶ</title>
 <meta name="description" content="名簿を貼るだけで、トランプをめくる・ビンゴの玉が転がる形で、名前・番号・班をランダムに選べます。1回に1〜5人。全員に一周するまで同じ人は出ません。登録なし・無料。">
-<link rel="stylesheet" href="../style.css?v=149">
-<link rel="stylesheet" href="random.css?v=14">
+<link rel="stylesheet" href="../style.css?v=154">
+<link rel="stylesheet" href="random.css?v=19">
 </head>
 <body>
 <div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
@@ -42,12 +42,14 @@
       <a href="../typing/">タッチタイピング</a>
       <a href="../seat/">座席表</a>
       <a href="../slide/">簡単スライド</a>
-      <a href="../kusudama/">くす玉メーカー</a>
-      <span class="now" aria-current="page">ランダム指名メーカー</span>
+      <span class="now" aria-current="page">ランダム指名</span>
       <a href="../timer/">カウントダウンタイマー</a>
+      <a href="../kusudama/">くす玉メーカー</a>
       <a href="../timer/progress/">進行タイマー</a>
       <a href="../excel-fx/">関数早見表</a>
       <a href="../seki/">席次表</a>
+      <a href="../bus/">バスの座席表</a>
+      <a href="../shinkansen/">新幹線の座席表</a>
       <a href="../keiri/mitsumori/">見積書</a>
       <a href="../keiri/seikyu/">請求書</a>
       <!-- ⭐ツールではないので棒線で分けて下に（2026-09-26 本人「棒線引いて分けて載せればいいね」） -->
@@ -71,7 +73,7 @@
       <li>一周するまで<strong>同じ人は出ない</strong></li>
     </ul>
     </div>
-    <figure class="t-sample noprint"><img src="../img/random-sample.png?v=1" width="1280" height="720" alt="トランプの形のランダム指名。伏せたカードをめくると名前が出て、前にめくったカードはグレーで残る"></figure>
+    <figure class="t-sample noprint"><img src="../img/random-sample.png?v=2" width="1280" height="720" alt="トランプの形のランダム指名。白い画面に伏せたカードが並び、めくると名前が出て、前にめくったカードはグレーで残る"></figure>
   </div>
 
   <!-- ⭐サンプルのボタンは①の上（ページの型 12-a） -->
@@ -105,7 +107,7 @@
           <p>🔒 <strong>名簿はインターネットに送りません。</strong>使っている端末のブラウザの中だけで選んでいるので、名前がどこかに保存されることも、AIの学習に使われることもありません。パソコン・タブレット・スマホ、どれでも同じです。</p>
           <ul>
             <li>Excelの名前の列を、そのまま貼れます。出席番号や男女の列がいっしょに入っていても、名前だけを使います。</li>
-            <li>座席表メーカー・席次表メーカー・簡単スライドで保存した名簿は、この上の「保存済の名簿」から読み込めます。</li>
+            <li>④保存したデータの利用に並んでいる道具で保存した名簿は、この上の「保存済の名簿」から読み込めます。</li>
             <li>トランプは52枚まで、ビンゴは99個までです。</li>
           </ul>
         </div>
@@ -189,7 +191,7 @@
   </details>
 
   <p class="tm-start"><button type="button" class="primary" id="startBtn">▶ スタート</button></p>
-  <p class="tm-hint center">スタートするとモニター画面いっぱいに出ます。「もどる」で、設定の画面に戻ります。</p>
+  <p class="tm-hint center">スタートするとモニター画面いっぱいに出ます。右上の「✕ とじる」で、設定の画面に戻ります。</p>
 
   <!-- ⭐保存（ページの型 3・4-c・4-d・14-4）。名簿の箱（sakura-tools-rosters-v1）は座席表・席次表・簡単スライドと共通 -->
   <section class="card pk-save">
@@ -198,11 +200,11 @@
       <p>🔒 <strong>保存先もインターネットではありません。</strong>使っている端末のブラウザの中だけに残るので、ほかの人からは見えません。パソコン・タブレット・スマホ、どれでも同じです。</p>
       <ul>
         <li>①の名前を、名簿として<b style="font-size:inherit">20件</b>まで保存できます。</li>
-        <li>座席表メーカー・席次表メーカー・簡単スライドで保存した名簿と、同じ置き場です。どこで保存しても、①の「保存済の名簿」に出ます。</li>
+        <li>④の中に並んでいる道具で保存した名簿と、同じ置き場です。どこで保存しても、①の「保存済の名簿」に出ます。</li>
         <li>番号と班は、数を入れるだけなので保存しません。</li>
       </ul>
     </div>
-    <p class="hint">保存した名簿は、ランダム指名メーカー・座席表メーカー・席次表メーカー・簡単スライドで使えます。</p>
+    <p class="roster-tools">保存した名簿は、次の道具で使えます。</p>
     <p class="safe">🔒 <strong>保存したものは、使っている端末の中だけに残ります。</strong></p>
     <div class="cls-box">
       <details class="opt sub">
@@ -273,7 +275,7 @@
         <li>①に貼った名前は、使っている端末のブラウザの中だけで使います。インターネットには送りません。</li>
         <li>「この画面を保存する」にチェックを入れたときだけ、①②の内容が使っている端末に残ります。</li>
         <li>③先生の指定は、どこにも残しません。ページを閉じると消えます。</li>
-        <li>④で保存した名簿は、座席表メーカー・席次表メーカー・簡単スライドと同じ置き場に残ります。</li>
+        <li>④で保存した名簿は、④の中に並んでいる道具と同じ置き場に残ります。</li>
       </ul>
     </div>
   </details>
@@ -292,17 +294,18 @@
     <span class="pk-msg" id="runMsg"></span>
     <span class="pk-left" id="leftLbl"></span>
   </div>
-  <button type="button" class="pk-fs" id="fsBtn" title="全画面">⛶ 全画面</button>
+  <!-- ⭐右上＝窓と同じ並び（全画面・✕ とじる）。角は必ず「✕ とじる」（2026-09-27 本人の約束事・ページの型 14-7） -->
+  <div class="run-tr"><button type="button" class="run-fs" id="fsBtn" title="全画面">⛶ 全画面</button><button type="button" class="run-close" id="backBtn">✕ とじる</button></div>
   <div class="pk-demo" id="demoBadge" hidden>見本（モニターの形 16:9）</div>
   <div class="pk-stage" id="stage"></div>
   <div class="pk-btns">
     <button type="button" class="pk-b next" id="nextBtn">▶ 次へ</button>
     <button type="button" class="pk-b shuf" id="shufBtn" hidden>シャッフル</button>
-    <button type="button" class="pk-b back" id="backBtn">↩ もどる</button>
   </div>
 </div>
 
-<script src="random.js?v=16"></script>
+<script src="../roster-tools.js?v=1"></script>
+<script src="random.js?v=20"></script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>

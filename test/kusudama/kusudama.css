@@ -25,10 +25,7 @@
 
 .ks-countrow{display:flex;align-items:center;gap:12px;margin:0 0 10px}
 .ks-lbl{font-size:.95rem}
-.ks-seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--bg)}
-.ks-seg button{border:0;background:transparent;border-radius:999px;padding:6px 14px;font-size:.92rem;color:var(--ink-soft)}
-.ks-seg button.on{background:#fff;color:var(--pink);font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,.1)}
-.ks-segwrap{text-align:center}
+/* 選ぶ欄は共通の .seg（style.css）を使う（2026-09-26） */
 
 .ks-items{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
 .ks-items li{display:flex;align-items:center;gap:10px}
@@ -79,7 +76,7 @@
 .ks-run.framed{inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);
   width:min(94vw, calc((100vh - 40px) * 16 / 9));aspect-ratio:16/9;height:auto;
   border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.45);outline:3px solid #fff}
-.ks-run.framed .tm-fs{display:none}
+.ks-run.framed .tm-fs,.ks-run.framed .run-fs{display:none}
 
 /* ===== くす玉（タイマーのくす玉と同じ作り） ===== */
 .ks-stage .kusu{position:absolute;top:-25cqh;   /* ⭐玉を大きくしたぶん上へ＝玉の下の端は前より少し上（2026-09-24 本人）。⚠-7cqh→-12cqh→-25cqh。並べるときは JS で -8cqh */
@@ -110,3 +107,9 @@
 .ks-grid > details.opt{margin:0}
 /* ⭐閉じたシャッターが、となりの開いた箱の高さまで伸びて空の箱が残った（2026-09-26 本人「シャッターを閉じると、箱が残るよ」）＝①②は上そろえで、それぞれの中身の高さにする */
 /* ⚠①②は一緒に開け閉めするようにしたので（2026-09-26）、上そろえはやめて同じ高さに戻した（開いたとき下の端がそろう） */
+/* ⭐カウントダウンを出すか（2026-09-26） */
+.ks-cd{text-align:center;margin:10px 0 0;font-size:.95rem}
+.ks-cd label{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-weight:normal}
+.ks-cd input{width:18px;height:18px;margin:0}
+/* ⚠スマホで①の箱が画面より広くなった（中身の最小幅で並びの列が広がる）＝列の中の箱は縮めてよい（2026-09-26） */
+.ks-grid>details{min-width:0}

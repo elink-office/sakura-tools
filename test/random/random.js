@@ -206,10 +206,34 @@ $("clsLoad").addEventListener("click",function(){
 });
 function saveMsg(t){ $("saveMsg").textContent=t; }
 /* ⚠上書きのとき、元の行（出席番号・男女など）を壊さない＝同じ名前の行はそのまま使う（ページの型 4-b） */
-function mergeLines(oldText,names){
+/* ⭐名簿の箱に残すのは「出席番号・名前・男女」。班は外す（2026-09-27 本人「共有して使うのは、出席番号、名前、男女。班は臨機応変…不要なときは保存しない」）
+   ＝貼った行から「1班」「班1」の欄と、数字だけで同じ数字がくり返す列（＝班の列）を外して、あとはそのまま残す */
+function saveLines(){
+  var lines=st.names.split(/\r?\n/).filter(function(l){ return nameOfLine(l)!==""; });
+  var z=function(s){ return String(s||"").replace(/[０-９]/g,function(d){ return String.fromCharCode(d.charCodeAt(0)-0xFEE0); }).replace(/^[\s　]+|[\s　]+$/g,""); };
+  var rows=lines.map(function(l){ return String(l).split(/[\t,，]/); });
+  var drop=-1, maxc=0; rows.forEach(function(r){ if(r.length>maxc) maxc=r.length; });
+  for(var ci=0; ci<maxc && drop<0; ci++){
+    var nums=[]; rows.forEach(function(r){ var v=z(r[ci]); if(/^\d+$/.test(v)) nums.push(+v); });
+    if(nums.length<2 || nums.length<rows.length*0.8) continue;
+    var seen={}, dup=false, mx=0; nums.forEach(function(v){ if(seen[v]) dup=true; seen[v]=1; if(v>mx) mx=v; });
+    if(dup && mx<=20) drop=ci;
+  }
+  var isHan=function(c){ return /^(?:\d+班|班\d+)$/.test(z(c)); };
+  return lines.map(function(l,i){
+    var cells=rows[i];
+    if(cells.length===1) return String(l).replace(/[\s　]+(?:[0-9０-９]+班|班[0-9０-９]+)[\s　]*$/,"");
+    return cells.filter(function(c,ci){ return ci!==drop && !isHan(c); }).join("\t");
+  });
+}
+/* ⚠上書きのとき、元の行（出席番号・男女など）を壊さない＝名前だけの行は、同じ名前の元の行をそのまま使う */
+function mergeLines(oldText,lines){
   var byName={};
   String(oldText||"").split("\n").forEach(function(l){ var n=nameOfLine(l); if(n && !byName[n]) byName[n]=l; });
-  return names.map(function(n){ return byName[n]||n; }).join("\n");
+  return lines.map(function(l){
+    var n=nameOfLine(l), onlyName=String(l).split(/[\t,，]/).filter(function(x){ return x.replace(/[\s　]/g,""); }).length<=1;
+    return (onlyName && byName[n]) ? byName[n] : l;
+  }).join("\n");
 }
 function nameList(){ return st.names.split(/\r?\n/).map(nameOfLine).filter(function(x){ return x!==""; }); }
 $("saveNew").addEventListener("click",function(){
@@ -219,10 +243,10 @@ $("saveNew").addEventListener("click",function(){
   d.classes.forEach(function(c){ if(c.kind!=="slide" && c.label===name) same=c; });
   if(same){
     if(!confirm("「"+name+"」はもう保存されています。今の名前に差し替えますか？")) return;
-    same.names=mergeLines(same.names,nameList()); writeBox(d); refreshBox(same.id); saveMsg("「"+name+"」を差し替えました。"); return;
+    same.names=mergeLines(same.names,saveLines()); writeBox(d); refreshBox(same.id); saveMsg("「"+name+"」を差し替えました。"); return;
   }
   if(rosters().length>=MAXC){ saveMsg("名簿の保存は"+MAXC+"件までです。いらないものを削除してください。"); return; }
-  var it={id:"c"+Date.now().toString(36)+Math.random().toString(36).slice(2,6), label:name, names:nameList().join("\n"), seat:null, seki:null, recs:[]};
+  var it={id:"c"+Date.now().toString(36)+Math.random().toString(36).slice(2,6), label:name, names:saveLines().join("\n"), seat:null, seki:null, recs:[]};
   d.classes.push(it); if(!writeBox(d)){ saveMsg("保存できませんでした。"); return; }
   refreshBox(it.id); saveMsg("「"+name+"」を保存しました。");
 });
@@ -230,14 +254,14 @@ $("saveOver").addEventListener("click",function(){
   var c=findCls($("selSaved").value);
   if(!c){ saveMsg("上書きする名簿を「保存済の名簿」で選んでください。"); return; }
   if(st.src!=="name" || !nameList().length){ saveMsg("上書きできるのは①の名前です。"); return; }
-  if(!confirm("「"+c.label+"」を今の名前で上書きしますか？座席表メーカー・席次表メーカーの名簿も変わります。")) return;
-  var d=loadBox(); d.classes.forEach(function(x){ if(x.id===c.id) x.names=mergeLines(x.names,nameList()); });
+  if(!confirm(window.SAKURA_ROSTER?SAKURA_ROSTER.overMsg(c.label):"「"+c.label+"」を今の名簿で上書きしますか？")) return;   // ⭐文は roster-tools.js がそろえる（2026-09-27）
+  var d=loadBox(); d.classes.forEach(function(x){ if(x.id===c.id) x.names=mergeLines(x.names,saveLines()); });
   writeBox(d); refreshBox(c.id); saveMsg("「"+c.label+"」に上書きしました。");
 });
 $("saveDel").addEventListener("click",function(){
   var c=findCls($("selSaved").value);
   if(!c){ saveMsg("削除する名簿を「保存済の名簿」で選んでください。"); return; }
-  if(!confirm("「"+c.label+"」を消します。座席表メーカー・席次表メーカーからも消えます。よろしいですか。")) return;
+  if(!confirm(window.SAKURA_ROSTER?SAKURA_ROSTER.delMsg(c.label):"「"+c.label+"」を消します。よろしいですか。")) return;   // ⭐文は roster-tools.js がそろえる（2026-09-27）
   var d=loadBox(); d.classes=d.classes.filter(function(x){ return x.id!==c.id; }); writeBox(d);
   refreshBox(""); saveMsg("「"+c.label+"」を削除しました。");
 });
@@ -424,13 +448,30 @@ function buildBingo(){
     '<g id="crank"><line id="crankArm" x1="115" y1="50" x2="115" y2="32" stroke="#c9961f" stroke-width="3" stroke-linecap="round"/>'+
     '<circle id="crankKnob" cx="115" cy="32" r="4.6" fill="#e36a93" stroke="#b44770" stroke-width="1"/></g>';
   /* 脚（左右に1組ずつ・Aの字）・土台・受け皿。viewBox の横は -12〜112 */
+  /* ⭐台と受け皿にも立体感（2026-09-27 本人「ビンゴの受ける皿とか、台とかも少し影つけて立体感だそうよ。ボールは左上から光でしょう？」）
+     ＝光は左上から。土台・柱・皿は左上が明るく右下が暗いグラデーション、皿の口は内側を暗く、土台の右下にうすい影。脚も右側を少し暗く */
   var stand='<svg class="pk-stand" viewBox="-12 0 124 142" aria-hidden="true">'+
-    '<g stroke="#b8871c" stroke-width="3" stroke-linecap="round" fill="none">'+
-    '<line x1="2" y1="50" x2="-6" y2="132"/><line x1="2" y1="50" x2="12" y2="132"/>'+
-    '<line x1="98" y1="50" x2="88" y2="132"/><line x1="98" y1="50" x2="106" y2="132"/></g>'+
-    '<rect x="-10" y="130" width="120" height="8" rx="3" fill="#c24f79"/>'+
-    '<path d="M34 104 h32 l-4 12 h-24z" fill="#e36a93"/><rect x="40" y="116" width="20" height="14" fill="#c24f79"/></svg>';
-  stage.innerHTML='<div class="pk-bingo"><div class="pk-mach"><div class="pk-gara" id="gara">'+stand+
+    '<defs>'+
+    '<linearGradient id="pkBase" x1="0" y1="0" x2="0.35" y2="1"><stop offset="0" stop-color="#e98aac"/><stop offset="1" stop-color="#a83d65"/></linearGradient>'+
+    '<linearGradient id="pkDish" x1="0" y1="0" x2="1" y2="0.8"><stop offset="0" stop-color="#f6a8c4"/><stop offset="0.55" stop-color="#e36a93"/><stop offset="1" stop-color="#b44770"/></linearGradient>'+
+    '<linearGradient id="pkPost" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#dd7aa0"/><stop offset="1" stop-color="#9e3a60"/></linearGradient>'+
+    '<filter id="pkSoft" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="1.6"/></filter>'+
+    '</defs>'+
+    '<ellipse cx="54" cy="140" rx="60" ry="3.4" fill="rgba(0,0,0,.16)" filter="url(#pkSoft)"/>'+   /* 土台の右下の影 */
+    '<g stroke-width="3" stroke-linecap="round" fill="none">'+
+    '<line x1="2" y1="50" x2="-6" y2="132" stroke="#c9961f"/><line x1="2" y1="50" x2="12" y2="132" stroke="#b8871c"/>'+
+    '<line x1="98" y1="50" x2="88" y2="132" stroke="#a87a18"/><line x1="98" y1="50" x2="106" y2="132" stroke="#96690f"/></g>'+
+    '<rect x="-10" y="130" width="120" height="8" rx="3" fill="url(#pkBase)"/>'+
+    '<rect x="-8" y="130.8" width="116" height="1.4" rx=".7" fill="rgba(255,255,255,.45)"/>'+   /* 土台の上のふちの光 */
+    '<rect x="40" y="116" width="20" height="14" fill="url(#pkPost)"/>'+
+    '<ellipse cx="50" cy="104.4" rx="15.6" ry="2.3" fill="#9e3a60"/>'+   /* 皿の口（内側は暗い）＝玉の後ろ */
+    '<path d="M35.5 104 q14.5 -2.6 29 0" stroke="rgba(255,255,255,.7)" stroke-width=".9" fill="none"/></svg>';   /* 皿の奥のふちの光（左上） */
+  /* ⭐皿の手前は、落ちてきた玉より前に重ねる＝玉の下半分が皿に隠れて「入った」ように見える（2026-09-27 本人「カップにボールが入った時、玉が隠れたらいいのにな」）
+     ＝手前のふちは口の楕円の下の弧に合わせて丸く。奥（台・脚・口の暗いところ）は .pk-stand、手前だけ .pk-cupfront（z-index が玉より上） */
+  var cupFront='<svg class="pk-cupfront" viewBox="-12 0 124 142" aria-hidden="true">'+
+    '<path d="M34.4 104.4 Q50 109 65.6 104.4 L62 116 H38 Z" fill="url(#pkDish)"/>'+
+    '<path d="M34.8 104.6 Q50 109.1 65.2 104.6" stroke="rgba(255,255,255,.75)" stroke-width=".9" fill="none"/></svg>';   /* 手前のふちの光 */
+  stage.innerHTML='<div class="pk-bingo"><div class="pk-mach"><div class="pk-gara" id="gara">'+stand+cupFront+
     '<div class="pk-dome"><div class="pk-mix" id="mix"></div></div>'+
     '<svg class="pk-wire" viewBox="0 0 100 100" aria-hidden="true">'+wire+'</svg></div></div>'+
     '<div class="pk-right"><div class="pk-cur" id="cur"></div><p class="pk-histlbl">出た'+unit()+'</p><div class="pk-hist" id="hist"></div></div></div>';

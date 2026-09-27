@@ -15,7 +15,8 @@ var EXAMPLES=["やまだ/はなこさん","さとう/たろうさん","すずき
 var LIMIT=20;
 
 /* ===== いまの中身 ===== */
-var st={n:3, mode:"one", items:[{c:"bronze",t:""},{c:"silver",t:""},{c:"gold",t:""}]};
+/* cd＝カウントダウン（3・2・1）を出すか。はじめは出す（2026-09-26 本人「カウントダウンをなしにするっていうもの追加にしたい」→「それで！」） */
+var st={n:3, mode:"one", cd:true, items:[{c:"bronze",t:""},{c:"silver",t:""},{c:"gold",t:""}]};
 
 function renderItems(){
   var ol=$("items"); ol.innerHTML="";
@@ -57,6 +58,7 @@ function setMode(m){
 }
 $("segCount").addEventListener("click",function(e){ var b=e.target.closest("button"); if(!b) return; setCount(+b.getAttribute("data-n")); screenSave(); });
 $("segMode").addEventListener("click",function(e){ var b=e.target.closest("button"); if(!b) return; setMode(b.getAttribute("data-m")); screenSave(); });
+$("cdOn").addEventListener("change",function(){ st.cd=this.checked; screenSave(); });
 $("items").addEventListener("click",function(e){
   var b=e.target.closest(".ks-color button"); if(!b) return;
   var i=+b.getAttribute("data-i"); st.items[i].c=b.getAttribute("data-c"); renderItems(); screenSave();
@@ -70,7 +72,7 @@ $("items").addEventListener("input",function(e){
 var KEY="sakura-kusudama";
 function screenSave(){
   if(!$("save").checked) return;
-  try{ localStorage.setItem(KEY, JSON.stringify({n:st.n, mode:st.mode, items:st.items.slice(0,st.n)})); flash("保存しました"); }catch(e){}
+  try{ localStorage.setItem(KEY, JSON.stringify({n:st.n, mode:st.mode, cd:st.cd, items:st.items.slice(0,st.n)})); flash("保存しました"); }catch(e){}
 }
 var flashT=0;
 function flash(t){ $("savingLabel").textContent=t; clearTimeout(flashT); flashT=setTimeout(function(){ $("savingLabel").textContent=""; },1500); }
@@ -89,6 +91,7 @@ function applyData(s){
   st.n=n; st.items=[];
   for(var i=0;i<n;i++){ var it=(s.items||[])[i]||{}; st.items.push({c:COLORS[it.c]?it.c:DEF_COLORS[n][i], t:it.t||""}); }
   setCount(n); setMode(s.mode);
+  st.cd=(s.cd!==false); $("cdOn").checked=st.cd;      // 前の保存（cd が無い）は「出す」
 }
 
 /* ===== 名前を付けて保存（ページの型 4-c＝座席表の⑦と同じ作法）＝このツールだけの置き場 ===== */
@@ -96,7 +99,7 @@ var STORE="sakura-tools-kusudama-v1";
 function loadStore(){ try{ var d=JSON.parse(localStorage.getItem(STORE)||"null"); if(d && d.items) return d; }catch(e){} return {v:1,items:[]}; }
 function writeStore(d){ try{ localStorage.setItem(STORE, JSON.stringify(d)); return true; }catch(e){ return false; } }
 function findItem(id){ if(!id) return null; var d=loadStore(); for(var i=0;i<d.items.length;i++) if(d.items[i].id===id) return d.items[i]; return null; }
-function current(name){ return {name:name, n:st.n, mode:st.mode, items:st.items.slice(0,st.n).map(function(x){ return {c:x.c,t:x.t}; })}; }
+function current(name){ return {name:name, n:st.n, mode:st.mode, cd:st.cd, items:st.items.slice(0,st.n).map(function(x){ return {c:x.c,t:x.t}; })}; }
 function fillSel(sel, keep, head){
   var d=loadStore();
   sel.innerHTML='<option value="">'+head+'</option>';
@@ -172,6 +175,9 @@ var KUSU_INDENT=2, KUSU_BY=150, KUSU_R=230, uid=0;
 function esc(t){ return String(t).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
 function banner(raw,ex,by){
   raw=(raw||"").trim()||ex;
+  /* ⭐数字は全角にして、縦書きでも立てる（2026-09-27 本人「数値は全角にすると縦になるから、縦にしてほしい」）
+     ⚠半角の数字は縦書きだと横に寝る */
+  raw=raw.replace(/[0-9]/g,function(d){ return String.fromCharCode(d.charCodeAt(0)+0xFEE0); });
   var cols=raw.split(/[\/／]+/).map(function(c){ return c.trim(); }).filter(Boolean).slice(0,2);
   if(!cols.length) cols=[ex];
   var n=Math.max.apply(null, cols.map(function(c,i){ return c.length+(i>0?KUSU_INDENT:0); }));
@@ -386,6 +392,7 @@ function alignRow(){
 }
 /* 3・2・1 を大きく出してから fn */
 function count321(fn){
+  if(!st.cd){ fn(); updateBtn(); return; }   // ⭐カウントダウンなし＝押したらすぐ割れる
   run.busy=true; $("nextBtn").disabled=true;
   var box=$("cnt"), n=3;
   function step(){
