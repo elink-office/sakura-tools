@@ -4,15 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <!-- ⭐タブのマーク（ほかのページと同じ）。⚠入れ忘れていて地球儀になっていた（2026-09-24 本人） -->
-<link rel="icon" href="../favicon.ico?v=2" sizes="any">
-<link rel="icon" type="image/png" href="../favicon-32.png?v=2">
+<link rel="icon" href="../favicon.ico?v=3" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png?v=3">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
 <!-- ⭐作成中（2026-09-24）。どこともつなげない＝トップのカード・サイトマップ・右上のツール一覧に入れていない -->
 <meta name="robots" content="noindex,nofollow">
 <title>【テスト】カウントダウンタイマー｜大きく映せる無料タイマー</title>
 <meta name="description" content="時間を打ち込むだけの、丸が減っていくカウントダウンタイマー。残り時間が少なくなると色が変わり、間に合ったら紙吹雪、時間切れで爆弾などの仕掛けも選べます。">
-<link rel="stylesheet" href="../style.css?v=145">
-<link rel="stylesheet" href="timer.css?v=53">
+<link rel="stylesheet" href="../style.css?v=154">
+<link rel="stylesheet" href="timer.css?v=54">
 </head>
 <body>
 <div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
@@ -41,13 +41,19 @@
       <a href="../typing/">タッチタイピング</a>
       <a href="../seat/">座席表</a>
       <a href="../slide/">簡単スライド</a>
-      <a href="../kusudama/">くす玉メーカー</a>
+      <a href="../random/">ランダム指名</a>
       <span class="now" aria-current="page">カウントダウンタイマー</span>
+      <a href="../kusudama/">くす玉メーカー</a>
       <a href="../timer/progress/">進行タイマー</a>
       <a href="../excel-fx/">関数早見表</a>
       <a href="../seki/">席次表</a>
+      <a href="../bus/">バスの座席表</a>
+      <a href="../shinkansen/">新幹線の座席表</a>
       <a href="../keiri/mitsumori/">見積書</a>
       <a href="../keiri/seikyu/">請求書</a>
+      <!-- ⭐ツールではないので棒線で分けて下に（2026-09-26 本人「棒線引いて分けて載せればいいね」） -->
+      <span class="navsep" aria-hidden="true"></span>
+      <a href="../articles/">記事一覧</a>
       </div>
     </nav>
   </div>
@@ -57,7 +63,12 @@
 <main class="wrap tm-set" id="setScreen">
   <h1>カウントダウンタイマー</h1>
   <!-- ⭐2文目（2026-09-24 本人「できたときや、間に合わなかったときの文字をオリジナルで設定できます。っていうのを上に入れてほしい」） -->
-  <p class="lead">時間を打ち込んで、スタートを押すだけ。丸が減っていき、残りが少なくなると赤に変わります。<br>できたときや、間に合わなかったときの文字をオリジナルで設定できます。</p>
+  <div class="intro i169">
+    <div class="intro-txt">
+    <p class="lead">時間を打ち込んで、スタートを押すだけ。丸が減っていき、残りが少なくなると赤に変わります。<br>できたときや、間に合わなかったときの文字をオリジナルで設定できます。</p>
+    </div>
+    <figure class="t-sample noprint"><img src="../img/timer-sample.png?v=1" width="1280" height="720" alt="丸が減っていくカウントダウンタイマー。のこり49秒"></figure>
+  </div>
 
   <p class="tip-guide"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
 
@@ -104,7 +115,7 @@
   <!-- ⭐スタートは①②の下・中央ぞろえ（2026-09-24 本人「スタートボタンは中央揃えのまま」「ボタンは絶対にスクロールしたくない」「展開するとスタートがズレるのが嫌」）
        ⭐③仕掛けはスタートの下＝開いてもスタートは動かない（本人「仕掛けを④の上に」） -->
   <p class="tm-start"><button type="button" class="primary" id="startBtn">▶ スタート</button></p>
-  <p class="tm-hint center">音は鳴りません。スタートすると画面いっぱいに大きく出ます。</p>
+  <p class="tm-hint center">音は鳴りません。スタートするとモニター画面いっぱいに大きく出ます。</p>
 
   <details class="opt tm-fxbox" id="optFx">
     <summary><span class="step">3</span>仕掛け</summary>
@@ -243,8 +254,8 @@
 
       <h3>動かしているとき</h3>
       <ul>
-        <li>スタートを押すと、画面いっぱいに出ます。</li>
-        <li>ボタンは3つです。一時停止（もう一度押すと再開）・できた（間に合ったとき）・もどる（設定の画面へ）。</li>
+        <li>スタートを押すと、モニター画面いっぱいに出ます。</li>
+        <li>ボタンは、下に一時停止（もう一度押すと再開）・できた（間に合ったとき）の2つ、右上に「✕ とじる」（設定の画面へ）です。</li>
         <li>パソコンなら、スペースキーでも一時停止と再開ができます。</li>
         <li>動いているあいだは、画面が暗くならないようにしています（対応している機種のみ）。</li>
       </ul>
@@ -264,7 +275,8 @@
 <!-- ===== 動いている間の画面（丸と数字とボタン3つだけ） ===== -->
 <div class="tm-demoback" id="demoBack" hidden></div>
 <div class="tm-run" id="runScreen" hidden>
-  <button type="button" class="tm-fs" id="fsBtn" title="全画面">⛶ 全画面</button>
+  <!-- ⭐右上＝窓と同じ並び（全画面・✕ とじる）。角は必ず「✕ とじる」（2026-09-27 本人の約束事・ページの型 14-7） -->
+  <div class="run-tr"><button type="button" class="run-fs" id="fsBtn" title="全画面">⛶ 全画面</button><button type="button" class="run-close" id="backBtn">✕ とじる</button></div>
   <div class="tm-demo" id="demoBadge" hidden>見本（5秒）</div>
   <div class="tm-stage" id="stage">
     <div class="tm-title" id="runTitle" hidden></div>
@@ -278,18 +290,22 @@
     </div>
     <div class="tm-result" id="result" hidden></div>
   </div>
-  <!-- ⭐ボタンは3つ＝一時停止／できた／もどる（2026-09-24 本人「私もボタン3つだと思う」） -->
+  <!-- ⭐下のボタンは2つ＝一時停止／できた（2026-09-24 本人「私もボタン3つだと思う」→ 2026-09-27「もどる」は右上の「✕ とじる」にまとめた＝約束事） -->
   <div class="tm-btns" id="runBtns">
     <button type="button" class="tm-b pause" id="pauseBtn">❚❚ 一時停止</button>
     <button type="button" class="tm-b done" id="doneBtn">✔ できた！</button>
-    <button type="button" class="tm-b back" id="backBtn">↩ もどる</button>
   </div>
 </div>
 
 <!-- 仕掛けを重ねる場所（押せない＝クリックは下に通る） -->
 <div class="fx" id="fx" aria-hidden="true"></div>
 
-<script src="timer.js?v=76"></script>
+<footer class="noprint">
+  <div class="wrap"><span class="fnav"><a href="../about/">運営者情報</a>　<a href="../contact/">お問い合わせ</a>　<a href="../privacy/">プライバシーポリシー</a></span>
+    <span class="copy">さくらツールズ　© 2026 SAKURA tools</span></div>
+</footer>
+
+<script src="timer.js?v=77"></script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>

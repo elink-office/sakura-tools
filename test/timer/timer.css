@@ -307,7 +307,7 @@
 .tm-run.framed{inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);
   width:min(94vw, calc((100vh - 40px) * 16 / 9));aspect-ratio:16/9;height:auto;
   border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.45);outline:3px solid #fff}
-.tm-run.framed .tm-fs{display:none}
+.tm-run.framed .tm-fs,.tm-run.framed .run-fs{display:none}
 .tm-run .fx{position:absolute;z-index:5}
 
 /* ===== タイルの枠＝16:9（画面に合わせる） ===== */

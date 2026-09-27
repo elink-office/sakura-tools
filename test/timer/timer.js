@@ -44,7 +44,6 @@ function loadSaved(){
 }
 function save(){
   if(sampleOn) return;             // ⭐サンプルの間は保存しない（ページの型 12-a）
-  if(PEEK) return;                 // 🟡今だけの見本（?sample）の間も、最後に入れた内容を書きかえない
   try{
     localStorage.setItem(KEY, JSON.stringify({
       m:num("inMin",99), s:num("inSec",59), wm:num("inWarnMin",99), ws:num("inWarnSec",59), wo:$("warnOn").checked,
@@ -105,16 +104,8 @@ document.addEventListener("keydown",function(e){
    ⭐名前は［新しい名前で保存］を押したときに聞く（簡単スライドと同じ prompt）
    ⭐呼び出しは①の「このデータを自動入力」。④の「保存済のデータ」は上書き・削除の相手を選ぶもの ===== */
 var STORE="sakura-tools-countdown-v1", LIMIT=20, loadedId="";
-/* 🟡今だけの見本（2026-09-26 本人「今だけ、サンプルで、保存の内容を書ける？どこに表示されるのか見たい」）
-   ＝アドレスの最後に ?sample を付けたときだけ、保存が2件あるように見せる。本当の保存（ブラウザの中）には書かない・読まない
-   ⚠見終わったら、この仕込み（PEEK と下の3か所の if(PEEK)）を外す */
-var PEEK=/[?&]sample\b/.test(location.search);
-var PEEK_ITEMS=[
-  {id:"peek1", name:"小テスト 10分", m:10, s:0, wm:1, ws:0, wo:true, view:"ring", win:"kusudama", lose:"volcano", kusu:"みんな/よくできました", zan:""},
-  {id:"peek2", name:"給食の準備", m:15, s:0, wm:3, ws:0, wo:true, view:"ring", win:"confetti", lose:"curtain", kusu:"", zan:"ざんねん"}
-];
-function loadStore(){ if(PEEK) return {v:1,items:PEEK_ITEMS.slice()}; try{ var d=JSON.parse(localStorage.getItem(STORE)||"null"); if(d && d.items) return d; }catch(e){} return {v:1,items:[]}; }
-function writeStore(d){ if(PEEK) return true; try{ localStorage.setItem(STORE, JSON.stringify(d)); return true; }catch(e){ return false; } }
+function loadStore(){ try{ var d=JSON.parse(localStorage.getItem(STORE)||"null"); if(d && d.items) return d; }catch(e){} return {v:1,items:[]}; }
+function writeStore(d){ try{ localStorage.setItem(STORE, JSON.stringify(d)); return true; }catch(e){ return false; } }
 function findItem(id){ if(!id) return null; var d=loadStore(); for(var i=0;i<d.items.length;i++) if(d.items[i].id===id) return d.items[i]; return null; }
 function current(name){
   return {name:name, m:num("inMin",99), s:num("inSec",59), wm:num("inWarnMin",99), ws:num("inWarnSec",59), wo:$("warnOn").checked,

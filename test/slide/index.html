@@ -4,9 +4,9 @@
 <meta name="robots" content="noindex,nofollow">
 <meta charset="utf-8">
 <!-- ⭐タブのマーク＝さくらのロゴ（2026-09-22 本人「タブのマークと題名も変更できるならして」） -->
-<link rel="icon" href="../favicon.ico?v=1" sizes="any">
-<link rel="icon" type="image/png" href="../favicon-32.png?v=1">
-<link rel="apple-touch-icon" href="../apple-touch-icon.png?v=1">
+<link rel="icon" href="../favicon.ico?v=3" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png?v=3">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SAKURA tools">
@@ -29,8 +29,8 @@
 </script>
 <title>【テスト】簡単スライドメーカー｜パワーポイントの代わりに大きく映す</title>
 <meta name="description" content="パワーポイントの代わりに、文字と写真をそのまま大きくモニターに映せる無料の道具です。今日のめあて、問題文、作品の写真、発表する子の名前に。スライドを作り込まなくていいので、思いついたその場で出せます。写真の上に文字を重ねることもできます。名簿は座席表・席次表と共通。登録なし・インストールなし・写真も名簿も外に送りません。">
-<link rel="stylesheet" href="../style.css?v=145">
-<link rel="stylesheet" href="slide.css?v=74">
+<link rel="stylesheet" href="../style.css?v=154">
+<link rel="stylesheet" href="slide.css?v=76">
 </head>
 <body>
 <div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
@@ -66,11 +66,20 @@
       <a href="../">トップ</a>
       <a href="../typing/">タッチタイピング</a>
       <a href="../seat/">座席表</a>
-      <a href="../seki/">席次表</a>
       <span class="now" aria-current="page">簡単スライド</span>
+      <a href="../random/">ランダム指名</a>
+      <a href="../timer/">カウントダウンタイマー</a>
+      <a href="../kusudama/">くす玉メーカー</a>
+      <a href="../timer/progress/">進行タイマー</a>
       <a href="../excel-fx/">関数早見表</a>
+      <a href="../seki/">席次表</a>
+      <a href="../bus/">バスの座席表</a>
+      <a href="../shinkansen/">新幹線の座席表</a>
       <a href="../keiri/mitsumori/">見積書</a>
       <a href="../keiri/seikyu/">請求書</a>
+      <!-- ⭐ツールではないので棒線で分けて下に（2026-09-26 本人「棒線引いて分けて載せればいいね」） -->
+      <span class="navsep" aria-hidden="true"></span>
+      <a href="../articles/">記事一覧</a>
       </div>
     </nav>
   </div>
@@ -82,12 +91,12 @@
   <p class="catch">パワーポイントの代わりに、文字と写真をモニターへ</p>
   <!-- 🔴 上の文章は短く・改行を増やす（2026-09-05 本人「改行増やして、短めに。箇条書きは使ってもいい」） -->
   <p class="lead">
-    <strong>パワーポイントのように、画面いっぱいに表示できます。</strong>ちょっと見せたいときも、<strong>時間をかけずに簡単作成！</strong>
+    <strong>パワーポイントのように、モニター画面いっぱいに表示できます。</strong>ちょっと見せたいときも、<strong>時間をかけずに簡単作成！</strong>
   </p>
   <ul class="can-do">
     <li>会議や集まりの議題・順番にも</li>
     <li>今日のめあて・問題文・のこり時間</li>
-    <li>作品の写真は画面いっぱいに、名前と作品名も</li>
+    <li>作品の写真はモニター画面いっぱいに、名前と作品名も</li>
     <li>班ごとにするのもボタン一つ、発表会でも使えます</li>
   </ul>
 
@@ -108,11 +117,11 @@
     <div class="body">
 
       <!-- ⭐文字／発表者は、ラジオではなく2つの切り替えボタンに見せる（2026-09-15 本人 案A「ここをボタンにしてほかを隠したほうがいい」）。
-           ⚠中身はラジオのまま（切り替え・保存・サンプルが input[name=kind] を見ている）。見た目だけ slide.css の .kind-switch で変える -->
-      <div class="radios kind-switch" id="kind">
+           ⚠中身はラジオのまま（切り替え・保存・サンプルが input[name=kind] を見ている）。見た目は共通の .seg（style.css・2026-09-26） -->
+      <div class="seg" id="kind">
         <!-- ⚠autocomplete="off"＝ブラウザが読み込み直しのときに前の選択を勝手に戻さないように（2026-09-15 本人「最初が選択された状態だった」） -->
-        <label><input type="radio" name="kind" value="text" autocomplete="off"> 文字をスライドにする</label>
-        <label><input type="radio" name="kind" value="list" autocomplete="off"> 発表者をスライドにする</label>
+        <label><input type="radio" name="kind" value="text" autocomplete="off"><span class="seg-in">文字をスライドにする</span></label>
+        <label><input type="radio" name="kind" value="list" autocomplete="off"><span class="seg-in">発表者をスライドにする</span></label>
       </div>
       <!-- ⭐はじめはどちらも選ばない（2026-09-15 本人「最初はどっちも白にしておくことできないかな？選択したら色がつく」）。選ぶまで入力の欄は出さない -->
       <p class="hint" id="kindHint" style="margin:-6px 0 8px">上のどちらかを選ぶと、入力の欄が出ます。</p>
@@ -199,6 +208,21 @@
         <p class="notice warn" id="warn" hidden></p>
       </div>
 
+      <!-- ⭐画面の保存は①の中（2026-09-23 本人「名簿をいれてさ、保存って先にしたほうがいい気がしてきた。せめて画面の保存。私何度も忘れてしまってさ」→ A-2「それでいこう」）。
+           ⚠前は下のほうの枠（④）。⭐全ツール共通の形（ページの型 3） -->
+      <div class="save-in1" style="margin-top:14px;padding-top:12px;border-top:1px dashed #dcdfe3">
+      <p class="save-head" style="margin:0 0 4px"><label style="font-weight:bold;display:inline-block;margin:0"><input type="checkbox" id="save"> この画面を保存する</label><button type="button" class="tip-btn" aria-label="説明"></button></p>
+    <div class="tip-body" hidden>
+      <p>残るのは<strong>使っている端末の中だけ</strong>です。<strong>どこにも送信されません。</strong>チェックを外すと、残していたものを消します。</p>
+      <p><strong>共用の端末では外しておいてください。</strong>打った文字と名前、写真が使っている端末に残ります。写真に人が写っていることがあります。</p>
+    </div>
+
+    <p class="hint">
+      チェックを入れると、<b>この画面の状態が保存されます</b>。<br>
+      ⚠<b>共用の端末で使ったときは、このチェックを外して、この画面を閉じてください。</b>
+    </p>
+    <p><span class="saving" id="savingLabel"></span></p>
+      </div>
     </div>
   </details>
 
@@ -234,9 +258,9 @@
 
       <div id="paneList2" hidden>
         
-        <div class="radios" id="modes" hidden>
-          <label><input type="radio" name="mode" value="one" checked> 1人ずつ映す</label>
-          <label><input type="radio" name="mode" value="group"> 班ごとにまとめて映す</label>
+        <div class="seg" id="modes" hidden>
+          <label><input type="radio" name="mode" value="one" checked><span class="seg-in">1人ずつ映す</span></label>
+          <label><input type="radio" name="mode" value="group"><span class="seg-in">班ごとにまとめて映す</span></label>
         </div>
         <p class="hint" style="margin-bottom:10px">
           <b>作品名と班は、ここで直せます</b>&#8288;<button type="button" class="tip-btn" aria-label="説明"></button>
@@ -284,34 +308,19 @@
   </div>
 
   <!-- 保存 -->
-  <section class="card">
-    <h2><span class="step">4</span>画面の保存&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
-    <div class="tip-body" hidden>
-      <p>残るのは<strong>この端末の中だけ</strong>です。<strong>どこにも送信されません。</strong>チェックを外すと、残していたものを消します。</p>
-      <p><strong>共用の端末では外しておいてください。</strong>打った文字と名前、写真がこの端末に残ります。写真に人が写っていることがあります。</p>
-    </div>
-    <label style="font-weight:normal">
-      <input type="checkbox" id="save"> この画面を保存する
-    </label>
-    <p class="hint">
-      チェックを入れると、<b>この画面の状態が保存されます</b>。<br>
-      ⚠<b>共用の端末で使ったときは、このチェックを外して、この画面を閉じてください。</b>
-    </p>
-    <p><span class="saving" id="savingLabel"></span></p>
-  </section>
 
   <!-- 🔴 名簿の保存は「画面の保存」の下（2026-09-05 本人「座席表では表示の下、画面の保存の下だった。
        レイアウトも一緒がいい。作りは一緒にしたい」）。座席表の⑧と同じ形にしてある -->
   <section class="card">
-    <h2><span class="step">5</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+    <h2><span class="step">4</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
     <div class="tip-body" hidden>
       <ul>
-        <li><strong>名前を付けて、<b style="font-size:inherit">20件</b>まで保存できます。</strong>残るのは<strong>この端末の中だけ</strong>です。</li>
+        <li><strong>名前を付けて、<b style="font-size:inherit">20件</b>まで保存できます。</strong>残るのは<strong>使っている端末の中だけ</strong>です。</li>
         <li>呼び出すのは①の<strong>「このデータを読み込む」</strong>から。</li>
         <li><b>「文字スライドの文字を保存」</b>と<b>「発表者スライドの名前を保存」</b>は、欄が分かれています。それぞれの欄のボタンは、その種類だけを保存・上書き・削除します。</li>
         <li><b>「上書き」と「削除」は、①でえらんでいるもの</b>に効きます。上書きしても、座席表で入れた<b>番号や男女は残ります</b>。</li>
         <li>文字のデータは100件まで（⚠座席表メーカーの一覧には出ません）。</li>
-        <li>⚠<b>写真・班・作品名は保存されません。</b>写真が残るのは④の「画面の保存」だけです。</li>
+        <li>⚠<b>写真・班・作品名は保存されません。</b>写真が残るのは①の「この画面を保存する」だけです。</li>
       </ul>
     </div>
 
@@ -340,8 +349,9 @@
                ⭐番号・男女は namesNow() で残すので、上書きしても落ちない -->
           <p class="hint">いま、<b>①に入っている名前</b>を保存します。</p>
           <!-- 🔴⭐座席表・席次表と共通の話は、名前のデータの欄に置く（2026-09-14 本人）。⚠文字のデータはスライドだけのもの -->
-          <p class="hint">名前のデータは、<b>座席表・席次表</b>と共通です。教室の形など、それぞれのツールの設定は自動的に保存しています。</p>
-          <p class="hint">⚠消すと、<b>座席表・席次表からも消えます。</b></p>
+          <p class="roster-tools">保存した名簿は、次の道具で使えます。</p>
+          <p class="hint">教室の形など、それぞれのツールの設定は自動的に保存しています。</p>
+          <p class="hint">⚠消すと、<b>上に並んでいる道具からも消えます。</b></p>
           <p class="btn-row">
             <button class="mini" id="clsNew" type="button">新しい名前で保存</button>
             <button class="mini" id="clsSave" type="button">上書き</button>
@@ -434,14 +444,14 @@
       <h3>保存について</h3>
       <ul>
         <li>「スライドをモニターで表示」の下の<b>「この画面を保存する」</b>にチェックを入れると、次に開いたときも<b>文字・順番・写真・名簿</b>がそのまま残ります。</li>
-        <li>残るのは<b>この端末の中だけ</b>です。<b>どこにも送信されません。</b></li>
+        <li>残るのは<b>使っている端末の中だけ</b>です。<b>どこにも送信されません。</b></li>
         <li>チェックを外すと、保存していたものを消します。</li>
         <li>⭐<b>写真も残るのは、このページだけです。</b>ほかのページ（座席表など）は、読み込んだ画像を保存していません。</li>
         <li>⚠<b>共用の端末では外しておいてください。</b>写真に人が写っていることがあります。</li>
       </ul>
 
       <h3>打った文字は、どこにも送られません</h3>
-      <p>打った文字も写真も名簿も、この端末のブラウザの中だけにあります。どこかのサーバーに送ることはありません。ネットにつながっていなくても動きます。<b>映している画面には、広告は出ません。</b></p>
+      <p>打った文字も写真も名簿も、使っている端末のブラウザの中だけにあります。どこかのサーバーに送ることはありません。ネットにつながっていなくても動きます。<b>映している画面には、広告は出ません。</b></p>
     </div>
   </details>
 
@@ -454,6 +464,8 @@
 
 <!-- 映す画面。⚠ここには広告を絶対に置かない -->
 <div id="show">
+  <!-- ⭐右上の角は「✕ とじる」（2026-09-27 本人の約束事）。前は下の帯の「おわり」。下の帯と一緒に、しばらくすると薄くなる -->
+  <div class="run-tr"><button type="button" class="run-close" id="close">✕ とじる</button></div>
   <div id="stage">
     <!-- 🔴 写真は2枚まで（2026-09-07 本人・知り合いの先生「写真を比べることがある」）。
          2枚あれば横に並ぶ。片方を押すとそちらが大きくなる -->
@@ -477,14 +489,14 @@
     <span class="row">
       <span id="pos"></span>
       <button id="toFull">スライド表示にする</button>
-      <button id="prev">◀ もどる</button>
+      <button id="prev">◀ まえへ</button>   <!-- ⭐前のスライドへ。「もどる」は閉じると紛らわしいので名前を変えた（2026-09-27） -->
       <button class="primary" id="next">つぎへ ▶</button>
-      <button id="close">おわり</button>
     </span>
   </div>
 </div>
 
-<script src="slide.js?v=103"></script>
+<script src="../roster-tools.js?v=1"></script>
+<script src="slide.js?v=104"></script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>

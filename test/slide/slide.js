@@ -1513,10 +1513,11 @@
     if (!c) return;
     /* ⚠文字側のえらびには名前のデータも並ぶ。⭐欄と種類が違うときは消さない */
     if (isText && c.kind !== 'slide'){ alert('「' + (c.label||'') + '」は名前のデータです。「発表者スライドの名前を保存」の欄で消してください。'); return; }
-    var msg = '「'+(c.label||'')+'」を消します。';
     // ⚠名簿は座席表メーカーなどと同じ置き場。文字のまとまりはこのページのものだけ
-    if (c.kind !== 'slide') msg += '座席表メーカー・席次表メーカーからも消えます。';
-    if (!confirm(msg + 'よろしいですか。')) return;
+    // ⭐名簿を消すときの文は roster-tools.js がそろえる（2026-09-27）
+    var msg = (c.kind !== 'slide' && window.SAKURA_ROSTER) ? SAKURA_ROSTER.delMsg(c.label||'')
+      : '「'+(c.label||'')+'」を消します。' + (c.kind !== 'slide' ? '座席表メーカー・席次表メーカーからも消えます。' : '') + 'よろしいですか。';
+    if (!confirm(msg)) return;
     st.classes.splice(i,1);
     if (!writeStore(st)) return;
     fillClassSelect(); refreshDelT();

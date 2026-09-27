@@ -8,10 +8,10 @@
 <!-- ⭐題名（2026-09-24 本人「私もBと思った！」＝キャッチ・こんなときに使うとそろえる） -->
 <title>【テスト】進行タイマー｜司会・発表・授業の残り時間を色で知らせる無料タイマー</title>
 <meta name="description" content="始まりと終わりの時刻を入れるだけ。たった時間が青・緑・黄・赤の帯で伸びていく無料の進行タイマーです。途中で開いても今の時刻の位置から始まります。ウィンドウを小さくすると帯だけになります。">
-<link rel="icon" href="../../favicon.ico?v=2" sizes="any">
-<link rel="icon" type="image/png" href="../../favicon-32.png?v=2">
+<link rel="icon" href="../../favicon.ico?v=3" sizes="any">
+<link rel="icon" type="image/png" href="../../favicon-32.png?v=3">
 <link rel="apple-touch-icon" href="../../apple-touch-icon.png?v=2">
-<link rel="stylesheet" href="../../style.css?v=145">
+<link rel="stylesheet" href="../../style.css?v=154">
 <link rel="stylesheet" href="progress.css?v=8">
 </head>
 <body>
@@ -43,13 +43,19 @@
       <a href="../../typing/">タッチタイピング</a>
       <a href="../../seat/">座席表</a>
       <a href="../../slide/">簡単スライド</a>
-      <a href="../../kusudama/">くす玉メーカー</a>
+      <a href="../../random/">ランダム指名</a>
       <a href="../../timer/">カウントダウンタイマー</a>
+      <a href="../../kusudama/">くす玉メーカー</a>
       <span class="now" aria-current="page">進行タイマー</span>
       <a href="../../excel-fx/">関数早見表</a>
       <a href="../../seki/">席次表</a>
+      <a href="../../bus/">バスの座席表</a>
+      <a href="../../shinkansen/">新幹線の座席表</a>
       <a href="../../keiri/mitsumori/">見積書</a>
       <a href="../../keiri/seikyu/">請求書</a>
+      <!-- ⭐ツールではないので棒線で分けて下に（2026-09-26 本人「棒線引いて分けて載せればいいね」） -->
+      <span class="navsep" aria-hidden="true"></span>
+      <a href="../../articles/">記事一覧</a>
       </div>
     </nav>
   </div>
@@ -60,11 +66,16 @@
   <h1>進行タイマー</h1>
   <!-- ⭐キャッチと下の説明（2026-09-24 本人「セミナーや司会で、残りの時間を色の帯で見る」「下に簡単な説明を書いて。パワポの上に表示とか、原稿見ながら色で判別とか」→ 1行目と3行目は本人の文に差し替え）  -->
   <p class="catch">セミナーや司会で、残りの時間を色の帯で見る</p>
-  <ul class="can-do">
-    <li>発表者や司会者用に、時間の帯だけを小さく表示できるから、進行しやすい</li>
-    <li>原稿を見ながらでも、目の端に入る色で残りが分かる</li>
-    <li>午前・午後など、プログラムを複数組んでおけて、当日も臨機応変に対応できる</li>
-  </ul>
+  <div class="intro i169">
+    <div class="intro-txt">
+    <ul class="can-do">
+      <li>発表者や司会者用に、時間の帯だけを小さく表示できるから、進行しやすい</li>
+      <li>原稿を見ながらでも、目の端に入る色で残りが分かる</li>
+      <li>午前・午後など、プログラムを複数組んでおけて、当日も臨機応変に対応できる</li>
+    </ul>
+    </div>
+    <figure class="t-sample noprint"><img src="../../img/progress-sample.png?v=1" width="1280" height="720" alt="進行タイマーの色の帯。90分のうち55分たったところで、青から緑へ進んでいる"></figure>
+  </div>
 
   <!-- ⭐帯が主役。数字は小さく（2026-09-05 本人「話してたら時間見ないから、色で知りたい」） -->
   <section class="tb-stage" id="stage" aria-live="off">
