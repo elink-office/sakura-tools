@@ -432,57 +432,16 @@ function cardShuffle(){
 }
 
 /* ===== ビンゴ ===== */
+/* ⭐ビンゴの見せ方の機械は、ビンゴマシーンと同じ立体（../bingo-machine.js）。置き場所もビンゴマシーンと同じ右
+     （2026-09-27 本人「ランダムの子ども用のだったわ。子ども用は、ビンゴを同じ位置にして、左右を逆にしてみて」）
+     ＝左に出た玉と「出た人」の並び、右に機械。前＝左に平らな絵のカゴ・右に出た玉（控え＝_もどす/2026-09-27_ランダム指名のビンゴを立体にする前） */
+var BM=null;
 function buildBingo(){
   var stage=$("stage");
-  /* ⭐カゴは横の軸（左右）のまわりに回る＝前から見ると、横の輪が太ったり細ったりして転がって見える
-     ⭐ハンドルはカゴの右の横（2026-09-26 本人「回すバーが正面についているのが鋳肌。普通は右だと思う」） */
-  var wire='<circle cx="50" cy="50" r="46" fill="none" stroke="#c9961f" stroke-width="2.6"/>';
-  [-0.7,-0.35,0,0.35,0.7].forEach(function(k){
-    var x=50+46*k, hh=Math.sqrt(46*46-(46*k)*(46*k));
-    wire+='<line x1="'+x.toFixed(1)+'" y1="'+(50-hh).toFixed(1)+'" x2="'+x.toFixed(1)+'" y2="'+(50+hh).toFixed(1)+'" stroke="#d9a93a" stroke-width="1.3"/>';
-  });
-  for(var q=0;q<4;q++) wire+='<ellipse class="lat" cx="50" cy="50" rx="46" ry="'+(46*Math.abs(Math.cos(q*Math.PI/4))).toFixed(1)+'" fill="none" stroke="#d9a93a" stroke-width="1.3"/>';
-  /* 軸（左右）・ハンドル（右） */
-  wire+='<line x1="-2" y1="50" x2="115" y2="50" stroke="#b8871c" stroke-width="3" stroke-linecap="round"/>'+
-    '<circle cx="2" cy="50" r="3.2" fill="#d9a93a"/><circle cx="98" cy="50" r="3.2" fill="#d9a93a"/>'+
-    '<g id="crank"><line id="crankArm" x1="115" y1="50" x2="115" y2="32" stroke="#c9961f" stroke-width="3" stroke-linecap="round"/>'+
-    '<circle id="crankKnob" cx="115" cy="32" r="4.6" fill="#e36a93" stroke="#b44770" stroke-width="1"/></g>';
-  /* 脚（左右に1組ずつ・Aの字）・土台・受け皿。viewBox の横は -12〜112 */
-  /* ⭐台と受け皿にも立体感（2026-09-27 本人「ビンゴの受ける皿とか、台とかも少し影つけて立体感だそうよ。ボールは左上から光でしょう？」）
-     ＝光は左上から。土台・柱・皿は左上が明るく右下が暗いグラデーション、皿の口は内側を暗く、土台の右下にうすい影。脚も右側を少し暗く */
-  var stand='<svg class="pk-stand" viewBox="-12 0 124 142" aria-hidden="true">'+
-    '<defs>'+
-    '<linearGradient id="pkBase" x1="0" y1="0" x2="0.35" y2="1"><stop offset="0" stop-color="#e98aac"/><stop offset="1" stop-color="#a83d65"/></linearGradient>'+
-    '<linearGradient id="pkDish" x1="0" y1="0" x2="1" y2="0.8"><stop offset="0" stop-color="#f6a8c4"/><stop offset="0.55" stop-color="#e36a93"/><stop offset="1" stop-color="#b44770"/></linearGradient>'+
-    '<linearGradient id="pkPost" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#dd7aa0"/><stop offset="1" stop-color="#9e3a60"/></linearGradient>'+
-    '<filter id="pkSoft" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="1.6"/></filter>'+
-    '</defs>'+
-    '<ellipse cx="54" cy="140" rx="60" ry="3.4" fill="rgba(0,0,0,.16)" filter="url(#pkSoft)"/>'+   /* 土台の右下の影 */
-    '<g stroke-width="3" stroke-linecap="round" fill="none">'+
-    '<line x1="2" y1="50" x2="-6" y2="132" stroke="#c9961f"/><line x1="2" y1="50" x2="12" y2="132" stroke="#b8871c"/>'+
-    '<line x1="98" y1="50" x2="88" y2="132" stroke="#a87a18"/><line x1="98" y1="50" x2="106" y2="132" stroke="#96690f"/></g>'+
-    '<rect x="-10" y="130" width="120" height="8" rx="3" fill="url(#pkBase)"/>'+
-    '<rect x="-8" y="130.8" width="116" height="1.4" rx=".7" fill="rgba(255,255,255,.45)"/>'+   /* 土台の上のふちの光 */
-    '<rect x="40" y="116" width="20" height="14" fill="url(#pkPost)"/>'+
-    '<ellipse cx="50" cy="104.4" rx="15.6" ry="2.3" fill="#9e3a60"/>'+   /* 皿の口（内側は暗い）＝玉の後ろ */
-    '<path d="M35.5 104 q14.5 -2.6 29 0" stroke="rgba(255,255,255,.7)" stroke-width=".9" fill="none"/></svg>';   /* 皿の奥のふちの光（左上） */
-  /* ⭐皿の手前は、落ちてきた玉より前に重ねる＝玉の下半分が皿に隠れて「入った」ように見える（2026-09-27 本人「カップにボールが入った時、玉が隠れたらいいのにな」）
-     ＝手前のふちは口の楕円の下の弧に合わせて丸く。奥（台・脚・口の暗いところ）は .pk-stand、手前だけ .pk-cupfront（z-index が玉より上） */
-  var cupFront='<svg class="pk-cupfront" viewBox="-12 0 124 142" aria-hidden="true">'+
-    '<path d="M34.4 104.4 Q50 109 65.6 104.4 L62 116 H38 Z" fill="url(#pkDish)"/>'+
-    '<path d="M34.8 104.6 Q50 109.1 65.2 104.6" stroke="rgba(255,255,255,.75)" stroke-width=".9" fill="none"/></svg>';   /* 手前のふちの光 */
-  stage.innerHTML='<div class="pk-bingo"><div class="pk-mach"><div class="pk-gara" id="gara">'+stand+cupFront+
-    '<div class="pk-dome"><div class="pk-mix" id="mix"></div></div>'+
-    '<svg class="pk-wire" viewBox="0 0 100 100" aria-hidden="true">'+wire+'</svg></div></div>'+
-    '<div class="pk-right"><div class="pk-cur" id="cur"></div><p class="pk-histlbl">出た'+unit()+'</p><div class="pk-hist" id="hist"></div></div></div>';
-  /* 玉＝止まっているときは下にたまる（rx,ry）。回すと円ぜんたいに散らばる（sx,sy） */
-  var h="";
-  for(var i=0;i<14;i++){
-    var a=rnd(360)*Math.PI/180, r=10+rnd(26);
-    h+='<i style="--bc:'+BALL_COLORS[i%BALL_COLORS.length]+';--rx:'+(14+rnd(56))+'%;--ry:'+(58+rnd(22))+'%;'+
-      '--sx:'+(14+rnd(56))+'%;--hy:'+(6+rnd(30))+'%;--tt:'+(1.1+rnd(60)/100).toFixed(2)+'s;--td:-'+(rnd(150)/100).toFixed(2)+'s"></i>';
-  }
-  $("mix").innerHTML=h;
+  BM=BingoMachine();
+  stage.innerHTML='<div class="pk-bingo rb3"><div class="pk-right"><div class="pk-cur" id="cur"></div><p class="pk-histlbl">出た'+unit()+'</p><div class="pk-hist" id="hist"></div></div>'+
+    '<div class="pk-mach rb-mach">'+BM.html(BALL_COLORS,rnd)+'</div></div>';
+  BM.draw(run.th||0);
   run.ballI=0;
 }
 function ballFit(t,label,d){
@@ -528,14 +487,7 @@ function toHist(){
 }
 /* カゴを回す絵（横の輪の太さとハンドルの位置を、角度から毎回描く） */
 var cageRaf=0;
-function drawCage(th){
-  var lats=document.querySelectorAll("#gara .lat");
-  for(var q=0;q<lats.length;q++) lats[q].setAttribute("ry",(46*Math.abs(Math.cos(th+q*Math.PI/4))).toFixed(1));
-  var c=Math.cos(th), y=50-18*c, x=115+3*Math.sin(th);
-  var arm=$("crankArm"), knob=$("crankKnob"); if(!arm) return;
-  arm.setAttribute("x2",x.toFixed(1)); arm.setAttribute("y2",y.toFixed(1));
-  knob.setAttribute("cx",x.toFixed(1)); knob.setAttribute("cy",y.toFixed(1));
-}
+function drawCage(th){ if(BM) BM.draw(th); }
 function spinCage(on){
   cancelAnimationFrame(cageRaf);
   var g=$("gara"); if(!g) return;
@@ -543,18 +495,18 @@ function spinCage(on){
   if(!on) return;
   var t0=performance.now(), th0=run.th||0;
   (function step(now){
-    run.th=th0+(now-t0)/1000*Math.PI*2*0.55;   // ⭐ゆっくり＝1秒に0.55回転（2026-09-26 本人「もう少しゆっくりで、時間を少し長くして」）
+    run.th=th0-(now-t0)/1000*Math.PI*2*0.55;   // ⭐ゆっくり＝1秒に0.55回転（2026-09-26 本人「もう少しゆっくりで、時間を少し長くして」）。向きはビンゴマシーンと同じ（2026-09-27）
     drawCage(run.th); cageRaf=requestAnimationFrame(step);
   })(t0);
 }
 /* ⭐玉はカゴの底から受け皿にコロンと落ちて、少し弾んでから、転がりながら大きくなって右に出る
    （2026-09-26 本人「出てくる円がさ。気になる。ボールだからさ」） */
 function dropBall(label,i){
-  var g=$("gara"), W=g.getBoundingClientRect().width, d=W*0.12;
+  var g=$("gara"), W=g.getBoundingClientRect().width;
   var mini=document.createElement("div"); mini.className="pk-ball pk-drop";
   mini.style.setProperty("--bc",BALL_COLORS[run.ballI%BALL_COLORS.length]);
-  mini.style.width=mini.style.height=d+"px";
   g.appendChild(mini);
+  BM.roll(mini,W,2200);   // カゴのうしろの下から、すべり台を転がって受け皿へ（ビンゴマシーンと同じ）
   later(function(){
     var big=ballEl(label, run.bigD); big.style.opacity="0"; $("cur").appendChild(big);
     var a=mini.getBoundingClientRect(), b=big.getBoundingClientRect();
@@ -566,7 +518,7 @@ function dropBall(label,i){
       {transform:"none"}
     ],{duration:850,easing:"cubic-bezier(.3,.7,.4,1)"});
     updateRun();
-  },900);
+  },2250);
 }
 function bingoNext(){
   if(run.busy || !run.pool.length) return;
@@ -577,7 +529,7 @@ function bingoNext(){
     spinCage(false);
     var i=0;
     (function one(){
-      if(i>=n){ later(function(){ run.busy=false; updateRun(); },950); return; }
+      if(i>=n){ later(function(){ run.busy=false; updateRun(); },2300); return; }
       dropBall(pickOne(), i); i++;
       later(one,1000);
     })();

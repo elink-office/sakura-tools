@@ -1,0 +1,37 @@
+/* ルーレット（2026-09-26 たたき台）
+   ⭐動かす画面の枠・ボタンは ../random/random.css（ランダム指名メーカー）と共通。ここはルーレットだけのもの */
+:root{ color-scheme: light; }
+.pk-try{margin:18px 0 0}
+#items{min-height:150px;width:100%}
+.ru-opt{margin:10px 0 0;font-size:.95rem}
+.ru-opt label{display:inline-flex;align-items:center;gap:6px;font-weight:normal;cursor:pointer}
+
+/* 動かす画面＝左に円、右に当たり */
+.ru-wrap{position:absolute;inset:0;display:grid;grid-template-columns:55% 45%;align-items:center}
+.ru-wheelbox{position:relative;justify-self:center;width:min(48cqw,80cqh);aspect-ratio:1}
+.ru-wheel{position:absolute;inset:0;border-radius:50%;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.ru-wheel svg{width:100%;height:100%;display:block}
+/* ⚠回す時間は本人の「早すぎるとワクワク感がなくなる」（ビンゴ）にそろえて、ゆっくり長め */
+.ru-wheel.go{transition:transform 6s cubic-bezier(.12,.6,.1,1)}
+.ru-pin{position:absolute;left:50%;top:-4%;transform:translateX(-50%);width:0;height:0;z-index:3;
+  border-left:min(2.4cqw,4cqh) solid transparent;border-right:min(2.4cqw,4cqh) solid transparent;border-top:min(4.4cqw,7.4cqh) solid var(--pink);
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.25))}
+.ru-hub{position:absolute;left:50%;top:50%;width:14%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;z-index:2;
+  background:radial-gradient(circle at 35% 30%,#fff,#f2e6ec 60%,#d9c5cf);box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.ru-res{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2cqh;padding:0 3cqw}
+.ru-hit{font-weight:900;color:var(--ink);text-align:center;line-height:1.15;font-size:min(9cqh,6cqw);min-height:1.2em;word-break:keep-all;overflow-wrap:anywhere}
+.ru-hit.pop{animation:ruPop .6s cubic-bezier(.3,1.5,.5,1) both}
+@keyframes ruPop{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+.ru-hist{font-size:min(2.6cqh,18px);color:var(--ink-soft);text-align:center;max-width:100%}
+@media (prefers-reduced-motion: reduce){ .ru-wheel.go{transition-duration:.01s} }
+
+/* ⭐①は左に項目・右に分割と外す設定（2026-09-27 本人「右に作ってほしい。こんなに広くある必要ないよ笑」）。スマホは縦に並べる */
+.ru-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}
+.ru-col .pk-lbl:first-child{margin-top:0}
+.ru-note{margin:8px 0 0;font-size:.92rem;font-weight:700;color:var(--ink);min-height:1.4em}
+.ru-col .hint{margin:4px 0 0}
+.seg>button[disabled]{opacity:.35;cursor:default}
+@media (max-width:640px){ .ru-two{grid-template-columns:1fr;gap:14px} }
+
+/* ⭐「見本を見る」は①の上・左（サンプルのボタンと同じ形・2026-09-27） */
+.ru-sample{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;margin:14px 0 14px}

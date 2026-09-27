@@ -170,3 +170,14 @@ input[type=checkbox], input[type=radio]{ accent-color: var(--pink); }
 /* ⭐「出た人（班）」の見出しは、下に1つ並んでから出す（2026-09-27 本人「何もないと『出た人』っていうのが違和感がある。2つ目を置くときに『出た人』を書いておくっていうのはどう？」）
    ＝1つ目の玉のときは下の並びが空なので見出しも見せない。場所は取ったまま（visibility）＝玉の位置がずれない */
 .pk-right:has(.pk-hist:empty) .pk-histlbl{visibility:hidden}
+
+/* ===== 立体のビンゴマシーン（../bingo-machine.js・2026-09-27）。ランダム指名のビンゴの見せ方で使う（ビンゴマシーン bingo.css にも同じ指定） ===== */
+.bg-m3.pk-gara{position:relative;left:auto;top:auto;transform:translate(3cqw,7cqh);width:98%}
+.bg3{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.bg3-back{z-index:1}.bg3-front{z-index:3}.bg3-cup{z-index:5}
+/* ⭐左に出た玉と「出た人」、右に機械（ビンゴマシーンと同じ置き場所）。2026-09-27 本人「ビンゴを同じ位置にして、左右を逆にしてみて」 */
+.pk-bingo.rb3{grid-template-columns:60% 40%}
+.rb3 .rb-mach{order:2;display:flex;align-items:center;justify-content:center;min-width:0}
+.rb3 .pk-right{order:1;min-width:0}
+/* ⭐ランダム指名は隣に番号の表がないので、機械を少し左へ（2026-09-27 本人「ランダムは、隣に数字ないから、ガラガラをもう少し左に寄せてみて！」）。ビンゴマシーンは右へ3cqw のまま */
+.rb3 .bg-m3.pk-gara{transform:translate(-7cqw,7cqh)}

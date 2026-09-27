@@ -1,0 +1,57 @@
+/* ビンゴマシーン（2026-09-26 たたき台）
+   ⭐カゴ・玉・動かす画面の見た目は ../random/random.css（ランダム指名メーカー）と共通。ここはビンゴだけのもの */
+:root{ color-scheme: light; }
+.pk-try{margin:18px 0 0}
+
+/* ⭐動かす画面＝左に番号の表（たて）、まん中に出た玉を大きく、右に立体の機械（2026-09-27 本人「右に機械だからAで、中央にドーンと玉」）
+   前＝左にカゴ・右の上に出た玉・右の下に番号の表（よこ15こ×5段）。控え＝_もどす/2026-09-27_ビンゴマシーンを立体にする前 */
+.bg-wrap{position:absolute;inset:0;display:grid;grid-template-columns:26% 1fr 40%}
+.bg-wrap .bg-board{grid-column:1}.bg-wrap .bg-mach{grid-column:3}
+/* 大きい玉＝画面のまん中（「回す」ボタンの上）。たての位置は JS（placeCur）で表の B・I・N・G・O の上のはしにそろえる。すべり台より前 */
+.bg-cur{position:absolute;left:50%;top:0;transform:translateX(-50%);z-index:6}
+.bg-mach{position:relative;display:flex;align-items:center;justify-content:center;min-width:0}
+.bg-m3.pk-gara{position:relative;left:auto;top:auto;transform:translate(3cqw,7cqh);width:98%}   /* ⭐右へ少し（2026-09-27 本人「ビンゴの台を右に…球がそのままの高さで右に行くように少し移動してみて」）   /* ⭐少し下げる（2026-09-27 本人「ビンゴの画像を全体的に少し下に下げて」） */
+.bg3{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.bg3-back{z-index:1}.bg3-front{z-index:3}.bg3-cup{z-index:5}
+/* 番号の表＝上に B・I・N・G・O、数字はたて（ビンゴカードの向き・本人「数字を左側に配置して、縦に並べたい」） */
+.bg-board{align-self:center;display:grid;gap:.45cqh .5cqw;padding:0 0 0 6cqw}   /* ⭐少し右へ・左に余白（2026-09-27 本人「数字の配置を少し右に寄せて左に余白が欲しい」）。前＝左2.5cqw・右1cqw */
+.bg-board .bg-cell,.bg-board .bg-letter{height:4.05cqh}
+.bg-cell{display:flex;align-items:center;justify-content:center;border-radius:4px;background:#fff;color:#b9bdc3;
+  font-weight:800;font-size:min(3cqh,1.9cqw);line-height:1;border:1px solid #e6e8ec}
+.bg-cell.on{background:#e9ebee;color:#222;border-color:#d3d6db}
+/* ⭐いま出た番号＝黒い字にうすいピンクの地（2026-09-27 本人「今選んでる数値は、文字黒で薄いピンクの背景に。ピンクがちょっと多い」）。前＝桜色の地に白い字 */
+/*   ⭐→ 玉と同じ色をうすく（2026-09-27 本人「出てきた玉の色を付ける。次が出たらグレーアウト」）。（Nの白い玉は白い地にグレーのふち→ Nは黄になった） */
+.bg-cell.last{background:color-mix(in srgb,var(--cb,#e86fb0) 24%,#fff);color:#222;border:2px solid color-mix(in srgb,var(--cb,#e86fb0) 65%,#6b7078);box-shadow:0 2px 6px rgba(0,0,0,.12)}
+/* ⭐表の左の B・I・N・G・O は小さく細く（2026-09-27 本人「BINGOの文字を小さく細くしてみて」）。前＝900・min(5.6cqh,2.8cqw) */
+.bg-letter{display:flex;align-items:center;justify-content:center;font-weight:500;color:var(--pink);font-size:min(3.4cqh,2.2cqw);line-height:1}
+
+/* 玉の中の字＝BINGOの文字（小さく上）＋番号（大きく） */
+.pk-ball .t{flex-direction:column}
+/* ⭐B・I・N・G・O の字は補助＝上に小さく。数字は玉の真ん中（2026-09-27 本人「数字をもっと中心寄りにして大きく。Nとかは補助だから少し上でOK」） */
+.pk-ball .t{position:relative}
+.pk-ball .t .bl{position:absolute;left:0;right:0;top:8%;text-align:center;font-size:.2em;line-height:1;color:var(--ink-soft)}
+.pk-ball .t .bn{display:block;line-height:1}
+
+/* ⭐上の字（n回目・「回す」で次の番号・のこり）はカゴの上に寄せて、右の上を玉にあける（2026-09-27 本人「左に寄せるともっと大きくなる」「全画面で球と数字が小さい」）
+   ＝右の列だけ上の帯のぶん上にのばす。玉の最大 300px → 560px */
+.bg-run .pk-top{right:auto;width:60%;justify-content:flex-start;gap:1.4cqw;padding-left:2cqw;font-size:min(3cqh,24px);white-space:nowrap}
+.bg-run .pk-round,.bg-run .pk-left{position:static}
+
+/* ⭐全画面のときは、右上の「全画面・✕ とじる」を隠す。ポインタを右上に持っていくと出る（2026-09-27 本人「とじるのボタンは、ポインタを持って行った時に出るようにして（全画面の時）」）
+   ＝出る場所を広めに取る（右上の角 のあたり）。Esc でも全画面はぬける */
+:root:fullscreen .bg-run .run-tr{padding:14px 14px 40px 60px;top:0;right:0;opacity:0;transition:opacity .25s}
+:root:fullscreen .bg-run .run-tr:hover,:root:fullscreen .bg-run .run-tr:focus-within{opacity:1}
+
+/* ⭐「はじめから」は右端へ。「回す」の横だと、手が当たって押してしまう（2026-09-27 本人「酔っぱらってやったら、間違えるよ。手が当たる」） */
+.bg-run .pk-btns #resetBtn{position:absolute;right:3cqw;bottom:0}
+
+/* ⭐クラッカー（🎉 ビンゴ！）は左端。当たった人が出たら押す（2026-09-27 本人） */
+.bg-run .pk-btns #crackerBtn{position:absolute;left:3cqw;bottom:0}
+.pk-b.cracker{background:#fff;color:var(--pink);border:1px solid color-mix(in srgb,var(--pink) 45%,#fff)}
+.pk-b.cracker:hover{background:color-mix(in srgb,var(--pink) 8%,#fff)}
+/* 見本の枠のときは、見本のしるしをクラッカーの上へ */
+@media (min-width:601px){ .bg-run .pk-demo{bottom:calc(2.5cqh + clamp(14px,2.4cqmin,22px)*2.4 + 16px)} }
+@media (max-width:600px){ .bg-run .pk-btns #resetBtn,.bg-run .pk-btns #crackerBtn{position:static} }   /* ⚠スマホの見本の枠では「回す」と重なるので、横に並べたまま（2026-09-27 福引の点検で気づいた） */
+
+/* ⭐「見本を見る」は①の上・左（サンプルのボタンと同じ形・2026-09-27） */
+.bg-sample{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;margin:14px 0 14px}
