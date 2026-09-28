@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&display=swap">
 <link rel="stylesheet" href="../style.css?v=155">
-<link rel="stylesheet" href="seat.css?v=16">
+<link rel="stylesheet" href="seat.css?v=17">
 <link rel="stylesheet" href="../print.css?v=63" media="print">
 <style>
 /* 🔴 班長・前回とのくらべ・クラスの保存（2026-08-31）。
@@ -317,7 +317,7 @@ body.screen .seat.dup .nm{text-decoration:none}
         <p class="tip-h">男女</p>
         <ul>
           <li><strong>Excelに書いてあれば、貼るだけで色が付きます。</strong>「男」「女」「男子」「女子」を読みます。</li>
-          <li>あとから<strong>③ 男女の文字色</strong>のところで変更できます。転入生の対応に便利です。</li>
+          <li>あとから<strong>② 男女の文字色</strong>のところで変更できます。転入生の対応に便利です。</li>
         </ul>
 
         <p><strong>いちばん上の「サンプル①（出席番号順）」「サンプル②（班分け）」を押すと、見本の座席表が出ます。</strong>名簿を入れる前でも、席を動かしたり班に分けたりして試せます。サンプルの名簿は①の欄に、班長は「詳しい条件」に入るので、どこに何を入れるかも見られます。自分の名簿を入れるときは、先に「サンプルを消す」を押してください。</p>
@@ -337,8 +337,12 @@ body.screen .seat.dup .nm{text-decoration:none}
         <div>
       <!-- ⭐枠の上にも出す（2026-09-10 本人「エクセルから貼り付けるってあったほうがいいよね」）。
            ⚠知り合いの先生からも同じことを言われたとのこと -->
-      <label for="names">エクセルから貼り付ける</label>
+      <label for="names">エクセルから貼り付ける（項目名不要）</label><!-- ⭐（項目名不要）を足した（2026-09-28 本人） -->
       <textarea id="names" placeholder="クリックして貼り付け（手入力可）&#10;&#10;1,やまだ たろう,男&#10;2,さとう はなこ,女&#10;すずき いちろう（名前だけでもOK）"></textarea>
+      <!-- ⭐今のデータをクリア（2026-09-28 本人「2クラス目を入力したいときに、削除しかない。削除じゃなくてクリアしたいんだけど」）。
+           ⭐置き場所は貼り付け欄のすぐ下（本人「Excelから貼り付けるの下がいいと思ってた」）。⚠最初は人数のとなりに置いてしまった
+           ⚠「削除」は保存したデータを消す。こちらは画面の名簿だけ。空けた席も消す。会場の形・見た目・保存したデータは残す -->
+      <p style="margin:8px 0 0"><button class="mini" id="clearNow" type="button">今のデータをクリア</button></p>
       <div class="row tight" style="margin-top:10px">
         <div><label for="nameMode">名前の見せ方</label>
           <select id="nameMode">
@@ -395,170 +399,8 @@ body.screen .seat.dup .nm{text-decoration:none}
       </div>
     </details>
 
-    <details class="opt noprint" id="ch2">
-      <summary><span class="step">2</span>教室の形</summary>
-      <div class="body">
-      <div class="row tight">
-        <div><label for="cols">横のならび</label><span class="ctl"><select id="cols" class="narrow"><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6" selected>6</option><option value="7">7</option><option value="8">8</option></select><span class="unit">席</span></span></div>
-        <div><label for="rows">縦のならび</label><span class="ctl"><select id="rows" class="narrow"><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6" selected>6</option><option value="7">7</option><option value="8">8</option></select><span class="unit">段</span></span></div>
-        <div><label>座席数</label><div class="bignum" id="seatcount">36</div></div>
-        <div id="seatinfo" class="hint" style="align-self:flex-end;padding-bottom:6px"></div>
-        <div><label for="board">黒板の位置</label>
-          <select id="board">
-            <option value="top">上（画面の上が前）</option>
-            <option value="bottom">下（画面の下が前）</option>
-          </select>
-        </div>
-      </div>
-      <div class="row tight" style="margin-top:6px">
-        <div><label for="order">並べ方</label>
-          <select id="order">
-            <option value="random">ランダム（条件つき）</option>
-            <option value="number">出席番号順</option>
-          </select></div>
-        <div id="dirWrap"><label for="dir">並ぶ向き</label>
-          <select id="dir">
-            <option value="v">縦・左の列から</option>
-            <option value="vr">縦・右の列から</option>
-            <option value="h">横・左から</option>
-            <option value="hr">横・右から</option>
-          </select></div>
-      </div>
-      <p class="hint" id="orderNote"></p>
-      <!-- 🔴 出席番号を席に出す（2026-09-03 本人・現場の先生の要望）。
-           ⚠「出席番号順」をえらんだときは、こちらで自動で入れる（本人）。
-             そのあと先生が外したら、その気持ちを優先して自動では入れ直さない -->
-      <p style="margin:6px 0 0">
-        <label class="chk-inline"><input type="checkbox" id="numOn"> 席に出席番号を出す</label>
-        <span class="hint" style="margin-left:8px">名簿に番号の列があればその番号、なければ名簿の順に1・2・3…と付きます。席の<strong>左下</strong>に小さく出ます。</span>
-      </p>
-    <details class="opt sub noprint" id="condBlock">
-      <summary>詳しい条件（離す・隣にする・席を決める）</summary>
-      <div class="body">
-        <!-- 🔴 チェック（隣の条件は設定しない）は外した（2026-09-09 本人）。
-             ⚠「詳しい条件」自体がすでにシャッターなので、中でもう一段隠す必要がない。
-               本人「そもそも詳しい条件自体がシャッターになってるからいらなくない？」
-             🔴きっかけ＝本人が友人に使い方を説明したとき、「離す」を探して見つけられなかった。
-               見出しには「離す」と書いてあるのに、チェックのラベルは「隣の条件は設定しない」で、
-               ⚠「離す」という言葉がどこにも出ていなかった。しかも二重否定だった
-             ⚠3つの意味は言葉だけでは伝わらないので、小さな図と1行の説明を付けた -->
-        <h3>離す・隣にする&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h3>
-        <div class="tip-body" hidden>
-          <p>「この2人は離す」「この2人は隣にする」を決められます。<strong>使わないときは、何も入れなくてかまいません。</strong></p>
-          <p>使うときは、まず<strong>どこまでを“隣”とみなすか</strong>をえらびます。きつくするほど、条件を満たす配置が見つかりにくくなります。作れないときは、ここをゆるくしてみてください。</p>
-        </div>
-        <div id="modeBox" style="margin-top:12px">
-          <p class="note-sm" style="margin:0 0 6px">どこまでを「隣」とみなしますか</p>
-          <div class="seg mode-pick">
-            <!-- 🔴 「設定なし」を左端に戻した（2026-09-09 本人「左右だけの左に、設定なしの図とボタンを作って」）。
-                 ⚠2026-09-03に一度やめた形だが、⭐図ができたので「何も隣とみなさない」が目で分かるようになった。
-                   当時の理由「4つが同列だと、ボタンを変えたら設定が変わるってのが想像しにくい」は、図で解けている -->
-            <label><input type="radio" name="mode" value="none" checked><span class="seg-in"><span class="mode-fig"><i></i><i></i><i></i><i></i><i class="me"></i><i></i><i></i><i></i><i></i></span>
-              設定なし</span></label>
-            <label><input type="radio" name="mode" value="lr"><span class="seg-in"><span class="mode-fig"><i></i><i></i><i></i><i class="on"></i><i class="me"></i><i class="on"></i><i></i><i></i><i></i></span>
-              左右だけ</span></label>
-            <label><input type="radio" name="mode" value="cross"><span class="seg-in"><span class="mode-fig"><i></i><i class="on"></i><i></i><i class="on"></i><i class="me"></i><i class="on"></i><i></i><i class="on"></i><i></i></span>
-              前後左右</span></label>
-            <label><input type="radio" name="mode" value="king"><span class="seg-in"><span class="mode-fig"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="me"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>
-              まわり全部（ななめも）</span></label>
-          </div>
-          <!-- 🔴 説明文（前後左右の4つの席を「隣」とみなします）は外した（2026-09-09 本人）。
-               本人「これいらないね。図になったから」＝小さな図で伝わっているので、文が重複する。
-               ⚠JS側の MODE_NOTE と modeChanged() は残してある（$('modeNote') が無ければ何もしない） -->
-
-          <!-- ⚠「設定なし」をえらんでいる間は、この箱ごと薄くして触れなくする（2026-09-09）。
-               ⭐入れたものは消さない（もどせば、そのまま効く） -->
-          <div id="pairBox">
-            <h3>離す組み合わせ</h3>
-            <div id="sepList"></div>
-            <button class="mini" id="addSep" type="button">＋ 組を追加</button>
-
-            <h3>隣にする組み合わせ</h3>
-            <div id="adjList"></div>
-            <button class="mini" id="addAdj" type="button">＋ 組を追加</button>
-          </div>
-        </div>
-
-        <h3>席を決める人</h3>
-        <div id="fixList"></div>
-        <button class="mini" id="addFix" type="button">＋ 人を追加</button>
-        <!-- ⚠「視力などの配慮は「前のほう」がおすすめです」は削除した（2026-09-09 本人）。また足さない -->
-        <p class="hint">席をぴったり決めると、毎回まったく同じ席になります。</p>
-
-        <!-- 🔴 ★はここでえらぶ形にした（2026-09-03 本人「名簿に班長とは書かない」）。
-             ⚠名簿の★の読み取りは残してあるが、画面では案内しない。
-               Excelに班長列がある先生が貼ったときに、黙って拾うためだけのもの -->
-        <h3>班に1人ずつにする人&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h3>
-        <div class="tip-body" hidden>
-          <p>班長・リーダー・声かけ役など、<strong>班に1人ずつ置きたい人</strong>を決められます。使い道は自由です。</p>
-          <p>④で「班に分ける」を入れているときだけ効きます（★を座席表に表示するかどうかも④）。★の人数が足りないときは、いない班をお知らせします。</p>
-        </div>
-        <div id="leadList"></div>
-        <!-- 🔴 人数はボタンの右に、それだけ出す（2026-09-03 本人）。
-             ⚠班の数と見くらべる文は出さない。本人「班じゃないこともあるから」
-             ＝★を班分け以外の目じるしに使う先生がいる -->
-        <div class="lead-add">
-          <button class="mini" id="addLead" type="button">＋ 人を追加</button>
-          <span class="hint" id="leadCount"></span>
-        </div>
-        <p class="hint"><strong>④の画面</strong>で、1つの班に1人ずつになるように設定できます。<strong>★が目印です。</strong></p>
-      </div>
-    </details>
-      </div>
-    </details>
-
-
-  <p class="noprint" style="text-align:center;margin:24px 0">
-    <button class="primary" id="go" type="button">席替えする</button>
-  </p>
-  <div id="msg"></div>
-
-  <div id="result" hidden>
-    <div class="tabs-row noprint">
-      <div class="plan-tabs" id="tabs"></div>
-      <button id="again" type="button">もう一度 席替え</button>
-      <button id="hideSheet" type="button">🙈 座席表をかくす</button>
-      <button id="screenOn" type="button">📺 モニターに映す</button>
-    </div>
-    <!-- 🔴 「1つ戻す」は案のタブと同じ行に置かない（2026-09-03 本人）。
-         本人「同じ行にあったら埋もれて気づかない」。
-         ⭐席をさわる話（ドラッグの説明）と同じ行に置く＝間違えた直後に目に入る -->
-    <div class="drag-row noprint">
-      <button id="undo" type="button" disabled>↩ 1つ戻す</button>
-      <!-- ⭐空ける席をえらぶ（2026-09-23 本人「ここは空席っていう指示できないかな」「Aが直感的でいいな」） -->
-      <button id="offPick" type="button">空ける席をえらぶ</button>
-      <!-- ⭐サンプルの間は「1つ戻す」を隠して、ここに「サンプルを消す」（2026-09-14 本人「下だと見ない。上に入れてほしい」
-           「サンプルの時は一つ戻すボタンを隠してもいいから、その行に入れたら」） -->
-      <button id="sampleClear2" type="button" hidden>サンプルを消す</button>
-      <p class="hint drag-note">席はマグネットのように自分で入れ替えができます。班番号を押すと、席の班と色を変更できます。</p>
-    </div>
-
-    <!-- ⭐ふわっと出て消える知らせ（黄色い枠の意味など）。⚠紙には出さない -->
-    <div id="seatFlash" class="noprint" aria-live="polite"></div>
-    <div id="sheetBox">
-    <div class="sheet" id="sheet">
-      <div class="sheet-head">
-        <span id="decoLeft" class="deco-mark"></span>
-        <div class="sheet-title" id="shTitle">座席表</div>
-        <div class="sheet-date" id="shDate"></div>
-      </div>
-      <div class="board" id="boardTop">黒 板</div>
-      <div class="grid" id="grid"></div>
-      <!-- ⚠ .sheet::after は SAMPLE の透かしが使っている。かくす板は本物の要素にする -->
-      <div id="mask">座席表をかくしています</div>
-      <div class="board" id="boardBottom" hidden>黒 板</div>
-      <div class="sheet-credit" id="credit">さくらツールズ　sakura-tools.com</div>
-      <button type="button" id="screenOff" class="noprint">✕ とじる</button>
-    </div>
-    </div>
-
-    <div id="printAll"></div>
-
-    <p class="hint noprint">条件に反したところは赤くなりますが、そのままでもPDFにできます。<strong>文字が小さい場合は更新してください。</strong></p>
-    <div id="vio" class="noprint"></div>
-
     <details class="opt noprint" id="sexCard">
-      <summary><span class="step">3</span>男女の文字色&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
+      <summary><span class="step">2</span>男女の文字色&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
       <div class="body">
       <div class="tip-body" hidden>
         <p><strong>赤と緑は、いちばん見分けにくい組み合わせ</strong>です。はじめは青系と赤紫系にしてあり、明るさも変えてあるので、色が分かりにくい人でも濃さで見分けられます。</p>
@@ -582,7 +424,7 @@ body.screen .seat.dup .nm{text-decoration:none}
     </details>
 
     <details class="opt noprint" id="grpCard">
-      <summary><span class="step">4</span>班分け&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
+      <summary><span class="step">3</span>班分け&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
       <div class="body">
       <div class="tip-body" hidden>
         <p>班は<strong>机のかたまり</strong>に付きます。席をドラッグして人を入れ替えると、班もそのまま入れ替わります。</p>
@@ -663,6 +505,175 @@ body.screen .seat.dup .nm{text-decoration:none}
       </div>
     </details>
 
+    <details class="opt noprint" id="ch2">
+      <summary><span class="step">4</span>教室の形</summary>
+      <div class="body">
+      <div class="row tight">
+        <div><label for="cols">横のならび</label><span class="ctl"><select id="cols" class="narrow"><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6" selected>6</option><option value="7">7</option><option value="8">8</option></select><span class="unit">席</span></span></div>
+        <div><label for="rows">縦のならび</label><span class="ctl"><select id="rows" class="narrow"><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6" selected>6</option><option value="7">7</option><option value="8">8</option></select><span class="unit">段</span></span></div>
+        <div><label>座席数</label><div class="bignum" id="seatcount">36</div></div>
+        <div id="seatinfo" class="hint" style="align-self:flex-end;padding-bottom:6px"></div>
+        <div><label for="board">黒板の位置</label>
+          <select id="board">
+            <option value="top">上（画面の上が前）</option>
+            <option value="bottom">下（画面の下が前）</option>
+          </select>
+        </div>
+      </div>
+      <div class="row tight" style="margin-top:6px">
+        <div><label for="order">並べ方</label>
+          <select id="order">
+            <option value="random">ランダム（条件つき）</option>
+            <option value="number">出席番号順</option>
+          </select></div>
+        <div id="dirWrap"><label for="dir">並ぶ向き</label>
+          <select id="dir">
+            <option value="v">縦・左の列から</option>
+            <option value="vr">縦・右の列から</option>
+            <option value="h">横・左から</option>
+            <option value="hr">横・右から</option>
+          </select></div>
+      </div>
+      <p class="hint" id="orderNote"></p>
+      <!-- 🔴 出席番号を席に出す（2026-09-03 本人・現場の先生の要望）。
+           ⚠「出席番号順」をえらんだときは、こちらで自動で入れる（本人）。
+             そのあと先生が外したら、その気持ちを優先して自動では入れ直さない -->
+      <p style="margin:6px 0 0">
+        <label class="chk-inline"><input type="checkbox" id="numOn"> 席に出席番号を出す</label>
+        <span class="hint" style="margin-left:8px">名簿に番号の列があればその番号、なければ名簿の順に1・2・3…と付きます。席の<strong>左下</strong>に小さく出ます。</span>
+      </p>
+      <!-- ⭐用紙の向きは④に置く（2026-09-28 本人「実は私、縦でPDF作りたくて。それは最後に出てくるから難しいなと思ってはいたけど」→ A）。
+           ⚠前は⑥の「PDFで保存」の左にあった＝縦にしたい人が最後まで気づかない -->
+      <div class="print-line" style="margin-top:14px">
+        <label for="paper">用紙の向き</label>
+        <select id="paper" class="narrow"><option value="landscape">横</option><option value="portrait">縦</option></select>
+      </div>
+      <p class="hint">モニターに映すときは、用紙の向きに関係なく、画面いっぱいに横長で出ます。映したまま、マウスで席を動かせます。</p>
+    <details class="opt sub noprint" id="condBlock">
+      <summary>詳しい条件（離す・隣にする・席を決める）</summary>
+      <div class="body">
+        <!-- 🔴 チェック（隣の条件は設定しない）は外した（2026-09-09 本人）。
+             ⚠「詳しい条件」自体がすでにシャッターなので、中でもう一段隠す必要がない。
+               本人「そもそも詳しい条件自体がシャッターになってるからいらなくない？」
+             🔴きっかけ＝本人が友人に使い方を説明したとき、「離す」を探して見つけられなかった。
+               見出しには「離す」と書いてあるのに、チェックのラベルは「隣の条件は設定しない」で、
+               ⚠「離す」という言葉がどこにも出ていなかった。しかも二重否定だった
+             ⚠3つの意味は言葉だけでは伝わらないので、小さな図と1行の説明を付けた -->
+        <h3>離す・隣にする&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h3>
+        <div class="tip-body" hidden>
+          <p>「この2人は離す」「この2人は隣にする」を決められます。<strong>使わないときは、何も入れなくてかまいません。</strong></p>
+          <p>使うときは、まず<strong>どこまでを“隣”とみなすか</strong>をえらびます。きつくするほど、条件を満たす配置が見つかりにくくなります。作れないときは、ここをゆるくしてみてください。</p>
+        </div>
+        <div id="modeBox" style="margin-top:12px">
+          <p class="note-sm" style="margin:0 0 6px">どこまでを「隣」とみなしますか</p>
+          <div class="seg mode-pick">
+            <!-- 🔴 「設定なし」を左端に戻した（2026-09-09 本人「左右だけの左に、設定なしの図とボタンを作って」）。
+                 ⚠2026-09-03に一度やめた形だが、⭐図ができたので「何も隣とみなさない」が目で分かるようになった。
+                   当時の理由「4つが同列だと、ボタンを変えたら設定が変わるってのが想像しにくい」は、図で解けている -->
+            <label><input type="radio" name="mode" value="none" checked><span class="seg-in"><span class="mode-fig"><i></i><i></i><i></i><i></i><i class="me"></i><i></i><i></i><i></i><i></i></span>
+              設定なし</span></label>
+            <label><input type="radio" name="mode" value="lr"><span class="seg-in"><span class="mode-fig"><i></i><i></i><i></i><i class="on"></i><i class="me"></i><i class="on"></i><i></i><i></i><i></i></span>
+              左右だけ</span></label>
+            <label><input type="radio" name="mode" value="cross"><span class="seg-in"><span class="mode-fig"><i></i><i class="on"></i><i></i><i class="on"></i><i class="me"></i><i class="on"></i><i></i><i class="on"></i><i></i></span>
+              前後左右</span></label>
+            <label><input type="radio" name="mode" value="king"><span class="seg-in"><span class="mode-fig"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="me"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>
+              まわり全部（ななめも）</span></label>
+          </div>
+          <!-- 🔴 説明文（前後左右の4つの席を「隣」とみなします）は外した（2026-09-09 本人）。
+               本人「これいらないね。図になったから」＝小さな図で伝わっているので、文が重複する。
+               ⚠JS側の MODE_NOTE と modeChanged() は残してある（$('modeNote') が無ければ何もしない） -->
+
+          <!-- ⚠「設定なし」をえらんでいる間は、この箱ごと薄くして触れなくする（2026-09-09）。
+               ⭐入れたものは消さない（もどせば、そのまま効く） -->
+          <div id="pairBox">
+            <h3>離す組み合わせ</h3>
+            <div id="sepList"></div>
+            <button class="mini" id="addSep" type="button">＋ 組を追加</button>
+
+            <h3>隣にする組み合わせ</h3>
+            <div id="adjList"></div>
+            <button class="mini" id="addAdj" type="button">＋ 組を追加</button>
+          </div>
+        </div>
+
+        <h3>席を決める人</h3>
+        <div id="fixList"></div>
+        <button class="mini" id="addFix" type="button">＋ 人を追加</button>
+        <!-- ⚠「視力などの配慮は「前のほう」がおすすめです」は削除した（2026-09-09 本人）。また足さない -->
+        <p class="hint">席をぴったり決めると、毎回まったく同じ席になります。</p>
+
+        <!-- 🔴 ★はここでえらぶ形にした（2026-09-03 本人「名簿に班長とは書かない」）。
+             ⚠名簿の★の読み取りは残してあるが、画面では案内しない。
+               Excelに班長列がある先生が貼ったときに、黙って拾うためだけのもの -->
+        <h3>班に1人ずつにする人&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h3>
+        <div class="tip-body" hidden>
+          <p>班長・リーダー・声かけ役など、<strong>班に1人ずつ置きたい人</strong>を決められます。使い道は自由です。</p>
+          <p>③で「班に分ける」を入れているときだけ効きます（★を座席表に表示するかどうかも③）。★の人数が足りないときは、いない班をお知らせします。</p>
+        </div>
+        <div id="leadList"></div>
+        <!-- 🔴 人数はボタンの右に、それだけ出す（2026-09-03 本人）。
+             ⚠班の数と見くらべる文は出さない。本人「班じゃないこともあるから」
+             ＝★を班分け以外の目じるしに使う先生がいる -->
+        <div class="lead-add">
+          <button class="mini" id="addLead" type="button">＋ 人を追加</button>
+          <span class="hint" id="leadCount"></span>
+        </div>
+        <p class="hint"><strong>③の画面</strong>で、1つの班に1人ずつになるように設定できます。<strong>★が目印です。</strong></p>
+      </div>
+    </details>
+      </div>
+    </details>
+
+
+  <p class="noprint" style="text-align:center;margin:24px 0">
+    <button class="primary" id="go" type="button">席替えする</button>
+  </p>
+  <div id="msg"></div>
+
+  <div id="result" hidden>
+    <div class="tabs-row noprint">
+      <div class="plan-tabs" id="tabs"></div>
+      <button id="again" type="button">もう一度 席替え</button>
+      <button id="hideSheet" type="button">🙈 座席表をかくす</button>
+      <button id="screenOn" type="button">📺 モニターに映す</button>
+    </div>
+    <!-- 🔴 「1つ戻す」は案のタブと同じ行に置かない（2026-09-03 本人）。
+         本人「同じ行にあったら埋もれて気づかない」。
+         ⭐席をさわる話（ドラッグの説明）と同じ行に置く＝間違えた直後に目に入る -->
+    <div class="drag-row noprint">
+      <button id="undo" type="button" disabled>↩ 1つ戻す</button>
+      <!-- ⭐空ける席をえらぶ（2026-09-23 本人「ここは空席っていう指示できないかな」「Aが直感的でいいな」） -->
+      <button id="offPick" type="button">空ける席をえらぶ</button>
+      <!-- ⭐サンプルの間は「1つ戻す」を隠して、ここに「サンプルを消す」（2026-09-14 本人「下だと見ない。上に入れてほしい」
+           「サンプルの時は一つ戻すボタンを隠してもいいから、その行に入れたら」） -->
+      <button id="sampleClear2" type="button" hidden>サンプルを消す</button>
+      <p class="hint drag-note">席はマグネットのように自分で入れ替えができます。班番号を押すと、席の班と色を変更できます。</p>
+    </div>
+
+    <!-- ⭐ふわっと出て消える知らせ（黄色い枠の意味など）。⚠紙には出さない -->
+    <div id="seatFlash" class="noprint" aria-live="polite"></div>
+    <div id="sheetBox">
+    <div class="sheet" id="sheet">
+      <div class="sheet-head">
+        <span id="decoLeft" class="deco-mark"></span>
+        <div class="sheet-title" id="shTitle">座席表</div>
+        <div class="sheet-date" id="shDate"></div>
+      </div>
+      <div class="board" id="boardTop">黒 板</div>
+      <div class="grid" id="grid"></div>
+      <!-- ⚠ .sheet::after は SAMPLE の透かしが使っている。かくす板は本物の要素にする -->
+      <div id="mask">座席表をかくしています</div>
+      <div class="board" id="boardBottom" hidden>黒 板</div>
+      <div class="sheet-credit" id="credit">さくらツールズ　sakura-tools.com</div>
+      <button type="button" id="screenOff" class="noprint">✕ とじる</button>
+    </div>
+    </div>
+
+    <div id="printAll"></div>
+
+    <p class="hint noprint">条件に反したところは赤くなりますが、そのままでもPDFにできます。<strong>文字が小さい場合は更新してください。</strong></p>
+    <div id="vio" class="noprint"></div>
+
     <details class="opt noprint" id="printCard">
       <summary><span class="step">5</span>見た目&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
       <div class="body">
@@ -718,15 +729,13 @@ body.screen .seat.dup .nm{text-decoration:none}
         <p><strong>押すとPDFができます。</strong>上の見本と同じものが、そのままA4の1枚になります。スマホでもパソコンでも同じです。</p>
         <p><strong>用紙の向き</strong>は、この下で横と縦を選べます。紙に出したいときは、できたPDFを開いて印刷してください。</p>
         <p><strong>「先生の向き」</strong>にすると、紙は教卓から見た向き（180度まわした形）で出ます。画面はそのままです。</p>
-        <p><strong>「男女の色を出さない」</strong>にすると、紙だけ黒で出ます。<strong>画面は色が付いたままです。</strong>③で色を消すと画面も黒くなるので、紙だけ黒にしたいときはこちらを使ってください。</p>
+        <p><strong>「男女の色を出さない」</strong>にすると、紙だけ黒で出ます。<strong>画面は色が付いたままです。</strong>②で色を消すと画面も黒くなるので、紙だけ黒にしたいときはこちらを使ってください。</p>
       </div>
       <p style="margin:0 0 10px">
         <label class="chk-inline"><input type="checkbox" id="printTeacher" checked> PDFを先生の向きで出す</label>
         <label class="chk-inline gap"><input type="checkbox" id="printBW"> PDFは男女の色を出さない</label>
       </p>
       <div class="print-line">
-        <label for="paper">用紙の向き</label>
-        <select id="paper" class="narrow"><option value="landscape">横</option><option value="portrait">縦</option></select>
         <button id="doPrint" type="button">PDFで保存</button>
         <button id="doPng" type="button">画像で保存（PNG）</button>
       </div>
@@ -742,9 +751,7 @@ body.screen .seat.dup .nm{text-decoration:none}
   <!-- ⭐座席表を作る前も③〜⑥を見せる（グレー・押せない）（2026-09-14 本人「番号が崩れてる。③〜④がいない。グレーアウトでもいいから出しておいて」）
        ⚠#result が隠れているあいだだけ CSS で出す（JS は使わない）。作ったら本物の③〜⑥に入れ替わる -->
   <div id="resultStub" class="noprint" aria-hidden="true">
-    <p class="hint" style="text-align:center;margin:0 0 10px">③〜⑥はサンプルを入れるか、「席替えする」を押すと使えます</p>
-    <div class="opt stub"><div class="stub-head"><span class="step">3</span>男女の文字色</div></div>
-    <div class="opt stub"><div class="stub-head"><span class="step">4</span>班分け</div></div>
+    <p class="hint" style="text-align:center;margin:0 0 10px">⑤⑥はサンプルを入れるか、「席替えする」を押すと使えます</p>
     <div class="opt stub"><div class="stub-head"><span class="step">5</span>見た目</div></div>
     <div class="opt stub"><div class="stub-head"><span class="step">6</span>PDF・画像で保存</div></div>
   </div>
@@ -790,7 +797,7 @@ body.screen .seat.dup .nm{text-decoration:none}
       <details class="opt sub">
         <summary>座席の並びを保存<span id="recCount" class="cnt">0/20</span></summary>
         <div class="body">
-      <p class="hint">記録が2件以上たまると、④の<strong>「前の班と同じメンバーをさける」</strong>が使えます。また、前回と同じ席になった時も知らせることができます。</p>
+      <p class="hint">記録が2件以上たまると、③の<strong>「前の班と同じメンバーをさける」</strong>が使えます。また、前回と同じ席になった時も知らせることができます。</p>
       <p class="btn-row">
         <!-- ⭐並びは 記録 → 表示 → 削除（2026-09-15 本人「順番が違う。左から、今の座席を記録、記録の座席を〜に表示、削除」） -->
         <button class="mini" id="recSave" type="button">今の座席を記録</button>
@@ -907,7 +914,7 @@ body.screen .seat.dup .nm{text-decoration:none}
 <script src="../paper-pdf.js?v=5"></script>
 <script src="../seating.js?v=57"></script>
 <script src="../roster-tools.js?v=1"></script>
-<script src="seat.js?v=216"></script>
+<script src="seat.js?v=222"></script>
 <!-- 🔴 印刷用の1枚絵の置き場（2026-09-01）。画面には出ない。
      ⚠**body の直下に置くこと。**中に入れると、印刷のときに親ごと隠されて白紙になる -->
 <div id="printImgWrap"></div>

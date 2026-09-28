@@ -78,8 +78,28 @@
   var RE_TITLE = /(社長|会長|専務|常務|取締役|本部長|部長|次長|課長|係長|主任|主査|室長|店長|支店長|所長|園長|校長|教頭|教授|准教授|講師|助教|学長|学部長|代表|理事|顧問|参与|リーダー|マネージャー|担当)$/;
   var RE_ORG = /(株式会社|有限会社|合同会社|合資会社|\(株\)|（株）|\(有\)|（有）|一般社団法人|一般財団法人|公益社団法人|公益財団法人|社会福祉法人|医療法人|学校法人|宗教法人|法人|協議会|協会|組合|連合会|機構|財団|社団|学科|学部|研究科|事業部|センター|支店|営業所|本社|本部|支社|工場|製作所|工業|産業|商事|商会|商店|物産|銀行|信用金庫|保険|建設|運輸|病院|クリニック|薬局|大学|高等学校|高校|中学校|小学校|学園|学院|事務所|グループ|チーム|部$|課$|室$|係$|科$|会$|社$)/;
 
+  /* ⭐1行目が項目名（名前・学科…）なら、人として数えずにとばす（2026-09-28 本人「項目名が入っていたら、Aで」）。
+     ⚠前は項目名の行が1人分になり、人数と「保存中」の人数が1人多かった。
+     ⭐とばした項目名は、列の役割を決めるのに使う（「学科」の列を名前と読みまちがえないため） */
+  var HEAD_ROLE = [
+    ['no', /^(番号|No\.?|NO\.?|№|ID|社員番号|職員番号|学籍番号|学生番号|出席番号|受講番号)$/i],
+    ['org', /^(会社名?|企業名|所属|所属先|大学名?|学校名?|団体名?|法人名)$/],
+    ['title', /^(役職|役職名|肩書き?|職位|部署名?|学部|学科|学部学科|学部・学科|専攻|コース)$/],
+    ['kana', /^(フリガナ|ふりがな|カナ|よみがな|読み仮名|よみ|読み|氏名カナ|氏名\(カナ\)|氏名（カナ）|名前カナ)$/],
+    ['name', /^(氏名|名前|姓名|お名前|受講者名?|参加者名?|学生氏名|学生名)$/],
+    ['', /^(性別|男女|備考|メモ|学年|組|クラス|メール|メールアドレス|電話|電話番号)$/]
+  ];
+  function headRole(c) {
+    var v = String(c).replace(/[\s　]/g, '');
+    for (var i = 0; i < HEAD_ROLE.length; i++) if (HEAD_ROLE[i][1].test(v)) return HEAD_ROLE[i][0];
+    return null;
+  }
+  function isHeadRow(r) {
+    var cells = r.filter(function (c) { return c.length; });
+    return cells.length > 0 && cells.every(function (c) { return headRole(c) !== null; });
+  }
   function readRows() {
-    return $('names').value.split('\n')
+    var rows = $('names').value.split('\n')
       .filter(function (s) { return s.trim().length; })
       .map(function (s) {
         // 🔴 タブのほかカンマでも列に分ける（2026-09-01 本人）。
@@ -87,11 +107,25 @@
         //     ⚠空白は区切りにしない。名前に空白が入る（山田 太郎）ため
         return s.split(/[\t,，]/).map(function (c) { return c.trim(); });
       });
+    state.headRow = (rows.length && isHeadRow(rows[0])) ? rows.shift() : null;
+    return rows;
   }
   // 貼り付けた列が何なのか、自動で当たりをつける
   function guessRoles(rows) {
     var n = 0;
     rows.forEach(function (r) { if (r.length > n) n = r.length; });
+    // ⭐項目名の行があって「名前」の列が分かるときは、項目名どおりに決める（2026-09-28）
+    var hr = state.headRow;
+    if (hr && hr.some(function (c) { return headRole(c) === 'name'; })) {
+      var byHead = [], seen = {};
+      for (var h = 0; h < n; h++) {
+        var role = hr[h] ? headRole(hr[h]) : '';
+        if (role && seen[role]) role = '';
+        if (role) seen[role] = 1;
+        byHead.push(role || '');
+      }
+      return byHead;
+    }
     var roles = new Array(n), used = {}, cols = [], i;
     for (i = 0; i < n; i++) {
       roles[i] = '';
@@ -162,7 +196,7 @@
       state.people = {}; state.names = [];
       SAMPLE.slice(0, state.sampleCount || SAMPLE.length).forEach(function (s, i) {
         var id = 'p' + (i + 1);
-        state.people[id] = { id: id, no: s[0], name: s[1], kana: s[2], org: s[3], title: s[4] };
+        state.people[id] = { id: id, no: '', seq: String(i + 1), name: s[1], kana: s[2], org: s[3], title: s[4] };
         state.names.push(id);
       });
       state.firstRow = null;
@@ -183,7 +217,8 @@
       var id = 'p' + (i + 1);
       state.people[id] = {
         id: id,
-        no: get('no') || String(i + 1),
+        // ⭐社員番号・学籍番号は名簿の列だけ。通し番号（名簿の何番目か）は seq に分けた（2026-09-28）
+        no: get('no'), seq: String(i + 1),
         name: nm || ('（' + (i + 1) + '）'),
         kana: get('kana'), org: get('org'), title: get('title')
       };
@@ -238,6 +273,7 @@
     var sn = $('emptyNote'); if (sn) sn.style.display = state.sample ? '' : 'none';
     refreshSeatInfo();
     document.querySelectorAll('select.nameSel').forEach(fillNames);
+    drawPreview();   // ⭐名簿や列の役割が変わったら、見本も描き直す（2026-09-28）
   }
   function clampNum(v, dflt) {
     var n = parseInt(v, 10);
@@ -425,13 +461,11 @@
   // 番号の見せ方（1／①／(1)／No.1）
   // 🔴 番号は「右上のしるし」だけでなく「いちばん上の行」にも置ける。
   //    学籍番号・社員番号は通し番号ではないので、行として名前の上に出したい（本人の指摘）
-  function numPos() { var e = $('numPos'); return e ? e.value : 'corner'; }
-  function numOn() { return numPos() !== 'none'; }
-  // 出さないときは、見せ方と大きさを選べなくする（「日付を入れない」と同じ見せ方）
+  // ⭐2026-09-28 から「番号の位置」は無い。社員番号・学籍番号＝行（szNo）／通し番号＝右上（szSeq）
+  function lineNo() { return shown('szNo') && hasField('no'); }
+  // フリガナを出さないときは、フリガナの文字（カタカナ・ひらがな）を選べなくする
   function numStyleChanged() {
-    var on = numOn();
-    if ($('szNo')) $('szNo').disabled = !on;
-    if ($('szNoWrap')) $('szNoWrap').classList.toggle('off', !on);
+    if ($('kanaStyle')) $('kanaStyle').disabled = !shown('szKana');
   }
   // ⚠ 丸数字などの飾りはやめた。学籍番号・社員番号は桁が多く、
   //   丸で囲むと読みにくくなるだけだった（本人の判断）
@@ -454,7 +488,7 @@
     if (!p) return [];
     var out = [];
     // 「いちばん上の行」のときだけ、番号をマスの中に積む（右上のときは buildNo が描く）
-    if (numPos() === 'line' && hasField('no')) {
+    if (lineNo()) {
       out.push({ k: 'no', t: p.no ? numText(p.no) : '', m: sz('szNo', .52), dim: true });
     }
     // 🔴 名簿にその項目のある人が1人でもいれば、無い人も空の行にして場所を残す。
@@ -491,17 +525,17 @@
   function buildCell(id) { return buildCellP(personOf(id)); }
   // 右上の通し番号
   function buildNo(p) {
-    if (numPos() !== 'corner' || !p || !p.no) return null;
+    if (!shown('szSeq') || !p || !p.seq) return null;
     var sn = document.createElement('span');
     sn.className = 'sno';
-    sn.textContent = numText(p.no);
+    sn.textContent = numText(p.seq);
     return sn;
   }
   // 1マスが何行ぶんの高さになるか（文字の大きさを決めるのに使う）
   // 1マスに積む行の数（高さを決めるのに使う）
   function lineCount() {
     var n = 1;
-    if (numPos() === 'line' && hasField('no')) n++;
+    if (lineNo()) n++;
     if (shown('szOrg') && hasField('org')) n++;
     if (shown('szTtl') && hasField('title')) n++;
     if (shown('szKana') && hasField('kana')) n++;
@@ -509,7 +543,7 @@
   }
   function totalEm() {
     var ms = [1];
-    if (numPos() === 'line' && hasField('no')) ms.push(sz('szNo', .52));
+    if (lineNo()) ms.push(sz('szNo', .52));
     if (shown('szOrg') && hasField('org')) ms.push(orgSize());
     if (shown('szTtl') && hasField('title')) ms.push(sz('szTtl', .5));
     if (shown('szKana') && hasField('kana')) ms.push(sz('szKana', .44));
@@ -725,8 +759,43 @@
         }
       }
     }
-    order = order.filter(function (i) { return !isOff(i, cols); });   // 細くした席・空けた席はとばす
-    opt.names.forEach(function (n, i) { if (i < order.length) seats[order[i]] = n; });
+    order = order.filter(function (i) { return !isOff(i, cols); });   // 空けた席はとばす
+    /* 🔴 名簿順でも「席を決める人」は効かせる（2026-09-28 本人「目が悪いとか、前がいいとか、わからないとか、そういう人を先に設定したくて」）。
+       ⭐決めた人を先に座らせて、ほかの人はその席をとばして名簿順に流す（空けた席と同じ動き）。
+       ⭐「前のほう」「うしろのほう」は、一番前（うしろ）の列から、ならぶ向きの左右に従って埋める
+         （本人「私はモニターが左にあるから、左側と思ってるけど。それは選択があるじゃん、それに従えばいいんじゃない？」）。
+         決めた人どうしは名簿の順。入りきらなければ次の列へ */
+    var taken = {}, placed = {};
+    var fixed = opt.fixed || {}, zone = opt.zone || {};
+    Object.keys(fixed).forEach(function (n) {
+      var i = fixed[n];
+      if (String(n).charAt(0) === '\u0000' || opt.names.indexOf(n) < 0) return;   // 空けた席の印・名簿にいない人
+      if (isOff(i, cols) || taken[i]) return;
+      seats[i] = n; taken[i] = true; placed[n] = true;
+    });
+    function zoneSeats(back) {
+      var list = [];
+      for (var rr = 0; rr < rows; rr++) {
+        var row = back ? rows - 1 - rr : rr;
+        for (var k = 0; k < cols; k++) {
+          var col = migi ? cols - 1 - k : k, i = row * cols + col;
+          if (!isOff(i, cols)) list.push(i);
+        }
+      }
+      return list;
+    }
+    ['front', 'back'].forEach(function (z) {
+      var list = zoneSeats(z === 'back');
+      opt.names.forEach(function (n) {
+        if (zone[n] !== z || placed[n]) return;
+        for (var k = 0; k < list.length; k++) {
+          if (!taken[list[k]]) { seats[list[k]] = n; taken[list[k]] = true; placed[n] = true; return; }
+        }
+      });
+    });
+    order = order.filter(function (i) { return !taken[i]; });
+    opt.names.filter(function (n) { return !placed[n]; })
+      .forEach(function (n, i) { if (i < order.length) seats[order[i]] = n; });
     return seats;
   }
 
@@ -769,7 +838,8 @@
 
     // 出席番号順のときは条件を使わず、答えは1つだけ
     if ($('order').value === 'number') {
-      opt.separate = []; opt.adjacent = []; opt.fixed = {}; opt.zone = {};
+      // ⭐「離す・隣にする」は名簿順と合わないので使わない。「席を決める人」は効かせる（2026-09-28 本人）
+      opt.separate = []; opt.adjacent = [];
       state.plans = [orderedSeats(opt)]; state.cur = 0; state.opt = opt;
       state.seats = state.plans[0].slice();
       $('result').hidden = false;
@@ -825,6 +895,8 @@
 
   // ---- 座席表を描く ----
   function drawSheet() {
+    // ⭐作る前にも②③と用紙の向きを触れるようになった（2026-09-28）＝まだ席が無いときは描かない
+    if (!state.opt) return;
     var o = state.opt, cols = o.cols, rows = o.rows;
     // 🔴 行を出し入れすると、上の座席表の高さが変わる＝下の設定欄ごと動いてしまう。
     //    ページの位置ではなく「いま触っているメニュー」を画面の同じ場所に留める
@@ -1059,20 +1131,21 @@
        ⭐画面の紙を A4 の形にし、文字も紙と同じ大きさで出すようになったので、
          本人「見て判断すればいい」 */
     // 右上の通し番号は、マスの中身とは別に大きさを決める
-    var noR = sz('szNo', .52);
+    var noR = sz('szNo', .52), seqR = sz('szSeq', .52);
     /* ⚠番号の大きさも文字の大きさから決めているので、測れないときは触らない */
     if (canMeasure || state.cellFont) {
-      sh.style.setProperty('--snoSize', Math.max(9, Math.round(minSize * noR)) + 'px');
+      sh.style.setProperty('--snoSize', Math.max(9, Math.round(minSize * seqR)) + 'px');
     }
-    sh.style.setProperty('--snoPrint', (Math.round(printMM * noR * 10) / 10) + 'mm');
+    sh.style.setProperty('--snoPrint', (Math.round(printMM * seqR * 10) / 10) + 'mm');
     /* ⭐グループ記号は、番号と同じ大きさにそろえる（2026-09-23 本人「学籍番号を大きく表示したいのに、グループ番号のほうが大きい」）。
        ⚠前は 11.5px のまま＝席が多いと、縮んだ学籍番号より大きく見えた */
     if (canMeasure || state.cellFont) {
       /* ⚠右上の番号は 9px が下限（--snoSize と同じ）。行に出す番号は下限なし＝その大きさにぴったり合わせる */
-      var gnoPx = (numPos() === 'corner') ? Math.max(9, Math.round(minSize * noR)) : Math.round(minSize * noR * 100) / 100;
+      /* ⭐学籍番号の行があればその大きさ、無ければ右上の通し番号の大きさにそろえる（2026-09-28） */
+      var gnoPx = lineNo() ? Math.round(minSize * noR * 100) / 100 : Math.max(9, Math.round(minSize * seqR));
       sh.style.setProperty('--gnoSize', gnoPx + 'px');
     }
-    sh.style.setProperty('--gnoPrint', (Math.round(printMM * noR * 10) / 10) + 'mm');
+    sh.style.setProperty('--gnoPrint', (Math.round(printMM * (lineNo() ? noR : seqR) * 10) / 10) + 'mm');
     // ⚠この一文は毎回ここで書きかえている。HTML側を直しても出ない
     var note = document.querySelector('.drag-note');
     if (note) {
@@ -1832,17 +1905,17 @@
         if (gi && state.grp.num) {
           x.fillStyle = (look === 'none') ? '#555' : gcol(gi)[0];
           /* ⭐記号は番号と同じ大きさ（2026-09-23）。行に出す番号＝名前の大きさ×番号の比／右上の番号＝17px基準 */
-          var gfs = (numPos() === 'corner') ? Math.round(17 * (sz('szNo', .52) / .52)) : Math.max(4, Math.round(fitSize * sz('szNo', .52)));
+          var gfs = lineNo() ? Math.max(4, Math.round(fitSize * sz('szNo', .52))) : Math.round(17 * (sz('szSeq', .52) / .52));
           x.font = 'bold ' + gfs + 'px sans-serif';
           x.fillText(glabel(gi), px + 14, py + 12);
         }
         // 右上の通し番号
         var pno = personOf(name);
-        if (name && numPos() === 'corner' && pno && pno.no) {
+        if (name && shown('szSeq') && pno && pno.seq) {
           x.fillStyle = '#666666';
-          x.font = Math.round(17 * (sz('szNo', .52) / .52)) + 'px sans-serif';
+          x.font = Math.round(17 * (sz('szSeq', .52) / .52)) + 'px sans-serif';
           x.textAlign = 'right';
-          x.fillText(numText(pno.no), px + cw - 14, py + 12);
+          x.fillText(numText(pno.seq), px + cw - 14, py + 12);
           x.textAlign = 'left';
         }
         if (!name) continue;
@@ -1970,6 +2043,25 @@
   }
 
   // 呼び出したあと、画面を組み直す
+  /* 🔴 保存してあった並びを、作り直さずにそのまま出す（2026-08-31）。⚠作り直すと、ランダムのときに前と違う並びになる。
+     ⭐名前を付けて保存したデータを呼び出したときも使う（2026-09-28 本人「私、学生用と私用と2つほしくて。同じ並びでやっぱりほしい。保存したい。」）。
+     ⚠前は、呼び出すと「席次表を作る」を押してもらい、作り直していた。出せたら true */
+  function restorePending() {
+    var ps = state.pendingSeats; state.pendingSeats = null;
+    if (!ps) return false;
+    try {
+      state.sample = false;
+      var opt = collect();
+      if (ps.length !== opt.cols * opt.rows) return false;
+      state.opt = opt; state.plans = [ps.slice()]; state.cur = 0; state.seats = ps.slice();
+      $('result').hidden = false;
+      drawTabs(); drawSheet(); showSample();
+      // 🔴 組み立ての途中で「席がない状態」がいったん保存されてしまう。
+      //   ⚠書き戻さないと、2回目に開いたときに作り直しになる（2026-08-31 検証で見つけた）
+      if ($('save').checked) { try { save(); } catch (e3) { } }
+      return true;
+    } catch (e) { return false; }
+  }
   function afterRestore() {
     /* ⭐保存したデータを入れたら、サンプルは終わり（外していた画面は戻さない＝いま入れたほうを使う） */
     if (state.sample) {
@@ -2040,7 +2132,9 @@
     d.names = c.names || d.names || '';
     applySnap(d);
     afterRestore();
-    note('「' + c.label + '」を入れました。<strong>「席次表を作る」を押してください。</strong>');
+    state.pendingSeats = (d.seats && d.seats.length) ? d.seats : null;   // ⭐保存したときの並び
+    if (restorePending()) note('「' + c.label + '」を入れました。保存したときの並びのまま出しています。');
+    else note('「' + c.label + '」を入れました。<strong>「席次表を作る」を押してください。</strong>');
   }
   function doClsDel() {
     var st = loadStore(), c = curClass(st);
@@ -2076,12 +2170,12 @@
         mode: (document.querySelector('input[name=mode]:checked') || {}).value || 'none',
         bold: $('bold').checked, showCredit: $('showCredit').checked,
         order: $('order').value, dir: $('dir').value,
-        honor: $('honor').value, numPos: $('numPos').value,
+        honor: $('honor').value,
         kindOn: $('kindOn') ? $('kindOn').checked : true,
         kanaStyle: $('kanaStyle').value,
         font: $('font').value, ink: $('ink').value, deco: $('deco').value,
         sizes: {
-          no: $('szNo').value, org: $('szOrg').value,
+          no: $('szNo').value, seq: $('szSeq').value, org: $('szOrg').value,
           ttl: $('szTtl').value, kana: $('szKana').value
         },
         dt: $('dt').value, dtOff: !$('dtOn').checked,   // ⚠保存の名前は dtOff のまま（前に保存したものも読めるように）
@@ -2139,9 +2233,7 @@
       if (d.honor !== undefined) $('honor').value = d.honor;
       if (d.kindOn !== undefined && $('kindOn')) $('kindOn').checked = !!d.kindOn;
       // ⚠ 前は「見せ方」に「なし」が入っていた。そのころ保存した人は、位置の「なし」に読みかえる
-      if (d.numPos) $('numPos').value = d.numPos;
-      else if (d.numStyle === 'none') $('numPos').value = 'none';
-      numStyleChanged();
+      // ⚠前の版の「番号の位置」は読まない（2026-09-28 に通し番号と学籍番号を分けた）
       if (d.kanaStyle) $('kanaStyle').value = d.kanaStyle;
       if (d.font) $('font').value = d.font;
       if (d.ink) $('ink').value = d.ink;
@@ -2151,6 +2243,7 @@
         if (d.sizes.org) $('szOrg').value = d.sizes.org;
         if (d.sizes.ttl) $('szTtl').value = d.sizes.ttl;
         if (d.sizes.kana) $('szKana').value = d.sizes.kana;
+        if (d.sizes.seq) $('szSeq').value = d.sizes.seq;
       }
       if (d.dt) $('dt').value = d.dt;
       $('dtOn').checked = !d.dtOff;
@@ -2212,11 +2305,12 @@
     $('dir').disabled = !byNumber;
     $('dirWrap').classList.toggle('off', !byNumber);
     $('orderNote').textContent = byNumber
-      ? '下の「詳しい条件」は不要です。'
+      ? '下の「詳しい条件」は、「席を決める人」だけ使えます。'
       : 'ランダムに並べます。3つの案が出るので、見比べて選べます。';
     // 名簿順のときは条件が捨てられる（generate の手前で空にしている）。
     // 消さずに薄くする＝「あること」は見せて、触っても効かない誤解だけ防ぐ
-    var cond = $('condBlock'); if (cond) cond.classList.toggle('off', byNumber);
+    // 🔴 2026-09-28 から、薄くするのは「離す・隣にする」だけ。「席を決める人」は名簿順でも効く
+    var cond = $('modeBox'); if (cond) cond.classList.toggle('off', byNumber);
     if ($('save').checked && !state.sample) save();
     // 🔴 選んだ瞬間に並べ直す（2026-08-31 本人）。
     //   ⚠以前は「作る」を押すまで反映されず、本人でも「効いていない」と勘違いした。
@@ -2263,8 +2357,8 @@
       if ($('save').checked && !state.sample) save();
     });
     // 1マスの中身（行の出し入れ・大きさ・敬称・番号の見せ方・書体・文字の色）
-    ['szNo', 'szOrg', 'szTtl', 'szKana',
-      'honor', 'numPos', 'kanaStyle', 'font', 'ink', 'frontWord'].forEach(function (id) {
+    ['szNo', 'szSeq', 'szOrg', 'szTtl', 'szKana',
+      'honor', 'kanaStyle', 'font', 'ink', 'frontWord'].forEach(function (id) {
         var e = $(id); if (!e) return;
         e.addEventListener('change', function () {
           numStyleChanged();
@@ -2304,6 +2398,12 @@
         if (hit) run(true); else drawSheet();
         if ($('save').checked && !state.sample) save();
       });
+    });
+    /* ⭐日付・自由記入は、打ったらすぐ表に出す（2026-09-28 本人「⑤で、日付・自由記入に、自分で文字入れたら、日付が入ってるよ」→「日付だけ」→「あ、今できた」）。
+       ⚠前はこの欄に見張りが無く、ほかの設定を触るまで表が前の日付のまま・保存もされなかった */
+    $('dt').addEventListener('input', function () {
+      if (state.seats) drawSheet();
+      if ($('save').checked && !state.sample) save();
     });
     $('frontFree').addEventListener('input', function () {
       if (state.seats) drawSheet();
@@ -2362,16 +2462,14 @@
         $('clsFree').value = '全学共通科目 情報リテラシー';   // 2026-09-15 本人「期末試験」を外す
         $('honor').value = '';
         /* ⭐学籍番号は右上に置かない＝いちばん上の行（2026-09-14 本人「学籍番号と学科がかぶってる。右角に置かないほうがいい」）。
-           ⚠学籍番号は桁が多いので、右上だと学科の行に重なる */
-        $('numPos').value = 'line'; numStyleChanged();
+           ⚠学籍番号は桁が多いので、右上だと学科の行に重なる。⭐2026-09-28 から学籍番号はいつも行なので、切りかえは要らない */
         drawPreview();
         $('order').value = 'number'; $('dir').value = 'v';
         $('grpOn').checked = true; $('grpStyle').value = 'title'; $('grpLook').value = 'both'; $('grpNum').checked = false;   // ⭐学科ごと＝記号なし（2026-09-23）
       } else {
-        state.colRoles = ['no', 'name', 'kana', 'org', 'title'];
+        state.colRoles = ['', 'name', 'kana', 'org', 'title'];   // ⭐①の1列目は通し番号＝社員番号ではないので「使わない」（2026-09-28）
         $('order').value = 'number';
         $('honor').value = '様';          // ⚠②から切りかえたときに「なし」のまま残らないように
-        $('numPos').value = 'corner'; numStyleChanged();   // ①の番号は短いので右上のまま
         drawPreview();
         $('grpOn').checked = false;
       }
@@ -2419,6 +2517,26 @@
     $('sample2Btn').onclick = function () { loadSample(2); };
     $('sampleClear').onclick = clearSample;
     $('sampleClear2').onclick = clearSample;
+    /* ⭐今のデータをクリア（2026-09-28 本人）＝2クラス目を入れるとき用。
+       消す＝名簿・会議名・列の役割・詳しい条件の行・できた席次表・えらんでいた保存データ
+       ⭐空けた席も消す（2026-09-28 本人 A）
+       残す＝会場の形・1マスの中身・グループ分け・見た目と用紙・保存したデータ */
+    function clearNow() {
+      if (state.sample) { clearSample(); return; }   // サンプルの間は「サンプルを消す」と同じ
+      if (!confirm('今の名簿をクリアします。保存したデータは消えません。')) return;
+      $('names').value = ''; $('clsFree').value = '';
+      state.colRoles = []; state.colSig = '';
+      ['fixList', 'sepList', 'adjList'].forEach(function (id) { var el = $(id); if (el) el.innerHTML = ''; });
+      state.off = {};   // ⭐空けた席も消す（2026-09-28 本人「全クリアしたほうがよくない？」→ A。見えないまま残るのがいちばん困る）
+      state.seats = null; state.plans = []; state.cur = 0; state.gfix = {};
+      clearHist();
+      $('result').hidden = true; $('msg').innerHTML = '';
+      setCls('');
+      refreshNames(); drawPreview(); showSample();
+      if ($('save').checked) save();
+      showSaving();
+    }
+    $('clearNow').onclick = clearNow;
 
     // ⚠run を直接わたさない。クリックの情報が第1引数に入って「初回」と間違われる
     $('go').onclick = function () { closeCond(); run(); };
@@ -2515,19 +2633,7 @@
     // 🔴 保存してあった席次表があれば、作り直さずにそのまま出す（2026-08-31）。
     //   ⚠作り直すと、ランダムのときに前と違う並びになる
     if (state.pendingSeats) {
-      var ps = state.pendingSeats; state.pendingSeats = null;
-      try {
-        state.sample = false;
-        var opt = collect();
-        if (ps.length === opt.cols * opt.rows) {
-          state.opt = opt; state.plans = [ps.slice()]; state.cur = 0; state.seats = ps.slice();
-          $('result').hidden = false;
-          drawTabs(); drawSheet(); showSample();
-          // 🔴 組み立ての途中で「席がない状態」がいったん保存されてしまう。
-          //   ⚠書き戻さないと、2回目に開いたときに作り直しになる（2026-08-31 検証で見つけた）
-          if ($('save').checked) { try { save(); } catch (e3) { } }
-        } else run(true);
-      } catch (e) { try { run(true); } catch (e2) { } }
+      if (!restorePending()) { try { run(true); } catch (e2) { } }
     } else if (readRows().length) {
       /* ⭐名簿が入っているときだけ作る。空なら何も出さない（自動のサンプルはやめた・2026-09-14） */
       try { run(true); } catch (e) { }
@@ -2565,7 +2671,7 @@
   }
   // ⑦ 設定のとなりに出す見本。大中小を押すと、その場で見た目が変わる
   var PREV = {
-    id: '__prev', no: '12', name: '山田 太郎',
+    id: '__prev', no: '26101', seq: '12', name: '山田 太郎',
     kana: 'ヤマダ タロウ', org: '株式会社さくら商事', title: '部長'
   };
   function drawPreview() {
@@ -2576,14 +2682,17 @@
     sh.style.setProperty('--sTtl', sz('szTtl', .5));
     sh.style.setProperty('--sKana', sz('szKana', .44));
     sh.style.setProperty('--ink', inkColor());
-    sh.style.setProperty('--snoSize', Math.round(26 * sz('szNo', .52)) + 'px');
+    sh.style.setProperty('--snoSize', Math.round(26 * sz('szSeq', .52)) + 'px');
     sh.classList.remove('f-mincho', 'f-gothic', 'f-maru');
     sh.classList.add('f-' + ($('font') ? $('font').value : 'gothic'));
     sh.classList.toggle('bold', $('bold') ? $('bold').checked : true);
     seat.innerHTML = '';
-    var sn = buildNo(PREV);
+    /* ⭐名簿が入っていれば、見本は名簿の1人目で見せる（2026-09-28 本人「学科が中になってるのに、見本に表示されてなかったよ」）。
+       ⚠前は決まった見本（株式会社さくら商事・部長）だけで、名簿を貼っても描き直していなかった */
+    var P = (state.names.length && state.people[state.names[0]]) ? state.people[state.names[0]] : PREV;
+    var sn = buildNo(P);
     if (sn) seat.appendChild(sn);
-    var cell = buildCellP(PREV);
+    var cell = buildCellP(P);
     cell.style.fontSize = '26px';
     seat.appendChild(cell);
   }
