@@ -378,3 +378,9 @@
 .fx .bomb.mini.l2{left:12%;top:30%;animation:tmRoll 1.6s cubic-bezier(.25,.75,.35,1) .8s both}
 .fx .bomb.mini.r2{left:88%;top:30%;animation:tmRollR 1.6s cubic-bezier(.25,.75,.35,1) 1.05s both}
 #bombRow label{font-size:.88rem;color:var(--ink-soft);margin:0 4px 0 0}
+
+/* ⭐終わる時刻（🔔 11:27まで）＝円の中、数字の下に小さく（2026-09-28 本人「ちょっとはしっこすぎるな。円の中にも入れられるの？」）。前＝画面の左上 */
+.tm-endtime{position:absolute;left:50%;top:calc(var(--S)*0.67);transform:translateX(-50%);white-space:nowrap;
+  font-size:calc(var(--S)*0.035);color:#9a9ea4;font-weight:600;background:rgba(0,0,0,.04);padding:.15em .7em;border-radius:999px}   /* ⭐控えめに（2026-09-28 本人「もっとサイズ小さくして。控えめでいいよ」）。前＝0.055・太字・濃いグレー
+.tm-run.view-tile .tm-endtime{top:calc(50% + var(--S)*0.13);background:rgba(255,255,255,.8)}
+.tm-endtime[hidden]{display:none}

@@ -12,7 +12,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>【テスト】ビンゴマシーン｜モニターに映せる無料のビンゴ抽選機</title>
 <meta name="description" content="カゴをくるくる回して、番号の玉が転がってくる無料のビンゴ抽選機。出た番号は表に並びます。忘年会や学校のイベントで、モニターに映して使えます。登録なし。">
-<link rel="stylesheet" href="../style.css?v=154">
+<link rel="stylesheet" href="../style.css?v=155">
 <link rel="stylesheet" href="../random/random.css?v=20">
 <link rel="stylesheet" href="bingo.css?v=24">
 </head>
@@ -39,14 +39,14 @@
       <input type="checkbox" id="navtoggle" class="navtoggle">
       <label class="navburger" for="navtoggle">ツール一覧</label>
       <div class="navlist">
-      <a href="../">トップ</a>
+      <!-- ⭐2026-09-28 本人「ツール一覧はあくまでもツールのリスト」＝場面の区切りは入れない。トップは入れない（すぐ左にある）。いちばん上に先生用、棒線の下に道具（名前で分かりにくいものが上・くす玉〜ビンゴのように名前で分かるものが下） -->
+      <a href="../teacher/">先生ツールセット</a>
+      <span class="navsep" aria-hidden="true"></span>
       <a href="../typing/">タッチタイピング</a>
       <a href="../seat/">座席表</a>
       <a href="../slide/">簡単スライド</a>
       <a href="../random/">ランダム指名</a>
-      <span class="now" aria-current="page">ビンゴマシーン</span>
       <a href="../timer/">カウントダウンタイマー</a>
-      <a href="../kusudama/">くす玉メーカー</a>
       <a href="../timer/progress/">進行タイマー</a>
       <a href="../excel-fx/">関数早見表</a>
       <a href="../seki/">席次表</a>
@@ -54,6 +54,10 @@
       <a href="../shinkansen/">新幹線の座席表</a>
       <a href="../keiri/mitsumori/">見積書</a>
       <a href="../keiri/seikyu/">請求書</a>
+      <a href="../kusudama/">くす玉</a>
+      <a href="../roulette/">ルーレット</a>
+      <a href="../fukubiki/">福引</a>
+      <span class="now" aria-current="page">ビンゴ</span>
       <span class="navsep" aria-hidden="true"></span>
       <a href="../articles/">記事一覧</a>
       </div>
@@ -74,7 +78,7 @@
       <li>モニターに映して<strong>忘年会やイベント</strong>に</li>
     </ul>
     </div>
-    <figure class="t-sample noprint"><img src="../img/bingo-sample.png?v=4" width="1280" height="720" alt="ビンゴマシーンの画面。左に回るカゴ、右に出た玉と、BINGOの番号の表"></figure>
+    <figure class="t-sample noprint"><img src="../img/bingo-sample.png?v=7" width="1280" height="720" alt="ビンゴマシーンの画面。左にBINGOの番号の表（たて）、まん中に出た玉、右に立体のビンゴマシーンとすべり台"></figure>
   </div>
   <!-- ⭐「見本を見る」は①の上・左（福引と同じ・2026-09-27 本人「できれば、それも左上に置いて」）。前＝スタートのすぐ上 -->
   <div class="bg-sample noprint"><button type="button" id="demoBtn">見本を見る（モニターの形）</button></div>
@@ -181,7 +185,7 @@
 </div>
 
 <script src="../mini3d.js?v=1"></script>
-<script src="bingo.js?v=31"></script>
+<script src="bingo.js?v=32"></script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>

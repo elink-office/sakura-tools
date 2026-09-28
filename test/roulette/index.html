@@ -11,9 +11,9 @@
 <meta name="robots" content="noindex,nofollow">
 <title>【テスト】ルーレット｜項目を入れて回すだけの無料ルーレット</title>
 <meta name="description" content="項目を入れて回すだけの無料ルーレット。順番決め・ランチ決め・係決めなど、数が少ないときの抽選に。モニターに映して使えます。登録なし。">
-<link rel="stylesheet" href="../style.css?v=154">
+<link rel="stylesheet" href="../style.css?v=155">
 <link rel="stylesheet" href="../random/random.css?v=20">
-<link rel="stylesheet" href="roulette.css?v=4">
+<link rel="stylesheet" href="roulette.css?v=5">
 </head>
 <body>
 <div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
@@ -38,16 +38,14 @@
       <input type="checkbox" id="navtoggle" class="navtoggle">
       <label class="navburger" for="navtoggle">ツール一覧</label>
       <div class="navlist">
-      <a href="../">トップ</a>
+      <!-- ⭐2026-09-28 本人「ツール一覧はあくまでもツールのリスト」＝場面の区切りは入れない。トップは入れない（すぐ左にある）。いちばん上に先生用、棒線の下に道具（名前で分かりにくいものが上・くす玉〜ビンゴのように名前で分かるものが下） -->
+      <a href="../teacher/">先生ツールセット</a>
+      <span class="navsep" aria-hidden="true"></span>
       <a href="../typing/">タッチタイピング</a>
       <a href="../seat/">座席表</a>
       <a href="../slide/">簡単スライド</a>
       <a href="../random/">ランダム指名</a>
-      <a href="../bingo/">ビンゴマシーン</a>
-      <a href="../fukubiki/">福引ガラガラ</a>
-      <span class="now" aria-current="page">ルーレット</span>
       <a href="../timer/">カウントダウンタイマー</a>
-      <a href="../kusudama/">くす玉メーカー</a>
       <a href="../timer/progress/">進行タイマー</a>
       <a href="../excel-fx/">関数早見表</a>
       <a href="../seki/">席次表</a>
@@ -55,6 +53,10 @@
       <a href="../shinkansen/">新幹線の座席表</a>
       <a href="../keiri/mitsumori/">見積書</a>
       <a href="../keiri/seikyu/">請求書</a>
+      <a href="../kusudama/">くす玉</a>
+      <span class="now" aria-current="page">ルーレット</span>
+      <a href="../fukubiki/">福引</a>
+      <a href="../bingo/">ビンゴ</a>
       <span class="navsep" aria-hidden="true"></span>
       <a href="../articles/">記事一覧</a>
       </div>
@@ -75,7 +77,7 @@
       <li>モニターに映して<strong>みんなで見られる</strong></li>
     </ul>
     </div>
-    <figure class="t-sample noprint"><img src="../img/roulette-sample.png?v=2" width="1280" height="720" alt="ルーレットの画面。左にお昼ごはんの5つを2回ずつ並べた円、右に当たりのラーメン"></figure>
+    <figure class="t-sample noprint"><img src="../img/roulette-sample.png?v=3" width="1280" height="720" alt="ルーレットの画面。左にお昼ごはんの5つを2回ずつ並べた円、右に当たりのラーメン"></figure>
   </div>
   <!-- ⭐「見本を見る」は①の上・左（福引と同じ・2026-09-27 本人「できれば、それも左上に置いて」）。前＝スタートのすぐ上 -->
   <div class="ru-sample noprint"><button type="button" id="demoBtn">見本を見る（モニターの形）</button></div>
@@ -170,7 +172,7 @@
 
 <!-- ===== 動かしている画面 ===== -->
 <div class="pk-demoback" id="demoBack" hidden></div>
-<div class="pk-run" id="runScreen" hidden>
+<div class="pk-run ru-run" id="runScreen" hidden>
   <div class="pk-top">
     <span class="pk-round" id="roundLbl"></span>
     <span class="pk-msg" id="runMsg"></span>
@@ -185,7 +187,7 @@
   </div>
 </div>
 
-<script src="roulette.js?v=11"></script>
+<script src="roulette.js?v=12"></script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>

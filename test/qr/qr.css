@@ -1,0 +1,46 @@
+/* QRコード作成（2026-09-26 たたき台）
+   ⭐共通の部品（details.opt・.tip-btn・.primary・.mini・.safe・.hint）は style.css のものを使う。ここは道具だけの部品 */
+:root{ color-scheme: light; }
+input[type=checkbox], input[type=radio]{ accent-color: var(--pink); }
+
+.qr-set .lead{margin-bottom:10px}
+.qr-set .tip-guide{margin:14px 0 10px}
+
+/* ① 中身の入力 */
+.qr-lbl{font-weight:700;margin:0 0 6px;font-size:.95rem}
+#qrText{min-height:96px;width:100%;word-break:break-all}
+.qr-count{display:flex;align-items:center;gap:10px;margin:6px 0 12px;font-size:.85rem;color:var(--ink-soft)}
+.qr-count #qrBytes:empty{display:none}
+
+/* できあがりの見本 */
+.qr-preview{display:flex;flex-direction:column;align-items:center;gap:8px;margin:6px 0 14px;padding:16px 10px;background:#fff;border:1px solid var(--line);border-radius:var(--radius)}
+.qr-preview canvas{display:block;width:240px;max-width:100%;height:auto;image-rendering:pixelated;image-rendering:crisp-edges;border:1px solid var(--line)}
+.qr-preview.empty canvas{display:none}
+.qr-msg{margin:0;font-size:.88rem;color:var(--ink-soft);text-align:center}
+.qr-msg:empty{display:none}
+.qr-info{margin:0;font-size:.78rem;color:var(--ink-soft);text-align:center}
+.qr-info:empty{display:none}
+
+/* ② 見た目：選ぶ欄（ラジオを押しやすいかたまりにする） */
+.qr-line{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin:0 0 14px}
+.qr-lbl2{font-size:.95rem;min-width:6.5em;display:inline-flex;align-items:center}
+.qr-color{display:inline-flex;align-items:center;gap:8px}
+.qr-color input[type=color]{width:44px;height:34px;padding:2px;border:1px solid var(--line);border-radius:var(--radius);background:#fff;cursor:pointer}
+.qr-warn{margin:-6px 0 12px;font-size:.8rem;color:#a84a72}
+.qr-warn[hidden]{display:none}
+.qr-check label{font-size:.95rem}
+
+/* ③ 保存 */
+.qr-save{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 8px}
+.qr-save button:disabled{opacity:.45;cursor:default;box-shadow:none}
+.qr-save button:not(.primary):disabled:hover{background:#fff}
+.qr-save .primary:disabled{filter:none}
+
+/* スマホ：横に出ないように */
+@media (max-width:430px){
+  .qr-lbl2{min-width:0;width:100%}
+  .qr-save button{flex:1 1 100%}
+}
+
+/* 誤り訂正の「？」：開いたら説明は下の段に（選ぶ欄は見出しの横のまま） */
+.qr-line > .tip-body{flex:1 1 100%;order:3;margin:0}

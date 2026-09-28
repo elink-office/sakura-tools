@@ -263,6 +263,34 @@ $("hanList").addEventListener("change",function(e){
 });
 $("hanN").addEventListener("input",function(){ var n=this.value===""?0:(this.value|0); if(n>=0){ st.han=Math.min(n,20); screenSave(); } });
 function hanMsg(t){ $("hanMsg").textContent=t; }
+
+/* ⭐座席表の班を使う（2026-09-28 本人「バスト新幹線、座席表の班も使えるようにして（班なしは手で設定すればいいよね！？）」）
+   ＝座席表メーカーの「記録」に残っている班（recs[].gmem＝班ごとの名前の並び。1つ目が1班）を、名前で合わせて一人ずつ入れる
+   ⭐名簿の箱に班は足さない（名簿と座席表の記録は別で、名前で紐づける＝2026-09-27 本人「Accessみたいな感じか。紐づけ」）
+   ⚠記録にいない人は班なし＝下の一覧で手で選ぶ */
+function seatRecs(){ var out=[];
+  loadBox().classes.forEach(function(c){ if(c.kind==="slide") return;
+    (c.recs||[]).forEach(function(r,i){ if(r && r.gmem && r.gmem.length) out.push({key:c.id+"|"+i, cid:c.id, label:(c.label||"名簿")+"　"+(r.label||"記録"), gmem:r.gmem}); }); });
+  return out; }
+function refreshSeatHan(){
+  var list=seatRecs(), s=$("seatHanSel"), keep=s.value, pref=$("selSaved").value, def="";
+  $("seatHanRow").hidden=!list.length; s.innerHTML="";
+  list.forEach(function(x){ var o=document.createElement("option"); o.value=x.key; o.textContent=x.label; s.appendChild(o); if(!def && x.cid===pref) def=x.key; });   // ⭐呼び出した名簿の、いちばん新しい記録を先に選んでおく
+  if(keep && list.some(function(x){ return x.key===keep; })) s.value=keep; else if(def) s.value=def;
+}
+$("seatHanUse").addEventListener("click",function(){
+  var key=$("seatHanSel").value, rec=null; seatRecs().forEach(function(x){ if(x.key===key) rec=x; });
+  if(!rec){ hanMsg("座席表の記録を選んでください。"); return; }
+  var names=nameList(); if(!names.length){ hanMsg("先に①で、名簿を入れてください。"); $("opt1").open=true; return; }
+  var norm=function(n){ return String(n||"").replace(/[\s　]/g,""); }, m={}, mx=0;
+  rec.gmem.forEach(function(mem,k){ (mem||[]).forEach(function(n){ m[norm(n)]=k+1; }); });
+  var got={}, hit=0, miss=[];
+  names.forEach(function(n){ var g=m[norm(n)]; if(g){ got[n]=g; hit++; if(g>mx) mx=g; } else miss.push(n); });
+  if(!hit){ hanMsg("この記録の班に、①の名簿の人がいませんでした。"); return; }
+  if(Object.keys(st.hanOf||{}).length && !confirm("いまの班を、座席表の班に入れかえます。よろしいですか。")) return;
+  st.hanOf=got; st.han=Math.min(20,mx); refreshCond(); drawSheet(); screenSave();
+  hanMsg("座席表の班を入れました（"+hit+"人）。"+(miss.length ? "班なし＝"+miss.slice(0,5).join("・")+(miss.length>5?" ほか"+(miss.length-5)+"人":"")+"。下の一覧で選んでください。" : "")+"③の並べ方で「班ごと」を選ぶと、班でまとまって座ります。");
+});
 /* 自動で分ける＝名簿の人を班の数でなるべく同じ人数に。並べ方が名簿の順なら上から、それ以外はランダム */
 $("hanAuto").addEventListener("click",function(){
   var n=Math.max(0,Math.min(20,$("hanN").value|0));
@@ -715,13 +743,14 @@ function refreshBox(keepId){
   });
   $("recallRow").hidden=list.length===0;
   $("saveCount").textContent=list.length+"/"+MAXC;
+  refreshSeatHan();
 }
 function findCls(id){ var d=loadBox(); for(var i=0;i<d.classes.length;i++) if(d.classes[i].id===id) return d.classes[i]; return null; }
 $("clsLoad").addEventListener("click",function(){
   var c=findCls($("clsSel").value); if(!c){ alert("保存済の名簿を選んでください。"); return; }
   $("names").value=String(c.names||"").split("\n").filter(function(l){ return nameOfLine(l)!==""; }).join("\n");   // ⭐元の行のまま（班の列も読めるように）
   st.names=$("names").value; afterNames();
-  $("selSaved").value=c.id;
+  $("selSaved").value=c.id; refreshSeatHan();
 });
 function saveMsg(t){ $("saveMsg").textContent=t; }
 /* ⭐名簿の箱に残すのは「出席番号・名前・男女」。班は外す（2026-09-27 本人「共有して使うのは、出席番号、名前、男女。班は臨機応変…不要なときは保存しない」）

@@ -35,3 +35,7 @@
 
 /* ⭐「見本を見る」は①の上・左（サンプルのボタンと同じ形・2026-09-27） */
 .ru-sample{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;margin:14px 0 14px}
+
+/* ⭐上の帯＝「n回目」の横に「のこり n個」（2026-09-28 本人「残り○ことかは、左上の○回目の右に置いて」）。福引・ランダム指名と同じ形 */
+.ru-run .pk-top{right:auto;justify-content:flex-start;gap:1.4cqw;padding-left:2cqw}
+.ru-run .pk-round,.ru-run .pk-left{position:static}

@@ -11,8 +11,8 @@
 <meta name="robots" content="noindex,nofollow">
 <title>【テスト】カウントダウンタイマー｜大きく映せる無料タイマー</title>
 <meta name="description" content="時間を打ち込むだけの、丸が減っていくカウントダウンタイマー。残り時間が少なくなると色が変わり、間に合ったら紙吹雪、時間切れで爆弾などの仕掛けも選べます。">
-<link rel="stylesheet" href="../style.css?v=154">
-<link rel="stylesheet" href="timer.css?v=54">
+<link rel="stylesheet" href="../style.css?v=155">
+<link rel="stylesheet" href="timer.css?v=57">
 </head>
 <body>
 <div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
@@ -37,13 +37,14 @@
       <input type="checkbox" id="navtoggle" class="navtoggle">
       <label class="navburger" for="navtoggle">ツール一覧</label>
       <div class="navlist">
-      <a href="../">トップ</a>
+      <!-- ⭐2026-09-28 本人「ツール一覧はあくまでもツールのリスト」＝場面の区切りは入れない。トップは入れない（すぐ左にある）。いちばん上に先生用、棒線の下に道具（名前で分かりにくいものが上・くす玉〜ビンゴのように名前で分かるものが下） -->
+      <a href="../teacher/">先生ツールセット</a>
+      <span class="navsep" aria-hidden="true"></span>
       <a href="../typing/">タッチタイピング</a>
       <a href="../seat/">座席表</a>
       <a href="../slide/">簡単スライド</a>
       <a href="../random/">ランダム指名</a>
       <span class="now" aria-current="page">カウントダウンタイマー</span>
-      <a href="../kusudama/">くす玉メーカー</a>
       <a href="../timer/progress/">進行タイマー</a>
       <a href="../excel-fx/">関数早見表</a>
       <a href="../seki/">席次表</a>
@@ -51,7 +52,10 @@
       <a href="../shinkansen/">新幹線の座席表</a>
       <a href="../keiri/mitsumori/">見積書</a>
       <a href="../keiri/seikyu/">請求書</a>
-      <!-- ⭐ツールではないので棒線で分けて下に（2026-09-26 本人「棒線引いて分けて載せればいいね」） -->
+      <a href="../kusudama/">くす玉</a>
+      <a href="../roulette/">ルーレット</a>
+      <a href="../fukubiki/">福引</a>
+      <a href="../bingo/">ビンゴ</a>
       <span class="navsep" aria-hidden="true"></span>
       <a href="../articles/">記事一覧</a>
       </div>
@@ -66,8 +70,13 @@
   <div class="intro i169">
     <div class="intro-txt">
     <p class="lead">時間を打ち込んで、スタートを押すだけ。丸が減っていき、残りが少なくなると赤に変わります。<br>できたときや、間に合わなかったときの文字をオリジナルで設定できます。</p>
+    <!-- ⭐演出を上に（2026-09-28 本人「できたときは、紙吹雪やくす玉が割れます／間に合わなかったときは、爆弾や火山が爆発します って入れておいて」）＝本人の文のまま -->
+    <ul class="can-do">
+      <li>できたときは、紙吹雪やくす玉が割れます</li>
+      <li>間に合わなかったときは、爆弾や火山が爆発します</li>
+    </ul>
     </div>
-    <figure class="t-sample noprint"><img src="../img/timer-sample.png?v=1" width="1280" height="720" alt="丸が減っていくカウントダウンタイマー。のこり49秒"></figure>
+    <figure class="t-sample noprint"><img src="../img/timer-sample.png?v=3" width="1280" height="720" alt="丸が減っていくカウントダウンタイマー。のこり49秒"></figure>
   </div>
 
   <p class="tip-guide"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
@@ -94,6 +103,8 @@
       <label class="tm-num sm"><input id="inWarnSec" type="text" inputmode="numeric" maxlength="2" value="00" autocomplete="off" aria-label="赤にする時点の秒"><span>秒</span></label>
       <span class="tm-warnrest">で赤にする</span>
     </p>
+    <!-- ⭐終わる時刻を出す（2026-09-28 本人「下に何時に終わるか書いてあるんだよね。社会人にはこれ便利（私もなんだけど）」「円の中じゃなくてもいいから」「ボタンでonoffできれば小学校では使わないと思う」）。はじめはチェックなし -->
+    <p class="tm-warn"><label class="tm-warnchk"><input type="checkbox" id="endOn"> 終わる時刻を出す</label></p>
     <p class="tm-msg" id="setMsg" role="alert"></p>
   </section>
 
@@ -288,6 +299,8 @@
     <div class="tm-read" id="readout" aria-live="off">
       <span class="d" id="dMin">03</span><span class="u">分</span><span class="d" id="dSec">00</span><span class="u">秒</span>
     </div>
+    <!-- ⭐終わる時刻は円の中、数字の下（2026-09-28 本人「ちょっとはしっこすぎるな。円の中にも入れられるの？11：27までにしてほしい」） -->
+    <div class="tm-endtime" id="endTime" hidden></div>
     <div class="tm-result" id="result" hidden></div>
   </div>
   <!-- ⭐下のボタンは2つ＝一時停止／できた（2026-09-24 本人「私もボタン3つだと思う」→ 2026-09-27「もどる」は右上の「✕ とじる」にまとめた＝約束事） -->
@@ -305,7 +318,7 @@
     <span class="copy">さくらツールズ　© 2026 SAKURA tools</span></div>
 </footer>
 
-<script src="timer.js?v=77"></script>
+<script src="timer.js?v=80"></script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>

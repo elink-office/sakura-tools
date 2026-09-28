@@ -88,7 +88,7 @@ function build(){
 function update(){
   $("roundLbl").textContent=run.hits.length? run.hits.length+"回目" : "";
   $("leftLbl").textContent="のこり "+run.base.length+"個";
-  $("runMsg").textContent= run.busy ? "" : run.base.length>=2 ? "「回す」で決める" : "のこりが1こになりました";
+  $("runMsg").textContent= run.busy || run.base.length>=2 ? "" : "のこりが1こになりました";   // ⭐「「回す」で決める」は出さない（2026-09-28 本人「bingoとルーレット、○○で始めるっていうのはなしにして」）
   $("nextBtn").disabled=run.busy || run.base.length<2;
   $("hist").textContent= run.hits.length ? "これまで："+run.hits.join("・") : "";
 }

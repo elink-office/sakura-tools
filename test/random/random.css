@@ -92,11 +92,14 @@ input[type=checkbox], input[type=radio]{ accent-color: var(--pink); }
 .pk-card .bk,.pk-card .fc{position:absolute;inset:0;border-radius:6%/4.3%;backface-visibility:hidden;-webkit-backface-visibility:hidden;
   display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.18)}
 .pk-card .bk{background-color:var(--pink);color:#fff;font-weight:800;
-  background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.08) 0 6px,transparent 6px 12px);
+  /* ⭐トランプらしい薄い柄＝小さなひし形の格子（2026-09-27 本人「トランプの裏、トランプっぽく薄い柄を入れたい（斜めの柄じゃなくて）」）。前＝斜めのしま */
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Cpath d='M7 1.5L12.5 7L7 12.5L1.5 7Z' fill='none' stroke='%23fff' stroke-opacity='.26' stroke-width='.9'/%3E%3Ccircle cx='7' cy='7' r='1.1' fill='%23fff' fill-opacity='.3'/%3E%3C/svg%3E");background-size:14px 14px;background-position:center;
   border:3px solid #fff;outline:1px solid rgba(0,0,0,.08)}
 /* ⭐裏のまん中は無地・座標は右下に小さく（2026-09-26 本人「本当はさ、カードも一緒にしたいんだけどね～」→「右下にしてみて」）
    ＝遠くからは全部同じ柄に見える。座標は左のマークと上の番号でも言える */
-.pk-card .bk .bn{position:absolute;right:8%;bottom:5%;line-height:1;opacity:.9}
+.pk-card .bk .bn{position:absolute;right:13%;bottom:10%;line-height:1;opacity:.9}   /* ⭐内側の枠の中へ（2026-09-27 本人「右下にあるマーク、内側の枠の中に入れて」）。前＝右8%・下5%
+/* 裏の内側のふち（トランプの裏の枠） */
+.pk-card .bk::before{content:"";position:absolute;inset:7%;border:1.5px solid rgba(255,255,255,.55);border-radius:5%/3.5%;pointer-events:none}
 .pk-card .fc{background:#fff;transform:rotateY(180deg);border:2px solid var(--sc);flex-direction:column;padding:4%}
 .pk-card .fc .cn{position:absolute;left:7%;top:5%;color:var(--sc);font-weight:800;line-height:1}
 .pk-card .fc .nm{font-weight:800;color:var(--ink);text-align:center;line-height:1.15;word-break:keep-all;overflow-wrap:anywhere}
@@ -181,3 +184,6 @@ input[type=checkbox], input[type=radio]{ accent-color: var(--pink); }
 .rb3 .pk-right{order:1;min-width:0}
 /* ⭐ランダム指名は隣に番号の表がないので、機械を少し左へ（2026-09-27 本人「ランダムは、隣に数字ないから、ガラガラをもう少し左に寄せてみて！」）。ビンゴマシーンは右へ3cqw のまま */
 .rb3 .bg-m3.pk-gara{transform:translate(-7cqw,7cqh)}
+/* ⭐上の帯＝「n周目」の横に「のこり n人（班）」（2026-09-27 本人「残り○班は、１週目の隣に配置。トランプも同じなら同じように」）。福引と同じ形 */
+.rd-run .pk-top{right:auto;justify-content:flex-start;gap:1.4cqw;padding-left:2cqw}
+.rd-run .pk-round,.rd-run .pk-left{position:static}

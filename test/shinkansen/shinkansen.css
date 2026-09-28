@@ -128,3 +128,6 @@ input[type=checkbox], input[type=radio]{ accent-color: var(--pink); }
 .sk-regroup{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 10px}
 .sk-regroup[hidden]{display:none}
 #regroupMsg:empty{display:none}
+
+/* ⭐座席表の班を使う（2026-09-28）の行は、記録があるときだけ出す */
+.sk-line[hidden]{display:none}

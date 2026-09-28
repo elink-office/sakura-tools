@@ -29,7 +29,7 @@
 </script>
 <title>【テスト】簡単スライドメーカー｜パワーポイントの代わりに大きく映す</title>
 <meta name="description" content="パワーポイントの代わりに、文字と写真をそのまま大きくモニターに映せる無料の道具です。今日のめあて、問題文、作品の写真、発表する子の名前に。スライドを作り込まなくていいので、思いついたその場で出せます。写真の上に文字を重ねることもできます。名簿は座席表・席次表と共通。登録なし・インストールなし・写真も名簿も外に送りません。">
-<link rel="stylesheet" href="../style.css?v=154">
+<link rel="stylesheet" href="../style.css?v=155">
 <link rel="stylesheet" href="slide.css?v=76">
 </head>
 <body>
@@ -63,13 +63,14 @@
       <input type="checkbox" id="navtoggle" class="navtoggle">
       <label class="navburger" for="navtoggle">ツール一覧</label>
       <div class="navlist">
-      <a href="../">トップ</a>
+      <!-- ⭐2026-09-28 本人「ツール一覧はあくまでもツールのリスト」＝場面の区切りは入れない。トップは入れない（すぐ左にある）。いちばん上に先生用、棒線の下に道具（名前で分かりにくいものが上・くす玉〜ビンゴのように名前で分かるものが下） -->
+      <a href="../teacher/">先生ツールセット</a>
+      <span class="navsep" aria-hidden="true"></span>
       <a href="../typing/">タッチタイピング</a>
       <a href="../seat/">座席表</a>
       <span class="now" aria-current="page">簡単スライド</span>
       <a href="../random/">ランダム指名</a>
       <a href="../timer/">カウントダウンタイマー</a>
-      <a href="../kusudama/">くす玉メーカー</a>
       <a href="../timer/progress/">進行タイマー</a>
       <a href="../excel-fx/">関数早見表</a>
       <a href="../seki/">席次表</a>
@@ -77,7 +78,10 @@
       <a href="../shinkansen/">新幹線の座席表</a>
       <a href="../keiri/mitsumori/">見積書</a>
       <a href="../keiri/seikyu/">請求書</a>
-      <!-- ⭐ツールではないので棒線で分けて下に（2026-09-26 本人「棒線引いて分けて載せればいいね」） -->
+      <a href="../kusudama/">くす玉</a>
+      <a href="../roulette/">ルーレット</a>
+      <a href="../fukubiki/">福引</a>
+      <a href="../bingo/">ビンゴ</a>
       <span class="navsep" aria-hidden="true"></span>
       <a href="../articles/">記事一覧</a>
       </div>
@@ -90,6 +94,9 @@
   <h1>簡単スライドメーカー</h1>
   <p class="catch">パワーポイントの代わりに、文字と写真をモニターへ</p>
   <!-- 🔴 上の文章は短く・改行を増やす（2026-09-05 本人「改行増やして、短めに。箇条書きは使ってもいい」） -->
+  <!-- ⭐見本の画像（2026-09-28 本人「簡単スライドメーカーも画像を作って。教室に戻ったらすることの部分で」）＝サンプル①の3枚目を映したところ。ほかの道具と同じ形（.intro.i169） -->
+  <div class="intro i169">
+    <div class="intro-txt">
   <p class="lead">
     <strong>パワーポイントのように、モニター画面いっぱいに表示できます。</strong>ちょっと見せたいときも、<strong>時間をかけずに簡単作成！</strong>
   </p>
@@ -99,6 +106,9 @@
     <li>作品の写真はモニター画面いっぱいに、名前と作品名も</li>
     <li>班ごとにするのもボタン一つ、発表会でも使えます</li>
   </ul>
+    </div>
+    <figure class="t-sample noprint"><img src="../img/slide-sample.png?v=1" width="1280" height="720" alt="簡単スライドの画面。「教室に戻ったらすること　①着替え　②プリントの直し　③読書」が大きく映っている"></figure>
+  </div>
 
   <!-- 準備（見せたくないものは全部この中。閉じれば一度に隠れる） -->
   <!-- ⭐サンプルのボタンは①の上（2026-09-14 本人「一番上にサンプルデータ」「スライドも文字と人のサンプル」。座席表・シフト表と同じ並び）

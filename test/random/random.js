@@ -553,10 +553,8 @@ function updateRun(){
     var up=upCount(), down=downCount(), need=Math.min(run.k, up+down);
     var end=(down===0);
     nb.hidden=true; sb.hidden=!end;
+    /* ⭐ふだんの案内は出さない。全部めくったときだけ出す（2026-09-27 本人「見本で出る『回す』で１班選びますは不要」「トランプも同じなら同じように」） */
     if(end) msg="全部めくりました。「シャッフル」で2周目へ";
-    else if(up===0) msg="カードを"+need+"枚めくってください";
-    else if(up<need) msg="あと"+(need-up)+"枚";
-    else msg="次のカードをめくると、次の"+u+"へ";
   }else{
     var endB=(left===0 && !run.busy);
     nb.hidden=endB; sb.hidden=!endB;
@@ -564,7 +562,7 @@ function updateRun(){
     nb.textContent="▶ 回す";
     if(run.busy) msg="";
     else if(endB) msg="全部出ました。「シャッフル」で2周目へ";
-    else msg="「回す」で"+Math.min(run.k,left)+u+"選びます";
+    /* ⭐「「回す」で○選びます」は出さない（2026-09-27 本人「見本で出る『回す』で１班選びますは不要」）。全部出たときだけ出す */
   }
   $("runMsg").textContent=msg;
 }

@@ -13,7 +13,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>【テスト】バスの座席表メーカー｜45人乗り・53人乗りも名簿から無料作成</title>
 <meta name="description" content="名簿を貼るだけで、大型バス45人乗り（補助席込み53人）・49人乗り（補助席込み60人）の座席表ができます。遠足・修学旅行・社員旅行に。前に座る人を先に決めて、残りはランダムか名簿の順。エクセルのテンプレート不要、A4の1枚にPDFで保存。登録なし・無料。">
-<link rel="stylesheet" href="../style.css?v=154">
+<link rel="stylesheet" href="../style.css?v=155">
 <link rel="stylesheet" href="bus.css?v=11">
 </head>
 <body>
@@ -39,13 +39,14 @@
       <input type="checkbox" id="navtoggle" class="navtoggle">
       <label class="navburger" for="navtoggle">ツール一覧</label>
       <div class="navlist">
-      <a href="../">トップ</a>
+      <!-- ⭐2026-09-28 本人「ツール一覧はあくまでもツールのリスト」＝場面の区切りは入れない。トップは入れない（すぐ左にある）。いちばん上に先生用、棒線の下に道具（名前で分かりにくいものが上・くす玉〜ビンゴのように名前で分かるものが下） -->
+      <a href="../teacher/">先生ツールセット</a>
+      <span class="navsep" aria-hidden="true"></span>
       <a href="../typing/">タッチタイピング</a>
       <a href="../seat/">座席表</a>
       <a href="../slide/">簡単スライド</a>
       <a href="../random/">ランダム指名</a>
       <a href="../timer/">カウントダウンタイマー</a>
-      <a href="../kusudama/">くす玉メーカー</a>
       <a href="../timer/progress/">進行タイマー</a>
       <a href="../excel-fx/">関数早見表</a>
       <a href="../seki/">席次表</a>
@@ -53,6 +54,10 @@
       <a href="../shinkansen/">新幹線の座席表</a>
       <a href="../keiri/mitsumori/">見積書</a>
       <a href="../keiri/seikyu/">請求書</a>
+      <a href="../kusudama/">くす玉</a>
+      <a href="../roulette/">ルーレット</a>
+      <a href="../fukubiki/">福引</a>
+      <a href="../bingo/">ビンゴ</a>
       <span class="navsep" aria-hidden="true"></span>
       <a href="../articles/">記事一覧</a>
       </div>
@@ -189,12 +194,15 @@
             <p>班は、名前ごとに決めます。<strong>決めた班は人に付くので、④で席を動かすと、班の色もいっしょに動きます。</strong></p>
             <ul>
               <li>①の名簿に、Excelの「班」の列（1・2・3… または 1班・2班…）をいっしょに貼ると、そのまま読み取ります。</li>
+              <li>座席表メーカーで名簿を保存して「記録」を残していると、「座席表の班を使う」でその記録の班を入れられます。記録にいない人は班なしになるので、この下の一覧で選んでください。</li>
               <li>この下の一覧で、1人ずつ選び直せます。</li>
               <li>班の数を入れて「自動で分ける」を押すと、名簿の人を班に分けます。並べ方が名簿の順なら上から順に、それ以外はランダムです。</li>
               <li>③の並べ方で「班ごと」を選ぶと、同じ班の人をかたまりで座らせます。バスは、通路の片側の2席ずつ（1Aと1B、2Aと2B…）に、前から班ごとに入ります。</li>
             </ul>
           </div>
           <div class="bs-line"><label>班の数 <input type="number" id="hanN" min="1" max="20" inputmode="numeric"> 班</label><button type="button" class="mini" id="hanAuto">自動で分ける</button><button type="button" class="mini" id="hanClear">班を全部外す</button></div>
+          <!-- ⭐座席表の班を使う（2026-09-28 本人）。座席表メーカーで記録を残したクラスがあるときだけ出る -->
+          <div class="bs-line" id="seatHanRow" hidden><label>座席表の班を使う <select id="seatHanSel" aria-label="座席表の記録"></select></label><button type="button" class="mini" id="seatHanUse">班を入れる</button></div>
           <p class="tm-hint" id="hanMsg"></p>
           <div class="bs-hanlist" id="hanList"></div>
         </div>
@@ -348,7 +356,7 @@
 <datalist id="nameList"></datalist>
 <script src="../paper-pdf.js?v=5"></script>
 <script src="../roster-tools.js?v=1"></script>
-<script src="bus.js?v=17"></script>
+<script src="bus.js?v=18"></script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>

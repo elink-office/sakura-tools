@@ -31,6 +31,7 @@ function loadSaved(){
     if(s.wm!=null) $("inWarnMin").value=s.wm;
     if(s.ws!=null) $("inWarnSec").value=pad(+s.ws||0);
     if(s.wo!=null) $("warnOn").checked=!!s.wo;
+    if(s.eo!=null) $("endOn").checked=!!s.eo;
     if(s.win) $("selWin").value=s.win;
     if(s.lose) $("selLose").value=(s.lose==="bomb2" ? "bomb" : s.lose);   // ⚠爆弾（ドンドンドーン）は「爆弾」＋増やす数にまとめた
     if(!$("selLose").value) $("selLose").value="bomb";      // ⚠「画面が揺れる」はやめた（前の保存に残っていても爆弾に）
@@ -46,7 +47,7 @@ function save(){
   if(sampleOn) return;             // ⭐サンプルの間は保存しない（ページの型 12-a）
   try{
     localStorage.setItem(KEY, JSON.stringify({
-      m:num("inMin",99), s:num("inSec",59), wm:num("inWarnMin",99), ws:num("inWarnSec",59), wo:$("warnOn").checked,
+      m:num("inMin",99), s:num("inSec",59), wm:num("inWarnMin",99), ws:num("inWarnSec",59), wo:$("warnOn").checked, eo:$("endOn").checked,
       win:$("selWin").value, lose:$("selLose").value, bombs:+$("selBombs").value, view:view, kusu:$("inKusu").value, zan:$("inZan").value, sel:loadedId
     }));
   }catch(e){}
@@ -57,6 +58,7 @@ function num(id,max){
   var n=v==="" ? 0 : parseInt(v,10);
   return Math.min(max, n);
 }
+$("endOn").addEventListener("change",save);
 ["inMin","inSec","inWarnMin","inWarnSec"].forEach(function(id){
   var el=$(id);
   el.addEventListener("focus",function(){ setTimeout(function(){ el.select(); },0); });
@@ -269,7 +271,9 @@ function pause(){
   running=false;
   remainStored=Math.max(0,(deadline-performance.now())/1000*rate);
   cancelAnimationFrame(raf); clearTimeout(endTimer);
+  clearInterval(endIv); endIv=setInterval(function(){ if(!running && !finished && !$("runScreen").hidden) drawEnd(remainStored); else clearInterval(endIv); },1000);
 }
+var endIv=0;
 
 function tick(){
   if(!running) return;
@@ -279,7 +283,17 @@ function tick(){
   raf=requestAnimationFrame(tick);
 }
 
+/* ⭐終わる時刻（🔔 11:23）＝いまの時刻＋のこり。一時停止しているあいだは、のこりのぶん先へずれていく（Windows の時計と同じ）
+     ⭐左上に小さく。①の「🔔 終わる時刻を出す」にチェックがあるときだけ（2026-09-28 本人） */
+function drawEnd(remain){
+  var el=$("endTime"); if(!el) return;
+  if(!$("endOn").checked || finished){ el.hidden=true; return; }
+  var t=new Date(Date.now()+remain*1000/rate);
+  el.textContent=t.getHours()+":"+pad(t.getMinutes())+"まで";   // ⭐ベルなし（2026-09-28 本人「ベルもいらない」）   // ⭐「11:27まで」（2026-09-28 本人）。前＝「に終わります」
+  el.hidden=false;
+}
 function draw(remain){
+  drawEnd(remain);
   var shown=Math.ceil(remain-1e-6);               // 画面に出す秒（0.3秒残りなら「1」）
   $("dMin").textContent=pad(Math.floor(shown/60));
   $("dSec").textContent=pad(shown%60);

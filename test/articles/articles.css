@@ -1,0 +1,134 @@
+/* 記事のページ全部で使う見た目（記事一覧・記事1本ずつ）2026-09-26 新設
+   ⭐記事が増えても、ここを直せば全部の記事にそろう（ページの型 16-a＝個別に書かない） */
+:root{ color-scheme: light; }
+
+/* ⭐本文の幅＝読みやすい幅（ページの型 7-a：37rem＝日本語41文字・英語80文字） */
+.art{max-width:37rem}  /* ⚠幅は style.css の main.yomu と同じ値 */
+/* ⭐幅はそのまま、画面の中央に置く（2026-09-26 本人「全画面にすると、画面の左にあるのが嫌」）
+   ⚠ページの型 7-a の「本文を中央寄せにしない」は、見出しが幅の外にあってズレるのが理由。
+   記事は見出しも本文も .art の中なので、箱ごと中央に寄せてもズレない */
+/* ⭐中央に置くのは共通の style.css（main.yomu）に移した（2026-09-26）。記事の見た目だけここに残す */
+
+/* 戻り道（トップ › 記事一覧 › 記事） */
+.crumb{font-size:.78rem;color:var(--ink-soft);margin:14px 0 6px}
+.crumb a{color:var(--ink-soft)}
+
+.art h1{font-size:1.45rem;line-height:1.5;margin:6px 0 8px}
+.art .meta{font-size:.78rem;color:var(--ink-soft);margin:0 0 22px}
+
+.art p{font-size:1rem;line-height:1.95;margin:0 0 1em}
+.art h2{font-size:1.18rem;margin:44px 0 14px;padding-bottom:6px;border-bottom:2px solid var(--pink-light)}
+.art h3{font-size:1.02rem;margin:28px 0 10px;padding-left:10px;border-left:4px solid var(--pink)}
+.art ul{margin:0 0 1em;padding-left:1.3em;line-height:1.9}
+
+/* リード文のかたまり */
+.art .lead-box{padding-bottom:6px;margin-bottom:10px}  /* ⭐下の線はなし（2026-09-26 本人「タッチタイピングへの近道はの上に線があるのは不要」） */
+
+/* ⭐練習への誘い＝説明の直後・文の流れの中（2026-09-08 本人「バナーにしない」） */
+.art .go{margin:-4px 0 1.2em}
+.art .go a{font-weight:bold;color:var(--pink)}
+
+/* 学生の言葉 */
+/* ⭐学生の言葉も吹き出しに（2026-09-26 本人「下にある言葉の部分も吹き出しにして」）＝悩みの箱と同じ形 */
+.art blockquote{position:relative;margin:0 0 1em 12px;padding:12px 16px;background:#fff;border:1px solid var(--pink-light);
+  border-radius:8px;line-height:1.9}
+.art blockquote::before,.art blockquote::after{content:"";position:absolute;top:18px;border-style:solid;border-color:transparent}
+.art blockquote::before{left:-12px;border-width:8px 12px 8px 0;border-right-color:var(--pink-light)}
+.art blockquote::after{left:-10px;border-width:7px 11px 7px 0;border-right-color:#fff;margin-top:1px}
+
+/* まとめ */
+.art .matome{margin:44px 0 0;padding:18px 18px 8px;border:1px solid var(--line);border-radius:8px;background:#fff}
+.art .matome h2{margin-top:0}
+.art .cta{text-align:center;margin:22px 0 10px}
+.art .cta a{display:inline-block;background:var(--pink);color:#fff;text-decoration:none;font-weight:bold;
+  padding:12px 28px;border-radius:999px}
+
+/* ⭐リード文の装飾（2026-09-26 本人「リード文がなんもなさすぎて読みにくい」） */
+/* 読む人の心の声 */
+/* ⭐白抜き＋左に吹き出しの◀（2026-09-26 本人「背景のグレーと薄いピンクの組み合わせが気持ち悪い」
+   「この記事でわかることみたいに白抜きにして、左側にちょっとした吹き出しの◀」）。
+   ⚠ページの型 14-2「グレーの地に薄いピンクを置かない」に当たっていた */
+.art .nayami{position:relative;background:#fff;border:1px solid var(--pink-light);border-radius:8px;
+  padding:14px 16px 2px;margin:4px 0 18px 12px}
+.art .nayami::before,.art .nayami::after{content:"";position:absolute;top:22px;border-style:solid;border-color:transparent}
+.art .nayami::before{left:-12px;border-width:8px 12px 8px 0;border-right-color:var(--pink-light)}   /* ◀の線 */
+.art .nayami::after{left:-10px;border-width:7px 11px 7px 0;border-right-color:#fff;margin-top:1px}  /* ◀の中の白 */
+/* この記事でわかること */
+.art .wakaru{border:1px solid var(--line);border-radius:8px;padding:12px 16px 4px;margin:0 0 1em;background:#fff}  /* ⭐まとめと同じグレーの枠（2026-09-26 本人「まとめの外枠とそろえて」） */
+.art .wakaru-t{font-weight:bold;color:var(--pink);margin:0 0 4px}
+.art .wakaru ul{margin:0 0 .6em}
+/* 近道3つ（番号つき） */
+.art .chikamichi{margin:0 0 1em;padding-left:1.6em;font-weight:bold;line-height:2}
+.art .chikamichi li::marker{color:var(--pink)}
+/* 太字はピンクにしない（色を増やさない）。濃さだけ */
+.art strong{font-weight:bold;color:var(--ink)}
+/* 図 */
+.art .zu{margin:6px 0 1.4em}
+.art .zu img{width:100%;height:auto;border:1px solid var(--line);border-radius:8px;display:block}
+.art .zu.nowaku img{border:0;border-radius:0}   /* ⭐絵の中にもう枠があるものは、外の枠を付けない（二重になるため） */
+.art .zu figcaption{font-size:.78rem;color:var(--ink-soft);margin-top:6px;line-height:1.6}
+
+/* ⭐目次（2026-09-26）＝「この記事でわかること」・まとめと同じグレーの枠 */
+/* ⭐箱ではなく上下の線・左右を字下げ・項目は本文より小さくグレー（2026-09-26 本人「目次が本文と見分けつきにくい」
+   「箱じゃなく線で。項目は本文より小さくグレーに」「左右インデントを取ったら」） */
+.art .mokuji{border:0;border-top:3px double #d3d6da;border-bottom:3px double #d3d6da;background:none;   /* ⭐二重線（2026-09-26 本人「二重線にしてみて」）。⚠--line だと二重が薄すぎて1本に見えるので少し濃いグレー */
+  padding:12px 2.5em 6px;margin:10px 0 14px}   /* ⭐線は本文と同じ幅・中身だけ字下げ（2026-09-26 本人「線はインデントいらないね」→「もう少しインデントを取ろう」＝1.5字→2.5字） */
+.art .mokuji-t{font-weight:bold;font-size:.86rem;color:var(--ink-soft);margin:0 0 2px}
+.art .mokuji ol{margin:0 0 .6em;padding-left:1.5em;line-height:2;font-size:.88rem}
+.art .mokuji a{color:var(--ink-soft);text-decoration:none}
+.art .mokuji a:hover{color:var(--pink);text-decoration:underline}
+.art .mokuji li::marker{color:var(--pink)}
+/* 目次から飛んだとき、見出しがヘッダーの下に隠れないように */
+.art h2[id]{scroll-margin-top:90px}
+
+/* ⭐楽しみ方の枠（2026-09-26 本人）＝わかること・まとめと同じ白い箱とグレーの線。
+   ⭐名前の下に説明（普通の文字）。⚠横2列は説明の改行が気持ち悪かった（本人「ライフとタイルの下に普通の文字にして」） */
+.art .tanoshimi{border:1px solid var(--line);border-radius:8px;background:#fff;padding:12px 16px 6px;margin:0 0 1em}
+.art .tanoshimi-t{font-weight:bold;color:var(--pink);margin:0 0 6px}
+.art .tanoshimi dl{margin:0 0 .6em;line-height:1.8}
+.art .tanoshimi dt{font-weight:bold;margin-top:10px}
+.art .tanoshimi dt:first-child{margin-top:0}
+.art .tanoshimi dd{margin:0 0 0 1em}   /* ⭐説明は1字下げ（2026-09-26 本人「ミスをすると・ミスをしなければ・何文字までは字下げを」） */
+
+/* 記事の下の戻り道 */
+.art .after{margin:30px 0 40px;font-size:.88rem}
+
+/* ⭐広告の場所だけ先に作る（中身はアドセンスに通ってから・空なら見えない） */
+.t-ad{margin:26px 0}
+.t-ad:empty{display:none}
+
+/* ---------- 記事一覧 ---------- */
+.art-list{list-style:none;padding:0;margin:18px 0 40px}
+/* ⭐カード（2026-09-26 本人）＝白い箱・グレーの線。左にサムネ、右に文字。スマホはサムネが上 */
+.art-list li.card-a{display:grid;grid-template-columns:170px 1fr;gap:14px;align-items:center;   /* ⭐絵と文字を上下中央（2026-09-26 本人） */
+  background:#fff;border:1px solid var(--line);border-radius:8px;padding:12px;margin:0 0 14px}
+/* ⭐カードのどこを押しても記事へ（2026-09-26 本人）＝タイトルのリンクを箱いっぱいに広げる（リンクは1本のまま） */
+.art-list li.card-a{position:relative;transition:border-color .15s,box-shadow .15s}
+.art-list li.card-a a.ttl::after{content:"";position:absolute;inset:0;border-radius:8px}
+.art-list li.card-a:hover{border-color:var(--pink-light);box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.art-list li.card-a:hover a.ttl{color:var(--pink)}
+.art-list .thumb{display:block;aspect-ratio:16/10;background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.art-list .thumb img{width:100%;height:100%;object-fit:contain;display:block}
+.art-list .txt{min-width:0}
+/* ⭐スマホはたねまきと同じ縦の並び（2026-09-26 本人「推しの形で」）＝絵が上に大きく → タイトル → 日付（左）と分類（右）
+   ⚠「横1行」は「1行に1枚」の意味だった（コードが読み違えて横並びにしていた） */
+@media (max-width:480px){
+  .art-list li.card-a{grid-template-columns:1fr;gap:10px;padding:10px}
+  .art-list .thumb{aspect-ratio:16/9}
+  .art-list .ex{display:none}   /* ⚠スマホは冒頭の文を出さない */
+  .art-list .info{display:flex;justify-content:space-between;align-items:center;flex-direction:row-reverse}
+  .art-list .tag{margin-right:0}
+}
+/* ⚠.art ul の左の字下げがカードにも効いて右にずれていた */
+.art .art-list{padding-left:0}
+.art-list a.ttl{font-weight:bold;font-size:1.02rem;line-height:1.6;color:var(--ink);text-decoration:none}
+.art-list a.ttl:hover{color:var(--pink)}
+.art-list .ex{font-size:.86rem;color:var(--ink-soft);margin:6px 0 4px;line-height:1.8}
+.art-list .info{font-size:.74rem;color:var(--ink-soft)}
+.art-list .tag{display:inline-block;border:1px solid var(--pink-light);color:var(--pink);border-radius:999px;
+  padding:0 8px;margin-right:8px}
+
+@media (max-width:420px){
+  .art h1{font-size:1.25rem}
+  .art p{font-size:.96rem}
+}

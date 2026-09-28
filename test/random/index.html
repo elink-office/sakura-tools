@@ -12,8 +12,8 @@
 <meta name="robots" content="noindex,nofollow">
 <title>【テスト】ランダム指名メーカー｜トランプとビンゴで名前・番号・班を選ぶ</title>
 <meta name="description" content="名簿を貼るだけで、トランプをめくる・ビンゴの玉が転がる形で、名前・番号・班をランダムに選べます。1回に1〜5人。全員に一周するまで同じ人は出ません。登録なし・無料。">
-<link rel="stylesheet" href="../style.css?v=154">
-<link rel="stylesheet" href="random.css?v=21">
+<link rel="stylesheet" href="../style.css?v=155">
+<link rel="stylesheet" href="random.css?v=24">
 </head>
 <body>
 <div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
@@ -38,13 +38,14 @@
       <input type="checkbox" id="navtoggle" class="navtoggle">
       <label class="navburger" for="navtoggle">ツール一覧</label>
       <div class="navlist">
-      <a href="../">トップ</a>
+      <!-- ⭐2026-09-28 本人「ツール一覧はあくまでもツールのリスト」＝場面の区切りは入れない。トップは入れない（すぐ左にある）。いちばん上に先生用、棒線の下に道具（名前で分かりにくいものが上・くす玉〜ビンゴのように名前で分かるものが下） -->
+      <a href="../teacher/">先生ツールセット</a>
+      <span class="navsep" aria-hidden="true"></span>
       <a href="../typing/">タッチタイピング</a>
       <a href="../seat/">座席表</a>
       <a href="../slide/">簡単スライド</a>
       <span class="now" aria-current="page">ランダム指名</span>
       <a href="../timer/">カウントダウンタイマー</a>
-      <a href="../kusudama/">くす玉メーカー</a>
       <a href="../timer/progress/">進行タイマー</a>
       <a href="../excel-fx/">関数早見表</a>
       <a href="../seki/">席次表</a>
@@ -52,7 +53,10 @@
       <a href="../shinkansen/">新幹線の座席表</a>
       <a href="../keiri/mitsumori/">見積書</a>
       <a href="../keiri/seikyu/">請求書</a>
-      <!-- ⭐ツールではないので棒線で分けて下に（2026-09-26 本人「棒線引いて分けて載せればいいね」） -->
+      <a href="../kusudama/">くす玉</a>
+      <a href="../roulette/">ルーレット</a>
+      <a href="../fukubiki/">福引</a>
+      <a href="../bingo/">ビンゴ</a>
       <span class="navsep" aria-hidden="true"></span>
       <a href="../articles/">記事一覧</a>
       </div>
@@ -73,7 +77,7 @@
       <li>一周するまで<strong>同じ人は出ない</strong></li>
     </ul>
     </div>
-    <figure class="t-sample noprint"><img src="../img/random-sample.png?v=2" width="1280" height="720" alt="トランプの形のランダム指名。白い画面に伏せたカードが並び、めくると名前が出て、前にめくったカードはグレーで残る"></figure>
+    <figure class="t-sample noprint"><img src="../img/random-sample.png?v=3" width="1280" height="720" alt="トランプの形のランダム指名。白い画面に伏せたカードが並び、めくると名前が出て、前にめくったカードはグレーで残る"></figure>
   </div>
 
   <!-- ⭐サンプルのボタンは①の上（ページの型 12-a） -->
@@ -288,7 +292,7 @@
 
 <!-- ===== 動かしている画面 ===== -->
 <div class="pk-demoback" id="demoBack" hidden></div>
-<div class="pk-run" id="runScreen" hidden>
+<div class="pk-run rd-run" id="runScreen" hidden>
   <div class="pk-top">
     <span class="pk-round" id="roundLbl">1周目</span>
     <span class="pk-msg" id="runMsg"></span>
@@ -307,7 +311,7 @@
 <script src="../roster-tools.js?v=1"></script>
 <script src="../mini3d.js?v=1"></script>
 <script src="../bingo-machine.js?v=1"></script>
-<script src="random.js?v=21"></script>
+<script src="random.js?v=22"></script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>

@@ -263,7 +263,7 @@ function update(){
   var left=pool().length;
   $("roundLbl").textContent=st.drawn.length? st.drawn.length+"回目" : "";
   $("leftLbl").textContent="のこり "+left+"個";
-  $("runMsg").textContent= run.busy ? "" : left ? "「回す」で次の番号" : "全部出ました";
+  $("runMsg").textContent= run.busy || left ? "" : "全部出ました";   // ⭐「「回す」で次の番号」は出さない（2026-09-28 本人「bingoとルーレット、○○で始めるっていうのはなしにして」）
   $("nextBtn").disabled=run.busy || !left;
   $("resetBtn").disabled=run.busy;
 }
