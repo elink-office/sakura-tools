@@ -4,9 +4,9 @@
 <meta name="robots" content="noindex,nofollow">
 <meta charset="utf-8">
 <!-- ⭐タブのマーク＝さくらのロゴ（2026-09-22 本人「タブのマークと題名も変更できるならして」） -->
-<link rel="icon" href="favicon.ico?v=1" sizes="any">
-<link rel="icon" type="image/png" href="favicon-32.png?v=1">
-<link rel="apple-touch-icon" href="apple-touch-icon.png?v=1">
+<link rel="icon" href="favicon.ico?v=3" sizes="any">
+<link rel="icon" type="image/png" href="favicon-32.png?v=3">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <!-- 🔴 検索結果のサムネイルを大きく出すための印（2026-09-01） -->
 <meta name="robots" content="max-image-preview:large">
@@ -45,8 +45,8 @@
   "url": "https://sakura-tools.com/"
 }
 </script>
-<link rel="stylesheet" href="style.css?v=145">
-<link rel="stylesheet" href="top.css?v=62">
+<link rel="stylesheet" href="style.css?v=155">
+<link rel="stylesheet" href="top.css?v=68">
 </head>
 <body>
 <div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
@@ -79,14 +79,27 @@
       <input type="checkbox" id="navtoggle" class="navtoggle">
       <label class="navburger" for="navtoggle">ツール一覧</label>
       <div class="navlist">
-      <span class="now" aria-current="page">トップ</span>
+      <!-- ⭐2026-09-28 本人「ツール一覧はあくまでもツールのリスト」＝場面の区切りは入れない。トップは入れない（すぐ左にある）。いちばん上に先生用、棒線の下に道具（名前で分かりにくいものが上・くす玉〜ビンゴのように名前で分かるものが下） -->
+      <a href="teacher/">先生ツールセット</a>
+      <span class="navsep" aria-hidden="true"></span>
       <a href="typing/">タッチタイピング</a>
       <a href="seat/">座席表</a>
-      <a href="seki/">席次表</a>
       <a href="slide/">簡単スライド</a>
+      <a href="random/">ランダム指名</a>
+      <a href="timer/">カウントダウンタイマー</a>
+      <a href="timer/progress/">進行タイマー</a>
       <a href="excel-fx/">関数早見表</a>
+      <a href="seki/">席次表</a>
+      <a href="bus/">バスの座席表</a>
+      <a href="shinkansen/">新幹線の座席表</a>
       <a href="keiri/mitsumori/">見積書</a>
       <a href="keiri/seikyu/">請求書</a>
+      <a href="kusudama/">くす玉</a>
+      <a href="roulette/">ルーレット</a>
+      <a href="fukubiki/">福引</a>
+      <a href="bingo/">ビンゴ</a>
+      <span class="navsep" aria-hidden="true"></span>
+      <a href="articles/">記事一覧</a>
       </div>
     </nav>
   </div>
@@ -99,6 +112,25 @@
       <span>今使っている端末で仕事を完結<span class="nl">データは漏れない、だから安心</span></span>
     </p>
     <p class="lead">「同じことの繰り返しはもうイヤ」「この2つのデータ、ほぼ一緒なのにまた入力」<strong>そんな時間を減らしたい人のための道具箱</strong>。すべて無料です。<a class="more" href="#naze">くわしくは →</a></p>
+    <!-- ⭐道具の札（2026-09-28 本人「これから増えていくなら、そこにいろいろ置いてぱっと見で見れるの面白いよね」「並びは左から順にツール一覧の並び」）。形＝保存欄の「共通で使えます」の札（.rt-list）と同じ -->
+    <nav class="t-chips" aria-label="無料ツール">
+      <a href="typing/">タッチタイピング</a>
+      <a href="seat/">座席表</a>
+      <a href="slide/">簡単スライド</a>
+      <a href="random/">ランダム指名</a>
+      <a href="timer/">カウントダウンタイマー</a>
+      <a href="timer/progress/">進行タイマー</a>
+      <a href="excel-fx/">関数早見表</a>
+      <a href="seki/">席次表</a>
+      <a href="bus/">バスの座席表</a>
+      <a href="shinkansen/">新幹線の座席表</a>
+      <a href="keiri/mitsumori/">見積書</a>
+      <a href="keiri/seikyu/">請求書</a>
+      <a href="kusudama/">くす玉</a>
+      <a href="roulette/">ルーレット</a>
+      <a href="fukubiki/">福引</a>
+      <a href="bingo/">ビンゴ</a>
+    </nav>
   </div>
 
   <!-- 🔴 2026-09-06 本人：枠（学校で使う／仕事で使う）をやめて、カードを独立させた。
@@ -138,6 +170,31 @@
       </div>
     </a>
 
+    <!-- ⭐くす玉は簡単スライドの下（2026-09-25 本人「くす玉メーカーと関数早見表を入れ替えて」） -->
+    <a class="t-card school" id="kusudama" href="kusudama/">
+      <div class="t-tool">
+        <span class="nm">くす玉メーカー</span>
+        <span class="ds">名前を打って「3・2・1」でパカッ！金・銀・銅のくす玉で、優勝や表彰、代表の発表を盛り上げよう。</span>
+      </div>
+    </a>
+
+
+    <!-- ⭐小さいカードの段は席次表の上（2026-09-25 本人「小さいカードを席次表の上の行に全部配置して」）
+         ＝カウントダウンタイマー・進行タイマー・関数早見表。⚠test だけ。カードの文は仮（本人が後で変える） -->
+    <a class="t-card school" id="timer" href="timer/">
+      <div class="t-tool">
+        <span class="nm">カウントダウンタイマー</span>
+        <span class="ds">時間を打つだけ。丸やタイルが減っていき、残りが少なくなると赤に。間に合ったら紙吹雪、時間切れには幕が閉まる！</span>
+      </div>
+    </a>
+
+    <a class="t-card work" id="progress" href="timer/progress/">
+      <div class="t-tool">
+        <span class="nm">進行タイマー</span>
+        <span class="ds">セミナーや司会で、残りの時間を色の帯で見る。原稿を見ながらでも、目の端に入る色で残りが分かる。</span>
+      </div>
+    </a>
+
     <!-- ⭐関数早見表（2026-09-08 公開）。⚠仕事のほうの道具なので work -->
     <a class="t-card work" id="excel-fx" href="excel-fx/">
       <div class="t-tool">
@@ -146,13 +203,13 @@
       </div>
     </a>
 
-    <!-- ⭐2段目の先頭（2026-09-21 本人の並び）＝1段目 タッチタイピング・座席表・(スライド/早見表)、
-         2段目 席次表・見積書・請求書。⚠右下の空きが埋まる -->
-    <a class="t-card big work" id="seki" href="seki/">
+    <!-- ⭐ランダム指名（2026-09-27 本人「テストのトップに掲載したい」）。⭐すぐ使う道具なので、バス・新幹線より上
+         ⭐3段目＝ランダム指名・見積書・請求書／4段目＝席次表・バス・新幹線（席の道具をまとめた）。⚠カードの文は仮 -->
+    <a class="t-card big school" id="random" href="random/">
       <div class="t-tool">
-        <span class="nm">席次表メーカー</span>
-        <span class="ds">会社名・役職・フリガナ・名前を並べた席次表。用紙に合わせて自動で調整し、A4の1枚に収めます。</span>
-        <img class="t-shot" src="img/seki-sample.png?v=8" width="1280" height="720" alt="23人・5列の研修の席次表。会社名・役職・名前を並べたもの">
+        <span class="nm">ランダム指名メーカー</span>
+        <span class="ds">名簿を貼るだけで、トランプやビンゴで指名。一周するまで同じ人には当たらないから、順番決めも公平に！</span>
+        <img class="t-shot" src="img/random-sample.png?v=3" width="1280" height="720" alt="トランプの形のランダム指名。伏せたカードが並び、めくると名前が出る">
       </div>
     </a>
 
@@ -173,6 +230,38 @@
         <img class="t-shot" src="img/seikyu-sample.png?v=1" width="1280" height="720" alt="A4の請求書。品目・数量・単価と、小計・消費税・合計が並んだもの">
       </div>
     </a>
+
+    <!-- ⭐2段目の先頭（2026-09-21 本人の並び）＝1段目 タッチタイピング・座席表・(スライド/早見表)、
+         2段目 席次表・見積書・請求書。⚠右下の空きが埋まる -->
+    <a class="t-card big work" id="seki" href="seki/">
+      <div class="t-tool">
+        <span class="nm">席次表メーカー</span>
+        <span class="ds">会社名・役職・フリガナ・名前を並べた席次表。用紙に合わせて自動で調整し、A4の1枚に収めます。</span>
+        <img class="t-shot" src="img/seki-sample.png?v=8" width="1280" height="720" alt="23人・5列の研修の席次表。会社名・役職・名前を並べたもの">
+      </div>
+    </a>
+
+    <!-- ⭐バス・新幹線（2026-09-27 本人「すぐ使うものではないから下でいい」）。
+         ⭐絵は見本（たて長）の上のほうを横長に切り出したもの（img/*-card.png）。⚠カードの文は仮 -->
+    <a class="t-card big school" id="bus" href="bus/">
+      <div class="t-tool">
+        <span class="nm">バスの座席表メーカー</span>
+        <span class="ds">名簿を貼って、バスの形を選ぶだけ。前の席の指定や、隣にしない設定も簡単。遠足のバスの席がA4の1枚に！</span>
+        <img class="t-shot" src="img/bus-card.png?v=1" width="760" height="428" alt="遠足のバスの座席表。班ごとに色の枠で分かれ、先生は前の通路側">
+      </div>
+    </a>
+
+    <a class="t-card big school" id="shinkansen" href="shinkansen/">
+      <div class="t-tool">
+        <span class="nm">新幹線の座席表メーカー</span>
+        <span class="ds">旅行会社からの号車と列を入れるだけ。号車がまたがっても1枚に。修学旅行の新幹線の座席を、班ごとに！</span>
+        <img class="t-shot" src="img/shinkansen-card.png?v=1" width="760" height="428" alt="修学旅行の新幹線の座席表。5号車の席が、班ごとに色の枠で分かれている">
+      </div>
+    </a>
+
+
+
+
 
   </div>
 
@@ -204,20 +293,37 @@
   <!-- ⭐右の段。⚠ヘッダーだけに導線を頼らない -->
   <aside class="t-side noprint">
     <h2>無料ツール</h2>
-    <ul>
+    <!-- ⭐2列・「メーカー」を外した（2026-09-28 本人「メーカーやめて、２列にならないのかな？」） -->
+    <ul class="t-side-tools">
+      <!-- ⭐並び＝ヘッダーのツール一覧と同じ。左の列を上から下、そのあと右の列（2026-09-28 本人） -->
       <li><a href="typing/">さくら<img class="inlogo" src="img/logo-sakura-64.png?v=2" srcset="img/logo-sakura-64.png?v=2 1x, img/logo-sakura-128.png?v=2 2x" alt="">タッチタイピング</a></li>
-      <li><a href="seat/">座席表メーカー</a></li>
-      <li><a href="seki/">席次表メーカー</a></li>
-      <li><a href="slide/">簡単スライドメーカー</a></li>
+      <li><a href="seat/">座席表</a></li>
+      <li><a href="slide/">簡単スライド</a></li>
+      <li><a href="random/">ランダム指名</a></li>
+      <li><a href="timer/">カウントダウンタイマー</a></li>
+      <li><a href="timer/progress/">進行タイマー</a></li>
       <li><a href="excel-fx/">Excel関数 早見表</a></li>
-      <li><a href="keiri/mitsumori/">見積書メーカー</a></li>
-      <li><a href="keiri/seikyu/">請求書メーカー</a></li>
+      <li><a href="seki/">席次表</a></li>
+      <li><a href="bus/">バスの座席表</a></li>
+      <li><a href="shinkansen/">新幹線の座席表</a></li>
+      <li><a href="keiri/mitsumori/">見積書</a></li>
+      <li><a href="keiri/seikyu/">請求書</a></li>
+      <li><a href="kusudama/">くす玉</a></li>
+      <li><a href="roulette/">ルーレット</a></li>
+      <li><a href="fukubiki/">福引</a></li>
+      <li><a href="bingo/">ビンゴ</a></li>
     </ul>
 
     <!-- ⭐経理ツールはここに出さない。⭐ヘッダーの「経理ツール」から入る（2026-09-12 本人）
          ⚠見積書・請求書はトップのカードから直接入る -->
-    <!-- ⭐準備中はリンクを貼らない。文字だけ（2026-09-12 本人） -->
-    <p class="soon">シフト表メーカー（準備中）</p>
+    <!-- ⭐「シフト表（準備中）」はやめた（2026-09-28 本人「前はツールが少なかったから有効だったけど」） -->
+
+    <!-- ⭐記事（2026-09-26 本人「記事はすぐにUPして、アドセンスの審査を出したい」「リンクを貼ることを始めよう」）。新しい記事を上に足す -->
+    <h2>記事</h2>
+    <ul>
+      <li><a href="articles/home-position/">タッチタイピングへの近道の話</a></li>
+    </ul>
+    <p class="more"><a href="articles/">記事一覧へ →</a></p>
 
     <!-- ⭐ここにも帯（縦長）を置ける。⚠今は空のまま -->
     <div class="t-ad"></div>

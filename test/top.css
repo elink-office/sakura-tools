@@ -61,6 +61,11 @@ main.wrap, .site-head .wrap, .site-foot .wrap{max-width:var(--page)}
 .t-hero .lead{font-size:.88rem;margin:0 0 30px;max-width:var(--honbun)}
 .t-hero .more{color:var(--midori);text-decoration:none;white-space:nowrap;margin-left:4px}
 .t-hero .more:hover{text-decoration:underline}
+/* ⭐道具の札（2026-09-28）＝.roster-tools .rt-list と同じ形。説明文の下・カードの上 */
+.t-hero .lead:has(+ .t-chips){margin-bottom:22px}
+.t-chips{display:flex;flex-wrap:wrap;gap:6px 6px;margin:0 0 30px;max-width:var(--page)} /* ⭐幅＝下のカードと同じ（本人） */
+.t-chips a{display:inline-block;padding:2px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--ink);text-decoration:none;font-size:.76rem;line-height:1.6}
+.t-chips a:hover{border-color:var(--pink);color:var(--pink)}
 
 /* ⚠ ここには「名簿の送信なし／登録不要／インストール不要／すべて無料」の行があったが、
    2026-08-30 に消した。理由＝**ほとんどが上のリード文と重複していた**（本人の指摘）。
@@ -257,6 +262,12 @@ main.wrap, .site-head .wrap, .site-foot .wrap{max-width:var(--page)}
    ⚠▶をやめたぶん、下げ幅はここで作る */
 .t-side ul{list-style:none;margin:0 0 22px;padding:0 0 0 20px}
 .t-side li{margin:0 0 5px}
+/* ⭐無料ツールは2列（2026-09-28 本人）。⚠記事の一覧は1列のまま */
+.t-side ul.t-side-tools{display:grid;grid-template-columns:auto auto;justify-content:start;column-gap:16px;padding-left:8px;
+  grid-auto-flow:column;grid-template-rows:repeat(8,auto)} /* ⭐左の列を上から下→右の列（2026-09-28 本人）。⚠道具が17個以上になったら 8 を増やす */
+.t-side ul.t-side-tools li{margin:0}
+.t-side p.more{padding-left:20px} /* ⭐「記事一覧へ →」の行頭を記事の行頭（ul の左 20px）にそろえた（2026-09-28 本人） */
+.t-side ul.t-side-tools a{white-space:nowrap;padding:3px 0} /* ⭐行間を詰めた（2026-09-28 本人「行間詰めて」）＝前は li 5px＋上下4px */
 /* ⭐字を小さく（2026-09-12 本人）
    🔴⭐▶はやめた（2026-09-12 本人「サイズが違うからアンダーバーが切れる」）
    ＝下線は文字と同じ行に引かれるので、小さい▶のところで途切れて見えた */
@@ -304,6 +315,7 @@ main.wrap, .site-head .wrap, .site-foot .wrap{max-width:var(--page)}
   .t-cards{gap:16px;margin-bottom:26px}
   .t-card .t-shot{max-width:86%;margin:10px auto 12px}
   .t-hero .lead{margin-bottom:22px}
+  .t-chips{margin-bottom:22px}
   .t-catch{margin-bottom:14px}
 }
 

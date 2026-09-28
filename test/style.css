@@ -130,9 +130,9 @@ body{
 }
 .site-head .navtoggle:checked ~ .navlist{display:block}
 .site-head .navlist a,.site-head .navlist .now{
-  display:block;padding:8px 12px;border-radius:8px;
-  font-size:.88rem;min-width:0;white-space:nowrap;line-height:1.4;text-align:left;
-}
+  display:block;padding:5px 12px;border-radius:8px;
+  font-size:.82rem;min-width:0;white-space:nowrap;line-height:1.35;text-align:left;
+}   /* ⭐字を少し小さく・行間を少し詰めた（2026-09-28 本人「先生用ツール一覧と、ツール一覧どっちも少しずつフォントを小さくしてみて。あと行間も少し詰めてみて」）。前＝.88rem・上下8px・1.4 */
 .site-head .navlist .now{font-weight:bold;color:var(--pink);background:var(--pink-pale)}
 .site-head .navlist a:hover{background:var(--pink-pale)}
 /* ⭐ツールと記事一覧のあいだの棒線（2026-09-26 本人） */
