@@ -32,7 +32,7 @@
 <!-- ⭐名前は「タッチタイピング」（2026-09-15 本人「とりあえずタッチタイピングだけにしておいて」）。
      ⚠同じ日に一度「タイルタッチタイピング（TTT）」にした。また変えるかも（本人）。大人用はまだ「タイピング練習」のまま -->
 <title>さくらタッチタイピング（学生用）｜さくらツールズ</title>
-<link rel="stylesheet" href="../../style.css?v=147">
+<link rel="stylesheet" href="../../style.css?v=155">
 <link rel="stylesheet" href="../typing.css?v=165">
 </head>
 <!-- 🔴⭐学生用のページ（2026-09-15 本人）
@@ -42,6 +42,7 @@
      ⚠typing.js が使う部品（id）は大人用と同じ名前で全部置く。消すと動かなくなる
      ⭐body.gakusei ＝ステージの説明を短くする（typing.js の renderStageCards） -->
 <body class="gakusei hub">
+
 <!-- ⭐学生用はヘッダーのリンクを全部なくす（2026-09-16 本人「ヘッダーのリンク全部消そう」）。
      ⭐ロゴだけはトップへのリンクを残す（2026-09-16 本人「気づいた人は他を見ていい」）。⚠太字は style.css の .site-head a が付けている＝リンクを外すと細くなる -->
 <header class="site-head noprint">
@@ -141,6 +142,7 @@
   <div class="fingerlegend" id="legend"></div>
 </div></div>
 
+<!-- ⭐記事へのリンクは置かない（2026-09-26 本人「学生用のはリンクやめよう。いろんな雑記事を書くとしたら、つながりがないほうがいい。しゃべってるしその内容」）。⚠「友だちに送る」は置く予定 -->
 <details class="howto">
   <summary>使い方</summary>
   <ul>
@@ -149,7 +151,7 @@
     <li><b>Esc</b>キーでリセット、もう一度<b>Esc</b>でステージ選択にもどります。</li>
     <li>速さは<b>1分あたりの文字数</b>（○/1分）。<b>ひらがなの文字数</b>で数えています（打ったキーの数ではありません）。</li>
     <li><b>自己ベストを更新すると紙吹雪</b>が出ます（2回目から。ミスがあっても出ます）。</li>
-    <li>記録はこの端末の中に自動で残ります（「今までの記録を見る」）。</li>
+    <li>記録は使っている端末の中に自動で残ります（「今までの記録を見る」）。</li>
   </ul>
 </details>
 
@@ -192,7 +194,7 @@
   <button class="xbtn" id="xLog" title="閉じる">×</button>
   <h2>今までの記録</h2>
   <!-- ⚠「大学や職場で練習した記録は、家の端末には表示されません。」は外した（2026-09-20 本人「これはいらないな」） -->
-  <div class="sb" id="logSub"><b>この記録は、いま使っているこの端末にだけ残ります。</b></div>
+  <div class="sb" id="logSub"><b>この記録は、いま使っている端末にだけ残ります。</b></div>
   <!-- ⭐記録があるときだけ出す（2026-09-20 本人「記録があるときに3つの選択肢を見たい」）。typing.js の renderLogs で出し分ける -->
   <div class="modalbtns" id="logBtns" style="margin:0 0 14px;justify-content:flex-start">
     <button id="btnCsv">CSVで書き出す</button>

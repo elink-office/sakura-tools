@@ -49,15 +49,9 @@ h3.sub{font-size:1.02rem;margin:0 0 12px;display:flex;align-items:center}
 
 /* ⭐①の「文字をスライドにする／発表者をスライドにする」を2つの切り替えボタンに（2026-09-15 本人 案A）。
    ⭐選んだほうに色（.on は slide.js の switchKind が付ける）。⚠ラジオは見えなくするだけで残す（キーボードでも選べる） */
-.kind-switch{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 16px}
-.kind-switch label{position:relative;display:inline-flex;align-items:center;justify-content:center;
-  padding:12px 20px;min-width:12em;margin:0;border:1px solid var(--line,#e3e5e8);border-radius:8px;
-  background:#fff;color:var(--ink,#333);font-weight:bold;cursor:pointer}
-.kind-switch label input{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
-.kind-switch label.on{background:var(--pink);border-color:var(--pink);color:#fff}
+/* 切り替えは共通の .seg（style.css・2026-09-26）。前の .kind-switch（桜色に塗る形）はやめた */
 /* ⚠押したあとに二重線（枠のまわりの線）が出ていた（2026-09-15 本人「二重線にはちょっと違和感」）。
    ⭐線はキーボードで選んでいるときだけ出す（:focus-visible） */
-.kind-switch label:has(input:focus-visible){outline:2px solid var(--pink);outline-offset:2px}
 
 /* ⭐「保存のデータを使う」の行（2026-09-15 本人 案A）。ボタンは小さく左、説明はふつうの文字 */
 .cls-use{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 10px}
@@ -408,3 +402,8 @@ body.hidebar #bar .row{opacity:0}
   .tbl th.idx .narrow{display:none}
   .tbl td.idx,.tbl th.idx{width:66px}
 }
+
+/* ⭐右上の「✕ とじる」も、下の帯と一緒に薄くなる（2026-09-27） */
+#show .run-tr{transition:opacity .3s}
+body.hidebar #show .run-tr{opacity:0}
+body.hidebar #show .run-tr:hover{opacity:1}

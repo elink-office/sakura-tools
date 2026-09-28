@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="../favicon.ico?v=3" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png?v=3">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
+<!-- ⭐たたき台（2026-09-26）。どこともつなげない。名前・フォルダ名（roulette）は仮
+     ⭐本人「ルーレットだけの簡単なアプリは作ってもいいね」「ルーレットは数少ない時に使う用」 -->
+<title>ルーレット｜項目を入れて回すだけの無料ルーレット</title>
+<meta name="description" content="項目を入れて回すだけの無料ルーレット。順番決め・ランチ決め・係決めなど、数が少ないときの抽選に。モニターに映して使えます。登録なし。">
+<link rel="stylesheet" href="../style.css?v=155">
+<link rel="stylesheet" href="../random/random.css?v=20">
+<link rel="stylesheet" href="roulette.css?v=5">
+</head>
+<body>
+
+<header class="site-head noprint">
+  <div class="wrap">
+    <a class="logo" href="../"><span class="logo-mark"><img src="../img/logo-sakura-64.png?v=2" srcset="../img/logo-sakura-64.png?v=2 1x, ../img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA tools</span><span class="logo-sub">さくらツールズ</span></a>
+    <nav>
+      <a class="navpin" href="../">トップ</a>
+      <a class="navpin" href="../typing/">タッチタイピング</a>
+      <a class="navpin" href="../seat/">座席表</a>
+      <a class="navpin" href="../slide/">簡単スライド</a>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">ツール一覧</label>
+      <div class="navlist">
+      <!-- ⭐2026-09-28 本人「ツール一覧はあくまでもツールのリスト」＝場面の区切りは入れない。トップは入れない（すぐ左にある）。いちばん上に先生用、棒線の下に道具（名前で分かりにくいものが上・くす玉〜ビンゴのように名前で分かるものが下） -->
+      <a href="../teacher/">先生ツールセット</a>
+      <span class="navsep" aria-hidden="true"></span>
+      <a href="../typing/">タッチタイピング</a>
+      <a href="../seat/">座席表</a>
+      <a href="../slide/">簡単スライド</a>
+      <a href="../random/">ランダム指名</a>
+      <a href="../timer/">カウントダウンタイマー</a>
+      <a href="../timer/progress/">進行タイマー</a>
+      <a href="../excel-fx/">関数早見表</a>
+      <a href="../seki/">席次表</a>
+      <a href="../bus/">バスの座席表</a>
+      <a href="../shinkansen/">新幹線の座席表</a>
+      <a href="../keiri/mitsumori/">見積書</a>
+      <a href="../keiri/seikyu/">請求書</a>
+      <a href="../kusudama/">くす玉</a>
+      <span class="now" aria-current="page">ルーレット</span>
+      <a href="../fukubiki/">福引</a>
+      <a href="../bingo/">ビンゴ</a>
+      <span class="navsep" aria-hidden="true"></span>
+      <a href="../articles/">記事一覧</a>
+      </div>
+    </nav>
+  </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">ルーレット</span><span class="now-short">ルーレット</span></div></div>
+</header>
+
+<main class="wrap pk-set" id="setScreen">
+  <h1>ルーレット</h1>
+  <p class="catch">項目を入れて、回して、ゆっくり決まる</p>
+  <div class="intro i169">
+    <div class="intro-txt">
+    <p class="lead"><strong>登録なし・全部無料。</strong>項目を1行ずつ入れて回すだけのルーレットです。順番決めや、お昼ごはん決めのような、数が少ないときの抽選に使えます。</p>
+    <ul class="can-do">
+      <li>項目は1行に1つ、<strong>2〜24こ</strong>まで</li>
+      <li>当たった項目を<strong>次から外せる</strong></li>
+      <li>モニターに映して<strong>みんなで見られる</strong></li>
+    </ul>
+    </div>
+    <figure class="t-sample noprint"><img src="../img/roulette-sample.png?v=3" width="1280" height="720" alt="ルーレットの画面。左にお昼ごはんの5つを2回ずつ並べた円、右に当たりのラーメン"></figure>
+  </div>
+  <!-- ⭐「見本を見る」は①の上・左（福引と同じ・2026-09-27 本人「できれば、それも左上に置いて」）。前＝スタートのすぐ上 -->
+  <div class="ru-sample noprint"><button type="button" id="demoBtn">見本を見る（モニターの形）</button></div>
+  <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
+
+  <details class="opt" id="opt1">
+    <summary><span class="step">1</span>項目</summary>
+    <div class="body">
+      <!-- ⭐左に項目、右に分割と外す設定（2026-09-27 本人「スタートがえらい下だから、右に作ってほしい。こんなに広くある必要ないよ笑」） -->
+      <div class="ru-two">
+        <div class="ru-col">
+          <p class="pk-lbl">項目（1行に1こ）</p>
+          <textarea id="items" rows="6" placeholder="カレー&#10;ラーメン&#10;おにぎり&#10;パスタ"></textarea>
+          <p class="pk-count"><span id="itemCount">0こ</span><button type="button" class="mini" id="itemsClear">消す</button></p>
+        </div>
+        <div class="ru-col">
+          <p class="pk-lbl">分割（項目をくり返す）</p>
+          <div class="seg" id="segRep" role="radiogroup" aria-label="分割"><button type="button" data-v="1" class="on">×1</button><button type="button" data-v="2">×2</button><button type="button" data-v="3">×3</button><button type="button" data-v="4">×4</button><button type="button" data-v="6">×6</button><button type="button" data-v="8">×8</button></div>
+          <p class="ru-note" id="repNote"></p>
+          <p class="hint">「あたり」「はずれ」を入れて ×4 にすると、あたり・はずれ・あたり・はずれ…と8こに分かれます。全部で24こまでです。</p>
+          <p class="ru-opt"><label><input type="checkbox" id="removeHit"> 当たった項目を、次から外す</label></p>
+        </div>
+      </div>
+      <p class="safe">🔒 <strong>使っている端末の中だけで完結しています。</strong>安心してご利用ください。</p>
+
+      <div class="save-in1">
+        <p class="save-head"><label><input type="checkbox" id="save"> この画面を保存する</label><button type="button" class="tip-btn" aria-label="説明"></button></p>
+        <div class="tip-body" hidden>
+          <p>🔒 残るのは<strong>使っている端末の中だけ</strong>です。どこにも送信されません。チェックを外すと、残していたものを消します。</p>
+          <p>入れた項目が残ります。</p>
+          <p><strong>共用の端末では外しておいてください。</strong>入れた項目が使っている端末に残ります。</p>
+        </div>
+        <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。<br>⚠共用の端末で使ったときは、このチェックを外して、この画面を閉じてください。</p>
+        <p><span class="saving" id="savingLabel"></span></p>
+      </div>
+    </div>
+  </details>
+
+  <p class="tm-start"><button type="button" class="primary" id="startBtn">▶ スタート</button></p>
+  <p class="tm-hint center">スタートするとモニター画面いっぱいに出ます。右上の「✕ とじる」で、設定の画面に戻ります。</p>
+
+  <details class="howto">
+    <summary>使い方</summary>
+    <div class="body">
+      <ol>
+        <li>①に、項目を1行に1こずつ入れます。Excelの列をそのまま貼ることもできます。</li>
+        <li>スタートを押すと、モニター画面いっぱいに出ます。</li>
+        <li>「回す」を押すとルーレットが回って、だんだんゆっくりになって止まります。上の▼の先の項目が当たりです。</li>
+        <li>①の「当たった項目を、次から外す」にチェックを入れると、同じ項目が続けて当たりません。</li>
+      </ol>
+      <p class="sub">こんなときに</p>
+      <ul>
+        <li>発表の順番・班の順番を決める</li>
+        <li>お昼ごはんや、罰ゲームを決める</li>
+        <li>会議で話す順番を決める</li>
+      </ul>
+      <p class="hint">人数が多いとき（クラス全員など）は、ランダム指名メーカーのトランプやビンゴのほうが見やすいです。</p>
+    </div>
+  </details>
+
+  <details class="howto">
+    <summary>よくある質問</summary>
+    <div class="body">
+      <p class="sub">どの項目も同じ確率ですか？</p>
+      <p>はい。どの項目も同じ確率で当たります。</p>
+      <p class="sub">ネットにつながっていないと使えませんか？</p>
+      <p>ページを開いたあとは、使っている端末の中だけで動いています。回すたびに通信はしません。</p>
+      <p class="sub">入れた項目が外に送られることはありますか？</p>
+      <p>ありません。ブラウザの中だけで使っています。</p>
+      <p class="sub">AIの学習に使われませんか？</p>
+      <p>使われません。どこにも送らないので、学習に使われることもありません。</p>
+      <p class="sub">学校や会社の決まりで、クラウドのサービスが使えません</p>
+      <p>ルーレットは、クラウドに何も置きません。使っている端末のブラウザの中だけで動きます。</p>
+    </div>
+  </details>
+
+  <details class="howto">
+    <summary>データの扱い</summary>
+    <div class="body">
+      <ul>
+        <li>入れた項目は、ブラウザの中だけで使っています。インターネットには送りません。</li>
+        <li>「この画面を保存する」にチェックを入れたときだけ、項目が使っている端末に残ります。</li>
+      </ul>
+    </div>
+  </details>
+</main>
+
+<footer class="noprint">
+  <div class="wrap"><span class="fnav"><a href="../about/">運営者情報</a>　<a href="../contact/">お問い合わせ</a>　<a href="../privacy/">プライバシーポリシー</a></span>
+    <span class="copy">さくらツールズ　© 2026 SAKURA tools</span></div>
+</footer>
+
+<!-- ===== 動かしている画面 ===== -->
+<div class="pk-demoback" id="demoBack" hidden></div>
+<div class="pk-run ru-run" id="runScreen" hidden>
+  <div class="pk-top">
+    <span class="pk-round" id="roundLbl"></span>
+    <span class="pk-msg" id="runMsg"></span>
+    <span class="pk-left" id="leftLbl"></span>
+  </div>
+  <!-- ⭐右上＝窓と同じ並び（全画面・✕ とじる）。角は必ず「✕ とじる」（2026-09-27 本人の約束事・ページの型 14-7） -->
+  <div class="run-tr"><button type="button" class="run-fs" id="fsBtn" title="全画面">⛶ 全画面</button><button type="button" class="run-close" id="backBtn">✕ とじる</button></div>
+  <div class="pk-demo" id="demoBadge" hidden>見本（モニターの形 16:9）</div>
+  <div class="pk-stage" id="stage"></div>
+  <div class="pk-btns">
+    <button type="button" class="pk-b next" id="nextBtn">▶ 回す</button>
+  </div>
+</div>
+
+<script src="roulette.js?v=12"></script>
+<script src="../tip.js?v=3"></script>
+</body>
+</html>

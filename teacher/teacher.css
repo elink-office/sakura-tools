@@ -1,0 +1,36 @@
+/* 先生におすすめ（/teacher/）だけの見た目。⭐カードそのものは top.css のものを使う（新しい見た目を作らない）
+   ⭐ここにあるのは「開いてすぐ使える／じっくり作る」の見出しだけ（2026-09-25 作成・見出しの言葉は仮） */
+.t-group{font-size:1.02rem;margin:6px 0 14px;color:var(--ink)}
+.t-group::before{content:none}
+.t-group small{font-weight:normal;font-size:.82rem;color:var(--ink-soft);margin-left:8px}
+@media (max-width:430px){
+  .t-group small{display:block;margin:2px 0 0}
+}
+
+/* ⭐先生用ツール一覧（2026-09-27 本人）＝左寄せの小さいボタン。押すと下に浮いて開く
+   ⭐見た目はヘッダーの「ツール一覧」（.navburger／.navlist）と同じ仲間＝枠のボタン・影の出る白い板
+   ⚠前の形＝箱（details.opt.sub）。本人「この箱が嫌だな。右にシャッターボタンがあるとわかりにくい。開いてすぐ使えると一緒だし」
+   ⭐▼は文字のすぐ右（右の端に離さない） */
+.t-list{position:relative;display:inline-block;margin:0 0 20px}
+.t-list>summary{list-style:none;display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none;
+  font-size:.92rem;font-weight:700;color:var(--ink);padding:8px 14px;border:1px solid var(--line);border-radius:8px;background:#fff}
+.t-list>summary::-webkit-details-marker{display:none}
+.t-list>summary::before{content:"";width:14px;height:11px;flex:none;
+  background:linear-gradient(var(--ink) 0 2px,transparent 2px 4.5px,var(--ink) 4.5px 6.5px,transparent 6.5px 9px,var(--ink) 9px 11px)}
+.t-list>summary::after{content:"";width:.7em;height:.7em;flex:none;background:var(--pink);transition:transform .15s;
+  -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M5 9l7 7 7-7'/></svg>") center/contain no-repeat;
+  mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M5 9l7 7 7-7'/></svg>") center/contain no-repeat}
+.t-list[open]>summary{border-color:var(--pink);color:var(--pink)}
+.t-list[open]>summary::after{transform:rotate(180deg)}
+@media (hover:hover){ .t-list>summary:hover{background:var(--pink-pale)} }
+.t-list-pop{position:absolute;left:0;top:calc(100% + 7px);z-index:50;
+  background:#fff;border:1px solid var(--line);border-radius:11px;box-shadow:0 10px 26px rgba(0,0,0,.16);
+  padding:10px 8px;display:grid;grid-template-columns:auto auto;gap:0 14px}
+.t-list-grp p{margin:2px 12px 4px;font-size:.78rem;color:var(--ink-soft)}
+.t-list-grp ul{list-style:none;margin:0;padding:0}
+.t-list-grp li{margin:0}
+.t-list-grp a{display:block;padding:5px 12px;border-radius:8px;font-size:.84rem;line-height:1.35;white-space:nowrap;color:var(--ink);text-decoration:none}   /* ⭐字を少し小さく・行間を少し詰めた（2026-09-28 本人）。前＝.9rem・上下8px */
+.t-list-grp a:hover{background:var(--pink-pale)}
+@media (max-width:430px){
+  .t-list-pop{grid-template-columns:1fr;gap:8px 0}
+}

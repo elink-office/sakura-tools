@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="../favicon.ico?v=3" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png?v=3">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
+<!-- ⭐作成中（2026-09-27）。どこともつなげない＝トップのカード・サイトマップ・ほかのページの「ツール一覧」に入れていない
+     ⭐きっかけ＝本人「あ、バスの座席表忘れてた」（8/26 の v3 候補にあった）。対象＝小学生の遠足・修学旅行
+     ⭐新幹線の座席表（shinkansen/）とは別のページ・別の仕組み（本人「流用しないほうがいい。できるだけ単純なほうが使いやすい」）
+     ⚠道具の名前・フォルダ名は仮 -->
+<title>バスの座席表メーカー｜45人乗り・53人乗りも名簿から無料作成</title>
+<meta name="description" content="名簿を貼るだけで、大型バス45人乗り（補助席込み53人）・49人乗り（補助席込み60人）の座席表ができます。遠足・修学旅行・社員旅行に。前に座る人を先に決めて、残りはランダムか名簿の順。エクセルのテンプレート不要、A4の1枚にPDFで保存。登録なし・無料。">
+<link rel="stylesheet" href="../style.css?v=155">
+<link rel="stylesheet" href="bus.css?v=11">
+</head>
+<body>
+
+<header class="site-head noprint">
+  <div class="wrap">
+    <a class="logo" href="../"><span class="logo-mark"><img src="../img/logo-sakura-64.png?v=2" srcset="../img/logo-sakura-64.png?v=2 1x, ../img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA tools</span><span class="logo-sub">さくらツールズ</span></a>
+    <nav>
+      <a class="navpin" href="../">トップ</a>
+      <a class="navpin" href="../typing/">タッチタイピング</a>
+      <a class="navpin" href="../seat/">座席表</a>
+      <a class="navpin" href="../slide/">簡単スライド</a>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">ツール一覧</label>
+      <div class="navlist">
+      <!-- ⭐2026-09-28 本人「ツール一覧はあくまでもツールのリスト」＝場面の区切りは入れない。トップは入れない（すぐ左にある）。いちばん上に先生用、棒線の下に道具（名前で分かりにくいものが上・くす玉〜ビンゴのように名前で分かるものが下） -->
+      <a href="../teacher/">先生ツールセット</a>
+      <span class="navsep" aria-hidden="true"></span>
+      <a href="../typing/">タッチタイピング</a>
+      <a href="../seat/">座席表</a>
+      <a href="../slide/">簡単スライド</a>
+      <a href="../random/">ランダム指名</a>
+      <a href="../timer/">カウントダウンタイマー</a>
+      <a href="../timer/progress/">進行タイマー</a>
+      <a href="../excel-fx/">関数早見表</a>
+      <a href="../seki/">席次表</a>
+      <span class="now" aria-current="page">バスの座席表</span>
+      <a href="../shinkansen/">新幹線の座席表</a>
+      <a href="../keiri/mitsumori/">見積書</a>
+      <a href="../keiri/seikyu/">請求書</a>
+      <a href="../kusudama/">くす玉</a>
+      <a href="../roulette/">ルーレット</a>
+      <a href="../fukubiki/">福引</a>
+      <a href="../bingo/">ビンゴ</a>
+      <span class="navsep" aria-hidden="true"></span>
+      <a href="../articles/">記事一覧</a>
+      </div>
+    </nav>
+  </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">バスの座席表メーカー</span><span class="now-short">バス座席表</span></div></div>
+</header>
+
+<main class="wrap bs-set">
+  <h1>バスの座席表メーカー</h1>
+  <p class="catch">名簿を貼るだけ、遠足のバスの席が1枚に</p>
+  <div class="intro tate">
+    <div class="intro-txt">
+    <p class="lead"><strong>登録なし・全部無料。</strong>名簿を貼ってバスの形を選ぶだけで、遠足のバスの座席表ができます。前に座る人を先に決めて、残りは名簿の順かランダムで並びます。</p>
+    <ul class="can-do">
+      <li><strong>大型バス45席・49席</strong>、補助席も</li>
+      <li><strong>前に座る人</strong>を先に決められる</li>
+      <li>A4の1枚に<strong>PDFで保存</strong></li>
+    </ul>
+    </div>
+    <!-- ⭐たての見本＝見積書メーカーと同じ形。上だけ見せて、押すと全体（2026-09-27 本人）。⚠JSは使わない -->
+    <input type="checkbox" id="sampleOpen" class="t-sample-open noprint">
+    <figure class="t-sample noprint"><img src="../img/bus-sample.png?v=5" width="800" height="1120" alt="バスの座席表の見本。前に入口と運転席、2席と2席の並びに名前が入り、左右に列の番号"><label for="sampleOpen" aria-label="見本を大きく見る"></label></figure>
+  </div>
+
+  <!-- ⭐サンプルのボタンは①の上（ページの型 12-a） -->
+  <div class="bs-sample noprint">
+    <button type="button" id="sample1Btn">サンプル①（班ごと）</button>
+    <button type="button" id="sample2Btn">サンプル②（作成途中・手で入れる）</button>
+    <button type="button" id="sampleClear" hidden>サンプルを消す</button>
+    <span class="saving" id="sampleMsg"></span>
+  </div>
+  <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
+
+  <details class="opt" id="opt1">
+    <summary><span class="step">1</span>名簿の入力</summary>
+    <div class="body">
+      <!-- ⭐呼び出しは①に置く。0件のときは出さない（ページの型 4-c の6）。名簿の箱は座席表・席次表・簡単スライドと共通 -->
+      <div class="bs-recall" id="recallRow" hidden>
+        <select id="clsSel" aria-label="保存済の名簿"></select>
+        <button class="mini" id="clsLoad" type="button">この名簿を読み込む</button>
+      </div>
+      <p class="bs-lbl">名前（1行に1人）<button type="button" class="tip-btn" aria-label="説明"></button></p>
+      <div class="tip-body" hidden>
+        <p>🔒 <strong>名簿はインターネットに送りません。</strong>使っている端末のブラウザの中だけで並べているので、名前がどこかに保存されることも、AIの学習に使われることもありません。パソコン・タブレット・スマホ、どれでも同じです。</p>
+        <ul>
+          <li>Excelの名前の列を、そのまま貼れます。出席番号や男女の列がいっしょに入っていても、名前だけを使います。</li>
+          <li>⑤保存したデータの利用に並んでいる道具で保存した名簿は、この上の「保存済の名簿」から読み込めます。</li>
+          <li>1台ぶんの名簿を貼ってください。2台に分かれるときは、1台ずつ作ります。</li>
+        </ul>
+      </div>
+      <textarea id="names" rows="6" placeholder="あいざわ ゆい&#10;いのうえ そうた&#10;うえだ りこ"></textarea>
+      <p class="bs-count"><span id="nameCount">0人</span><button type="button" class="mini" id="namesClear">消す</button></p>
+
+      <p class="safe">🔒 <strong>使っている端末の中だけで完結しています。</strong>安心してご利用ください。</p>
+
+      <div class="save-in1">
+        <p class="save-head"><label><input type="checkbox" id="save"> この画面を保存する</label><button type="button" class="tip-btn" aria-label="説明"></button></p>
+        <div class="tip-body" hidden>
+          <p>🔒 残るのは<strong>使っている端末の中だけ</strong>です。どこにも送信されません。チェックを外すと、残していたものを消します。①の名簿・②のバスの形・③の決め方・④で並べた席が残ります。</p>
+          <p><strong>共用の端末では外しておいてください。</strong>貼った名前が使っている端末に残ります。</p>
+        </div>
+        <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。<br>⚠共用の端末で使ったときは、このチェックを外して、この画面を閉じてください。</p>
+        <p><span class="saving" id="savingLabel"></span></p>
+      </div>
+    </div>
+  </details>
+
+  <details class="opt" id="opt2">
+    <summary><span class="step">2</span>バスの形</summary>
+    <div class="body">
+      <div class="segwrap">
+        <div class="seg" id="segType" role="radiogroup" aria-label="バスの形">
+          <button type="button" data-v="45" role="radio" class="on">大型45席</button>
+          <button type="button" data-v="49" role="radio">大型49席</button>
+          <button type="button" data-v="custom" role="radio">自分で決める</button>
+        </div>
+      </div>
+      <p class="tm-hint" id="typeHint"></p>
+      <div id="customRow" class="bs-line" hidden>
+        <label>2席＋2席の列 <input type="number" id="rowsN" min="3" max="14" value="10" inputmode="numeric"> 列</label>
+        <label>いちばん後ろ <select id="backN"><option value="5">5席</option><option value="4">4席</option></select></label>
+      </div>
+      <p class="bs-lbl2 bs-gap">補助席<button type="button" class="tip-btn" aria-label="説明"></button></p>
+      <div class="tip-body" hidden>
+        <p>補助席は、通路にたたんである席です。前の列から順に出ます。大型バスは45席の車で8席、49席の車で11席が目安ですが、バス会社によって数がちがいます。②の「補助席」の数は、バス会社に確かめた数に合わせてください。</p>
+      </div>
+      <div class="bs-line">
+        <label class="chk-inline"><input type="checkbox" id="hojo"> 補助席も使う</label>
+        <label id="hojoRow" hidden>数 <input type="number" id="hojoN" min="1" max="14" value="8" inputmode="numeric"> 席</label>
+      </div>
+    </div>
+  </details>
+
+  <details class="opt" id="opt3">
+    <summary><span class="step">3</span>席の決め方</summary>
+    <div class="body">
+      <div class="bs-line">
+        <span class="bs-lbl2">並べ方</span>
+        <div class="seg" id="segOrder" role="radiogroup" aria-label="並べ方">
+          <button type="button" data-v="list" role="radio">名簿の順</button>
+          <button type="button" data-v="random" role="radio" class="on">ランダム</button>
+          <button type="button" data-v="han" role="radio">班ごと</button>
+          <button type="button" data-v="blank" role="radio">空のまま</button>
+        </div>
+      </div>
+      <p class="tm-hint" id="orderHint"></p>
+
+      <p class="bs-lbl bs-gap">先に決める席<button type="button" class="tip-btn" aria-label="説明"></button></p>
+      <div class="tip-body" hidden>
+        <p>先生や、酔いやすい子など、先に席を決めたい人を入れます。名前は①の名簿から選べますが、名簿にない人（先生・添乗員）も、そのまま打てます。席の記号は、前から1列目・2列目、左から A・B｜C・D です。Aが左の窓、Dが右の窓、いちばん後ろは A〜E の5席です。</p>
+        <p>「席を決める」を押すと、先に決めた人をその席に入れてから、残りの人を③の並べ方で前から順に入れます。</p>
+      </div>
+      <ul class="bs-rows" id="fixRows"></ul>
+      <p><button type="button" class="mini" id="fixAdd">＋ 先に決める席を足す</button></p>
+
+      <!-- ⭐詳しい条件（2026-09-27 本人「隣とかの条件を入れよう」「班…使わないなら使わなくていい」）。はじめはたたんでおく＝使う人だけ開く -->
+      <details class="opt sub" id="condBox">
+        <summary>詳しい条件（離す・隣にする・班）</summary>
+        <div class="body">
+          <p class="bs-lbl">離す組み合わせ<button type="button" class="tip-btn" aria-label="説明"></button></p>
+          <div class="tip-body" hidden>
+            <p>「この2人は隣にしない」「この2人は隣にする」を決められます。<strong>使わないときは、何も入れなくてかまいません。</strong></p>
+            <p>バスの「隣」は、通路をはさまない2席です（1Aと1B、1Cと1D）。補助席は両どなり（BとC）と隣、いちばん後ろの5席は横どうしが隣です。前後の席は、隣にしません。</p>
+            <p>「席を決める」を押すと、条件を守れる並びになるまで入れかえます。守れないときは、④の座席表の上に出ます。④で手で入れかえて条件を破ったときも、席に赤い枠が出ます（紙には出ません）。</p>
+          </div>
+          <ul class="bs-rows" id="sepRows"></ul>
+          <p><button type="button" class="mini" id="sepAdd">＋ 離す組を足す</button></p>
+          <p class="bs-lbl bs-gap">隣にする組み合わせ</p>
+          <ul class="bs-rows" id="adjRows"></ul>
+          <p><button type="button" class="mini" id="adjAdd">＋ 隣にする組を足す</button></p>
+          <p class="bs-lbl bs-gap">班<button type="button" class="tip-btn" aria-label="説明"></button></p>
+          <div class="tip-body" hidden>
+            <p>班は、名前ごとに決めます。<strong>決めた班は人に付くので、④で席を動かすと、班の色もいっしょに動きます。</strong></p>
+            <ul>
+              <li>①の名簿に、Excelの「班」の列（1・2・3… または 1班・2班…）をいっしょに貼ると、そのまま読み取ります。</li>
+              <li>座席表メーカーで名簿を保存して「記録」を残していると、「座席表の班を使う」でその記録の班を入れられます。記録にいない人は班なしになるので、この下の一覧で選んでください。</li>
+              <li>この下の一覧で、1人ずつ選び直せます。</li>
+              <li>班の数を入れて「自動で分ける」を押すと、名簿の人を班に分けます。並べ方が名簿の順なら上から順に、それ以外はランダムです。</li>
+              <li>③の並べ方で「班ごと」を選ぶと、同じ班の人をかたまりで座らせます。バスは、通路の片側の2席ずつ（1Aと1B、2Aと2B…）に、前から班ごとに入ります。</li>
+            </ul>
+          </div>
+          <div class="bs-line"><label>班の数 <input type="number" id="hanN" min="1" max="20" inputmode="numeric"> 班</label><button type="button" class="mini" id="hanAuto">自動で分ける</button><button type="button" class="mini" id="hanClear">班を全部外す</button></div>
+          <!-- ⭐座席表の班を使う（2026-09-28 本人）。座席表メーカーで記録を残したクラスがあるときだけ出る -->
+          <div class="bs-line" id="seatHanRow" hidden><label>座席表の班を使う <select id="seatHanSel" aria-label="座席表の記録"></select></label><button type="button" class="mini" id="seatHanUse">班を入れる</button></div>
+          <p class="tm-hint" id="hanMsg"></p>
+          <div class="bs-hanlist" id="hanList"></div>
+        </div>
+      </details>
+
+    </div>
+  </details>
+
+  <!-- ⭐「席を決める」はシャッターの外（2026-09-27 本人「席を決めるボタンはシャッターの外に」・ページの型 8-a） -->
+  <p class="bs-go"><button type="button" class="primary" id="goBtn">席を決める</button></p>
+  <p class="tm-hint center bs-gomsg" id="goMsg">①〜③の内容で、④に座席表を作ります。</p>
+
+  <!-- ⭐④だけは開いたまま始める（2026-09-27 本人「シャッターの中に入れておくと何が起こってるかわかりにくい」）。
+       空の形が見えるので、②を変えるとその場で紙が変わる（ページの型 2-a＝道具ごとに決めてよい） -->
+  <details class="opt" id="opt4" open>
+    <summary><span class="step">4</span>座席表（PDF）</summary>
+    <div class="body">
+      <div class="bs-line">
+        <label>クラス <input type="text" id="title" placeholder="1年3組" maxlength="20"></label>
+        <label>号車 <input type="number" id="car" min="1" max="20" value="1" inputmode="numeric"> 号車</label>
+      </div>
+      <!-- ⭐結果の近くにも「サンプルを消す」（ページの型 12-a・2026-09-27 本人「追加してほしい」）。サンプルの間だけ出す -->
+      <p class="noprint" id="sampleClear2Row" hidden><button type="button" id="sampleClear2">サンプルを消す</button></p>
+      <p class="hint"><b>席はドラッグで入れかえられます</b>（スマホは長押しで持ち上がります）。席を押して、もう1つの席を押しても入れかわります。下の「席に入っていない人」を押してから席を押すと、その席に入ります。</p>
+      <div class="bs-chips noprint" id="chipsRow" hidden>
+        <span class="bs-chips-lbl">席に入っていない人</span>
+        <div id="chips"></div>
+      </div>
+      <!-- ⭐班でまとめ直す（2026-09-27 本人）。班が1人もいないときは出さない -->
+      <p class="bs-regroup noprint" id="regroupRow" hidden><button type="button" class="mini" id="regroupBtn">班でまとめ直す</button><button type="button" class="mini" id="regroupUndo" hidden>1つ戻す</button><span class="tm-hint" id="regroupMsg"></span></p>
+      <p class="bs-warn noprint" id="condWarn" hidden></p>
+      <p class="bs-selrow noprint" id="selRow" hidden><span id="selLbl"></span><button type="button" class="mini" id="emptyBtn">この席を空にする</button><button type="button" class="mini" id="unselBtn">選ぶのをやめる</button></p>
+
+      <div id="sheetBox">
+        <div class="sheet" id="sheet">
+          <div class="sheet-head">
+            <div class="sheet-title" id="shTitle">バス座席表</div>
+            <div></div>
+            <div class="sheet-date" id="shCar">1号車</div>
+          </div>
+          <div class="bus" id="bus"></div>
+          <div class="sheet-credit">さくらツールズ　sakura-tools.com</div>
+        </div>
+      </div>
+      <p class="tm-hint" id="sheetNote">①で名簿を入れて、③の「席を決める」を押すと、座席表ができます。</p>
+
+      <div class="print-line">
+        <button id="doPdf" type="button">PDFで保存</button>
+      </div>
+      <p class="hint">印刷したときの見え方は、画面と少しちがいます。PDFにして確かめてください。</p>
+    </div>
+  </details>
+
+  <!-- ⭐保存（ページの型 3・4-c・4-d・14-4）。名簿の箱（sakura-tools-rosters-v1）は座席表・席次表・簡単スライドと共通 -->
+  <section class="card bs-save">
+    <h2><span class="step">5</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+    <div class="tip-body" hidden>
+      <p>🔒 <strong>保存先もインターネットではありません。</strong>使っている端末のブラウザの中だけに残るので、ほかの人からは見えません。パソコン・タブレット・スマホ、どれでも同じです。</p>
+      <ul>
+        <li>①の名簿を、名簿として<b style="font-size:inherit">20件</b>まで保存できます。</li>
+        <li>⑤の中に並んでいる道具で保存した名簿と、同じ置き場です。どこで保存しても、①の「保存済の名簿」に出ます。</li>
+        <li>並べた席は、①の「この画面を保存する」で残ります。名簿のデータには入りません。</li>
+      </ul>
+    </div>
+    <p class="roster-tools">保存した名簿は、次の道具で使えます。</p>
+    <p class="safe">🔒 <strong>保存したものは、使っている端末の中だけに残ります。</strong></p>
+    <div class="cls-box">
+      <details class="opt sub">
+        <summary>名簿データに名前を付けて保存<span id="saveCount" class="cnt">0/20</span></summary>
+        <div class="body">
+          <p class="btn-row">
+            <button class="mini" id="saveNew" type="button">新しい名前で保存</button>
+            <button class="mini" id="saveOver" type="button">上書き</button>
+            <button class="mini" id="saveDel" type="button">削除</button>
+          </p>
+          <div class="pick"><label for="selSaved">保存済の名簿</label>
+            <select id="selSaved"><option value="">－</option></select></div>
+          <p><span class="saving" id="saveMsg"></span></p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <details class="howto">
+    <summary>使い方</summary>
+    <div class="body">
+      <ol>
+        <li>①で、名簿を貼ります。Excelの名前の列をそのまま貼るだけです。</li>
+        <li>②で、バスの形を選びます。大型45席・49席のほか、列の数を自分で決めることもできます。補助席を使うときはチェックを入れます。</li>
+        <li>③で、並べ方を選び、先に決める席（先生・酔いやすい子など）を入れて「席を決める」を押します。</li>
+        <li>④で、席を押して入れかえます。できあがったら「PDFで保存」です。</li>
+      </ol>
+      <p class="sub">できること</p>
+      <ul class="can">
+        <li><b>バスの形は3つ</b>。大型45席（2席＋2席が10列、いちばん後ろ5席）、大型49席（11列）、自分で決める（列の数と後ろの席数）</li>
+        <li><b>補助席</b>は通路に、前の列から出ます</li>
+        <li><b>先に決める席</b>は、名簿にない人（先生・添乗員）も入れられます</li>
+        <li><b>席の入れかえ</b>は、席を2つ押すだけ。席を空にすることもできます</li>
+        <li><b>A4のたて1枚</b>にPDFで保存。列が多くても1枚に収まります</li>
+      </ul>
+      <p class="sub">こんなときに</p>
+      <ul>
+        <li>遠足・社会科見学のバスの席決め</li>
+        <li>修学旅行のバスの座席表（号車ごとに1枚）</li>
+        <li>会社の旅行・町内会の日帰り旅行の座席表</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="howto">
+    <summary>よくある質問</summary>
+    <div class="body">
+      <!-- ⭐検索の言葉＝「修学旅行 バス 席 決め方」「バス 座席 決め方 小学生」「バス 座席表 テンプレート／エクセル」「45人乗り」（2026-09-27 本人「狙うための仕組みはいますぐ入れておいて」） -->
+      <p class="sub">修学旅行や遠足のバスの席は、どう決めればいいですか？</p>
+      <p>先生や酔いやすい子を前に決めて、残りをくじ（ランダム）で入れる決め方なら、③の「先に決める席」に前の席を入れて「席を決める」を押すだけです。名簿の順で座らせたいときは、③の並べ方で「名簿の順」を選びます。できたあとで、席を押して入れかえることもできます。</p>
+      <p class="sub">バスの座席表のテンプレート（エクセル）は要りませんか？</p>
+      <p>要りません。大型バスの45人乗り（補助席込み53人）と49人乗り（補助席込み60人）の形は、ページの中に入っています。名簿を貼ってバスの形を選べば、A4の1枚の座席表になります。</p>
+      <p class="sub">中型バス・マイクロバスでも使えますか？</p>
+      <p>使えます。②で「自分で決める」を選び、2席＋2席の列の数と、いちばん後ろの席数を入れてください。</p>
+      <p class="sub">2台に分かれるときは？</p>
+      <p>1台ずつ作ります。①に1台ぶんの名簿を貼って、④の号車を変えて、それぞれPDFにしてください。</p>
+      <p class="sub">ネットにつながっていないと使えませんか？</p>
+      <p>ページを開いたあとは、使っている端末の中だけで動いています。並べるたびに通信はしません。</p>
+      <p class="sub">名前が外に送られることはありますか？</p>
+      <p>ありません。名前はブラウザの中だけで使い、どこにも送りません。だから、クラスの名簿をそのまま貼っても安心です。</p>
+      <p class="sub">AIの学習に使われませんか？</p>
+      <p>使われません。名前はどこにも送らないので、学習に使われることもありません。</p>
+      <p class="sub">学校や会社の決まりで、クラウドのサービスが使えません</p>
+      <p>バスの座席表メーカーは、名前をクラウドに置きません。使っている端末のブラウザの中だけで動きます。</p>
+    </div>
+  </details>
+
+  <details class="howto">
+    <summary>データの扱い</summary>
+    <div class="body">
+      <ul>
+        <li>①に貼った名前は、使っている端末のブラウザの中だけで使います。インターネットには送りません。</li>
+        <li>「この画面を保存する」にチェックを入れたときだけ、①〜④の内容が使っている端末に残ります。</li>
+        <li>⑤で保存した名簿は、⑤の中に並んでいる道具と同じ置き場に残ります。</li>
+        <li>PDFは、使っている端末の「ダウンロード」や「ファイル」に保存されます。</li>
+      </ul>
+    </div>
+  </details>
+</main>
+
+<footer class="noprint">
+  <div class="wrap"><span class="fnav"><a href="../about/">運営者情報</a>　<a href="../contact/">お問い合わせ</a>　<a href="../privacy/">プライバシーポリシー</a></span>
+    <span class="copy">さくらツールズ　© 2026 SAKURA tools</span></div>
+</footer>
+
+<datalist id="nameList"></datalist>
+<script src="../paper-pdf.js?v=5"></script>
+<script src="../roster-tools.js?v=1"></script>
+<script src="bus.js?v=18"></script>
+<script src="../tip.js?v=3"></script>
+</body>
+</html>

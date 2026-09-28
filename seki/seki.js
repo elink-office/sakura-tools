@@ -19,7 +19,7 @@
     plans: [], cur: 0, seats: null,
     sample: false, sampleCount: 0,
     // サンプルは名簿欄に入れない（消す手間が出るので）
-    grp: { on: false, size: 4, style: 'org', look: 'both', num: true },
+    grp: { on: false, size: 4, style: 'org', look: 'both', num: false },   // ⭐はじめの分け方（会社名ごと）は記号なし（2026-09-23）
     gmap: null, gcount: 0,
     gfix: {},                       // 手で変えたグループ（席の番号 → グループの番号）
     hist: []                        // 「1つ戻す」用。入れ替える前の並びを積んでいく
@@ -245,10 +245,41 @@
     if (n > 8) n = 8;
     return String(n);
   }
+  /* ⭐通路と、空けて細くする真ん中の席（2026-09-23 本人「机間巡視用の通路」「真ん中を細くするもやりたい」）
+     ⭐通路＝◯席ごと（＝何人掛けの机か）に、列と列のあいだを空ける
+     ⭐真ん中を細く＝3人掛け・5人掛けの真ん中を空けて使う教室のため（9/1 本人の教室）。細い席には人を置かない
+     ⚠席の番号（state.seats の並び）は変えない。見た目の列を足すだけなので、条件・保存・グループはそのまま動く */
+  var AISLE_MM = 4;      // 通路の幅（紙で）。マスのすきま 1.6mm が両側に付くので、見た目は約7mm
+  var NARROW = .35;      // 細くした席の幅（ふつうの席に対する比）
+  var DEAD = '\u0000dead';   // 空けた席に置く「見えない人」の印（配置エンジンに渡すだけ）
+  function aisleN() { var e = $('aisle'); return e ? (+e.value || 0) : 0; }
+  function midNarrow() {
+    var n = aisleN(), e = $('midSeat');
+    return n >= 3 && n % 2 === 1 && !!e && e.value === 'narrow';
+  }
+  function isDeadCol(c, cols) {
+    if (!midNarrow()) return false;
+    var n = aisleN();
+    if ((Math.floor(c / n) + 1) * n > cols) return false;   // 右端の半端な机は真ん中が決まらない
+    return c % n === (n - 1) / 2;
+  }
+  function deadCount(cols) {
+    var k = 0;
+    for (var c = 0; c < cols; c++) if (isDeadCol(c, cols)) k++;
+    return k;
+  }
+  /* ⭐人が座れる席の数（細くした席・空けた席を引く） */
+  function freeSeats(c, r) {
+    var k = 0, on = offOn(c, r);
+    for (var i = 0; i < c * r; i++) if (!isDeadCol(i % c, c) && !(on && state.off[i])) k++;
+    return k;
+  }
   function refreshSeatInfo() {
     var c = +$('cols').value, r = +$('rows').value;
     state.cols = c; state.rows = r;
-    var total = c * r, n = state.names.length;
+    var an = aisleN();
+    if ($('midWrap')) $('midWrap').hidden = !(an >= 3 && an % 2 === 1);
+    var total = freeSeats(c, r), n = state.names.length;
     $('seatcount').textContent = total;
     var el = $('seatinfo');
     if (n > total) {
@@ -412,6 +443,13 @@
   function orgSize() {
     return (state.orgFit != null) ? state.orgFit : sz('szOrg', .5);
   }
+  /* ⭐姓と名のあいだの空白を詰める（2026-09-26 本人「私手動で削除したよ。可能であれば自動でやって。
+       その時のフリガナは開けておいて。苗字と名前の区別をそこでつけることもできるから」）。
+     ⭐名前の行だけ。フリガナの行はそのまま（空白で姓と名が分かる）
+     ⚠英字の名前（John Smith）は詰めない＝空白の両どなりが日本語の字のときだけ詰める */
+  function tightName(v) {
+    return String(v || '').replace(/([^\x00-\x7f])[ 　]+(?=[^\x00-\x7f])/g, '$1');
+  }
   function cellLines(p) {
     if (!p) return [];
     var out = [];
@@ -429,7 +467,7 @@
     // 🔴 名前は必ず1行。姓と名のあいだで切ると、席札として不自然に見える（本人の判断）。
     //    横幅に入りきらないときは、折り返さずに文字を小さくして収める
     // 🔴 敬称は名前より一回り小さくするので、同じ行の中で別に持つ（2026-09-01 本人）
-    out.push({ k: 'nam', t: p.name, hon: honor(), m: 1, b: true });
+    out.push({ k: 'nam', t: tightName(p.name), hon: honor(), m: 1, b: true });
     return out;
   }
   function buildCellP(p) {
@@ -518,16 +556,19 @@
   // 座席表に出す日付（「日付を入れない」のときは空）
   // ＝モニターに映すときは消して、紙に残すときだけ入れる、という使い分けのため
   function dateText() {
-    return $('dtOff').checked ? '' : ($('dt').value || '');
+    return $('dtOn').checked ? ($('dt').value || '') : '';   // ⭐「入れる」のチェック（2026-09-24）
   }
 
   // 書体。画面と紙はCSSで当てているが、画像(PNG)は自分で描くので指定が要る
   // ⚠ 丸文字はWindows（HG丸ｺﾞｼｯｸM-PRO）とiPad・Mac（ヒラギノ丸ゴ ProN）だけ。
   //   無い機器ではゴシックになる（崩れはしない）
+  /* ⭐紙の書体は Google Fonts の書体にした（2026-09-23）。⭐PDFにも同じ書体が入る＝見本とPDFが同じ字の形。
+     ⭐ゴシック＝Noto Sans JP／明朝＝Noto Serif JP／丸文字＝M PLUS Rounded 1c（9/23 本人「②でいこうか」。Zen Maru Gothic は「変な丸文字」でやめた）（本人「フォントはなんでもいいけどね」＝見本とPDFが同じならよい）。
+     ⚠9/8 に BIZ UDPゴシックにしたのは游ゴシックのかすれ対策。Noto Sans JP はかすれない */
   var FONTS = {
-    mincho: '"Yu Mincho", YuMincho, "Hiragino Mincho ProN", "MS PMincho", serif',
-    gothic: '"Yu Gothic", YuGothic, "Hiragino Sans", Meiryo, sans-serif',
-    maru: '"HG丸ｺﾞｼｯｸM-PRO", HGMaruGothicMPRO, "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif'
+    mincho: '"Noto Serif JP", serif',
+    gothic: '"Noto Sans JP", sans-serif',
+    maru: '"M PLUS Rounded 1c", "Noto Sans JP", sans-serif'
   };
   function fontStack() {
     var v = $('font') ? $('font').value : 'gothic';
@@ -621,6 +662,7 @@
         return [s[0].value, s[1].value];
       }).filter(function (p) { return p[0] && p[1] && p[0] !== p[1]; });
     };
+    syncOff(state.cols, state.rows);
     var fix = {}, zone = {};
     Array.prototype.forEach.call($('fixList').querySelectorAll('.pair'), function (w) {
       var s = w.querySelectorAll('select');
@@ -628,9 +670,13 @@
       if (!name) return;
       if (kind === 'seat') {
         var c = +s[2].value, r = +s[3].value;
+        if (isOff((r - 1) * state.cols + (c - 1), state.cols)) return;   // 空けた席は指定できない
         fix[name] = (r - 1) * state.cols + (c - 1);
       } else zone[name] = kind;
     });
+    /* ⭐空けた席には「見えない人」を先に座らせる＝配置エンジン（共通の seating.js）を触らずに済む。
+       ⚠でき上がったら run() で null に戻す */
+    for (var di = 0; di < state.cols * state.rows; di++) if (isOff(di, state.cols)) fix[DEAD + di] = di;
     var uiMode = (document.querySelector('input[name=mode]:checked') || {}).value || 'none';
     return {
       names: state.names, cols: state.cols, rows: state.rows,
@@ -679,6 +725,7 @@
         }
       }
     }
+    order = order.filter(function (i) { return !isOff(i, cols); });   // 細くした席・空けた席はとばす
     opt.names.forEach(function (n, i) { if (i < order.length) seats[order[i]] = n; });
     return seats;
   }
@@ -714,7 +761,7 @@
       msg.innerHTML = '<div class="notice warn">名簿が空です。1行に1人ずつ入れてください。</div>';
       return;
     }
-    if (opt.names.length > opt.cols * opt.rows) {
+    if (opt.names.length > freeSeats(opt.cols, opt.rows)) {
       msg.innerHTML = '<div class="notice warn">席が足りません。横か縦の数をふやしてください。</div>';
       return;
     }
@@ -732,7 +779,9 @@
       return;
     }
 
-    var plans = Seating.generate(opt, 3, 2000);
+    var plans = Seating.generate(opt, 3, 2000).map(function (p) {
+      return p.map(function (n) { return (n && String(n).indexOf(DEAD) === 0) ? null : n; });
+    });
     if (!plans.length) {
       var who = Seating.blame(opt);
       msg.innerHTML = '<div class="notice warn"><strong>条件がきつすぎて作れませんでした。</strong>' +
@@ -800,7 +849,22 @@
          長い会社名や名前が1つでもあると、そこで表が紙より広くなり、
          ブラウザが黙って全体を縮める（本人のPDFは 85% に縮んでいた）。
        ⭐minmax(0,1fr) なら、中身の都合を無視して必ず等分になる */
-    g.style.gridTemplateColumns = 'repeat(' + cols + ',minmax(0,1fr))';
+    /* ⭐通路と細い席は、列の幅を1本ずつ書いて作る（2026-09-23）。
+       ⭐通路は紙のミリで決める（--pxmm＝画面の1mm。印刷では外れて本物の1mmになる）
+       ⚠前方が下のときは左右が入れ替わるので、見えている列ごとに「もとの何列目か」で決める */
+    var flipC = (state.board !== 'top');
+    var an = aisleN(), tpl = [], nAisle = 0, nDead = 0;
+    var aisleAfter = [];   // 見えている列 c のうしろに通路があるか
+    for (var tc = 0; tc < cols; tc++) {
+      var lc = flipC ? cols - 1 - tc : tc;
+      var dead = isDeadCol(lc, cols);
+      if (dead) nDead++;
+      tpl.push(dead ? 'minmax(0,' + NARROW + 'fr)' : 'minmax(0,1fr)');
+      var nx = flipC ? lc - 1 : lc + 1;
+      aisleAfter[tc] = an > 0 && tc < cols - 1 && Math.floor(lc / an) !== Math.floor(nx / an);
+      if (aisleAfter[tc]) { tpl.push('calc(' + AISLE_MM + ' * var(--pxmm, 3.7795) * 1px)'); nAisle++; }
+    }
+    g.style.gridTemplateColumns = tpl.join(' ');
     g.innerHTML = '';
     var bad = {};
     Seating.violations(state.seats, o).forEach(function (v) {
@@ -852,7 +916,8 @@
     /* ⭐それでもはみ出すなら、収まるところまで 0.1mm ずつ下げる（座席表と同じやり方）*/
     while (mm > 10 && mm * rows + gapMM + reserve > limitH) mm = Math.round((mm - 0.1) * 10) / 10;
     var pageW = (wide ? 297 : 210) - 24;
-    var cellWmm = (pageW - (cols - 1) * 1.6) / cols;
+    /* ⭐通路・細い席のぶんを引いてから、1席の幅を出す */
+    var cellWmm = (pageW - (tpl.length - 1) * 1.6 - nAisle * AISLE_MM) / (cols - nDead + nDead * NARROW);
     $('sheet').style.setProperty('--seatH', mm + 'mm');
     /* ⭐画面のマスも、紙と同じミリ数にする（見本＝印刷）*/
     $('sheet').style.setProperty('--seatHnum', mm);
@@ -875,6 +940,15 @@
         var i = r * cols + sc;
         var name = state.seats[i];
         var d = document.createElement('div');
+        if (isDeadCol(sc, cols) || isOffSeat(i)) {
+          /* ⭐空けた席＝点線だけ。.seat を付けない（人を置けない）。
+             ⭐えらんで空けた席は .off（えらんでいるあいだ押すと戻る） */
+          d.className = 'dead' + (isOffSeat(i) ? ' off' : '');
+          d.dataset.i = i;
+          g.appendChild(d);
+          if (aisleAfter[c]) { var ad = document.createElement('div'); ad.className = 'aisle'; g.appendChild(ad); }
+          continue;
+        }
         d.className = 'seat' + (name ? '' : ' empty') + (bad[i] ? ' bad' : '');
         // ⚠draggable は付けない。ブラウザ標準のドラッグが割り込んで、
         //   マウスで動かしたときに禁止マークが出てしまう（動かすのは下の自作の処理）
@@ -901,6 +975,7 @@
           d.appendChild(buildCell(name));
         }
         g.appendChild(d);
+        if (aisleAfter[c]) { var ae = document.createElement('div'); ae.className = 'aisle'; g.appendChild(ae); }
       }
     }
     $('credit').hidden = !$('showCredit').checked;
@@ -990,6 +1065,14 @@
       sh.style.setProperty('--snoSize', Math.max(9, Math.round(minSize * noR)) + 'px');
     }
     sh.style.setProperty('--snoPrint', (Math.round(printMM * noR * 10) / 10) + 'mm');
+    /* ⭐グループ記号は、番号と同じ大きさにそろえる（2026-09-23 本人「学籍番号を大きく表示したいのに、グループ番号のほうが大きい」）。
+       ⚠前は 11.5px のまま＝席が多いと、縮んだ学籍番号より大きく見えた */
+    if (canMeasure || state.cellFont) {
+      /* ⚠右上の番号は 9px が下限（--snoSize と同じ）。行に出す番号は下限なし＝その大きさにぴったり合わせる */
+      var gnoPx = (numPos() === 'corner') ? Math.max(9, Math.round(minSize * noR)) : Math.round(minSize * noR * 100) / 100;
+      sh.style.setProperty('--gnoSize', gnoPx + 'px');
+    }
+    sh.style.setProperty('--gnoPrint', (Math.round(printMM * noR * 10) / 10) + 'mm');
     // ⚠この一文は毎回ここで書きかえている。HTML側を直しても出ない
     var note = document.querySelector('.drag-note');
     if (note) {
@@ -997,13 +1080,15 @@
         ? '席をドラッグすると、配置の移動ができます。<strong>グループ記号を押すと、席のグループと色を変更できます</strong>'
         : '席をドラッグすると、配置の移動ができます')
         // 🔴 長押しにしたので、そのことを画面に書く（2026-09-03。座席表と同じ直し）
-        + '<br>スマホ・タブレットは<strong>席を長押ししてから</strong>動かします。';
+        // ⭐改行しないで続ける（2026-09-23 本人「3行になるから、変更できます。スマホ・・・にして」）
+        + '。スマホ・タブレットは<strong>席を長押ししてから</strong>動かします。';
     }
     bindDrag();
     drawViolations();
     drawDeco();
     fitSheet();
     drawPreview();
+    pickNote();
     if (anchor && document.contains(anchor)) {
       var moved = anchor.getBoundingClientRect().top - keepTop;
       if (Math.abs(moved) > 1) window.scrollBy(0, moved);
@@ -1014,6 +1099,7 @@
 
   // ---- モニターに映す（教室の大きな画面に、座席表だけを出す）----
   function screenOn() {
+    if (state.picking) setPicking(false);
     document.body.classList.add('screen');
     fitSheet();
     var el = document.documentElement;
@@ -1159,6 +1245,12 @@
   }
   function grpChanged() {
     state.gfix = {};                // 分け方が変わったら、手で変えたぶんは捨てる
+    /* ⭐分け方を変えたら、記号を出すかどうかを分け方に合わせる（2026-09-23 本人「やってみて」）。
+       ⭐会社名・大学名ごと／役職・学部・学科ごと＝出さない（マスの中にもう会社名・学科名がある＝同じことを2回言う）
+       ⭐机のかたまり／縦の列ごと＝出す（会社バラバラでA班…の使い方。白黒で刷ると色が消えるので字が目印）
+       ⚠チェックで切り替えられるのは今までどおり。分け方を変えたときだけ、ここで決め直す */
+    var nv = $('grpStyle').value;
+    if (nv !== state.grp.style) $('grpNum').checked = !(nv === 'org' || nv === 'title');
     grpStyleChanged();
     state.grp.size = Math.max(2, Math.min(8, +$('grpSize').value || 4));
     state.grp.style = $('grpStyle').value;
@@ -1185,11 +1277,67 @@
   // 🔴「↩ 1つ戻す」（2026-09-03 本人「ドラッグして移動できるものは入れよう」）。
   //   ⚠座席表と同じ作り。押すたびに1回ずつ、入れ替えた順にさかのぼる。
   //     作り直したら白紙にもどす（そこから先は別の並びなので）
+  /* ⭐人を置かない席＝細くした真ん中（通路）か、空けた席 */
+  function isOff(i, cols) { return isDeadCol(i % cols, cols) || isOffSeat(i); }
+  /* ========== 空ける席（2026-09-23 本人「ここは空席っていう指示できないかな」「Aが直感的でいいな」「座席表も入れたいね」） ==========
+     ⭐「空ける席をえらぶ」を押してから表のマスを押すと、その席を空ける（点線）。もう一度押すと戻す。
+     ⭐空けた席には人を置かない＝配置エンジンには「見えない人」を座らせる（共通の seating.js は触らない）
+     ⭐名簿順のときは並べ直す（空けた席をとばして流れる）。ランダムのときは、そこにいた人だけ近くの空席へ
+     ⚠横・縦の数が変わったら、空けた席は白紙に戻す（場所の番号がずれるため） */
+  var OFF_MARK = '\u0000off';
+  function offKey(c, r) { return c + 'x' + r; }
+  function syncOff(c, r) {
+    if (state.offKey !== offKey(c, r)) { state.off = {}; state.offKey = offKey(c, r); }
+  }
+  function isOffSeat(i) { return !!(state.off && state.off[i]); }
+  function offOn(c, r) { return state.offKey === offKey(c, r); }
+  function setPicking(on) {
+    state.picking = !!on;
+    document.body.classList.toggle('picking', state.picking);
+    var b = $('offPick');
+    if (b) { b.textContent = state.picking ? 'えらび終わる' : '空ける席をえらぶ'; b.classList.toggle('on', state.picking); }
+    if (state.seats) drawSheet();
+  }
+  function pickNote() {
+    var n = document.querySelector('.drag-note');
+    if (n && state.picking) n.innerHTML = '<strong>空けたい席を押してください。</strong>もう一度押すと戻ります。終わったら「えらび終わる」';
+  }
+  function nearestFree(i) {
+    var c = state.opt.cols, best = -1, bd = 1e9;
+    for (var k = 0; k < state.seats.length; k++) {
+      if (k === i || state.seats[k] || isOff(k, c)) continue;
+      var d = Math.abs(Math.floor(k / c) - Math.floor(i / c)) + Math.abs(k % c - i % c);
+      if (d < bd) { bd = d; best = k; }
+    }
+    return best;
+  }
+  function toggleOff(i) {
+    var o = state.opt;
+    if (!o || !state.seats) return;
+    syncOff(o.cols, o.rows);
+    var byNumber = ($('order').value === 'number');
+    if (!state.off[i] && state.seats[i] && nearestFree(i) < 0) {
+      alert('空いている席がないので、ここは空けられません。横か縦の数をふやしてください。');
+      return;
+    }
+    pushHist();
+    if (state.off[i]) delete state.off[i];
+    else {
+      var who = state.seats[i];
+      state.off[i] = true;
+      if (who && !byNumber) { var to = nearestFree(i); state.seats[to] = who; state.seats[i] = null; }
+    }
+    if (byNumber) { state.seats = orderedSeats(o); state.plans = [state.seats.slice()]; state.cur = 0; }
+    refreshSeatInfo();
+    drawSheet();
+    if ($('save').checked && !state.sample) save();
+  }
+
   function pushHist() {
     if (!state.seats) return;
     var g = {};
     for (var k in state.gfix) g[k] = state.gfix[k];
-    state.hist.push({ seats: state.seats.slice(), gfix: g });
+    state.hist.push({ seats: state.seats.slice(), gfix: g, off: JSON.parse(JSON.stringify(state.off || {})) });
     if (state.hist.length > 50) state.hist.shift();
     updateUndo();
   }
@@ -1202,6 +1350,7 @@
     if (!h) { updateUndo(); return; }
     state.seats = h.seats.slice();
     state.gfix = h.gfix;
+    if (h.off) { state.off = h.off; refreshSeatInfo(); }   // ⭐空けた席も一緒に戻す
     drawSheet();
     updateUndo();
     if ($('save') && $('save').checked && !state.sample) save();
@@ -1234,6 +1383,10 @@
   }
 
   function bindDrag() {
+    /* ⭐空けた席は、えらんでいるあいだだけ押せる（押すと戻す） */
+    $('grid').querySelectorAll('.dead.off').forEach(function (d) {
+      d.addEventListener('pointerdown', function (e) { if (state.picking) { e.preventDefault(); toggleOff(+d.dataset.i); } });
+    });
     $('grid').querySelectorAll('.seat').forEach(function (d) {
       d.addEventListener('pointerdown', dragStart);
       d.addEventListener('dragstart', function (e) { e.preventDefault(); });
@@ -1241,8 +1394,13 @@
   }
 
   function dragStart(e) {
+    /* ⭐空ける席をえらんでいるあいだは、押した席を空ける（動かさない） */
+    if (state.picking) { e.preventDefault(); toggleOff(+e.currentTarget.dataset.i); return; }
     closeGroupPick();
     if (e.pointerType === 'mouse' && e.button !== 0) return;
+    /* ⭐モニターに映しているあいだは、マウスだけ動かせる（2026-09-23 本人「PCは動かせるようにして！」）。
+       ⚠指は今までどおり動かさない（8/30 本人＝スクロールしようとして席をつかむ）。タブレットは拡大して見られる */
+    if (document.body.classList.contains('screen') && e.pointerType !== 'mouse') return;
     var d = e.currentTarget;
     var byMouse = (e.pointerType === 'mouse');
     drag = { el: d, from: +d.dataset.i, id: e.pointerId,
@@ -1589,7 +1747,17 @@
     var icon = $('deco').value || '';
     var credit = $('showCredit').checked;
     var cw = 200, ch = 120, pad = 40, head = 70, boardH = 40;
-    var W = pad * 2 + cols * cw;
+    /* ⭐通路と細い席（2026-09-23）。見えている列ごとに左端と幅を先に決める（画面の drawSheet と同じ決め方） */
+    var flipP = (state.board !== 'top'), anP = aisleN(), colX = [], colW = [], gridW = 0;
+    for (var pc = 0; pc < cols; pc++) {
+      var plc = flipP ? cols - 1 - pc : pc;
+      colX[pc] = gridW;
+      colW[pc] = isDeadCol(plc, cols) ? Math.round(cw * NARROW) : cw;
+      gridW += colW[pc];
+      var pnx = flipP ? plc - 1 : plc + 1;
+      if (anP > 0 && pc < cols - 1 && Math.floor(plc / anP) !== Math.floor(pnx / anP)) gridW += 40;
+    }
+    var W = pad * 2 + gridW;
     var H = pad * 2 + head + boardH + rows * ch + (credit ? 28 : 0);
     var cv = document.createElement('canvas');
     cv.width = Math.round(W * k); cv.height = Math.round(H * k);
@@ -1610,9 +1778,9 @@
     var top = pad + head;
     function board(y) {
       x.fillStyle = '#5b5b5b';      // 会社で使う紙なので、緑ではなくグレー
-      x.fillRect(pad, y, cols * cw, boardH - 12);
+      x.fillRect(pad, y, gridW, boardH - 12);
       x.fillStyle = '#fff'; x.font = '18px sans-serif'; x.textAlign = 'center';
-      x.fillText(frontWord(), pad + cols * cw / 2, y + 3);
+      x.fillText(frontWord(), pad + gridW / 2, y + 3);
       x.textAlign = 'left';
     }
     var gy = top + (state.board === 'top' ? boardH : 0);
@@ -1634,13 +1802,18 @@
       }
     }
 
-    var flipP = (state.board !== 'top');
     for (var dr = 0; dr < rows; dr++) {
       var r = flipP ? rows - 1 - dr : dr;
       for (var c = 0; c < cols; c++) {
         var sc = flipP ? cols - 1 - c : c;
         var name = state.seats[r * cols + sc];
-        var px = pad + c * cw, py = gy + dr * ch;
+        var px = pad + colX[c], py = gy + dr * ch;
+        if (isDeadCol(sc, cols) || isOffSeat(r * cols + sc)) {
+          /* ⭐空けた席＝点線だけ */
+          roundRect(x, px + 4, py + 4, colW[c] - 8, ch - 8, 10);
+          x.setLineDash([6, 5]); x.strokeStyle = '#d4d4d4'; x.lineWidth = 2; x.stroke(); x.setLineDash([]);
+          continue;
+        }
         var gi = state.gmap ? state.gmap[r * cols + sc] : 0;
         roundRect(x, px + 4, py + 4, cw - 8, ch - 8, 10);
         var look = state.grp.look;
@@ -1658,7 +1831,9 @@
         x.stroke();
         if (gi && state.grp.num) {
           x.fillStyle = (look === 'none') ? '#555' : gcol(gi)[0];
-          x.font = 'bold 17px sans-serif';
+          /* ⭐記号は番号と同じ大きさ（2026-09-23）。行に出す番号＝名前の大きさ×番号の比／右上の番号＝17px基準 */
+          var gfs = (numPos() === 'corner') ? Math.round(17 * (sz('szNo', .52) / .52)) : Math.max(4, Math.round(fitSize * sz('szNo', .52)));
+          x.font = 'bold ' + gfs + 'px sans-serif';
           x.fillText(glabel(gi), px + 14, py + 12);
         }
         // 右上の通し番号
@@ -1870,8 +2045,10 @@
   function doClsDel() {
     var st = loadStore(), c = curClass(st);
     if (!c) { alert('消すデータをえらんでください。'); return; }
-    if (!confirm('「' + c.label + '」を消します。' +
-      '座席表で使っている記録も一緒に消えます。よろしいですか。')) return;
+    /* ⭐消すときの文は roster-tools.js がそろえる（2026-09-27） */
+    var dm = window.SAKURA_ROSTER ? SAKURA_ROSTER.delMsg(c.label, '座席表で使っている記録も一緒に消えます。')
+      : '「' + c.label + '」を消します。座席表で使っている記録も一緒に消えます。よろしいですか。';
+    if (!confirm(dm)) return;
     st.classes = st.classes.filter(function (x) { return x.id !== c.id; });
     if (!saveStore(st)) return;
     setCls(''); refreshClsUI();
@@ -1892,6 +2069,7 @@
         clsFree: $('clsFree').value,
         colRoles: state.colRoles,
         cols: $('cols').value, rows: $('rows').value,
+        aisle: $('aisle').value, midSeat: $('midSeat').value,
         board: $('board').value, frontWord: $('frontWord').value,
         paper: $('paper').value,
         frontFree: $('frontFree').value,
@@ -1906,8 +2084,9 @@
           no: $('szNo').value, org: $('szOrg').value,
           ttl: $('szTtl').value, kana: $('szKana').value
         },
-        dt: $('dt').value, dtOff: $('dtOff').checked,
+        dt: $('dt').value, dtOff: !$('dtOn').checked,   // ⚠保存の名前は dtOff のまま（前に保存したものも読めるように）
         grp: state.grp,
+        off: state.off || {}, offKey: state.offKey || '',   // ⭐空けた席（2026-09-23）
         // 🔴 席次表そのものも残す（2026-08-31 本人「⑦は画面の保存でいい」）。
         //   ⚠これが無いと、開くたびに作り直しになる＝ランダムだと並びが変わる
         //   ⚠サンプルは残さない。名簿を入れていない人の画面が次に居座る
@@ -1942,6 +2121,9 @@
       if (d.colRoles && d.colRoles.length) state.colRoles = d.colRoles;
       // ⚠席次表は入力式のまま（大学は会場が広い。2026-09-01 本人）
       $('cols').value = d.cols || 6; $('rows').value = d.rows || 5;
+      state.off = d.off || {}; state.offKey = d.offKey || '';   // ⭐空けた席（2026-09-23）
+      $('aisle').value = d.aisle || '0';                 // ⚠通路より前に保存した人は「なし」
+      $('midSeat').value = d.midSeat || 'use';
       $('board').value = d.board || 'top';
       if (d.frontWord !== undefined) $('frontWord').value = d.frontWord;
       if (d.paper) $('paper').value = d.paper;
@@ -1971,10 +2153,8 @@
         if (d.sizes.kana) $('szKana').value = d.sizes.kana;
       }
       if (d.dt) $('dt').value = d.dt;
-      if (d.dtOff) {
-        $('dtOff').checked = true;
-        $('dt').disabled = true;
-      }
+      $('dtOn').checked = !d.dtOff;
+      $('dt').disabled = !!d.dtOff;
       if (d.grp) {
         state.grp = {
           on: !!d.grp.on,
@@ -2048,6 +2228,11 @@
   }
 
   function init() {
+    /* ⭐書体（Google Fonts）が届いたら描き直す（2026-09-23）。
+       ⚠届く前に測ると、1マスの文字の大きさが別の書体の幅で決まってしまう */
+    if (document.fonts && document.fonts.addEventListener) {
+      document.fonts.addEventListener('loadingdone', function () { if (state.seats) drawSheet(); });
+    }
     var d = new Date();
     $('dt').value = '作成日：' + d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
     fillInkSelect($('ink'), '#222222');
@@ -2072,8 +2257,8 @@
     });
     $('order').addEventListener('change', orderChanged);
     $('dir').addEventListener('change', orderChanged);
-    $('dtOff').addEventListener('change', function () {
-      $('dt').disabled = this.checked;
+    $('dtOn').addEventListener('change', function () {
+      $('dt').disabled = !this.checked;
       if (state.seats) drawSheet();
       if ($('save').checked && !state.sample) save();
     });
@@ -2109,6 +2294,17 @@
     });
 
     ['cols', 'rows'].forEach(function (id) { $(id).addEventListener('input', refreshSeatInfo); });
+    /* ⭐通路・真ん中の席は、変えたらすぐ表に出す（2026-09-23）。
+       ⚠空けた席に人が座っていたら、並べ直す（人を消さないため） */
+    ['aisle', 'midSeat'].forEach(function (id) {
+      $(id).addEventListener('change', function () {
+        refreshSeatInfo();
+        if (!state.seats || !state.opt) return;
+        var oc = state.opt.cols, hit = state.seats.some(function (n, i) { return n && isDeadCol(i % oc, oc); });
+        if (hit) run(true); else drawSheet();
+        if ($('save').checked && !state.sample) save();
+      });
+    });
     $('frontFree').addEventListener('input', function () {
       if (state.seats) drawSheet();
       if ($('save').checked && !state.sample) save();
@@ -2170,7 +2366,7 @@
         $('numPos').value = 'line'; numStyleChanged();
         drawPreview();
         $('order').value = 'number'; $('dir').value = 'v';
-        $('grpOn').checked = true; $('grpStyle').value = 'title'; $('grpLook').value = 'both'; $('grpNum').checked = true;
+        $('grpOn').checked = true; $('grpStyle').value = 'title'; $('grpLook').value = 'both'; $('grpNum').checked = false;   // ⭐学科ごと＝記号なし（2026-09-23）
       } else {
         state.colRoles = ['no', 'name', 'kana', 'org', 'title'];
         $('order').value = 'number';
@@ -2260,6 +2456,7 @@
       if (pick && !pick.contains(e.target)) closeGroupPick();
     });
     if ($('undo')) $('undo').onclick = undoOnce;
+    if ($('offPick')) $('offPick').onclick = function () { setPicking(!state.picking); };
     $('screenOn').onclick = function (e) { closeCond(); screenOn(e); };
     $('screenOff').onclick = screenOff;
     // 全画面から抜けたとき（Esc・ブラウザのボタン）も、画面をもとに戻す

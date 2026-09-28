@@ -29,10 +29,11 @@
 </script>
 <title>請求書メーカー｜源泉徴収も自動・個人事業主や副業の請求書を無料作成</title>
 <meta name="description" content="副業・フリーランス・個人事業主のための請求書作成ツール。税抜でも税込でも入力でき、源泉徴収（10.21％）を引いた差引額まで自動で計算。ひな形やエクセルのテンプレートはいりません。取引先を保存できるので、2回目からは選ぶだけ。インボイス（適格請求書）の登録番号にも対応。保存するときのファイル名が「請求書_日付_取引先_金額」の形になるので、あとから探せます。登録もインストールも不要、すべて無料です。">
-<link rel="stylesheet" href="../../style.css?v=147">
+<link rel="stylesheet" href="../../style.css?v=155">
 <link rel="stylesheet" href="../../keiri.css?v=64">
 </head>
 <body data-doc="seikyu">
+
 <header class="site-head">
   <div class="wrap">
     <a class="logo" href="../../"><span class="logo-mark"><img src="../../img/logo-sakura-64.png?v=2" srcset="../../img/logo-sakura-64.png?v=2 1x, ../../img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA tools</span><span class="logo-sub">さくらツールズ</span></a>
@@ -46,15 +47,25 @@
       <input type="checkbox" id="navtoggle" class="navtoggle">
       <label class="navburger" for="navtoggle">ツール一覧</label>
       <div class="navlist">
-      <a href="../../">トップ</a>
+      <!-- ⭐2026-09-28 本人「ツール一覧はあくまでもツールのリスト」＝場面の区切りは入れない。トップは入れない（すぐ左にある）。いちばん上に先生用、棒線の下に道具（名前で分かりにくいものが上・くす玉〜ビンゴのように名前で分かるものが下） -->
+      <a href="../../teacher/">先生ツールセット</a>
+      <span class="navsep" aria-hidden="true"></span>
       <a href="../../typing/">タッチタイピング</a>
       <a href="../../seat/">座席表</a>
-      <a href="../../seki/">席次表</a>
       <a href="../../slide/">簡単スライド</a>
+      <a href="../../random/">ランダム指名</a>
+      <a href="../../timer/">カウントダウンタイマー</a>
+      <a href="../../timer/progress/">進行タイマー</a>
       <a href="../../excel-fx/">関数早見表</a>
+      <a href="../../seki/">席次表</a>
+      <a href="../../bus/">バスの座席表</a>
+      <a href="../../shinkansen/">新幹線の座席表</a>
       <a href="../../keiri/mitsumori/">見積書</a>
       <span class="now" aria-current="page">請求書</span>
-      <!-- ⭐ツールではないので棒線で分けて下に（2026-09-26 本人「棒線引いて分けて載せればいいね」） -->
+      <a href="../../kusudama/">くす玉</a>
+      <a href="../../roulette/">ルーレット</a>
+      <a href="../../fukubiki/">福引</a>
+      <a href="../../bingo/">ビンゴ</a>
       <span class="navsep" aria-hidden="true"></span>
       <a href="../../articles/">記事一覧</a>
       </div>
@@ -72,7 +83,8 @@
 
   <!-- ⭐できあがりの見本を横に置く（2026-09-10 本人「小さくていいからサンプル画像を付けたい。
        これは、横長じゃないから、1/3くらいでいいかな」）。⚠A4の縦なので座席表より細い -->
-  <div class="intro">
+  <!-- ⭐たての見本の枠は、座席表などの横長の見本と同じ大きさ（2026-09-27 本人「見積もり請求も変えてほしい」）＝style.css の .intro.tate -->
+  <div class="intro tate">
     <div class="intro-txt">
   <p class="lead">登録なし・全部無料。入力した内容は<strong>使っている端末の中だけ</strong>で完結します。</p>
   <ul class="can-do">
@@ -480,7 +492,7 @@
       <!-- ⭐3つともシャッター（2026-09-10 本人「必要なものだけ操作すればいい。
            いらないものを見たくないんだよ」）。⚠線で区切る案はやめた＝たたむので要らない -->
       <details class="opt sub">
-        <summary>自分の情報をこの端末に保存</summary>
+        <summary>自分の情報を使っている端末に保存</summary>
         <div class="body">
         <p class="inv-hint">保存をすると、<strong>次回から①自分の情報に自動的に表示されます。</strong><button type="button" class="tip-btn" aria-expanded="false" aria-label="自分の情報の保存について"></button></p>
         <div class="tip-body" hidden>
@@ -558,7 +570,7 @@
     <details class="opt sub">
       <summary>すべてのデータと画面のデータを全部消す</summary>
       <div class="body">
-      <p class="inv-hint">⚠<strong>この端末に保存したもの（自分の情報・取引先データ・請求の内容のひな形）と、いま①〜⑤に打ってある画面の内容を、すべて消します。</strong>消したものは戻せません。</p>
+      <p class="inv-hint">⚠<strong>使っている端末に保存したもの（自分の情報・取引先データ・請求の内容のひな形）と、いま①〜⑤に打ってある画面の内容を、すべて消します。</strong>消したものは戻せません。</p>
       <p class="btn-row">
         <button type="button" id="clearAll">すべてのデータと画面のデータを全部消す</button>
       </p>

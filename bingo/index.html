@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="../favicon.ico?v=3" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png?v=3">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
+<!-- ⭐たたき台（2026-09-26）。どこともつなげない。名前・フォルダ名（bingo）は仮
+     ⭐本人「福引のガラガラと、ビンゴは一緒にサクッと作ってもいいね」。番号1〜75を引いて、出た番号を表に並べる形（忘年会など）
+     ⭐カゴ・玉・回し方は、ランダム指名メーカー（../random/）と同じ。見た目は random.css を共通で読む -->
+<title>ビンゴマシーン｜モニターに映せる無料のビンゴ抽選機</title>
+<meta name="description" content="カゴをくるくる回して、番号の玉が転がってくる無料のビンゴ抽選機。出た番号は表に並びます。忘年会や学校のイベントで、モニターに映して使えます。登録なし。">
+<link rel="stylesheet" href="../style.css?v=155">
+<link rel="stylesheet" href="../random/random.css?v=20">
+<link rel="stylesheet" href="bingo.css?v=24">
+</head>
+<body>
+
+<header class="site-head noprint">
+  <div class="wrap">
+    <a class="logo" href="../"><span class="logo-mark"><img src="../img/logo-sakura-64.png?v=2" srcset="../img/logo-sakura-64.png?v=2 1x, ../img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA tools</span><span class="logo-sub">さくらツールズ</span></a>
+    <nav>
+      <a class="navpin" href="../">トップ</a>
+      <a class="navpin" href="../typing/">タッチタイピング</a>
+      <a class="navpin" href="../seat/">座席表</a>
+      <a class="navpin" href="../slide/">簡単スライド</a>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">ツール一覧</label>
+      <div class="navlist">
+      <!-- ⭐2026-09-28 本人「ツール一覧はあくまでもツールのリスト」＝場面の区切りは入れない。トップは入れない（すぐ左にある）。いちばん上に先生用、棒線の下に道具（名前で分かりにくいものが上・くす玉〜ビンゴのように名前で分かるものが下） -->
+      <a href="../teacher/">先生ツールセット</a>
+      <span class="navsep" aria-hidden="true"></span>
+      <a href="../typing/">タッチタイピング</a>
+      <a href="../seat/">座席表</a>
+      <a href="../slide/">簡単スライド</a>
+      <a href="../random/">ランダム指名</a>
+      <a href="../timer/">カウントダウンタイマー</a>
+      <a href="../timer/progress/">進行タイマー</a>
+      <a href="../excel-fx/">関数早見表</a>
+      <a href="../seki/">席次表</a>
+      <a href="../bus/">バスの座席表</a>
+      <a href="../shinkansen/">新幹線の座席表</a>
+      <a href="../keiri/mitsumori/">見積書</a>
+      <a href="../keiri/seikyu/">請求書</a>
+      <a href="../kusudama/">くす玉</a>
+      <a href="../roulette/">ルーレット</a>
+      <a href="../fukubiki/">福引</a>
+      <span class="now" aria-current="page">ビンゴ</span>
+      <span class="navsep" aria-hidden="true"></span>
+      <a href="../articles/">記事一覧</a>
+      </div>
+    </nav>
+  </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">ビンゴマシーン</span><span class="now-short">ビンゴ</span></div></div>
+</header>
+
+<main class="wrap pk-set" id="setScreen">
+  <h1>ビンゴマシーン</h1>
+  <p class="catch">カゴをくるくる回して、番号がコロン</p>
+  <div class="intro i169">
+    <div class="intro-txt">
+    <p class="lead"><strong>登録なし・全部無料。</strong>カゴがくるくる回って、番号の玉が転がってきます。出た番号は表に並ぶので、聞き逃しも確かめられます。</p>
+    <ul class="can-do">
+      <li><strong>1〜75</strong>のビンゴ（ほかの数も選べる）</li>
+      <li>出た番号が<strong>表で一目で分かる</strong></li>
+      <li>モニターに映して<strong>忘年会やイベント</strong>に</li>
+    </ul>
+    </div>
+    <figure class="t-sample noprint"><img src="../img/bingo-sample.png?v=7" width="1280" height="720" alt="ビンゴマシーンの画面。左にBINGOの番号の表（たて）、まん中に出た玉、右に立体のビンゴマシーンとすべり台"></figure>
+  </div>
+  <!-- ⭐「見本を見る」は①の上・左（福引と同じ・2026-09-27 本人「できれば、それも左上に置いて」）。前＝スタートのすぐ上 -->
+  <div class="bg-sample noprint"><button type="button" id="demoBtn">見本を見る（モニターの形）</button></div>
+  <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
+
+  <details class="opt" id="opt1">
+    <summary><span class="step">1</span>番号の数</summary>
+    <div class="body">
+      <div class="segwrap">
+        <div class="seg" id="segMax" role="radiogroup" aria-label="番号の数">
+          <button type="button" data-v="75" role="radio" class="on">1〜75</button>
+          <button type="button" data-v="90" role="radio">1〜90</button>
+          <button type="button" data-v="free" role="radio">自分で決める</button>
+        </div>
+      </div>
+      <p class="pk-numrow" id="freeRow" hidden><label>1 から <input type="number" id="maxN" min="2" max="99" value="50" inputmode="numeric"> まで</label></p>
+      <p class="tm-hint" id="maxHint"></p>
+      <p class="safe">🔒 <strong>使っている端末の中だけで完結しています。</strong>安心してご利用ください。</p>
+
+      <!-- ⭐画面の保存は①のいちばん下・チェックを入れたときだけ（ページの型 2・3）。ビンゴは途中で閉じても続きからできるよう、出た番号も残す -->
+      <div class="save-in1">
+        <p class="save-head"><label><input type="checkbox" id="save"> この画面を保存する</label><button type="button" class="tip-btn" aria-label="説明"></button></p>
+        <div class="tip-body" hidden>
+          <p>🔒 残るのは<strong>使っている端末の中だけ</strong>です。どこにも送信されません。チェックを外すと、残していたものを消します。</p>
+          <p>番号の数と、それまでに出た番号が残ります。ページをまちがえて閉じても、続きから引けます。</p>
+          <p><strong>共用の端末では外しておいてください。</strong>出た番号が使っている端末に残ります。</p>
+        </div>
+        <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。<br>⚠共用の端末で使ったときは、このチェックを外して、この画面を閉じてください。</p>
+        <p><span class="saving" id="savingLabel"></span></p>
+      </div>
+    </div>
+  </details>
+
+  <p class="tm-start"><button type="button" class="primary" id="startBtn">▶ スタート</button></p>
+  <p class="tm-hint center">スタートするとモニター画面いっぱいに出ます。右上の「✕ とじる」で、設定の画面に戻ります。</p>
+
+  <details class="howto">
+    <summary>使い方</summary>
+    <div class="body">
+      <ol>
+        <li>①で、番号の数を選びます。ふつうのビンゴカードは1〜75です。</li>
+        <li>スタートを押すと、モニター画面いっぱいに出ます。</li>
+        <li>「回す」を押すとカゴがくるくる回って、番号の玉が1つ転がってきます。パソコンならスペースキーでも回せます。</li>
+        <li>出た番号は、下の表に色がつきます。いちばん新しい番号は枠で囲みます。</li>
+      </ol>
+      <p class="sub">こんなときに</p>
+      <ul>
+        <li>忘年会・新年会・歓送迎会のビンゴ大会</li>
+        <li>学校の学年行事やお楽しみ会</li>
+        <li>オンラインの集まりで、画面を共有して</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="howto">
+    <summary>よくある質問</summary>
+    <div class="body">
+      <p class="sub">同じ番号が2回出ることはありますか？</p>
+      <p>ありません。一度出た番号は、はじめからやり直すまで出ません。</p>
+      <p class="sub">ネットにつながっていないと使えませんか？</p>
+      <p>ページを開いたあとは、使っている端末の中だけで動いています。回すたびに通信はしません。</p>
+      <p class="sub">入れたものが外に送られることはありますか？</p>
+      <p>ありません。番号はブラウザの中だけで引いています。</p>
+      <p class="sub">AIの学習に使われませんか？</p>
+      <p>使われません。どこにも送らないので、学習に使われることもありません。</p>
+      <p class="sub">学校や会社の決まりで、クラウドのサービスが使えません</p>
+      <p>ビンゴマシーンは、クラウドに何も置きません。使っている端末のブラウザの中だけで動きます。</p>
+    </div>
+  </details>
+
+  <details class="howto">
+    <summary>データの扱い</summary>
+    <div class="body">
+      <ul>
+        <li>番号はブラウザの中だけで引いています。インターネットには送りません。</li>
+        <li>「この画面を保存する」にチェックを入れたときだけ、番号の数と出た番号が使っている端末に残ります。</li>
+      </ul>
+    </div>
+  </details>
+</main>
+
+<footer class="noprint">
+  <div class="wrap"><span class="fnav"><a href="../about/">運営者情報</a>　<a href="../contact/">お問い合わせ</a>　<a href="../privacy/">プライバシーポリシー</a></span>
+    <span class="copy">さくらツールズ　© 2026 SAKURA tools</span></div>
+</footer>
+
+<!-- ===== 動かしている画面 ===== -->
+<div class="pk-demoback" id="demoBack" hidden></div>
+<div class="pk-run bg-run" id="runScreen" hidden>
+  <div class="pk-top">
+    <span class="pk-round" id="roundLbl"></span>
+    <span class="pk-msg" id="runMsg"></span>
+    <span class="pk-left" id="leftLbl"></span>
+  </div>
+  <!-- ⭐右上＝窓と同じ並び（全画面・✕ とじる）。角は必ず「✕ とじる」（2026-09-27 本人の約束事・ページの型 14-7） -->
+  <div class="run-tr"><button type="button" class="run-fs" id="fsBtn" title="全画面">⛶ 全画面</button><button type="button" class="run-close" id="backBtn">✕ とじる</button></div>
+  <div class="pk-demo" id="demoBadge" hidden>見本（モニターの形 16:9）</div>
+  <div class="pk-stage" id="stage"></div>
+  <div class="pk-btns">
+    <button type="button" class="pk-b cracker" id="crackerBtn" title="当たった人が出たら押す">🎉 ビンゴ！</button>
+    <button type="button" class="pk-b next" id="nextBtn">▶ 回す</button>
+    <button type="button" class="pk-b back" id="resetBtn">はじめから</button>
+  </div>
+</div>
+
+<script src="../mini3d.js?v=1"></script>
+<script src="bingo.js?v=32"></script>
+<script src="../tip.js?v=3"></script>
+</body>
+</html>

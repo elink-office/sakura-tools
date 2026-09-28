@@ -28,10 +28,11 @@
 </script>
 <title>さくらタッチタイピング｜無料のタイピング練習・ホームポジションから</title>
 <meta name="description" content="登録なし・全部無料のタイピング練習です。ホームポジションから指ごとに順番に、ローマ字入力を11ステージで練習できます。早く打つことより、ミスをしないことを先に。">
-<link rel="stylesheet" href="../style.css?v=147">
+<link rel="stylesheet" href="../style.css?v=155">
 <link rel="stylesheet" href="typing.css?v=165">
 </head>
 <body class="hub">
+
 <!-- 🔴 コインの形（2026-09-07）。パワポの円柱と同じ＝「側面（まっすぐ＋下の弧）」＋「上の楕円」の2枚。
      ⚠CSSのborder-radiusでは上の面と側面の境目が作れない。SVGなら1つ定義して使い回せる -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -79,18 +80,25 @@
       <input type="checkbox" id="navtoggle" class="navtoggle">
       <label class="navburger" for="navtoggle">ツール一覧</label>
       <div class="navlist">
-      <a href="../">トップ</a>
+      <!-- ⭐2026-09-28 本人「ツール一覧はあくまでもツールのリスト」＝場面の区切りは入れない。トップは入れない（すぐ左にある）。いちばん上に先生用、棒線の下に道具（名前で分かりにくいものが上・くす玉〜ビンゴのように名前で分かるものが下） -->
+      <a href="../teacher/">先生ツールセット</a>
+      <span class="navsep" aria-hidden="true"></span>
       <span class="now" aria-current="page">タッチタイピング</span>
       <a href="../seat/">座席表</a>
-      <a href="../seki/">席次表</a>
       <a href="../slide/">簡単スライド</a>
-      <a href="../excel-fx/">関数早見表</a>
-      <a href="../keiri/mitsumori/">見積書</a>
-      <a href="../keiri/seikyu/">請求書</a>
+      <a href="../random/">ランダム指名</a>
       <a href="../timer/">カウントダウンタイマー</a>
       <a href="../timer/progress/">進行タイマー</a>
-      <a href="../kusudama/">くす玉メーカー</a>
-      <!-- ⭐ツールではないので棒線で分けて下に（2026-09-26 本人「棒線引いて分けて載せればいいね」） -->
+      <a href="../excel-fx/">関数早見表</a>
+      <a href="../seki/">席次表</a>
+      <a href="../bus/">バスの座席表</a>
+      <a href="../shinkansen/">新幹線の座席表</a>
+      <a href="../keiri/mitsumori/">見積書</a>
+      <a href="../keiri/seikyu/">請求書</a>
+      <a href="../kusudama/">くす玉</a>
+      <a href="../roulette/">ルーレット</a>
+      <a href="../fukubiki/">福引</a>
+      <a href="../bingo/">ビンゴ</a>
       <span class="navsep" aria-hidden="true"></span>
       <a href="../articles/">記事一覧</a>
       </div>
@@ -145,7 +153,7 @@
   <!-- ⭐ニックネームと記録は、設定の行の上に移した（頭をタイトルとリードだけにするため）-->
   <div class="namerow">
     <div class="namebox">
-      <label for="uname">ニックネーム<span class="tip-wrap"><button type="button" class="tip-btn" aria-label="説明"></button><span class="tip-pop">入れた名前は、記録といっしょに<b>この端末の中だけ</b>に残ります。入れなくても練習できます。</span></span></label>
+      <label for="uname">ニックネーム<span class="tip-wrap"><button type="button" class="tip-btn" aria-label="説明"></button><span class="tip-pop">入れた名前は、記録といっしょに<b>使っている端末の中だけ</b>に残ります。入れなくても練習できます。</span></span></label>
       <input id="uname" placeholder="ニックネーム" maxlength="30">
     </div>
     <button id="btnLog">記録を消す</button>
@@ -215,7 +223,7 @@
 <!-- ⭐コラム（2026-09-21 本人「下にcolumnを置いて」→「columnをこんな時に使うの上に。入れ替え」「私が担当した人は、毎日練習したら、3か月で」「1分50字から1分180字に伸びました」）
      ⚠本人の経験の数字。文は本人の言葉をつなげただけ -->
 <section class="usecase column">
-  <!-- ⭐見出しは「コラム」→「記事」（2026-09-26 本人「コラムいらないよ。記事でいいよ。ああ、続きを読むならいいけど」） -->
+  <!-- ⭐見出しは「コラム」→「記事」（2026-09-26 本人「コラムいらないよ。記事でいいよ。ああ、続きを読むならいいけど」）＝短い文は残して、下に「続きを読む」 -->
   <h2>記事</h2>
   <!-- ⭐数字はこのサイトの数え方（ひらがなの文字数）に換算（2026-09-21 本人「換算でいいよ」「約30字の人が、1分で100文字以上になりました。これは嘘じゃない」）
        元＝美佳タイプの打鍵数で1分50→180。1文字あたり約1.65キーで割ると約30→約110 -->
@@ -253,7 +261,7 @@
     <li><b>Esc</b>キーでリセット、もう一度<b>Esc</b>でステージ選択にもどります。</li>
     <li>速さは<b>1分あたりの文字数</b>（○/1分）。<b>ひらがなの文字数</b>で数えています（打ったキーの数ではありません）。</li>
     <li><b>自己ベストを更新すると紙吹雪</b>が出ます（2回目から。ミスがあっても出ます）。</li>
-    <li>記録はこの端末の中に自動で残ります（「今までの記録を見る」）。</li>
+    <li>記録は使っている端末の中に自動で残ります（「今までの記録を見る」）。</li>
   </ul>
 </details>
 
@@ -303,7 +311,7 @@
   <h2>記録を消す</h2>
   <!-- ⚠「職場や学校で練習した記録は、家の端末には表示されません。」は外した（2026-09-20 本人「これはいらないな」・学生用と同じ） -->
   <!-- ⭐一般用は1回ごとの記録を見せない＝名前だけ並べて消す（2026-09-21 本人） -->
-  <div class="sb" id="logSub"><b>この記録は、いま使っているこの端末にだけ残ります。</b><br>消すと元に戻せません。</div>
+  <div class="sb" id="logSub"><b>この記録は、いま使っている端末にだけ残ります。</b><br>消すと元に戻せません。</div>
   <!-- ⭐記録があるときだけ出す（2026-09-20）。typing.js の renderLogs で出し分ける -->
   <div class="modalbtns" id="logBtns" style="margin:0 0 14px;justify-content:flex-start">
     <button id="btnCsv">CSVで書き出す</button>

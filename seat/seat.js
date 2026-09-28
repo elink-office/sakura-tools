@@ -211,10 +211,15 @@
     if (n > 8) n = 8;
     return String(n);
   }
+  function offCountNow(c, r) {
+    if (!offOn(c, r)) return 0;
+    var k = 0; for (var i in state.off) if (state.off[i] && +i < c * r) k++;
+    return k;
+  }
   function refreshSeatInfo() {
     var c = +$('cols').value, r = +$('rows').value;
     state.cols = c; state.rows = r;
-    var total = c * r, n = state.names.length;
+    var total = c * r - offCountNow(c, r), n = state.names.length;
     $('seatcount').textContent = total;
     var el = $('seatinfo');
     if (n > total) {
@@ -236,10 +241,13 @@
   // ---- 書体 ----
   // ⚠ 丸文字はWindows（HG丸ｺﾞｼｯｸM-PRO）とiPad・Mac（ヒラギノ丸ゴ ProN）だけ。
   //   無い機器では静かにゴシックになる（崩れはしない）
+  /* ⭐紙の書体は Google Fonts の書体にした（2026-09-23）。⭐PDFにも同じ書体が入る＝見本とPDFが同じ字の形。
+     ⭐ゴシック＝Noto Sans JP／明朝＝Noto Serif JP／丸文字＝M PLUS Rounded 1c（9/23 本人「②でいこうか」。Zen Maru Gothic は「変な丸文字」でやめた）（本人「フォントはなんでもいいけどね」＝見本とPDFが同じならよい）。
+     ⚠9/8 に BIZ UDPゴシックにしたのは游ゴシックのかすれ対策。Noto Sans JP はかすれない */
   var FONTS = {
-    mincho: '"Yu Mincho", YuMincho, "Hiragino Mincho ProN", "MS PMincho", serif',
-    gothic: '"Yu Gothic", YuGothic, "Hiragino Sans", Meiryo, sans-serif',
-    maru: '"HG丸ｺﾞｼｯｸM-PRO", HGMaruGothicMPRO, "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif'
+    mincho: '"Noto Serif JP", serif',
+    gothic: '"Noto Sans JP", sans-serif',
+    maru: '"M PLUS Rounded 1c", "Noto Sans JP", sans-serif'
   };
   function fontStack() {
     var v = $('font') ? $('font').value : 'gothic';
@@ -768,6 +776,7 @@
         return [s[0].value, s[1].value];
       }).filter(function (p) { return p[0] && p[1] && p[0] !== p[1]; });
     };
+    syncOff(state.cols, state.rows);
     var fix = {}, zone = {};
     Array.prototype.forEach.call($('fixList').querySelectorAll('.pair'), function (w) {
       var s = w.querySelectorAll('select');
@@ -775,9 +784,12 @@
       if (!name) return;
       if (kind === 'seat') {
         var c = +s[2].value, r = +s[3].value;
+        if (isOffSeat((r - 1) * state.cols + (c - 1))) return;   // 空けた席は指定できない
         fix[name] = (r - 1) * state.cols + (c - 1);
       } else zone[name] = kind;
     });
+    /* ⭐空けた席には「見えない人」を先に座らせる。⚠でき上がったら run() で null に戻す */
+    for (var oi in state.off) if (state.off[oi]) fix[OFF_MARK + oi] = +oi;
     // 🔴「隣の条件は設定しない」のチェックが入っているあいだは、
     //   離す・隣にするの条件そのものを使わない（2026-09-03 本人）。
     //   ⚠ラジオの4つ目にしていたのをやめて、チェックの下に3つを置く形にした。
@@ -816,6 +828,7 @@
         }
       }
     }
+    order = order.filter(function (i) { return !isOff(i, cols); });   // ⭐空けた席はとばす（2026-09-23）
     opt.names.forEach(function (n, i) { if (i < order.length) seats[order[i]] = n; });
     return seats;
   }
@@ -844,7 +857,7 @@
       msg.innerHTML = '<div class="notice warn">名簿が空です。1行に1人ずつ入れてください。</div>';
       return;
     }
-    if (opt.names.length > opt.cols * opt.rows) {
+    if (opt.names.length > opt.cols * opt.rows - offCountNow(opt.cols, opt.rows)) {
       msg.innerHTML = '<div class="notice warn">席が足りません。横か縦の数をふやしてください。</div>';
       return;
     }
@@ -866,7 +879,9 @@
     //   たくさん作って、前の班との重なりがいちばん少ないものから3つ選ぶ。
     //   ⚠ゼロにできないことがある。そのときは重なった人を画面に出す（黙って出さない）
     var pairs = (state.avoid.on && state.grp.on) ? pastPairs(state.avoid.back) : null;
-    var plans = Seating.generate(opt, pairs ? 40 : 3, pairs ? 5000 : 2000);
+    var plans = Seating.generate(opt, pairs ? 40 : 3, pairs ? 5000 : 2000).map(function (p) {
+      return p.map(function (n) { return (n && String(n).indexOf(OFF_MARK) === 0) ? null : n; });
+    });
     if (!plans.length) {
       var who = Seating.blame(opt);
       msg.innerHTML = '<div class="notice warn"><strong>条件がきつすぎて作れませんでした。</strong>' +
@@ -900,7 +915,7 @@
       //   ⚠ここで押したことが⑦とつながっていると分かるのは、作った側だけ。
       //     場所を教えるだけにして、切り替えは⑦でしてもらう
       msg.innerHTML = '<div class="notice">ページを閉じたり読み込み直すと、入れた名簿は消えます。' +
-        '残したいときは、下の<strong>⑦ 画面の保存</strong>でチェックを入れてください。</div>';
+        '残したいときは、<strong>①名簿の入力</strong>のいちばん下の「この画面を保存する」にチェックを入れてください。</div>';
     }
   }
 
@@ -983,6 +998,12 @@
         var i = r * cols + sc;
         var name = state.seats[i];
         var d = document.createElement('div');
+        if (isOffSeat(i)) {
+          /* ⭐空けた席＝点線だけ。.seat を付けない（人を置けない）。えらんでいるあいだ押すと戻る */
+          d.className = 'dead off'; d.dataset.i = i;
+          g.appendChild(d);
+          continue;
+        }
         d.className = 'seat' + (name ? '' : ' empty') + (bad[i] ? ' bad' : '');
         // ⚠draggable は付けない。ブラウザ標準のドラッグが割り込んで、
         //   マウスで動かしたときに禁止マークが出てしまう（動かすのは下の自作の処理）
@@ -1130,6 +1151,7 @@
     drawViolations();
     drawDeco();
     fitSheet();
+    pickNote();
     /* ⭐黄色い枠が出たときだけ、その意味をふわっと知らせる */
     if (sameCount) {
       flashNote('⚠ 黄色い枠は、前回と同じ席の人です（' + sameCount + '人）。もう一度 席替えすると変わることがあります。');
@@ -1207,6 +1229,7 @@
 
   // ---- モニターに映す（教室の大きな画面に、座席表だけを出す）----
   function screenOn() {
+    if (state.picking) setPicking(false);
     document.body.classList.add('screen');
     fitSheet();
     var el = document.documentElement;
@@ -1380,11 +1403,67 @@
   // ---- 1つ戻す（2026-09-03 本人・現場の先生「手が当たっただけで入れ替わって困る」） ----
   //   ⚠押すたびに1回ずつ、入れ替えた順にさかのぼる。
   //     「席替えする」を押し直したら白紙にもどす（そこから先は別の並びなので）
+  /* ⭐人を置かない席＝空けた席 */
+  function isOff(i, cols) { return isOffSeat(i); }
+  /* ========== 空ける席（2026-09-23 本人「ここは空席っていう指示できないかな」「Aが直感的でいいな」「座席表も入れたいね」） ==========
+     ⭐「空ける席をえらぶ」を押してから表のマスを押すと、その席を空ける（点線）。もう一度押すと戻す。
+     ⭐空けた席には人を置かない＝配置エンジンには「見えない人」を座らせる（共通の seating.js は触らない）
+     ⭐名簿順のときは並べ直す（空けた席をとばして流れる）。ランダムのときは、そこにいた人だけ近くの空席へ
+     ⚠横・縦の数が変わったら、空けた席は白紙に戻す（場所の番号がずれるため） */
+  var OFF_MARK = '\u0000off';
+  function offKey(c, r) { return c + 'x' + r; }
+  function syncOff(c, r) {
+    if (state.offKey !== offKey(c, r)) { state.off = {}; state.offKey = offKey(c, r); }
+  }
+  function isOffSeat(i) { return !!(state.off && state.off[i]); }
+  function offOn(c, r) { return state.offKey === offKey(c, r); }
+  function setPicking(on) {
+    state.picking = !!on;
+    document.body.classList.toggle('picking', state.picking);
+    var b = $('offPick');
+    if (b) { b.textContent = state.picking ? 'えらび終わる' : '空ける席をえらぶ'; b.classList.toggle('on', state.picking); }
+    if (state.seats) drawSheet();
+  }
+  function pickNote() {
+    var n = document.querySelector('.drag-note');
+    if (n && state.picking) n.innerHTML = '<strong>空けたい席を押してください。</strong>もう一度押すと戻ります。終わったら「えらび終わる」';
+  }
+  function nearestFree(i) {
+    var c = state.opt.cols, best = -1, bd = 1e9;
+    for (var k = 0; k < state.seats.length; k++) {
+      if (k === i || state.seats[k] || isOff(k, c)) continue;
+      var d = Math.abs(Math.floor(k / c) - Math.floor(i / c)) + Math.abs(k % c - i % c);
+      if (d < bd) { bd = d; best = k; }
+    }
+    return best;
+  }
+  function toggleOff(i) {
+    var o = state.opt;
+    if (!o || !state.seats) return;
+    syncOff(o.cols, o.rows);
+    var byNumber = ($('order').value === 'number');
+    if (!state.off[i] && state.seats[i] && nearestFree(i) < 0) {
+      alert('空いている席がないので、ここは空けられません。横か縦の数をふやしてください。');
+      return;
+    }
+    pushHist();
+    if (state.off[i]) delete state.off[i];
+    else {
+      var who = state.seats[i];
+      state.off[i] = true;
+      if (who && !byNumber) { var to = nearestFree(i); state.seats[to] = who; state.seats[i] = null; }
+    }
+    if (byNumber) { state.seats = orderedSeats(o); state.plans = [state.seats.slice()]; state.cur = 0; }
+    refreshSeatInfo();
+    drawSheet();
+    if ($('save').checked && !state.sample) save();
+  }
+
   function pushHist() {
     if (!state.seats) return;
     var g = {};
     for (var k in state.gfix) g[k] = state.gfix[k];
-    state.hist.push({ seats: state.seats.slice(), gfix: g });
+    state.hist.push({ seats: state.seats.slice(), gfix: g, off: JSON.parse(JSON.stringify(state.off || {})) });
     if (state.hist.length > 50) state.hist.shift();
     updateUndo();
   }
@@ -1397,6 +1476,7 @@
     if (!h) { updateUndo(); return; }
     state.seats = h.seats.slice();
     state.gfix = h.gfix;
+    if (h.off) { state.off = h.off; refreshSeatInfo(); }   // ⭐空けた席も一緒に戻す
     drawSheet();
     updateUndo();
     if ($('save').checked && !state.sample) save();
@@ -1432,6 +1512,10 @@
   }
 
   function bindDrag() {
+    /* ⭐空けた席は、えらんでいるあいだだけ押せる（押すと戻す） */
+    $('grid').querySelectorAll('.dead.off').forEach(function (d) {
+      d.addEventListener('pointerdown', function (e) { if (state.picking) { e.preventDefault(); toggleOff(+d.dataset.i); } });
+    });
     $('grid').querySelectorAll('.seat').forEach(function (d) {
       d.addEventListener('pointerdown', dragStart);
       d.addEventListener('dragstart', function (e) { e.preventDefault(); });
@@ -1439,8 +1523,13 @@
   }
 
   function dragStart(e) {
+    /* ⭐空ける席をえらんでいるあいだは、押した席を空ける（動かさない） */
+    if (state.picking) { e.preventDefault(); toggleOff(+e.currentTarget.dataset.i); return; }
     closeGroupPick();
     if (e.pointerType === 'mouse' && e.button !== 0) return;
+    /* ⭐モニターに映しているあいだは、マウスだけ動かせる（2026-09-23 本人「PCは動かせるようにして！」）。
+       ⚠指は今までどおり動かさない（8/30 本人＝スクロールしようとして席をつかむ）。タブレットは拡大して見られる */
+    if (document.body.classList.contains('screen') && e.pointerType !== 'mouse') return;
     var d = e.currentTarget;
     var byMouse = (e.pointerType === 'mouse');
     drag = { el: d, from: +d.dataset.i, id: e.pointerId,
@@ -1818,6 +1907,12 @@
         var sc = flipP ? cols - 1 - c : c;
         var name = state.seats[r * cols + sc];
         var px = pad + c * cw, py = gy + dr * ch;
+        if (isOffSeat(r * cols + sc)) {
+          /* ⭐空けた席＝点線だけ */
+          roundRect(x, px + 4, py + 4, cw - 8, ch - 8, 10);
+          x.setLineDash([6, 5]); x.strokeStyle = '#d4d4d4'; x.lineWidth = 2; x.stroke(); x.setLineDash([]);
+          continue;
+        }
         var gi = state.gmap ? state.gmap[r * cols + sc] : 0;
         roundRect(x, px + 4, py + 4, cw - 8, ch - 8, 10);
         var look = state.grp.look;
@@ -1929,6 +2024,7 @@
         sexPrint: $('sexPrint').checked,
         dt: $('dt').value, dtOff: $('dtOff').checked,
         grp: state.grp,
+        off: state.off || {}, offKey: state.offKey || '',   // ⭐空けた席（2026-09-23）
         avoid: state.avoid,
         sex: (function () {              // いま名簿にある人だけ残す（去年の名前をためこまない）
           var out = {};
@@ -1966,6 +2062,7 @@
       if ($('month')) $('month').value = d.month || '';
       // ⚠えらぶ形にしたので、前に保存した 9 以上は入らない。8 におさめる
       $('cols').value = clampNum(d.cols, 6); $('rows').value = clampNum(d.rows, 6);
+      state.off = d.off || {}; state.offKey = d.offKey || '';   // ⭐空けた席（2026-09-23）
       $('board').value = d.board || 'top';
       // ⚠前に保存した人は 'cross' などを持っている。そのままにする（勝手に外さない）。
       //   🔴 'none'（設定なし）は2026-09-09にえらびとして復活した。もう 'cross' に置き換えない
@@ -2194,8 +2291,10 @@
   function doClsDel() {
     var st = loadStore(), c = curClass(st);
     if (!c) { alert('先に、消したい保存したデータをえらんでください。'); return; }
-    if (!confirm('「' + c.label + '」を消します。' +
-      'その中の記録と、席次表で使っている設定も一緒に消えます。よろしいですか。')) return;
+    /* ⭐消すときの文は roster-tools.js がそろえる（名簿を使う道具を1行ずつ並べる・2026-09-27） */
+    var dm = window.SAKURA_ROSTER ? SAKURA_ROSTER.delMsg(c.label, 'その中の記録と、席次表で使っている設定も一緒に消えます。')
+      : '「' + c.label + '」を消します。その中の記録と、席次表で使っている設定も一緒に消えます。よろしいですか。';
+    if (!confirm(dm)) return;
     st.classes = st.classes.filter(function (x) { return x.id !== c.id; });
     if (!saveStore(st)) return;
     setCls('');
@@ -2352,6 +2451,11 @@
   }
 
   function init() {
+    /* ⭐書体（Google Fonts）が届いたら描き直す（2026-09-23）。
+       ⚠届く前に測ると、1マスの文字の大きさが別の書体の幅で決まってしまう */
+    if (document.fonts && document.fonts.addEventListener) {
+      document.fonts.addEventListener('loadingdone', function () { if (state.seats) drawSheet(); });
+    }
     var d = new Date();
     $('dt').value = '作成日：' + d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
     fillColorSelect($('colM'), '#1f5fbf');
@@ -2474,6 +2578,7 @@
     // ⚠ addLeadRow をそのまま渡さない。クリックの情報が第1引数（名前）に入ってしまう
     if ($('addLead')) $('addLead').onclick = function () { addLeadRow(); };
     if ($('undo')) $('undo').onclick = undoOnce;
+    if ($('offPick')) $('offPick').onclick = function () { setPicking(!state.picking); };
     // 🔴「隣」の考え方（2026-09-03）。チェックを外すと、3つの選びと設定の欄が出てくる
     if ($('modeOff')) $('modeOff').addEventListener('change', function () {
       modeChanged();

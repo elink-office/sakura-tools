@@ -1,0 +1,159 @@
+/* 帯のタイマー（進行タイマー・2026-09-24 作り始め）
+   ⚠style.css は全ページ共通なので、このページだけの見た目はここに書く */
+:root{
+  color-scheme: light;
+  /* ⭐青→緑→黄→過ぎたら赤（2026-09-24 本人「青スタート。緑→黄色→過ぎたら赤」） */
+  --tb-blue:#3a7fd0;
+  --tb-green:#2f9a5c;
+  --tb-yellow:#f2c230;
+  --tb-red:#d8453f;
+  --tb-track:#eef0f2;
+}
+
+.tb-stage{margin:14px 0 18px}
+/* 細長いタイルを横に並べる。左から1枚ずつ埋まる */
+.tb-track{
+  position:relative;height:72px;display:flex;gap:3px;
+}
+.tb-tile{
+  flex:1 1 0;min-width:0;border-radius:0;   /* ⭐角は丸めない（2026-09-24 本人「バーはまっすぐ四角いようにして」） */
+  background:var(--tb-track);position:relative;overflow:hidden;
+}
+/* タイルの中の色は、そのタイルの区間で決まる（埋まった色はそのまま残る）。
+   まだのタイルもうっすら色を出して、どこで色が変わるか先に見えるようにする */
+.tb-tile > b{
+  position:absolute;inset:0;
+  transition:opacity 1s linear;
+}
+.tb-tile.z-b > b{background:var(--tb-blue)}
+.tb-tile.z-g > b{background:var(--tb-green)}
+.tb-tile.z-y > b{background:var(--tb-yellow)}
+.tb-tile.z-r > b{background:var(--tb-red)}
+/* 予定の終わり（100％）の線。ここから右が超過のぶん */
+.tb-tile.is-endline{margin-left:6px}
+.tb-track .tb-end{
+  position:absolute;top:-6px;bottom:-6px;width:3px;margin-left:-6px;
+  background:var(--ink);pointer-events:none;
+}
+
+/* 今出しているものの名前（午前・午後A など） */
+.tb-name{color:var(--pink);margin-right:.6em}
+.tb-name:empty{display:none}
+.tb-name-in{font-size:16px;padding:6px 8px;width:9em}
+
+.tb-info{
+  display:flex;justify-content:space-between;gap:8px;
+  margin-top:10px;font-size:15px;color:var(--ink-soft);
+}
+#remain{color:var(--ink);font-weight:bold}
+#remain.is-over{color:var(--tb-red)}
+
+.tb-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0}
+.tb-row label{min-width:4.5em;font-weight:bold}
+.tb-row input[type=time]{font-size:16px;padding:6px 8px}
+.tb-row input[type=number]{width:5em;font-size:16px;padding:6px 8px}
+.tb-row select{font-size:16px;padding:6px 8px}
+.tb-sub{display:inline-flex;align-items:center;gap:8px;margin-left:14px}
+.tb-sub label{min-width:0}
+.tb-c{display:inline-flex;align-items:center;gap:2px;white-space:nowrap;margin-right:8px}
+.tb-c input[type=number]{width:3.6em}
+#tileMsg:empty{display:none}
+.tb-cs{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px 0}
+
+/* ⭐保存（左）と時間の設定（右）を横に並べる（2026-09-24 本人）。スマホの幅では縦に積む */
+/* ⭐左右の箱は同じ幅・同じ高さ（2026-09-24 本人「時間の設定の箱を少しずつ小さくして、全体の箱のサイズをそろえてほしい」） */
+.tb-panels{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:stretch}
+.tb-panels > details.opt{margin:0}
+/* 時間の設定の中身を少しずつ小さく */
+.tb-panels #ch1 .tb-row{gap:6px;margin:6px 0}
+.tb-panels #ch1 input[type=time],
+.tb-panels #ch1 select,
+.tb-panels #ch1 input[type=number]{font-size:15px;padding:4px 6px}
+.tb-panels #ch1 button{font-size:14px;padding:5px 10px}
+.tb-panels #ch1 .tb-sub{margin-left:0}
+.tb-panels .tb-row label{min-width:3.4em}
+.tb-panels .tb-row select{max-width:100%}
+.tb-pl .tb-name-in{flex:1;min-width:0;width:auto}
+.tb-pl select#plans{flex:1;min-width:0}
+.tb-panels .tb-row label.tb-lbl-long{min-width:0}
+.tb-pl .safe{margin:0 0 8px}
+/* ボタン3つは名前の欄の下に1列で */
+.tb-save-row{gap:6px}
+/* 見出し（名前）と同じ幅の空き＋同じすきま＝ボタンの左が名前の欄の左にそろう */
+/* ⚠見出しの字は 14.4px（共通CSS）。空きも同じ字の大きさで 3.4em にしないと、5px ほどずれる */
+.tb-panels .tb-save-row .tb-sp{font-size:14.4px;min-width:3.4em;margin-right:2px}
+.tb-save-row button{font-size:14px;padding:6px 10px}
+/* 色は枠の中では2列×2段（本人「色の部分だけ、2行になるかもね」） */
+.tb-panels .tb-cs{display:inline-grid;grid-template-columns:auto auto;gap:6px 10px}
+.tb-panels .tb-c{margin-right:0}
+#saveMsg:empty{display:none}
+@media (max-width:640px){
+  .tb-panels{grid-template-columns:1fr}
+}
+/* スマホの幅では色を2列×2段に（1行に入らないので、3段に崩れるのを防ぐ） */
+@media (max-width:480px){
+  .tb-row label{min-width:3.2em}
+  .tb-cs{display:inline-grid;grid-template-columns:auto auto;gap:6px 10px}
+  .tb-c{margin-right:0}
+  .tb-sub{margin-left:8px}
+}
+.tb-dot{display:inline-block;width:.8em;height:.8em;border-radius:50%;margin-right:4px;vertical-align:-1px}
+.tb-dot-b{background:var(--tb-blue)}
+.tb-dot-g{background:var(--tb-green)}
+.tb-dot-y{background:var(--tb-yellow)}
+.tb-dot-r{background:var(--tb-red)}
+
+.tb-mini{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:-6px 0 16px}
+.tb-mini button{font-size:15px;padding:6px 12px}
+
+/* ⭐「帯だけを小さく出す」で開いた窓（2026-09-24）。下の「ウィンドウを小さくしたとき」と同じ見た目 */
+html.is-mini .site-head, html.is-mini h1, html.is-mini .catch, html.is-mini .tb-set, html.is-mini .tb-note,
+html.is-mini .tb-mini, html.is-mini footer, html.is-mini #testBadge{display:none !important}
+html.is-mini, html.is-mini body{height:100%;margin:0;overflow:hidden;background:#fff}
+html.is-mini main.wrap{padding:0;margin:0;max-width:none}
+/* ⭐細くしても入るように、すきまを詰める（2026-09-24 本人「もっと細くしてほしい（小さいウィンドウ）」） */
+html.is-mini .tb-stage{
+  position:fixed;inset:0;margin:0;padding:5px 6px 3px;
+  display:flex;flex-direction:column;gap:2px;background:#fff;
+}
+html.is-mini .tb-track{flex:1;height:auto;min-height:14px}
+html.is-mini .tb-track .tb-end{top:-3px;bottom:-3px}
+html.is-mini .tb-info{margin:2px 0 0;font-size:11px;line-height:1.2}
+
+/* ⭐ウィンドウを小さくしたら帯だけにする（2026-09-24 本人「司会者用のPCの端でウィンドウ小さくしてみる」） */
+@media (max-height:420px){
+  .site-head, h1, .catch, .tb-set, .tb-note, .tb-mini, footer, #testBadge{display:none !important}
+  html, body{height:100%;margin:0;overflow:hidden}
+  main.wrap{padding:0;margin:0;max-width:none}
+  .tb-stage{
+    position:fixed;inset:0;margin:0;padding:12px 8px 8px;
+    display:flex;flex-direction:column;gap:4px;background:#fff;
+  }
+  .tb-track{flex:1;height:auto}
+  .tb-info{margin:6px 0 0;font-size:13px}
+}
+/* 手でウィンドウを細くしたときも、小さく出す窓と同じだけ詰める */
+@media (max-height:140px){
+  .tb-stage{padding:5px 6px 3px;gap:2px}
+  .tb-track{min-height:14px}
+  .tb-track .tb-end{top:-3px;bottom:-3px}
+  .tb-info{margin:2px 0 0;font-size:11px;line-height:1.2}
+}
+
+/* ⭐コラム（2026-09-24 本人「columnは下に書いてみて」）。タイピングのコラムと同じ見た目（typing.css の .usecase.column を写した） */
+.tb-column{margin:26px 0 10px;padding:14px 2px 0;border-top:1px solid var(--line)}
+.tb-column h2{font-size:15px;font-weight:700;margin:0 0 8px}
+.tb-column p{margin:0;font-size:13.5px;line-height:1.9}
+
+/* ⭐こんなときに使う（2026-09-24 本人）。コラムの枠をそのまま使って、中を箇条書きに */
+.tb-usecase ul{margin:0;padding-left:1.3em;font-size:13.5px;line-height:1.9}
+.tb-usecase li{margin-bottom:6px}
+.tb-usecase li b{color:var(--ink)}
+
+
+
+/* 作り直した直後は動きを止める（progress.js の build） */
+.tb-track.no-anim .tb-tile > b{transition:none !important}
+
+/* こんなときに使う：項目のあいだを少し空ける（2026-09-24 本人「ツメツメ」） */
+.tb-usecase li{margin-bottom:12px}

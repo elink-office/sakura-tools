@@ -29,8 +29,12 @@
 <meta name="google-site-verification" content="PfjmCGxUaN1hzuj_dRw3e4PTY6xepghfXM_CrU_sO-A" />
 <title>教室の座席表メーカー｜席替えを簡単に・30人40人・4列</title>
 <meta name="description" content="教室の座席表の作り方は簡単。名簿を貼るだけで席替えができる無料ツールです。エクセルテンプレートは不要。新年度の出席番号順にも対応。小学校・中学校・高校のどのクラスでも、30人・35人・40人、4列・5列・6列・8列の教室席配置に対応。生徒に見せる向きと、先生が教卓から見る向きを切り替えられます。班分けと色分けもそのままPDFにできます。エクセルテンプレートのダウンロードも、登録もいりません。名簿はブラウザの中だけで処理し、AIの学習にも使われません。">
-<link rel="stylesheet" href="../style.css?v=147">
-<link rel="stylesheet" href="seat.css?v=12">
+<!-- ⭐紙の書体＝どの端末でも同じ字の形にする（2026-09-23 本人「見本と同じ…フォントでお願い」）。PDFにも同じ書体を入れている（paper-pdf.js） -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&display=swap">
+<link rel="stylesheet" href="../style.css?v=155">
+<link rel="stylesheet" href="seat.css?v=16">
 <link rel="stylesheet" href="../print.css?v=63" media="print">
 <style>
 /* 🔴 班長・前回とのくらべ・クラスの保存（2026-08-31）。
@@ -211,6 +215,7 @@ body.screen .seat.dup .nm{text-decoration:none}
 </style>
 </head>
 <body>
+
 <header class="site-head noprint">
   <div class="wrap">
     <a class="logo" href="../"><span class="logo-mark"><img src="../img/logo-sakura-64.png?v=2" srcset="../img/logo-sakura-64.png?v=2 1x, ../img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA tools</span><span class="logo-sub">さくらツールズ</span></a>
@@ -224,15 +229,25 @@ body.screen .seat.dup .nm{text-decoration:none}
       <input type="checkbox" id="navtoggle" class="navtoggle">
       <label class="navburger" for="navtoggle">ツール一覧</label>
       <div class="navlist">
-      <a href="../">トップ</a>
+      <!-- ⭐2026-09-28 本人「ツール一覧はあくまでもツールのリスト」＝場面の区切りは入れない。トップは入れない（すぐ左にある）。いちばん上に先生用、棒線の下に道具（名前で分かりにくいものが上・くす玉〜ビンゴのように名前で分かるものが下） -->
+      <a href="../teacher/">先生ツールセット</a>
+      <span class="navsep" aria-hidden="true"></span>
       <a href="../typing/">タッチタイピング</a>
       <span class="now" aria-current="page">座席表</span>
-      <a href="../seki/">席次表</a>
       <a href="../slide/">簡単スライド</a>
+      <a href="../random/">ランダム指名</a>
+      <a href="../timer/">カウントダウンタイマー</a>
+      <a href="../timer/progress/">進行タイマー</a>
       <a href="../excel-fx/">関数早見表</a>
+      <a href="../seki/">席次表</a>
+      <a href="../bus/">バスの座席表</a>
+      <a href="../shinkansen/">新幹線の座席表</a>
       <a href="../keiri/mitsumori/">見積書</a>
       <a href="../keiri/seikyu/">請求書</a>
-      <!-- ⭐ツールではないので棒線で分けて下に（2026-09-26 本人「棒線引いて分けて載せればいいね」） -->
+      <a href="../kusudama/">くす玉</a>
+      <a href="../roulette/">ルーレット</a>
+      <a href="../fukubiki/">福引</a>
+      <a href="../bingo/">ビンゴ</a>
       <span class="navsep" aria-hidden="true"></span>
       <a href="../articles/">記事一覧</a>
       </div>
@@ -360,6 +375,23 @@ body.screen .seat.dup .nm{text-decoration:none}
 
         </div>
       </div>
+      <!-- ⭐画面の保存は①の中（2026-09-23 本人「名簿をいれてさ、保存って先にしたほうがいい気がしてきた。せめて画面の保存。私何度も忘れてしまってさ」→ A-2「それでいこう」）。
+           ⚠前は下のほうの枠（⑦）。⭐全ツール共通の形（ページの型 3） -->
+      <div class="save-in1" style="margin-top:14px;padding-top:12px;border-top:1px dashed #dcdfe3">
+      <p class="save-head" style="margin:0 0 4px"><label style="font-weight:bold;display:inline-block;margin:0"><input type="checkbox" id="save"> この画面を保存する</label><button type="button" class="tip-btn" aria-label="説明"></button></p>
+    <div class="tip-body" hidden>
+      <ul>
+        <li><strong>いま開いている画面をそのまま残します。</strong>名簿・教室の形・条件・男女の指定・座席表まで、次に開いたときそのまま出ます。</li>
+        <li><strong>残るのは1つだけ</strong>です。名簿を入れかえると、前のものは上書きされます。いくつも残したいときは<strong>⑦</strong>を使ってください。</li>
+        <li><strong>チェックを外すと、保存していたものは消えます。</strong>次に開いたときは最初からの設定になります。いま見ている画面はそのままです。</li>
+        <li>残るのは<strong>使っている端末の中だけ</strong>です。<strong>どこにも送信されません。</strong>読み込んだ画像は保存されません。</li>
+      </ul>
+    </div>
+
+    <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。<br>
+      ⚠<b>共用の端末で使ったときは、このチェックを外して、この画面を閉じてください。</b></p>
+    <p><span class="saving" id="savingLabel"></span></p>
+      </div>
       </div>
     </details>
 
@@ -417,22 +449,18 @@ body.screen .seat.dup .nm{text-decoration:none}
         </div>
         <div id="modeBox" style="margin-top:12px">
           <p class="note-sm" style="margin:0 0 6px">どこまでを「隣」とみなしますか</p>
-          <div class="radios mode-pick">
+          <div class="seg mode-pick">
             <!-- 🔴 「設定なし」を左端に戻した（2026-09-09 本人「左右だけの左に、設定なしの図とボタンを作って」）。
                  ⚠2026-09-03に一度やめた形だが、⭐図ができたので「何も隣とみなさない」が目で分かるようになった。
                    当時の理由「4つが同列だと、ボタンを変えたら設定が変わるってのが想像しにくい」は、図で解けている -->
-            <label><input type="radio" name="mode" value="none" checked>
-              <span class="mode-fig"><i></i><i></i><i></i><i></i><i class="me"></i><i></i><i></i><i></i><i></i></span>
-              設定なし</label>
-            <label><input type="radio" name="mode" value="lr">
-              <span class="mode-fig"><i></i><i></i><i></i><i class="on"></i><i class="me"></i><i class="on"></i><i></i><i></i><i></i></span>
-              左右だけ</label>
-            <label><input type="radio" name="mode" value="cross">
-              <span class="mode-fig"><i></i><i class="on"></i><i></i><i class="on"></i><i class="me"></i><i class="on"></i><i></i><i class="on"></i><i></i></span>
-              前後左右</label>
-            <label><input type="radio" name="mode" value="king">
-              <span class="mode-fig"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="me"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>
-              まわり全部（ななめも）</label>
+            <label><input type="radio" name="mode" value="none" checked><span class="seg-in"><span class="mode-fig"><i></i><i></i><i></i><i></i><i class="me"></i><i></i><i></i><i></i><i></i></span>
+              設定なし</span></label>
+            <label><input type="radio" name="mode" value="lr"><span class="seg-in"><span class="mode-fig"><i></i><i></i><i></i><i class="on"></i><i class="me"></i><i class="on"></i><i></i><i></i><i></i></span>
+              左右だけ</span></label>
+            <label><input type="radio" name="mode" value="cross"><span class="seg-in"><span class="mode-fig"><i></i><i class="on"></i><i></i><i class="on"></i><i class="me"></i><i class="on"></i><i></i><i class="on"></i><i></i></span>
+              前後左右</span></label>
+            <label><input type="radio" name="mode" value="king"><span class="seg-in"><span class="mode-fig"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="me"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>
+              まわり全部（ななめも）</span></label>
           </div>
           <!-- 🔴 説明文（前後左右の4つの席を「隣」とみなします）は外した（2026-09-09 本人）。
                本人「これいらないね。図になったから」＝小さな図で伝わっているので、文が重複する。
@@ -497,6 +525,8 @@ body.screen .seat.dup .nm{text-decoration:none}
          ⭐席をさわる話（ドラッグの説明）と同じ行に置く＝間違えた直後に目に入る -->
     <div class="drag-row noprint">
       <button id="undo" type="button" disabled>↩ 1つ戻す</button>
+      <!-- ⭐空ける席をえらぶ（2026-09-23 本人「ここは空席っていう指示できないかな」「Aが直感的でいいな」） -->
+      <button id="offPick" type="button">空ける席をえらぶ</button>
       <!-- ⭐サンプルの間は「1つ戻す」を隠して、ここに「サンプルを消す」（2026-09-14 本人「下だと見ない。上に入れてほしい」
            「サンプルの時は一つ戻すボタンを隠してもいいから、その行に入れたら」） -->
       <button id="sampleClear2" type="button" hidden>サンプルを消す</button>
@@ -626,7 +656,7 @@ body.screen .seat.dup .nm{text-decoration:none}
                 </select></div>
             </div>
             <p class="hint" id="avoidNote"></p>
-            <p class="hint">下の<strong>⑧「保存したデータの利用」</strong>で座席を記録しておくと使えます。人数と班の数によっては、どうしても重なることがあります。そのときは<strong>重なった人を画面に出します</strong>。</p>
+            <p class="hint">下の<strong>⑦「保存したデータの利用」</strong>で座席を記録しておくと使えます。人数と班の数によっては、どうしても重なることがあります。そのときは<strong>重なった人を画面に出します</strong>。</p>
           </div>
         </div>
       </div>
@@ -644,7 +674,7 @@ body.screen .seat.dup .nm{text-decoration:none}
         <div><label for="font">書体</label>
           <select id="font">
             <option value="gothic" selected>ゴシック体</option>
-            <option value="maru">丸文字（Windows・iPadのみ）</option>
+            <option value="maru">丸文字</option>
             <option value="mincho">明朝体</option>
           </select>
         </div>
@@ -703,7 +733,7 @@ body.screen .seat.dup .nm{text-decoration:none}
       <details class="opt sub noprint tips-sm" style="margin-top:14px">
         <summary>タブレット・スマホの方へ</summary>
         <div class="body">
-          <p>スマホやタブレットでも、パソコンと同じPDFができます。<strong>いつも1枚に収まります。</strong>保存先は、お使いの端末の「ダウンロード」や「ファイル」です。</p>
+          <p>スマホやタブレットでも、パソコンと同じPDFができます。<strong>いつも1枚に収まります。</strong>保存先は、使っている端末の「ダウンロード」や「ファイル」です。</p>
         </div>
       </details>
     </section>
@@ -720,35 +750,18 @@ body.screen .seat.dup .nm{text-decoration:none}
   </div>
 
 
-  <section class="card noprint">
-    <h2><span class="step">7</span>画面の保存&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
-    <div class="tip-body" hidden>
-      <ul>
-        <li><strong>いま開いている画面をそのまま残します。</strong>名簿・教室の形・条件・男女の指定・座席表まで、次に開いたときそのまま出ます。</li>
-        <li><strong>残るのは1つだけ</strong>です。名簿を入れかえると、前のものは上書きされます。いくつも残したいときは<strong>⑧</strong>を使ってください。</li>
-        <li><strong>チェックを外すと、保存していたものは消えます。</strong>次に開いたときは最初からの設定になります。いま見ている画面はそのままです。</li>
-        <li>残るのは<strong>この端末の中だけ</strong>です。<strong>どこにも送信されません。</strong>読み込んだ画像は保存されません。</li>
-      </ul>
-    </div>
-    <label style="font-weight:normal">
-      <input type="checkbox" id="save"> この画面を保存する
-    </label>
-    <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。<br>
-      ⚠<b>共用の端末で使ったときは、このチェックを外して、この画面を閉じてください。</b></p>
-    <p><span class="saving" id="savingLabel"></span></p>
-  </section>
 
   <!-- 🔴 保存まわりの知らせはここ（2026-09-01 本人）。
        ⚠席替えボタンの下に出すと、何の話か分からない -->
   <div id="msg2" class="noprint"></div>
 
   <section class="card noprint">
-    <h2><span class="step">8</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+    <h2><span class="step">7</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
     <div class="tip-body" hidden>
       <!-- 🔴 ⑧の？の一番上にも置く（2026-09-09 本人）。①と同じ考え方 -->
       <p>🔒 <strong>保存先もインターネットではありません。</strong>使っている端末のブラウザの中だけに残るので、ほかの人からは見えません。パソコン・タブレット・スマホ、どれでも同じです。</p>
       <ul>
-        <li><strong>名前を付けて、<b style="font-size:inherit">20件</b>まで保存できます。</strong>残るのは<strong>この端末の中だけ</strong>です。</li>
+        <li><strong>名前を付けて、<b style="font-size:inherit">20件</b>まで保存できます。</strong>残るのは<strong>使っている端末の中だけ</strong>です。</li>
         <li><strong>さくらツールズの中で共通です。</strong>ほかの道具で保存したデータもここに出ますし、逆もできます（教室の形や班の設定はツールごとに覚えます）。</li>
         <li>呼び出すのは①の<strong>「このデータを自動入力」</strong>から。名簿も条件も入るので、あとは「席替えする」を押すだけです。</li>
         <li><strong>「記録の座席を表示」</strong>＝そのときの座席をそのまま出します（<strong>席替えはしません</strong>）。</li>
@@ -756,7 +769,7 @@ body.screen .seat.dup .nm{text-decoration:none}
       </ul>
     </div>
 
-    <p class="hint">保存したデータは、<b>座席表・席次表・スライド</b>で使えます。</p>
+    <p class="roster-tools">保存した名簿は、次の道具で使えます。</p>
 
     <p class="safe">🔒 <strong>保存したものは、使っている端末の中だけに残ります。</strong></p>
 
@@ -877,7 +890,7 @@ body.screen .seat.dup .nm{text-decoration:none}
     <details class="howto">
       <summary>データの扱い</summary>
       <div class="body">
-      <p><strong>使っている端末の中だけで完結できます。</strong>使った名簿がネット上に流れることはありません。外部には送っていないので、AIの学習に使われることも、個人情報が漏れることもありません。安心して使えます。「画面の保存」をオンにしたときだけ、この端末の中に残ります。オフのままなら、ページを閉じた時点で消えます。インストールも会員登録もいりません。</p>
+      <p><strong>使っている端末の中だけで完結できます。</strong>使った名簿がネット上に流れることはありません。外部には送っていないので、AIの学習に使われることも、個人情報が漏れることもありません。安心して使えます。「画面の保存」をオンにしたときだけ、使っている端末の中に残ります。オフのままなら、ページを閉じた時点で消えます。インストールも会員登録もいりません。</p>
       </div>
     </details>
 
@@ -891,9 +904,10 @@ body.screen .seat.dup .nm{text-decoration:none}
     <span class="copy">さくらツールズ　© 2026 SAKURA tools</span></div>
 </footer>
 
-<script src="../paper-pdf.js?v=2"></script>
+<script src="../paper-pdf.js?v=5"></script>
 <script src="../seating.js?v=57"></script>
-<script src="seat.js?v=209"></script>
+<script src="../roster-tools.js?v=1"></script>
+<script src="seat.js?v=216"></script>
 <!-- 🔴 印刷用の1枚絵の置き場（2026-09-01）。画面には出ない。
      ⚠**body の直下に置くこと。**中に入れると、印刷のときに親ごと隠されて白紙になる -->
 <div id="printImgWrap"></div>

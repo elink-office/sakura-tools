@@ -289,3 +289,37 @@ body.screen #prevSheet{ display: none !important; }
 /* ⚠「設定なし」のあいだは、組み合わせの箱を薄くして触れなくする。
    ⭐入れたものは消さない。もどせば、そのまま効く */
 #pairBox.off{ pointer-events:none }
+
+/* ⭐通路と、空けて細くした真ん中の席（2026-09-23 本人「机間巡視用の通路」「真ん中を細くするもやりたい」）
+   ⭐.aisle ＝通路（何も描かない）／.dead ＝空けた席（点線だけ。机はそこにあるので形は残す）
+   ⚠どちらにも .seat を付けない＝ドラッグで人を置けない・文字の大きさの計算にも入らない */
+.grid .aisle{ min-width: 0; }
+.grid .dead{ min-width: 0; border: 1px dashed #d4d4d4; border-radius: 8px; background: transparent; }
+body.screen .grid .dead{ border-color: #e6e6e6; }
+
+/* ⭐紙の書体をPDFとそろえる（2026-09-23 本人「見本と同じ…フォントでお願い」「フォントはなんでもいいけどね」）。
+   ⭐Google Fonts の書体＝どの端末でも同じ字の形。PDFにも同じ書体が入る（paper-pdf.js）。
+   ⭐紙ぜんぶ（見出し・帯・サイト名）＝Noto Sans JP。1マスの中は えらんだ書体
+   ⚠上の「書体」の指定より後に置く（こちらを勝たせる） */
+.sheet{ font-family: "Noto Sans JP", sans-serif; }
+.sheet.f-gothic .cell{ font-family: "Noto Sans JP", sans-serif; }
+.sheet.f-mincho .cell{ font-family: "Noto Serif JP", serif; }
+.sheet.f-maru .cell{ font-family: "M PLUS Rounded 1c", "Noto Sans JP", sans-serif; }
+
+/* ⭐モニターに映しているあいだも、マウスなら席を動かせる（2026-09-23 本人「PCは動かせるようにして！」
+   「学籍番号で入れ替えようとすると難しくて」＝ふだんの画面は字が小さい）。
+   ⚠共通の style.css は「映しているあいだは動かせない」（8/30＝指でスクロールして席をつかむため）。
+     ⭐マウスの端末（hover:hover かつ pointer:fine）だけ、ここで戻す。スマホ・タブレットは今までどおり */
+@media (hover:hover) and (pointer:fine){
+  body.screen .seat{ pointer-events: auto; }
+}
+
+/* ⭐空ける席をえらぶ（2026-09-23）。えらんでいるあいだだけ、押せるところを桜色で囲む（紙には出ない＝影は写さない） */
+#offPick.on{ background: var(--pink, #e58fae); color: #fff; border-color: var(--pink, #e58fae); }
+body.picking .grid .seat, body.picking .grid .dead.off{ cursor: pointer; }
+body.picking .grid .seat:hover, body.picking .grid .dead.off:hover{ box-shadow: 0 0 0 3px rgba(229,143,174,.55); }
+
+/* ⭐グループ記号（A・B…）は番号と同じ大きさ（2026-09-23 本人「学籍番号を大きく表示したいのに、グループ番号のほうが大きい」）。
+   ⭐大きさは seki.js が --gnoSize（画面）／--gnoPrint（紙）に入れる。⚠共通 style.css・print.css の固定の大きさを上書き */
+.sheet .seat .gno{ font-size: var(--gnoSize, 11px); padding: 1px 5px 3px 4px; }
+@media print{ .sheet .seat .gno{ font-size: var(--gnoPrint, 3.2mm) !important; } }

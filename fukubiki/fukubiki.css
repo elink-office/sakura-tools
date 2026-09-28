@@ -1,0 +1,85 @@
+/* 福引ガラガラ（2026-09-26 たたき台）
+   ⭐動かす画面の枠・ボタン・玉の見た目は ../random/random.css（ランダム指名メーカー）と共通。ここは福引だけのもの */
+:root{ color-scheme: light; }
+.pk-try{margin:18px 0 0}
+
+/* ① 賞の行 */
+.fk-rows{list-style:none;margin:0 0 8px;padding:0;display:flex;flex-direction:column;gap:6px}
+.fk-rows li{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.fk-rows select,.fk-rows input{font-size:.92rem;padding:5px 8px;border-radius:8px;border:1px solid var(--line);font-family:inherit;background:#fff}
+.fk-rows .nm{width:10em}
+.fk-rows .ct{width:4.5em}
+.fk-lead{margin:0 0 10px}
+/* ⚠スマホで「本」と「×」が2行目に落ちた（2026-09-26 点検） */
+@media (max-width:480px){ .fk-rows .nm{width:7.5em} .fk-rows .ct{width:3.6em} .fk-rows li{gap:5px} }
+.fk-dot{width:22px;height:22px;border-radius:50%;flex:0 0 auto;box-shadow:inset -2px -3px 4px rgba(0,0,0,.2)}
+.fk-rows .mvbtn{width:28px;height:26px;padding:0;font-size:11px;color:#9a9ea4;background:#f2f3f5;border:0;border-radius:4px;box-shadow:none}
+.fk-rows .mvbtn[disabled]{opacity:.35;cursor:default}   /* いちばん上の▲・いちばん下の▼（ページの型 9-a） */
+.fk-total{font-size:.9rem;color:var(--ink-soft);margin-left:8px}
+
+/* 動かす画面＝左に八角形の箱、右に出た玉と賞、下にのこりの本数 */
+/* ⭐回る箱を大きく（2026-09-27 本人「福引はぐるぐる回るところが大きいほうがいい」）＝左の列 36%→42%・箱 min(26cqw,52cqh)→min(38cqw,66cqh)（絵の高さを150→112にした分も大きい） */
+/* ⭐左右反転＝機械は右、出た玉と賞は左（2026-09-27 本人「右に置いて、左に転がしたい」） */
+.fk-wrap{position:absolute;inset:0;display:grid;grid-template-columns:58% 42%}
+.fk-mach{position:relative;order:2}
+/* ⭐絵は左へ長い（viewBox -70〜100）。機械の部分（0〜100）が前と同じ場所・大きさに来るように、幅は1.7倍・右のはしをそろえる。少し上へ（本人「だから少し上に置くといいかもね」） */
+.fk-box{--w:min(38cqw,66cqh);position:absolute;right:calc(50% - var(--w) / 2);top:-3%;width:calc(var(--w) * 1.7)}
+.fk-box svg{width:100%;height:auto;overflow:visible;display:block}
+.fk-box svg.fk-front{position:absolute;left:0;top:0;z-index:5;pointer-events:none}   /* 受け皿の手前のかべ＝転がる玉（z-index 4）より前 */
+.fk-box .rot{transform-origin:50px 50px;transform-box:view-box}
+.fk-box.spin .rot{animation:fkTurn 1.8s linear infinite}
+@keyframes fkTurn{to{transform:rotate(360deg)}}
+.fk-right{position:static}
+/* ⭐出た玉と賞＝画面のまん中（「回す」ボタンの上）。たての位置は JS（placeCur）で回る箱のまん中にそろえる */
+.fk-cur{position:absolute;left:50%;top:20%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:1.5cqh;z-index:3}
+.fk-prize{font-weight:900;font-size:min(7cqh,5cqw);line-height:1.1;color:var(--ink);text-align:center;min-height:1.1em}
+/* ⭐賞と のこり は左の上から縦に並べる（2026-09-27 本人「左に上から玉の数を表示して縦に並べる」） */
+.fk-list{position:absolute;left:3cqw;top:1cqh;display:flex;flex-direction:column;align-items:flex-start;gap:1cqh}
+.fk-item{display:flex;align-items:center;gap:.6em;font-size:min(2.8cqh,20px);color:var(--ink);background:#fff;border:1px solid #e6e8ec;border-radius:999px;padding:.3em .9em}
+.fk-item .fk-dot{width:1em;height:1em}
+.fk-item.zero{opacity:.45}
+/* 福引の玉は字なし・色だけ（ぬりの玉） */
+.fk-ball{border-radius:50%;background:radial-gradient(circle at 34% 28%,#fff 0 8%,var(--bc) 40%,color-mix(in srgb,var(--bc) 60%,#000) 100%);
+  box-shadow:0 14px 18px -8px rgba(0,0,0,.35),inset -5px -7px 12px rgba(0,0,0,.15)}
+/* ⭐落ちるだけ（弾まない・2026-09-27 本人「揺れなくてもOK」） */
+.fk-drop{position:absolute;z-index:4;transform:translate(-50%,-50%);animation:fkDrop .38s cubic-bezier(.5,0,1,1) both}
+@keyframes fkDrop{0%{top:var(--y0)}100%{top:var(--y1)}}
+@media (prefers-reduced-motion: reduce){ .fk-box.spin .rot{animation:none} .fk-drop{animation:none} }
+
+/* ⭐上の帯＝「n回目」の横に「のこり n本」（2026-09-27 本人「のこり○本を左の1回目の横に」）。「「回す」でガラガラ」は出さない */
+.fk-run .pk-top{right:auto;justify-content:flex-start;gap:1.4cqw;padding-left:2cqw}
+.fk-run .pk-round,.fk-run .pk-left{position:static}
+/* ⭐賞の並びは、たての真ん中（2026-09-27 本人「１等とかは、上下中央になるように配置して」） */
+.fk-run .fk-list{top:50%;transform:translateY(-50%)}
+/* ⭐「はじめから」は右端（本人「はじめからボタンは右において！」・ビンゴマシーンと同じ） */
+.fk-run .pk-btns #resetBtn{position:absolute;right:3cqw;bottom:0}
+@media (max-width:600px){ .fk-run .pk-btns #resetBtn{position:static} }   /* ⚠スマホの見本の枠では「回す」と重なるので、横に並べたまま */
+
+/* ⭐賞の名前は玉の上（2026-09-27 本人「文字、上にしてみて」）。前＝玉の下 */
+.fk-cur .fk-prize{order:-1}
+/* ⭐賞の名前は細く（2026-09-27 本人「１等って、細くてもいいかも」）。前＝900 */
+.fk-cur .fk-prize{font-weight:500}
+/* ⭐賞の名前は出さない＝主役は玉。何が出たかは左の並びで分かる（2026-09-27 本人「主役をあくまでも玉にしたいからね。文字なしにしようか。左にあるしさ！」） */
+.fk-cur .fk-prize{display:none}
+/* ⭐いま出た賞の枠が光る＝その玉の色のふちと光（2026-09-27 本人「当たったら、左の枠が光るとか」）。次を回すと消える */
+/* ⭐線は細いまま（1px）・まわりの光だけ（2026-09-27 本人「そのほかの枠線は細くていいよ。光だけつけよう」）。前＝2px の太いふち */
+.fk-item.hit{opacity:1;border-color:var(--bc);box-shadow:0 0 18px 4px color-mix(in srgb,var(--bc) 55%,transparent);font-weight:700;animation:fkGlow 1.2s ease-in-out 3}
+@keyframes fkGlow{50%{box-shadow:0 0 30px 10px color-mix(in srgb,var(--bc) 70%,transparent)}}
+@media (prefers-reduced-motion: reduce){ .fk-item.hit{animation:none} }
+/* ⭐光った枠は少し大きく（2026-09-27 本人「少し大きくする。それを」→ B＝光った枠だけ）。左はしを軸に1.15倍 */
+.fk-item{transform-origin:left center}
+.fk-item.hit{transform:scale(1.15);animation:fkGrow .4s cubic-bezier(.3,1.4,.5,1),fkGlow 1.2s ease-in-out 3}
+@keyframes fkGrow{from{transform:scale(1)}}
+@media (prefers-reduced-motion: reduce){ .fk-item.hit{animation:none} }
+/* ⭐5つ目からは右の列へ（2026-09-27 本人「追加は８個まで。追加分は右に増やすといいと思うよ。下になるとどんどん枠が大きくなるから。ボタンは見える位置に留めておきたい」）
+   ＝上から4つずつ、左の列→右の列。広い画面だけ（狭い画面は1列のまま）。名前の欄を少し細く・すきまを少し詰めて2列が入るように */
+@media (min-width:861px){
+  .fk-rows{display:grid;grid-template-rows:repeat(4,auto);grid-auto-flow:column;justify-content:start;gap:6px 22px}
+  .fk-rows li{gap:5px}
+  .fk-rows .nm{width:7.5em}
+}
+/* ⭐「見本を見る」は①の上・左（サンプルのボタンと同じ形＝ランダム指名の .pk-sample・座席表の .seat-sample） */
+.fk-sample{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;margin:14px 0 14px}
+/* 音を鳴らす（①の中・ルーレットの「当たった項目を、次から外す」と同じ形） */
+.fk-opt{margin:6px 0 0;font-size:.95rem}
+.fk-opt label{display:inline-flex;align-items:center;gap:6px;font-weight:normal;cursor:pointer}

@@ -45,6 +45,54 @@
      ⚠fetch で .ttf を取りに行く形にしていたが、⭐**ファイルを直接開いたとき**（file:///…）
        ブラウザが止めるので「Failed to fetch」になった（本人のPCで発生）。
      ⭐<script> なら、直接開いてもサイトから開いても同じように読める */
+  /* 🔴⭐明朝・丸文字（2026-09-23 本人「見本と同じ…フォントでお願い」「基本的には見本と一緒がいい」）。
+     ⭐画面の紙と同じ書体（Google Fonts の Noto Serif JP ／ M PLUS Rounded 1c）をPDFにも入れる。
+     ⚠1つ5MBほどあるので、⭐紙がその書体を使っているときだけ読む */
+  var EXTRA = {
+    serif: { test: /Noto Serif JP/i, files: ['NotoSerifJP-Regular.js', 'NotoSerifJP-Bold.js'], reg: 'serifReg', bold: 'serifBold', name: 'NSJ' },
+    /* ⭐丸文字＝M PLUS Rounded 1c（2026-09-23 本人「②でいこうか」。Zen Maru Gothic は本人「なんか変な丸文字」でやめた）。
+       ⚠第2水準の漢字が入っていない（邉・濵・栁・德など）→ ⭐その字だけゴシック（NJP）で出す（missing） */
+    maru:  { test: /M PLUS Rounded 1c/i, files: ['MPLUSRounded1c-Regular.js', 'MPLUSRounded1c-Bold.js'], reg: 'maruReg', bold: 'maruBold', name: 'MPR', missing: 'maruMissing' }
+  };
+  /* ⭐紙のどこかでその書体を使っているか */
+  function fontsIn(els) {
+    var need = {};
+    [].concat(els).forEach(function (el) {
+      if (!el) return;
+      var all = [el].concat([].slice.call(el.querySelectorAll('*')));
+      all.forEach(function (n) {
+        var ff = global.getComputedStyle(n).fontFamily || '';
+        for (var k in EXTRA) if (EXTRA[k].test.test(firstFamily(ff))) need[k] = true;
+      });
+    });
+    return need;
+  }
+  /* ⭐書体の並びのいちばん前＝画面で実際に使っている書体 */
+  function firstFamily(ff) { return String(ff || '').split(',')[0].replace(/["']/g, '').trim(); }
+  function familyOf(cs) {
+    var f = firstFamily(cs.fontFamily);
+    for (var k in EXTRA) if (EXTRA[k].test.test(f) && lib && lib[k]) return EXTRA[k].name;
+    return 'NJP';
+  }
+  function readyFor(els) {
+    var need = fontsIn(els);
+    return ready().then(function () {
+      var chain = Promise.resolve();
+      Object.keys(need).forEach(function (k) {
+        if (lib[k]) return;
+        var e = EXTRA[k];
+        chain = chain.then(function () { return loadScript(BASE + e.files[0]); })
+          .then(function () { return loadScript(BASE + e.files[1]); })
+          .then(function () {
+            var f = global.NJP_FONT || {};
+            if (!f[e.reg] || !f[e.bold]) throw new Error('フォントを読み込めませんでした');
+            lib[k] = { reg: f[e.reg], bold: f[e.bold], missing: e.missing ? (f[e.missing] || '') : '' };
+          });
+      });
+      return chain.then(function () { return lib; });
+    });
+  }
+
   function ready() {
     if (lib) return Promise.resolve(lib);
     return loadScript(BASE + 'jspdf.umd.min.js')
@@ -63,6 +111,14 @@
     doc.addFont('NJP-R.ttf', 'NJP', 'normal');
     doc.addFileToVFS('NJP-B.ttf', lib.bold);
     doc.addFont('NJP-B.ttf', 'NJP', 'bold');
+    for (var k in EXTRA) {
+      if (!lib[k]) continue;
+      var nm = EXTRA[k].name;
+      doc.addFileToVFS(nm + '-R.ttf', lib[k].reg);
+      doc.addFont(nm + '-R.ttf', nm, 'normal');
+      doc.addFileToVFS(nm + '-B.ttf', lib[k].bold);
+      doc.addFont(nm + '-B.ttf', nm, 'bold');
+    }
     doc.setFont('NJP', 'normal');
   }
 
@@ -148,6 +204,13 @@
       };
     }
 
+    /* ⭐薄い色を、白い紙に置いたときの色にする（薄さ1＝そのまま） */
+    function mixWhite(c) {
+      if (!c || c.length < 4 || c[3] >= 1) return c;
+      var a = c[3];
+      return [0, 1, 2].map(function (k) { return Math.round(c[k] * a + 255 * (1 - a)); });
+    }
+
     /* ---------- 箱（地の色・枠） ---------- */
     function drawBox(node, cs) {
       var r = rectOf(node);
@@ -158,15 +221,27 @@
       var bw = parseFloat(cs.borderTopWidth) || 0;
       var bc = rgb(cs.borderTopColor);
       var style = '';
+      /* 🔴⭐薄い色（rgba）は、紙の白と混ぜてから塗る（2026-09-23 本人「色が全く違うものがPDFになる」）。
+         ⚠前は薄さ（4つ目の数）を捨てて、元の色をそのまま塗っていた。
+           グループの塗り（.06）が濃い色になり、同じ色で書いた「A」「B」が塗りに溶けて消えていた。
+         ⭐紙は白なので、白と混ぜれば画面と同じ色になる */
+      bg = mixWhite(bg); bc = mixWhite(bc);
       if (bg) { doc.setFillColor(bg[0], bg[1], bg[2]); style += 'F'; }
+      var dash = null;
       if (bw > 0 && bc && cs.borderTopStyle !== 'none') {
         doc.setDrawColor(bc[0], bc[1], bc[2]);
         doc.setLineWidth(Math.max(mm(bw), 0.1));
         style += 'D';
+        /* ⭐点線も画面のとおりに（⚠前は実線になっていた） */
+        var lw = Math.max(mm(bw), 0.1);
+        if (cs.borderTopStyle === 'dashed') dash = [lw * 3, lw * 2.5];
+        else if (cs.borderTopStyle === 'dotted') dash = [lw, lw * 1.5];
       }
       if (!style) return;
+      if (dash && doc.setLineDashPattern) doc.setLineDashPattern(dash, 0);
       if (rad > 0.2) doc.roundedRect(r.x, r.y, r.w, r.h, rad, rad, style);
       else doc.rect(r.x, r.y, r.w, r.h, style);
+      if (dash && doc.setLineDashPattern) doc.setLineDashPattern([], 0);
     }
 
     /* ---------- 文字 ---------- */
@@ -186,14 +261,23 @@
       }
       doc.setTextColor(col[0], col[1], col[2]);
       var w = parseInt(cs.fontWeight, 10);
-      doc.setFont('NJP', (w >= 600 || cs.fontWeight === 'bold') ? 'bold' : 'normal');
+      var fam = familyOf(cs), wt = (w >= 600 || cs.fontWeight === 'bold') ? 'bold' : 'normal';
+      doc.setFont(fam, wt);
       doc.setFontSize(size);
+      /* ⭐書体に無い字は、ゴシック（NJP）に切り替えて出す（画面の CSS も「丸文字 → Noto Sans JP」の順） */
+      var runs = splitRuns(text, fam);
+      function runsW() {
+        var t = 0;
+        runs.forEach(function (u) { doc.setFont(u.f, wt); t += doc.getTextWidth(u.t); });
+        doc.setFont(fam, wt);
+        return t;
+      }
       /* 🔴⭐測った枠に必ず収める（2026-09-13 本人「これ、ひどい」）。
          ⚠画面の書体とPDFの書体は幅がちがう。同じ大きさで置くと⭐はみ出して、
            となりの文字（名前と「様」、フリガナ）と重なる。
          ⭐はみ出すぶんだけ小さくする＝画面と同じ枠の中に必ず入る */
       var fitW = Math.max(r.w - 0.3, 0.5);
-      var tw = doc.getTextWidth(text);
+      var tw = (runs.length > 1) ? runsW() : doc.getTextWidth(text);
       var k1 = (tw > fitW) ? (fitW / tw) : 1;
       var k2 = ((size * 0.352778) > r.h && r.h > 0) ? (r.h / (size * 0.352778)) : 1;
       var kk = Math.min(k1, k2);
@@ -209,8 +293,34 @@
         doc.setGState(new doc.GState({ opacity: thin }));
       }
       /* ⭐その行の枠のまん中に置く＝画面で見えている位置そのもの */
-      doc.text(text, r.x + r.w / 2, r.y + r.h / 2, o);
+      if (runs.length > 1 && !o.angle) {
+        /* ⭐字の書体が混ざるときは、左から順に並べる（全体でまん中） */
+        var x0 = r.x + r.w / 2 - runsW() / 2;
+        runs.forEach(function (u) {
+          doc.setFont(u.f, wt);
+          doc.text(u.t, x0, r.y + r.h / 2, { baseline: 'middle' });
+          x0 += doc.getTextWidth(u.t);
+        });
+        doc.setFont(fam, wt);
+      } else {
+        doc.text(text, r.x + r.w / 2, r.y + r.h / 2, o);
+      }
       if (thin < 1 && doc.GState) doc.restoreGraphicsState();
+    }
+
+    /* ⭐書体に無い字のところで区切る → [{t:'渡', f:'MPR'}, {t:'邉', f:'NJP'}, …] */
+    function splitRuns(text, fam) {
+      var miss = '';
+      for (var k in EXTRA) if (EXTRA[k].name === fam && lib[k]) miss = lib[k].missing || '';
+      if (!miss) return [{ t: text, f: fam }];
+      var out = [];
+      for (var i = 0; i < text.length; i++) {
+        var ch = text.charAt(i);
+        var f = (miss.indexOf(ch) >= 0) ? 'NJP' : fam;
+        if (out.length && out[out.length - 1].f === f) out[out.length - 1].t += ch;
+        else out.push({ t: ch, f: f });
+      }
+      return out;
     }
 
     /* ⭐文字は「行ごとの枠」を測って置く。⚠折り返しも画面のとおりになる */
@@ -301,20 +411,20 @@
     /* ⭐紙1枚 */
     save: function (el, opt) {
       opt = opt || {};
-      return ready().then(function () {
+      return readyFor(el).then(function () {
         buildMany([el], opt).save((opt.name || 'sakura') + '.pdf');
       });
     },
     /* ⭐何枚かまとめて（座席表の「3案まとめて」） */
     saveMany: function (els, opt) {
       opt = opt || {};
-      return ready().then(function () {
+      return readyFor(els).then(function () {
         buildMany(els, opt).save((opt.name || 'sakura') + '.pdf');
       });
     },
     /* ⚠中を確かめるとき用 */
     output: function (els, opt) {
-      return ready().then(function () {
+      return readyFor(els).then(function () {
         return buildMany([].concat(els), opt || {}).output('blob');
       });
     }
