@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&display=swap">
 <link rel="stylesheet" href="../style.css?v=155">
-<link rel="stylesheet" href="seki.css?v=38">
+<link rel="stylesheet" href="seki.css?v=39">
 <link rel="stylesheet" href="../print.css?v=63" media="print">
 <style>
 /* 🔴 見本は押すと大きくなる（2026-09-04 本人）。
@@ -191,6 +191,8 @@
              ⭐事実で止めない。「だから、そのまま貼って大丈夫」まで書く -->
         <p>🔒 <strong>名簿はインターネットに送りません。</strong>使っている端末のブラウザの中だけで計算しているので、名前がどこかに保存されることも、AIの学習に使われることもありません。パソコン・タブレット・スマホ、どれでも同じです。</p>
         <p><strong>Excelから、必要な列をまとめて選んで貼り付けてください。</strong>会社名・役職・名前が並んだ範囲をそのままコピーして、この欄に貼るだけです。</p>
+        <!-- ⭐項目名の行は入れてもらわない（2026-09-28 本人「1行目を入れてたら、スクショの人数が増える。だから、項目名なしでエクセルをコピペしてもらうようにする」） -->
+        <p><strong>1行目の項目名（「名前」「学科」などの見出し）は、選ばずにコピーしてください。</strong>入っていたときは、項目名の行はとばして、列の役割を見分けるのに使います。</p>
         <p>貼り付けると、<strong>どの列が何なのかを自動で見分けます。</strong>数字だけの列は番号、カタカナだけの列はフリガナ、といった具合です。違っていたら、下のメニューで選び直せます。</p>
         <p><strong>名前だけでも作れます。</strong>1行に1人ずつ書けば、そのまま席次表になります。</p>
         <p><strong>手で書くときは、カンマ（,）で区切ってください。</strong>Excelから貼るときのタブは、この欄に打てないためです。<br>
@@ -213,12 +215,17 @@
         <div>
       <!-- ⭐枠の上にも出す（2026-09-10 本人「エクセルから貼り付けるってあったほうがいいよね」）。
            ⚠知り合いの先生からも同じことを言われたとのこと -->
-      <label for="names">エクセルから貼り付ける</label>
-      <textarea id="names" placeholder="クリックして貼り付け（手入力可）&#10;&#10;会社 ▸ 株式会社さくら商事　部長　山田 太郎&#10;大学 ▸ 1001　山田 太郎　ヤマダ タロウ　経営学科&#10;個人 ▸ 山田 太郎&#10;&#10;列の順番は気にしなくて大丈夫"></textarea>
+      <label for="names">エクセルから貼り付ける（項目名不要）</label><!-- ⭐（項目名不要）を足した（2026-09-28 本人） -->
+      <textarea id="names" placeholder="クリックして貼り付け（手入力可）&#10;&#10;会社 ▸ 株式会社さくら商事　部長　山田 太郎&#10;大学 ▸ 1001　山田 太郎　ヤマダ タロウ　経営学科&#10;個人 ▸ 山田 太郎&#10;&#10;列の順番は気にしなくて大丈夫&#10;1行目の項目名は入れずにコピー"></textarea>
+      <!-- ⭐今のデータをクリア（2026-09-28 本人「2クラス目を入力したいときに、削除しかない。削除じゃなくてクリアしたいんだけど」）。
+           ⭐置き場所は貼り付け欄のすぐ下（本人「Excelから貼り付けるの下がいいと思ってた」）。⚠最初は人数のとなりに置いてしまった
+           ⚠「削除」は保存したデータを消す。こちらは画面の名簿だけ。空けた席も消す。会場の形・見た目・保存したデータは残す -->
+      <p style="margin:8px 0 0"><button class="mini" id="clearNow" type="button">今のデータをクリア</button></p>
         </div>
         <div>
       <div class="row tight" style="margin-top:10px">
-        <div><label>人数</label><div class="bignum" id="count">0人</div></div>      </div>
+        <div><label>人数</label><div class="bignum" id="count">0人</div></div>
+      </div>
 
       <div id="colMapWrap" hidden style="margin-top:12px">
         <label>貼り付けた列の役割&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></label>
@@ -260,8 +267,108 @@
       </div>
     </details>
 
+    <details class="opt noprint" id="cellCard">
+      <summary><span class="step">2</span>1マスの中身&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
+      <div class="body">
+      <div class="tip-body" hidden>
+        <p><strong>そのままでも整って出ます。</strong>直したいところだけ触ってください。</p>
+        <p>日本の席札は<strong>名前がいちばん下で、いちばん大きい</strong>のがふつうです。この形を初期値にしてあります。</p>
+        <p>出したくない行は<strong>「なし」</strong>を選んでください。名簿に入っていない項目は、大きさを選んでも出ません。</p>
+        <p><strong>役職のある人と無い人が並んでも、名前の高さはそろいます。</strong>役職の無い人は、そこを空けたまま並べるためです。</p>
+        <p><strong>会社名が長いときは、所属の行だけが小さくなります。</strong>名前は大きいままです。</p>
+      </div>
+      <div class="row tight">
+        <div><label for="honor">敬称</label>
+          <select id="honor">
+            <option value="様">様</option>
+            <option value="さん">さん</option>
+            <option value="先生">先生</option>
+            <option value="">なし</option>
+          </select></div>
+        <!-- ⭐通し番号（名簿の何番目か）と、社員番号・学籍番号を分けた（2026-09-28 本人「社員番号と学籍番号一緒でしょ？でもここで言う通し番号は別だよね？」）。
+             ⚠前は「番号の位置（右上／いちばん上の行／なし）」1つで両方を切りかえていた＝学籍番号の列が無いと通し番号が出る、の使い回し。
+             ⭐通し番号は右上のしるし。はじめは「なし」（本人「通し番号は最初は不要」） -->
+        <div><label for="szSeq">通し番号（右上）</label>
+          <select id="szSeq"><option value=".66">大</option><option value=".52">中</option><option value=".42">小</option><option value="none" selected>なし</option></select></div>
+      </div>
+      <div class="cellcfg">
+        <div class="cellcfg-set">
+          <p class="note-sm">上から <b>社員番号・学籍番号 → 会社名・大学名 → 役職・学部・学科 → フリガナ → 名前</b> の順に並びます。</p><!-- ⚠「中身のある人と無い人が並んでも、名前の高さはそろいます。」は消した（2026-09-28 本人「・・・の中身っていうのがわかりにくくて。これいらないと思う」） -->
+          <div class="lines">
+            <div class="lrow">
+              <label for="szNo">社員番号・学籍番号</label>
+              <select id="szNo"><option value=".66">大</option><option value=".52" selected>中</option><option value=".42">小</option><option value="none">なし</option></select>
+            </div>
+            <div class="lrow">
+              <label for="szOrg">会社名・大学名</label>
+              <select id="szOrg"><option value=".62">大</option><option value=".50" selected>中</option><option value=".40">小</option><option value="none">なし</option></select>
+            </div>
+            <div class="lrow">
+              <label for="szTtl">役職・学部・学科</label>
+              <select id="szTtl"><option value=".62">大</option><option value=".50" selected>中</option><option value=".40">小</option><option value="none">なし</option></select>
+            </div>
+            <div class="lrow">
+              <label for="szKana">フリガナ</label>
+              <select id="szKana"><option value=".56">大</option><option value=".44" selected>中</option><option value=".36">小</option><option value="none">なし</option></select>
+              <!-- ⭐フリガナの文字は、フリガナの行のとなり（2026-09-28 本人「フリガナの文字は、フリガナの隣に表示してほしい」） -->
+              <select id="kanaStyle" aria-label="フリガナの文字"><option value="kata">カタカナ</option><option value="hira">ひらがな</option></select>
+            </div>
+          </div>
+        </div>
+        <div class="cellcfg-prev">
+          <div class="prevlabel">見本</div>
+          <div class="sheet" id="prevSheet">
+            <div class="seat" id="prevSeat"></div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </details>
+
+    <details class="opt noprint" id="grpCard">
+      <summary><span class="step">3</span>グループ分け&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
+      <div class="body">
+      <div class="tip-body" hidden>
+        <p><strong>行の中身が同じ人に、同じ色が付きます。</strong>部署ごと・学科ごとに分けたいときは、これがいちばん早いです。色は人に付くので、席を動かすと色もついて動きます。</p>
+        <p><strong>分け方は、その言葉をどの行に入れたかで選びます。</strong>学科を「役職・学部・学科」の行に入れたなら、「役職・学部・学科ごと」です。</p>
+        <p><strong>「机のかたまり」「縦の列ごと」</strong>は、席のかたまりに色が付きます。グループ討議で使うときは、こちらです。席を動かして人を入れ替えると、色はその席に残ります。</p>
+        <p><strong>グループ記号（A・B・C…）を押すと、その席のグループと色を変えられます。</strong>もう一度作り直すと、手で直したぶんは元にもどります。</p>
+        <p>色はPDFにも画像にもそのまま出ます。</p>
+      </div>
+      <p class="note-sm">
+        席は<strong>ドラッグで動かせます</strong>（スマホ・タブレットは長押ししてから）。グループ記号を押すと、その席のグループと色を変えられます。
+      </p>
+      <label class="chk-inline">
+        <input type="checkbox" id="grpOn"> グループに分ける
+      </label>
+      <label class="chk-inline gap" id="grpNumWrap" hidden>
+        <input type="checkbox" id="grpNum"> グループ記号をPDFに出す
+      </label>
+      <div id="grpOpts" hidden style="margin-top:12px">
+        <div class="row">
+          <div><label for="grpStyle">分け方</label>
+            <select id="grpStyle">
+              <option value="org">会社名・大学名ごと</option>
+              <option value="title">役職・学部・学科ごと</option>
+              <option value="block">机のかたまり</option>
+              <option value="col">縦の列ごと</option>
+            </select></div>
+          <div id="grpSizeWrap" hidden><label for="grpSize">1グループの人数</label>
+            <span class="ctl"><input id="grpSize" type="number" min="2" max="8" value="4"><span class="unit">人</span></span></div>
+          <div><label for="grpLook">色の付け方</label>
+            <select id="grpLook">
+              <option value="both">枠線＋うすい色</option>
+              <option value="edge">枠線だけ</option>
+              <option value="fill">ぬりつぶし</option>
+              <option value="none">色なし（番号だけ）</option>
+            </select></div>
+        </div>
+      </div>
+      </div>
+    </details>
+
     <details class="opt noprint" id="ch2">
-      <summary><span class="step">2</span>会場の形</summary>
+      <summary><span class="step">4</span>会場の形</summary>
       <div class="body">
       <div class="row tight">
         <div><label for="cols">横のならび</label><span class="ctl"><input id="cols" type="number" min="1" max="20" value="6"><span class="unit">席</span></span></div>
@@ -327,6 +434,13 @@
         <p>会場によって、受付のご案内が「前から順に」「右奥から順に」と違います。<strong>ご案内する向きに合わせてください。</strong></p>
       </div>
       <p class="hint" id="orderNote"></p>
+      <!-- ⭐用紙の向きは④に置く（2026-09-28 本人「実は私、縦でPDF作りたくて。それは最後に出てくるから難しいなと思ってはいたけど」→ A）。
+           ⚠前は⑥の「PDFで保存」の左にあった＝縦にしたい人が最後まで気づかない -->
+      <div class="print-line" style="margin-top:14px">
+        <label for="paper">用紙の向き</label>
+        <select id="paper" class="narrow"><option value="landscape">横</option><option value="portrait">縦</option></select>
+      </div>
+      <p class="hint">モニターに映すときは、用紙の向きに関係なく、画面いっぱいに横長で出ます。映したまま、マウスで席を動かせます。</p>
     <details class="opt sub noprint" id="condBlock">
       <summary>詳しい条件（離す・隣にする・席を決める）</summary>
       <div class="body">
@@ -416,108 +530,6 @@
     <p class="hint noprint">条件に反したところは赤くなりますが、そのままでもPDFにできます。</p>
     <div id="vio" class="noprint"></div>
 
-    <details class="opt noprint" id="cellCard">
-      <summary><span class="step">3</span>1マスの中身&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
-      <div class="body">
-      <div class="tip-body" hidden>
-        <p><strong>そのままでも整って出ます。</strong>直したいところだけ触ってください。</p>
-        <p>日本の席札は<strong>名前がいちばん下で、いちばん大きい</strong>のがふつうです。この形を初期値にしてあります。</p>
-        <p>出したくない行は<strong>「なし」</strong>を選んでください。名簿に入っていない項目は、大きさを選んでも出ません。</p>
-        <p><strong>役職のある人と無い人が並んでも、名前の高さはそろいます。</strong>役職の無い人は、そこを空けたまま並べるためです。</p>
-        <p><strong>会社名が長いときは、所属の行だけが小さくなります。</strong>名前は大きいままです。</p>
-      </div>
-      <div class="row tight">
-        <div><label for="honor">敬称</label>
-          <select id="honor">
-            <option value="様">様</option>
-            <option value="さん">さん</option>
-            <option value="先生">先生</option>
-            <option value="">なし</option>
-          </select></div>
-        <div><label for="numPos">番号の位置</label>
-          <select id="numPos">
-            <option value="corner" selected>右上</option>
-            <option value="line">いちばん上の行</option>
-            <option value="none">なし</option>
-          </select></div>
-        <div id="szNoWrap"><label for="szNo">番号の大きさ</label>
-          <select id="szNo"><option value=".66">大</option><option value=".52" selected>中</option><option value=".42">小</option></select></div>
-        <div><label for="kanaStyle">フリガナの文字</label>
-          <select id="kanaStyle">
-            <option value="kata">カタカナ</option>
-            <option value="hira">ひらがな</option>
-          </select></div>
-      </div>
-      <div class="cellcfg">
-        <div class="cellcfg-set">
-          <p class="note-sm">上から <b>番号 → 会社名・大学名 → 役職・学部・学科 → フリガナ → 名前</b> の順に並びます。<b>中身のある人と無い人が並んでも、名前の高さはそろいます。</b></p>
-          <div class="lines">
-            <div class="lrow">
-              <label for="szOrg">会社名・大学名</label>
-              <select id="szOrg"><option value=".62">大</option><option value=".50" selected>中</option><option value=".40">小</option><option value="none">なし</option></select>
-            </div>
-            <div class="lrow">
-              <label for="szTtl">役職・学部・学科</label>
-              <select id="szTtl"><option value=".62">大</option><option value=".50" selected>中</option><option value=".40">小</option><option value="none">なし</option></select>
-            </div>
-            <div class="lrow">
-              <label for="szKana">フリガナ</label>
-              <select id="szKana"><option value=".56">大</option><option value=".44" selected>中</option><option value=".36">小</option><option value="none">なし</option></select>
-            </div>
-          </div>
-        </div>
-        <div class="cellcfg-prev">
-          <div class="prevlabel">見本</div>
-          <div class="sheet" id="prevSheet">
-            <div class="seat" id="prevSeat"></div>
-          </div>
-        </div>
-      </div>
-      </div>
-    </details>
-
-    <details class="opt noprint" id="grpCard">
-      <summary><span class="step">4</span>グループ分け&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
-      <div class="body">
-      <div class="tip-body" hidden>
-        <p><strong>行の中身が同じ人に、同じ色が付きます。</strong>部署ごと・学科ごとに分けたいときは、これがいちばん早いです。色は人に付くので、席を動かすと色もついて動きます。</p>
-        <p><strong>分け方は、その言葉をどの行に入れたかで選びます。</strong>学科を「役職・学部・学科」の行に入れたなら、「役職・学部・学科ごと」です。</p>
-        <p><strong>「机のかたまり」「縦の列ごと」</strong>は、席のかたまりに色が付きます。グループ討議で使うときは、こちらです。席を動かして人を入れ替えると、色はその席に残ります。</p>
-        <p><strong>グループ記号（A・B・C…）を押すと、その席のグループと色を変えられます。</strong>もう一度作り直すと、手で直したぶんは元にもどります。</p>
-        <p>色はPDFにも画像にもそのまま出ます。</p>
-      </div>
-      <p class="note-sm">
-        席は<strong>ドラッグで動かせます</strong>（スマホ・タブレットは長押ししてから）。グループ記号を押すと、その席のグループと色を変えられます。
-      </p>
-      <label class="chk-inline">
-        <input type="checkbox" id="grpOn"> グループに分ける
-      </label>
-      <label class="chk-inline gap" id="grpNumWrap" hidden>
-        <input type="checkbox" id="grpNum"> グループ記号をPDFに出す
-      </label>
-      <div id="grpOpts" hidden style="margin-top:12px">
-        <div class="row">
-          <div><label for="grpStyle">分け方</label>
-            <select id="grpStyle">
-              <option value="org">会社名・大学名ごと</option>
-              <option value="title">役職・学部・学科ごと</option>
-              <option value="block">机のかたまり</option>
-              <option value="col">縦の列ごと</option>
-            </select></div>
-          <div id="grpSizeWrap" hidden><label for="grpSize">1グループの人数</label>
-            <span class="ctl"><input id="grpSize" type="number" min="2" max="8" value="4"><span class="unit">人</span></span></div>
-          <div><label for="grpLook">色の付け方</label>
-            <select id="grpLook">
-              <option value="both">枠線＋うすい色</option>
-              <option value="edge">枠線だけ</option>
-              <option value="fill">ぬりつぶし</option>
-              <option value="none">色なし（番号だけ）</option>
-            </select></div>
-        </div>
-      </div>
-      </div>
-    </details>
-
     <details class="opt noprint" id="printCard">
       <summary><span class="step">5</span>見た目と用紙&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
       <div class="body">
@@ -573,8 +585,6 @@
         <label class="chk-inline"><input type="checkbox" id="printStage"> PDFを登壇者からの向きで出す</label>
       </p>
       <div class="print-line">
-        <label for="paper">用紙の向き</label>
-        <select id="paper" class="narrow"><option value="landscape">横</option><option value="portrait">縦</option></select>
         <button id="doPrint" type="button">PDFで保存</button>
         <button id="doPng" type="button">画像で保存（PNG）</button>
       </div>
@@ -590,9 +600,7 @@
   <!-- ⭐席次表を作る前も③〜⑥を見せる（グレー・押せない）（座席表と同じ・ページの型 12-a）。
        ⚠#result が隠れているあいだだけ CSS で出す。作ったら本物の③〜⑥に入れ替わる -->
   <div id="resultStub" class="noprint" aria-hidden="true">
-    <p class="hint" style="text-align:center;margin:0 0 10px">③〜⑥はサンプルを入れるか、「席次表を作る」を押すと使えます</p>
-    <div class="opt stub"><div class="stub-head"><span class="step">3</span>1マスの中身</div></div>
-    <div class="opt stub"><div class="stub-head"><span class="step">4</span>グループ分け</div></div>
+    <p class="hint" style="text-align:center;margin:0 0 10px">⑤⑥はサンプルを入れるか、「席次表を作る」を押すと使えます</p>
     <div class="opt stub"><div class="stub-head"><span class="step">5</span>見た目と用紙</div></div>
     <div class="opt stub"><div class="stub-head"><span class="step">6</span>PDF・画像で保存</div></div>
   </div>
@@ -750,7 +758,7 @@
 <script src="../paper-pdf.js?v=5"></script>
 <script src="../seating.js?v=57"></script>
 <script src="../roster-tools.js?v=1"></script>
-<script src="seki.js?v=92"></script>
+<script src="seki.js?v=101"></script>
 <!-- 🔴 印刷用の1枚絵の置き場。⚠body の直下に置くこと -->
 <div id="printImgWrap"></div>
 <script src="../tip.js?v=3"></script>

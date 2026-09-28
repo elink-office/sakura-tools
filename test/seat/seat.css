@@ -88,3 +88,6 @@ body.screen .grid .dead{ border-color: #e6e6e6; }
 #offPick.on{ background: var(--pink, #e58fae); color: #fff; border-color: var(--pink, #e58fae); }
 body.picking .grid .seat, body.picking .grid .dead.off{ cursor: pointer; }
 body.picking .grid .seat:hover, body.picking .grid .dead.off:hover{ box-shadow: 0 0 0 3px rgba(229,143,174,.55); }
+
+/* 名簿順のとき「離す・隣にする」だけ薄くして触れなくする（2026-09-28） */
+#modeBox.off{pointer-events:none}

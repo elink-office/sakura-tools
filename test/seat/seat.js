@@ -81,7 +81,8 @@
   var NUM_ONLY = /^[0-9０-９]+$/;
   // ⚠Excelの見出し行（番号・氏名・性別…）ごと貼る人がいる。
   //   ぜんぶが見出しの言葉なら、その行はとばす（「番号」という名前の子ができてしまう）
-  var HEAD_WORD = /^(番号|出席番号|No\.?|№|氏名|名前|生徒名|児童名|性別|男女|班長|リーダー|リーダー格|班|グループ|備考|メモ|学年|組)$/i;
+  // ⭐学科・学籍番号・ふりがな なども見出しの言葉に足した（2026-09-28 本人「1行目を入れてたら、人数が増える」→「項目名が入っていたら、Aで」）
+  var HEAD_WORD = /^(番号|出席番号|No\.?|№|氏名|名前|生徒名|児童名|性別|男女|班長|リーダー|リーダー格|班|グループ|備考|メモ|学年|組|クラス|学籍番号|学生番号|社員番号|ID|姓名|お名前|フリガナ|ふりがな|カナ|よみがな|読み|よみ|学科|学部|所属|専攻|コース)$/i;
   // 手で「11 佐藤 はなこ 男」のように空白で区切って書く人むけ
   var LEAD_NUM = /^[0-9０-９]+[ 　]+/;
   var TAIL_SEX = /[ 　]+(男子|女子|男|女)$/;
@@ -828,8 +829,43 @@
         }
       }
     }
-    order = order.filter(function (i) { return !isOff(i, cols); });   // ⭐空けた席はとばす（2026-09-23）
-    opt.names.forEach(function (n, i) { if (i < order.length) seats[order[i]] = n; });
+    order = order.filter(function (i) { return !isOff(i, cols); });   // 空けた席はとばす
+    /* 🔴 名簿順でも「席を決める人」は効かせる（2026-09-28 本人「目が悪いとか、前がいいとか、わからないとか、そういう人を先に設定したくて」）。
+       ⭐決めた人を先に座らせて、ほかの人はその席をとばして名簿順に流す（空けた席と同じ動き）。
+       ⭐「前のほう」「うしろのほう」は、一番前（うしろ）の列から、ならぶ向きの左右に従って埋める
+         （本人「私はモニターが左にあるから、左側と思ってるけど。それは選択があるじゃん、それに従えばいいんじゃない？」）。
+         決めた人どうしは名簿の順。入りきらなければ次の列へ */
+    var taken = {}, placed = {};
+    var fixed = opt.fixed || {}, zone = opt.zone || {};
+    Object.keys(fixed).forEach(function (n) {
+      var i = fixed[n];
+      if (String(n).charAt(0) === '\u0000' || opt.names.indexOf(n) < 0) return;   // 空けた席の印・名簿にいない人
+      if (isOff(i, cols) || taken[i]) return;
+      seats[i] = n; taken[i] = true; placed[n] = true;
+    });
+    function zoneSeats(back) {
+      var list = [];
+      for (var rr = 0; rr < rows; rr++) {
+        var row = back ? rows - 1 - rr : rr;
+        for (var k = 0; k < cols; k++) {
+          var col = migi ? cols - 1 - k : k, i = row * cols + col;
+          if (!isOff(i, cols)) list.push(i);
+        }
+      }
+      return list;
+    }
+    ['front', 'back'].forEach(function (z) {
+      var list = zoneSeats(z === 'back');
+      opt.names.forEach(function (n) {
+        if (zone[n] !== z || placed[n]) return;
+        for (var k = 0; k < list.length; k++) {
+          if (!taken[list[k]]) { seats[list[k]] = n; taken[list[k]] = true; placed[n] = true; return; }
+        }
+      });
+    });
+    order = order.filter(function (i) { return !taken[i]; });
+    opt.names.filter(function (n) { return !placed[n]; })
+      .forEach(function (n, i) { if (i < order.length) seats[order[i]] = n; });
     return seats;
   }
 
@@ -865,7 +901,8 @@
 
     // 出席番号順のときは条件を使わず、答えは1つだけ
     if ($('order').value === 'number') {
-      opt.separate = []; opt.adjacent = []; opt.fixed = {}; opt.zone = {};
+      // ⭐「離す・隣にする」は名簿順と合わないので使わない。「席を決める人」は効かせる（2026-09-28 本人）
+      opt.separate = []; opt.adjacent = [];
       state.plans = [orderedSeats(opt)]; state.cur = 0; state.opt = opt;
       state.seats = state.plans[0].slice();
       $('result').hidden = false;
@@ -937,6 +974,8 @@
 
   // ---- 座席表を描く ----
   function drawSheet() {
+    // ⭐作る前にも②③と用紙の向きを触れるようになった（2026-09-28）＝まだ席が無いときは描かない
+    if (!state.opt) return;
     var o = state.opt, cols = o.cols, rows = o.rows;
     $('shTitle').textContent = sheetTitle();
     $('shDate').textContent = dateText();
@@ -2432,11 +2471,12 @@
     $('dir').disabled = !byNumber;
     $('dirWrap').classList.toggle('off', !byNumber);
     $('orderNote').textContent = byNumber
-      ? '入力した順にならべます。下の「詳しい条件」は不要です。'
+      ? '入力した順にならべます。下の「詳しい条件」は、「席を決める人」だけ使えます。'
       : '';
     // 出席番号順のときは条件が捨てられる（generate の手前で空にしている）。
     // 消さずに薄くする＝「あること」は見せて、触っても効かない誤解だけ防ぐ
-    var cond = $('condBlock'); if (cond) cond.classList.toggle('off', byNumber);
+    // 🔴 2026-09-28 から、薄くするのは「離す・隣にする」だけ。「席を決める人」は名簿順でも効く
+    var cond = $('modeBox'); if (cond) cond.classList.toggle('off', byNumber);
     // 🔴 出席番号順のときは班長の指定が効かない（入れ替えると番号順が崩れるため）。
     //   ⚠メッセージは出さない。薄くするだけ（2026-08-31 本人「使えないのはわかってると思う」）
     var lw = $('leadWrap'); if (lw) lw.classList.toggle('off', byNumber);
@@ -2486,6 +2526,12 @@
     });
     $('order').addEventListener('change', orderChanged);
     $('dir').addEventListener('change', orderChanged);
+    /* ⭐日付・自由記入は、打ったらすぐ表に出す（2026-09-28 本人「⑤で、日付・自由記入に、自分で文字入れたら、日付が入ってるよ」→「日付だけ」→「あ、今できた」）。
+       ⚠前はこの欄に見張りが無く、ほかの設定を触るまで表が前の日付のまま・保存もされなかった */
+    $('dt').addEventListener('input', function () {
+      if (state.seats) drawSheet();
+      if ($('save').checked && !state.sample) save();
+    });
     $('dtOff').addEventListener('change', function () {
       $('dt').disabled = this.checked;
       if (state.seats) drawSheet();
@@ -2736,6 +2782,26 @@
     }
     $('sampleClear').onclick = clearSample;
     $('sampleClear2').onclick = clearSample;
+    /* ⭐今のデータをクリア（2026-09-28 本人）＝2クラス目を入れるとき用。
+       消す＝名簿・学年・組・月・自分で書く・詳しい条件の行（班長も）・できた座席表・えらんでいた保存データ
+       ⭐空けた席も消す（2026-09-28 本人 A）
+       残す＝教室の形・男女の色・班分け・見た目・保存したデータ・座席の並びの記録 */
+    function clearNow() {
+      if (state.sample) { clearSample(); return; }   // サンプルの間は「サンプルを消す」と同じ
+      if (!confirm('今の名簿をクリアします。保存したデータは消えません。')) return;
+      $('names').value = ''; $('clsFree').value = '';
+      ['grade', 'kumi', 'month'].forEach(function (id) { var el = $(id); if (el) el.value = ''; });
+      ['fixList', 'sepList', 'adjList', 'leadList'].forEach(function (id) { var el = $(id); if (el) el.innerHTML = ''; });
+      state.off = {};   // ⭐空けた席も消す（2026-09-28 本人「全クリアしたほうがよくない？」→ A。見えないまま残るのがいちばん困る）
+      state.seats = null; state.plans = []; state.cur = 0; state.gfix = {}; state.lastRaw = null;
+      clearHist();
+      $('result').hidden = true; $('msg').innerHTML = '';
+      setCls('');
+      refreshNames(); renderSexList(); updateLeadCount(); showSample();
+      if ($('save').checked) save();
+      showSaving();
+    }
+    $('clearNow').onclick = clearNow;
     $('doPrint').onclick = doPrint;
     if ($('printWhat')) $('printWhat').addEventListener('change', printNote);
     // 🔴 用紙の向きで1マスの高さが変わる。描き直さないと、
