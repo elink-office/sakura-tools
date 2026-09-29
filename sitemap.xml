@@ -91,6 +91,11 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://sakura-tools.com/qr/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
     <loc>https://sakura-tools.com/about/</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
@@ -109,6 +114,11 @@
     <loc>https://sakura-tools.com/articles/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://sakura-tools.com/articles/qr-school/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://sakura-tools.com/articles/home-position/</loc>

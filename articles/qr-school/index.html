@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="../../favicon.ico?v=3" sizes="any">
+<link rel="icon" type="image/png" href="../../favicon-32.png?v=3">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png?v=2">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SAKURA tools">
+<meta property="og:title" content="学校でQRコードを使うアイデア｜1人1台端末でできること">
+<meta property="og:description" content="プリントが家まで届かない、回収と集計に追われる。そんな学校の紙の手間を、QRコードで減らすアイデアを紹介します。1人1台端末での読み方、授業・おたより・懇談会での使い方、個人情報の守り方まで。">
+<meta property="og:url" content="https://sakura-tools.com/articles/qr-school/">
+<meta property="og:image" content="https://sakura-tools.com/ogp.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9296990556079874" crossorigin="anonymous"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GCK29PTKBG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GCK29PTKBG');
+</script>
+<title>学校でQRコードを使うアイデア｜1人1台端末でできること</title>
+<meta name="description" content="プリントが家まで届かない、回収と集計に追われる。そんな学校の紙の手間を、QRコードで減らすアイデアを紹介します。1人1台端末での読み方、授業・おたより・懇談会での使い方、個人情報の守り方まで。">
+<link rel="stylesheet" href="../../style.css?v=155">
+<link rel="stylesheet" href="../articles.css?v=27">
+</head>
+<body>
+<!-- ⭐記事2本目（2026-09-29 本人「qr-schoolのほうがよくないかな？」＝/articles/qr-school/。会社・自治体は別の記事＝本人「別記事に決まってる」）
+     原稿＝C:\ゆうこ社\開発室\成果物\2026-09-29_記事原案3_学校でQRコード（ゆうこ）.md（本人が直した版）
+     ⚠つなぐ先の QRコード作成（/qr/）はまだ公開していない＝この記事を原本に入れるのは、QRコード作成と同じとき -->
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="logo" href="../../"><span class="logo-mark"><img src="../../img/logo-sakura-64.png?v=2" srcset="../../img/logo-sakura-64.png?v=2 1x, ../../img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA tools</span><span class="logo-sub">さくらツールズ</span></a>
+    <nav>
+      <a class="navpin" href="../../">トップ</a>
+      <a class="navpin" href="../../typing/">タッチタイピング</a>
+      <a class="navpin" href="../../seat/">座席表</a>
+      <a class="navpin" href="../../slide/">簡単スライド</a>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">ツール一覧</label>
+      <div class="navlist">
+      <!-- ⭐2026-09-28 本人「ツール一覧はあくまでもツールのリスト」＝場面の区切りは入れない。トップは入れない（すぐ左にある）。いちばん上に先生用、棒線の下に道具（名前で分かりにくいものが上・くす玉〜ビンゴのように名前で分かるものが下）
+           ⭐QRコード作成はビンゴの後ろ（2026-09-29 本人「ビンゴの後ろでいいよ」） -->
+      <a href="../../teacher/">先生ツールセット</a>
+      <span class="navsep" aria-hidden="true"></span>
+      <a href="../../typing/">タッチタイピング</a>
+      <a href="../../seat/">座席表</a>
+      <a href="../../slide/">簡単スライド</a>
+      <a href="../../random/">ランダム指名</a>
+      <a href="../../timer/">カウントダウンタイマー</a>
+      <a href="../../timer/progress/">進行タイマー</a>
+      <a href="../../excel-fx/">関数早見表</a>
+      <a href="../../seki/">席次表</a>
+      <a href="../../bus/">バスの座席表</a>
+      <a href="../../shinkansen/">新幹線の座席表</a>
+      <a href="../../keiri/mitsumori/">見積書</a>
+      <a href="../../keiri/seikyu/">請求書</a>
+      <a href="../../kusudama/">くす玉</a>
+      <a href="../../roulette/">ルーレット</a>
+      <a href="../../fukubiki/">福引</a>
+      <a href="../../bingo/">ビンゴ</a>
+      <a href="../../qr/">QRコード作成</a>
+      <span class="navsep" aria-hidden="true"></span>
+      <a href="../../articles/">記事一覧</a>
+      </div>
+    </nav>
+  </div>
+  <!-- ⚠make_test.py の set_now() を通していないので手で入れた。原本に入れるときは make_test.py の NAMES に articles を足す -->
+  <div class="site-sub"><div class="wrap"><span class="now-long">記事</span><span class="now-short">記事</span></div></div>
+</header>
+
+<main class="wrap yomu art2">
+<article class="art">
+  <p class="crumb"><a href="../../">トップ</a> › <a href="../">記事一覧</a> › 学校でQRコードを使うアイデア</p>
+
+  <h1>学校でQRコードを使うアイデア｜1人1台端末でできること</h1>
+  <p class="meta">2026.09.29　さくらツールズ</p>
+
+  <div class="lead-box">
+    <!-- ⭐読む人の心の声＝白抜きの吹き出し（ホームポジションの記事と同じ形） -->
+    <div class="nayami">
+    <p>プリントを配っても、家まで届かない。<br>
+    掲示物を貼っても、バタバタしている参観日には、立ち止まって読んでもらえない。<br>
+    学校祭の案内図は、毎年刷り直している。</p>
+    </div>
+    <p>伝えたいことはたくさんあるのに、伝える道具が紙しかない。学校には、そんな場面がたくさんあります。</p>
+    <p>でも、時代は変わりました。<br>
+    中学生の9割、高校生のほぼ全員が、スマートフォンでインターネットを使っています。ある年齢を超えると、1人1台が当たり前です。もちろん保護者も。スマートフォンがある家庭は、9割以上にのぼります。<br>
+    学校の端末も、Chromebook・iPad・Windowsのどれにもカメラが付いています。</p>
+    <p><mark class="pen"><strong>そこで提案したいのが、QRコードです。</strong></mark><br>
+    キャンバで作ったページや、意見を聞くGoogleフォームのURLを、QRコードにするだけ。見られて困るものは置かず、公開が終わったら元のページを止めれば、データがいつまでも残ることもありません。</p>
+    <p>とはいえ、授業でQRコードをあまり使っていない先生は、およそ6割。理由には「使い方がわからない」「使う場面がない」が並びます。</p>
+    <p>この記事では、先生がQRコードに手を出しにくい理由に1つずつ答えながら、授業・校内めぐり・学校祭・おたより・懇談会で使えるアイデアと、個人情報を守る使い方を紹介します。</p>
+    <div class="wakaru">
+      <p class="wakaru-t">この記事でわかること</p>
+      <ul>
+        <li>先生がQRコードを使わない理由と、その答え</li>
+        <li>学校の端末でのQRコードの読み方</li>
+        <li>授業・おたより・懇談会などで使えるアイデア</li>
+        <li>個人情報を守る4つのポイント</li>
+      </ul>
+    </div>
+    <p>次の行事で「この案内はQRコードにしよう」と思える場面を、ぜひ1つ見つけてください。</p>
+  </div>
+
+  <!-- ⭐H2は短く（2026-09-29 本人「目次が折り返されるから、H２を全部変更したい」） -->
+  <nav class="mokuji" aria-label="目次">
+    <p class="mokuji-t">目次</p>
+    <ol>
+      <li><a href="#komari">先生の困りごとは、紙のまわりに集中</a></li>
+      <li><a href="#riyu">QRコードを使っていない先生が、6割</a></li>
+      <li><a href="#yomu">QRコードを読める学校の端末</a></li>
+      <li><a href="#oku">QRコードの先はwebページのURL</a></li>
+      <li><a href="#idea">QRコードを学校で使うアイデア</a></li>
+      <li><a href="#mamoru">個人情報を守る、QRコードの使い方</a></li>
+      <li><a href="#tsukuru">QRコードは無料で、その場で作れる</a></li>
+      <li><a href="#matome">まとめ</a></li>
+    </ol>
+  </nav>
+
+  <h2 id="komari">先生の困りごとは、紙のまわりに集中</h2>
+  <!-- ⭐骨休めの写真（2026-09-29 本人）＝先生が忙しい雰囲気・写真AC  ⭐写真は見出しのすぐ下（2026-09-29 本人「文章の途中だと切れるからね。気持ちが」） -->
+  <figure class="zu photo"><img src="../../img/qr-art-isogashii.jpg?v=2" width="640" height="360" loading="lazy" alt="書類の上に突っ伏して休む、忙しそうな女性"></figure>
+  <p>学校の紙の連絡、ひそかにものすごく手間がかかって大変ですよね。<br>
+  文部科学省は2020年10月、学校と保護者の連絡をデジタルにしていくよう、全国の教育委員会に通知しました。<br>
+  その資料には、紙のアンケート1枚が戻ってくるまでの流れが、こう描かれています。</p>
+  <!-- ⭐8つの流れは図にする（スマホの1画面を文字だけで埋めない・ライティングマニュアル）。先生の仕事に印 -->
+  <figure class="nagare">
+    <ol>
+      <li class="sensei"><span class="who">先生</span>印刷する</li>
+      <li class="sensei"><span class="who">先生</span>子どもに配る</li>
+      <li><span class="who">子ども</span>家に持ち帰る<small>ときどき、なくなる。ランドセルの底で眠る</small></li>
+      <li><span class="who">保護者</span>書いて、切り取る</li>
+      <li><span class="who">保護者</span>子どもに持たせる</li>
+      <li><span class="who">子ども</span>学校に持っていく<small>小さな紙が、ときどき迷子になる</small></li>
+      <li class="sensei"><span class="who">先生</span>集めて、出ていない子に声をかける</li>
+      <li class="sensei"><span class="who">先生</span>結果を手で数えて、手で入力する</li>
+    </ol>
+    <figcaption>紙のアンケート1枚が戻ってくるまで（文部科学省の通知の資料をもとに作成）</figcaption>
+  </figure>
+  <p>8つのうち、4つが先生の仕事です。紙が迷子になるたびに、声かけと待ち時間が増えていきます。<br>
+  朝の職員室では、欠席の電話が鳴り、受けた人が担任に手書きのメモで伝える。同じ資料には、そんな朝の様子も書かれています。</p>
+  <p>この手間をどうにかならないかという思いはどの先生も一緒なのではないでしょうか。</p>
+  <p>先ほど紹介した同じ資料で、かわりの方法として紹介しているのがこちらです。<br>
+  <mark class="pen"><strong>おたよりにQRコードやURLを載せて、保護者にスマホから答えてもらう</strong></mark></p>
+  <p>QRコードは、国の資料にも載っている、学校の連絡を軽くする方法の1つなのです。</p>
+
+  <h2 id="riyu">QRコードを使っていない先生が、6割</h2>
+  <!-- ⭐骨休めの写真（2026-09-29 本人）＝子どもが頑張るところ・写真AC -->
+  <figure class="zu photo"><img src="../../img/qr-art-jugyo.jpg?v=2" width="640" height="360" loading="lazy" alt="ノートに鉛筆で字を書く子どもの手元"></figure>
+  <p>それでも、QRコードは学校で広く使われているとは言えません。<br>
+  小学校から高校までの先生487人に聞いた調査（2024年・読書科学）では、「授業でQRコードを使う」に「あてはまらない」側で答えた先生が58.5％でした。</p>
+  <p>使わない理由として挙がったのは、次のような声です。</p>
+  <ul>
+    <li>使い方がわからない</li>
+    <li>使う機会や場面がない</li>
+    <li>読み取るのに時間がかかる</li>
+    <li>使うほうが手間がかかる、リスクが心配</li>
+  </ul>
+  <p>どれも、QRコードそのものの問題ではありません。<strong>「どう使えばいいか」と「どこまでなら安全か」が分からないだけです。</strong><br>
+  この記事では、このあとの章で順に答えていきます。</p>
+  <div class="hyo-wrap">
+  <table class="hyo">
+    <thead><tr><th>使わない理由</th><th>答える章</th></tr></thead>
+    <tbody>
+      <tr><td>使い方がわからない</td><td><a href="#yomu">QRコードを読める学校の端末</a></td></tr>
+      <tr><td>使う場面がない</td><td><a href="#idea">QRコードを学校で使うアイデア</a></td></tr>
+      <tr><td>読み取りに時間がかかる</td><td><a href="#jugyo">授業：資料や動画をその場で配る</a></td></tr>
+      <tr><td>リスクが心配</td><td><a href="#mamoru">個人情報を守る、QRコードの使い方</a></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="t-ad"></div><!-- ⭐広告の場所（空なら見えない） -->
+
+  <h2 id="yomu">QRコードを読める学校の端末</h2>
+  <!-- ⭐骨休めの写真（2026-09-29 本人）＝写真AC 23547339・顔が見えないように切り抜いた（本人「ギリギリ顔が見えないようにトリミング」） -->
+  <figure class="zu photo"><img src="../../img/qr-art-tablet-ie.jpg?v=2" width="361" height="203" loading="lazy" alt="家の机でタブレットを使う子どもの手元"></figure>
+  <p>子どもたちが学校で配られている端末は、どれもカメラアプリでQRコードを読めるのを知っていますか？<br>
+  実は、QRコードを見るためのアプリを新しく入れる必要がありません。</p>
+  <p>学校の端末は、Chromebookがおよそ6割、iPadがおよそ3割、Windowsがおよそ1割です（MM総研が2025年7月に発表した、第2期の端末の調査）。どの端末を使っている学校でも、同じように使えます。</p>
+  <div class="hyo-wrap">
+  <table class="hyo">
+    <thead><tr><th>端末</th><th>読み方</th></tr></thead>
+    <tbody>
+      <tr><td>Chromebook</td><td>カメラアプリを開き、「スキャン」から「QR コード」を選んで、QRコードを枠の中に入れる</td></tr>
+      <tr><td>iPad</td><td>カメラアプリをQRコードに向けて、画面の下に出たリンクをタップする</td></tr>
+      <tr><td>Windows</td><td>カメラアプリをQRコードに向けると、画面の下にリンクが出る</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>教科書にも、2018年の決まりの改正で、QRコードを載せられるようになりました。子どもたちがQRコードに出会う場面は、これからもっと増えていきます。</p>
+  <p>ただし、学校によっては、カメラやWebページの閲覧に制限をかけていることがあります。<br>
+  授業で使う前に、先生の端末で一度QRコードを読んでみてください。1回試しておくと、当日子どもたちに余裕をもって使い方を伝えることができます。<br>
+  とはいえ、もしかしたら子どもたちのほうが、上手に使うかもしれませんね。</p>
+
+  <h2 id="oku">QRコードの先はwebページのURL</h2>
+  <!-- ⭐作れるものの見本＝「こんなのが作れる」。前＝いちばん下の章 → 見出しのすぐ下へ（2026-09-29 本人「上の方に置きたいね」「そこでいこう」） -->
+  <figure class="zu">
+    <img src="../../img/qr-sample.png?v=6" width="1280" height="720" loading="lazy"
+         alt="さくらツールズのQRコード作成で作ったQRコード。左に黒い大きなQRコード（真ん中に「さくら」）、右に色違いのQRコードが3つ（真ん中や下に文字入り）">
+    <figcaption>QRコード作成で作ったQRコード。色を変えたり、真ん中や下に文字を入れたりできます</figcaption>
+  </figure>
+  <p>さて、QRコード、よく見るけど結局何？と思っている人も多いのではないでしょうか。</p>
+  <p>QRコードの中に入っている情報は、webページの住所（URL）です。<br>
+  QRコードを読むと、入っているURLのページが開きます。</p>
+  <p><strong>実は、一番大事なのはQRコードそのものより「読んだ先に何を置くか」になるのです。</strong></p>
+  <p>学校でQRコードを使うために、資料を作成するのは次の3つがおすすめです。</p>
+  <ul>
+    <li><b>キャンバで作ったページ</b>：案内・説明・写真を1枚にまとめて、Webサイトとして公開できる</li>
+    <li><b>Googleフォーム</b>：アンケート・感想・申し込みを集められる</li>
+    <li><b>動画やスライド</b>：授業のふり返りや、行事の様子を見てもらえる</li>
+  </ul>
+  <p>使ってよいフォームやサービスは、教育委員会や学校で決まっていることがあります。文部科学省の通知でも、学校が使えるアンケートフォームを、教育委員会があらかじめ示すことが勧められています。</p>
+  <p>はじめに、自分の学校で使ってよいものを確かめておきましょう。</p>
+  <p>ただ、いきなり学校で使うのもよくわからなくて抵抗があるかもしれません。<br>
+  QRコードは気軽に作ることができるので、自分のInstagramやブログ、保存しているドライブのURLを使ってQRコードを作ってみるのもいいと思います。<br>
+  友人や家族にそのQRコードを使ってみてもらうと、驚いてもらえるし楽しいはずです！</p>
+  <p class="go"><a href="../../qr/">→ 自分のURLで、QRコードを作ってみる</a></p>
+
+  <h2 id="idea">QRコードを学校で使うアイデア</h2>
+  <!-- ⭐骨休めの写真（2026-09-29 本人）＝写真AC 35070442・顔が見えないように切り抜いた -->
+  <figure class="zu photo"><img src="../../img/qr-art-tablet-jugyo.jpg?v=2" width="315" height="177" loading="lazy" alt="教室で、ノートに書きながらタブレットを使う生徒の手元"></figure>
+
+  <h3 id="jugyo">授業：資料や動画をその場で配る</h3>
+  <p>モニターや黒板にQRコードを映すと、子どもたちは自分の端末で、すぐに資料を開くことができるのはわかると理解できたと思います。</p>
+  <p>もし、URLを黒板に書いていたとしたら、1文字まちがえただけでページが開きません。また、入力する人も間違えやすいはずです。<br>
+  QRコードなら、入力の手間も、打ちまちがいもなくなります。</p>
+  <p>ここからは、実際の授業での具体例を挙げてみます。</p>
+  <ul>
+    <li>授業の最後に、ふり返りのGoogleフォームを開いて、記入してもらう</li>
+    <li>調べ学習の参考ページを、グループごとに配る</li>
+    <li>家で見てほしい動画を、プリントの端に載せる</li>
+  </ul>
+  <p>もし私なら、と改めて考えてみました。<br>
+  板書が必要なものもたくさんあると思いますが、板書を書く時間を取るより子どもたちの理解を促す話をしたい。<br>
+  そんな時は、先にデジタルで板書の内容を書いておき、それをノートに写してもらう。<br>
+  内容によって臨機応変に、板書とQRコードの読み取りで学習を促すことをやってみたいと思いました。</p>
+  <p>「読み取るのに時間がかかる」ときは、<strong>QRコードを大きく映すのがいちばんの近道です。</strong><br>
+  入れるURLが短いほど、QRコードのマスは粗くなります。マスが粗いQRコードは、離れた席からでも読み取りやすくなります。</p>
+  <p>もちろん、小学校・中学校・高校、そして大学の授業でも、同じ使い方ができます。<br>
+  ネット環境が整っていない環境（体育館や教室外）でも、QRコードをスマホやタブレットで読むだけなので、工夫して使ってみるのがおすすめです。<br>
+  ただし、QRコードの先のページを開くには、インターネットにつながっている必要があります。学校のWi-Fiが届かない場所では、Wi-Fiでつなぐ端末だとページが開かないことがあります。スマホなら携帯電話の電波でつながるので、Wi-Fiがない場所でも開けます。保護者や来校者に、自分のスマホで読んでもらう場面に向いています。</p>
+
+  <h3>校内めぐり：入学したあとの学校探検</h3>
+  <p>新しい学校に入学したときに使ってもらう方法もあります。</p>
+  <p>まず、音楽室・理科室・図書室の入り口に、QRコードを貼っておきます。<br>
+  子どもたちが端末を持って校内を回り、QRコードを読むと、その部屋の紹介ページが開く仕組みです。</p>
+  <ul>
+    <li>部屋ごとの紹介ページは、キャンバで1ページずつ作る</li>
+    <li>紹介ページにクイズを入れると、スタンプラリーのように回れる</li>
+  </ul>
+  <p>小学校入学前の子どもは、まだ端末を持っていません。新入生が入学してからの行事に向いていると思います。<br>
+  ただ、入学は中学・高校・大学でもありますね。<br>
+  オープンキャンパスや、学校訪問の時に見てもらうのも楽しい使い方の１つかもしれません。</p>
+
+  <h3>学校祭・文化祭：案内図とクラスの紹介</h3>
+  <!-- ⭐骨休めの写真（2026-09-29 本人）＝本人がChatGPTで作った。⭐看板のQRは本物に差し替えた＝読むと座席表（https://sakura-tools.com/seat/）が開く（2026-09-29 本人「できるならやってみて」・誤り訂正Q） -->
+  <figure class="zu photo"><img src="../../img/qr-art-bunkasai.jpg?v=3" width="1200" height="675" loading="lazy" alt="文化祭の廊下に立てられた、QRコード付きの案内の看板。「スマホで読み取ってください」と書いてある。看板のQRコードを読むと、さくらツールズの座席表が開く"></figure>
+  <p>案内図を毎年刷り直す代わりに、QRコードを1枚貼っておく方法があります。<br>
+  QRコードの先のページ、要するにURLの元になるwebページを修正すれば、同じQRコードのまま、中身だけが新しくすることができます。<br>
+  ということは、次の年もその次の年も、同じQRコードを同じ場所に置いたまま、内容だけ刷新し使いまわすことができるということです。</p>
+  <p>事例を挙げておきます。</p>
+  <ul>
+    <li>校門や受付に、案内図のQRコード</li>
+    <li>教室の前に、クラスの出し物の紹介ページ</li>
+    <li>出口に、来てくれた人への感想フォーム</li>
+  </ul>
+  <p>看板のよく見える場所にQRコードを貼っておき、来年も使えるようにすると手間はかからないのに内容が新しくなるのでとても有効に使うことができますね。</p>
+
+  <h3>おたより：紙に書ききれない続きを届ける</h3>
+  <p>学級通信や学年だよりは、紙1枚に書ける量が決まっています。<br>
+  紙には要点だけを書き、くわしい内容や写真はQRコードの先に置く形にすると、紙1枚でもたくさんのことを伝えられます。<br>
+  保護者は自分のスマホで読めるので、家でゆっくり見てもらえます。</p>
+
+  <h3>出欠・アンケート：切り取り線の紙を集めなくていい</h3>
+  <p>行事の出欠や、アンケートの回答にも、QRコードが使えます。<br>
+  おたよりにGoogleフォームのQRコードを載せておけば、保護者はスマホから答えられます。<strong>切り取り線の紙を集めて、手で数える作業が、フォームの集計に置きかわります。</strong></p>
+  <p>最初の章で紹介した8つの流れでいうと、「書いて切り取る」から「手で数えて入力する」までが、フォームの中で済むようになります。<br>
+  まだ答えていない家庭も、フォームの回答を見ればすぐに分かります。</p>
+
+  <h3>懇談会・授業参観：紙で配らず、その場で見せる</h3>
+  <p><strong>懇談会では、QRコードを紙で配らないのがポイントです。</strong><br>
+  教室の前のモニターに映すか、黒板に貼っておき、保護者に自分のスマホで読んでもらいます。</p>
+  <ul>
+    <li>順番を待つ間に、学級の1学期をまとめたスライドを見てもらう</li>
+    <li>懇談会で聞きそびれたことを、Googleフォームに書いてもらう</li>
+    <li>授業参観では、掲示物の横にQRコードを置いて、作品の説明を読んでもらう</li>
+  </ul>
+  <p>懇談会が終わったら、元のページを止めます。止め方は、次の章で紹介します。</p>
+
+  <div class="t-ad"></div>
+
+  <h2 id="mamoru">個人情報を守る、QRコードの使い方</h2>
+  <!-- ⭐骨休めの写真（2026-09-29 本人）＝学校の雰囲気・写真AC（前＝リード文の下 → 本人「リード文にはいらないよ」） -->
+  <figure class="zu photo"><img src="../../img/qr-art-kyoshitsu.jpg?v=2" width="640" height="360" loading="lazy" alt="朝の光が差しこむ、誰もいない教室と黒板"></figure>
+  <p>学校でQRコードを使うとき、いちばん気をつけたいのが個人情報です。<br>
+  守り方は4つあります。</p>
+
+  <h3>QRコードの先に、見られて困るものを置かない</h3>
+  <p>QRコードは、読めば誰でも同じページを開けます。<br>
+  おたよりが道に落ちていたら、拾った人も同じページを見られるということです。</p>
+  <p><strong>子どもの顔がはっきり写った写真や、名前が分かるものは、QRコードの先に置かないようにしましょう。</strong></p>
+  <p>もし保護者に写真を見てもらいたい場合は、配布するものではなく固定したものを1か所だけに配置し、終了後には処分するようにしてください。（タブレット端末に表示をしておいて、終わったら消す方が安全かもしれませんね）</p>
+
+  <h3>期限は「元のページ」で切る</h3>
+  <p>QRコードそのものには、期限をつけられません。中にURLがそのまま入っているので、一度作ったQRコードは、いつまでも読めてしまいます。<br>
+  そこで、期限は<strong>QRコードの先にある元のwebページ</strong>のほうで切ります。</p>
+  <ul>
+    <li><b>Googleフォーム</b>：締め切りの日時を先に決めておくと、その時刻に回答の受付が自動で止まります。2026年1月に加わった機能で、個人のGoogleアカウントでも使えます</li>
+    <li><b>キャンバのWebサイト</b>：エディターの公開の設定から「非公開」を選ぶと、ページが開かなくなります。懇談会が終わったら、先生が切り替えましょう</li>
+  </ul>
+  <p>元のwebページを止めておけば、あとからQRコードを読まれても、ページは開くことができません。<br>
+  懇談会のように「その日だけ見せたい」ものには、この方法も取り入れると安心です。</p>
+
+  <h3>大事な回答は、QRコードに頼りすぎない</h3>
+  <p>QRコードは、誰が読んでも同じページが開きます。そのため、子どもや別の人が、保護者のふりをして答えることもできてしまいます。<br>
+  文部科学省の資料でも、この心配への答えとして、子どもを通さず、学校から保護者へ直接メールでフォームを送る方法が挙げられています。</p>
+  <p>さらに、アレルギーや持病の確認のように、子どもの命にかかわることは、保護者の自筆で答えてもらう方法も選べる、とされています。<br>
+  <strong>出欠や感想はQRコード、命にかかわる確認は紙。</strong><br>
+  内容によって、使い分けることが重要です。</p>
+
+  <h3>スマホを使いにくい家庭には、紙も残す</h3>
+  <p>同じ通知では、デジタルでのやりとりが難しい家庭には、紙で手続きできる余地を残すよう求めています。<br>
+  QRコードは、紙を「なくす」ためではなく、紙の手間を「減らす」ための道具です。おたよりに「紙で出してもかまいません」と一言添えておくと、どの家庭も安心して答えられます。</p>
+
+  <h2 id="tsukuru">QRコードは無料で、その場で作れる</h2>
+  <p>QRコードは、URLを入れるだけで作れます。<br>
+  この記事のツール一覧にある、さくらツールズの「<a href="../../qr/">QRコード作成</a>」なら、登録なし・無料。URLを入れたその場で、QRコードができあがります。</p>
+  <!-- ⭐道具の画面の画像（2026-09-29 本人「この画面を画像にしては！？」）。赤い注釈は本人の見本どおり（「こんな風に入れてみたら？」）。下の一言は本文と重なるので「QRコード作成の画面」だけ＝①にURLを入れると、横にもうQRができている。「こうやって作る」 -->
+  <figure class="zu">
+    <img src="../../img/qr-screen.png?v=4" width="892" height="678" loading="lazy"
+         alt="QRコード作成の画面。左の①中身の入力にURL（https://sakura-tools.com/）を入れると、その下にQRコードができている。赤い枠と矢印で「ここにURLをコピペするだけで完成」と書き込んである。右の②見た目で、大きさ・誤り訂正・色を選べる">
+    <figcaption>QRコード作成の画面</figcaption>
+  </figure>
+  <ul>
+    <li>PNG画像で保存すれば、プリントやスライドにそのまま貼れます</li>
+    <li>SVGで保存すると、ポスターのように大きく刷ってもぼやけません</li>
+    <li>入れたURLは、使っている端末の中だけでQRコードにする作りで、インターネットには送りません</li>
+  </ul>
+  <p>安心してお使いいただける仕組みになっています。</p>
+
+  <section class="matome">
+    <h2 id="matome">まとめ</h2>
+    <p>紙の連絡には、印刷・配布・回収・声かけ・集計と、先生の手間がいくつも重なっています。<br>
+    その手間を減らす道具が、QRコードです。学校の端末も保護者のスマホも、はじめから入っているカメラで読めます。</p>
+    <p>キャンバのページやGoogleフォームをQRコードにすれば、使える場面はたくさんあります。</p>
+    <ul>
+      <li>授業：資料や動画、ふり返りのフォームをその場で配る</li>
+      <li>校内めぐり・オープンキャンパス：部屋ごとの紹介ページを読んでもらう</li>
+      <li>学校祭：QRコードは貼ったまま、中身だけを毎年新しくする</li>
+      <li>おたより：紙に書ききれない続きを届ける</li>
+      <li>出欠・アンケート：スマホから答えてもらい、集計の手間を減らす</li>
+      <li>懇談会：紙で配らず、その場で見せる</li>
+    </ul>
+    <p>安心して使うためのポイントは、次の4つです。<br>
+    <strong>見られて困るものは置かない。終わったら元のページを止める。大事な回答は別の方法で。紙も残す。</strong></p>
+    <p>いきなり学校で使うのが不安なら、まずは自分のInstagramやブログのURLで、QRコードを1つ作ってみてください。<br>
+    スマホで読めた瞬間、「これなら授業でも使えそう」と思えるはずです。</p>
+    <p class="cta"><a href="../../qr/">QRコードを作ってみる</a></p>
+  </section>
+
+  <section class="sanko">
+    <p class="sanko-t">参考</p>
+    <ul>
+      <li><a href="https://www.mext.go.jp/content/20201019-mxt_zaimu-100002245-1.pdf" target="_blank" rel="noopener">文部科学省「学校が保護者等に求める押印の見直し及び学校・保護者等間における連絡手段のデジタル化の推進について（通知）」</a>（2020年10月20日）</li>
+      <li><a href="https://www.jstage.jst.go.jp/article/sor/65/1/65_16/_pdf/-char/ja" target="_blank" rel="noopener">登本洋子・齋藤玲・堀田龍也「初等中等教育におけるQRコードの利活用の実態：教員を対象とする調査」『読書科学』第65巻第1号</a>（2024年）</li>
+      <li><a href="https://www.cfa.go.jp/policies/youth-kankyou/internet_research/results-etc" target="_blank" rel="noopener">こども家庭庁「令和7年度 青少年のインターネット利用環境実態調査 調査結果（速報）」</a>（2026年2月）</li>
+      <li><a href="https://www.soumu.go.jp/menu_news/s-news/01tsushin02_02000183.html" target="_blank" rel="noopener">総務省「令和7年通信利用動向調査の結果」</a>（2026年5月29日）</li>
+      <li><a href="https://www.m2ri.jp/release/detail.html?id=686" target="_blank" rel="noopener">MM総研「GIGAスクール第2期 OSシェア調査」</a>（2025年7月31日）</li>
+      <li><a href="https://support.google.com/chromebook/answer/4487486?hl=ja" target="_blank" rel="noopener">Chromebook ヘルプ「Chromebook でカメラ機能を使用する」</a></li>
+      <li><a href="https://support.apple.com/ja-jp/guide/ipad/ipad1be06c51/ipados" target="_blank" rel="noopener">Apple サポート「iPadのカメラでQRコードをスキャンする」</a></li>
+      <li><a href="https://support.microsoft.com/ja-jp/windows/hardware/camera/how-to-use-the-windows-camera-app" target="_blank" rel="noopener">Microsoft サポート「Windows カメラ アプリの使用方法」</a></li>
+      <li><a href="https://workspaceupdates.googleblog.com/2026/01/forms-stop-collecting-responses.html" target="_blank" rel="noopener">Google Workspace Updates「Set Google Forms to automatically stop accepting responses based on date and time or response count」</a>（2026年1月）</li>
+      <li><a href="https://www.canva.com/ja_jp/help/unpublishing-websites/" target="_blank" rel="noopener">Canva ヘルプセンター「Webサイトを非公開にする」</a></li>
+    </ul>
+    <p class="tm">QRコードは株式会社デンソーウェーブの登録商標です。</p>
+  </section>
+
+  <div class="t-ad"></div>
+
+  <p class="after"><a href="../">← 記事一覧へ</a>　<a href="../../qr/">QRコード作成へ</a></p>
+</article>
+  <!-- ⭐右の目次（2026-09-29 本人「右に目次欲しいわ」）＝articles.js が h2・h3 から作る。広い画面だけ出る -->
+  <aside class="toc-side" aria-label="目次"></aside>
+</main>
+
+<footer>
+  <div class="wrap"><span class="fnav"><a href="../../about/">運営者情報</a>　<a href="../../contact/">お問い合わせ</a>　<a href="../../privacy/">プライバシーポリシー</a></span>
+    <span class="copy">さくらツールズ　© 2026 SAKURA tools</span>
+  </div>
+</footer>
+<script src="../articles.js?v=3"></script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+/* QRコード作成（2026-09-26 たたき台）
+   ⭐共通の部品（details.opt・.tip-btn・.primary・.mini・.safe・.hint）は style.css のものを使う。ここは道具だけの部品 */
+:root{ color-scheme: light; }
+input[type=checkbox], input[type=radio]{ accent-color: var(--pink); }
+
+.qr-set .lead{margin-bottom:10px}
+.qr-set .tip-guide{margin:14px 0 10px}
+
+/* ⭐①と②を横並び（2026-09-29 本人）＝860px以上だけ。狭いときは今までどおり縦（ページの型 7＝859px以下で見本を下に回すのと同じ区切り） */
+@media (min-width:860px){
+  /* ⭐①と②の箱は同じ高さ（2026-09-29 本人「①と②の箱のサイズを一緒にしてほしい」）＝grid の stretch */
+  .qr-2col{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch;margin-bottom:18px}
+  .qr-2col > details.opt{margin-bottom:0;min-width:0}
+  .qr-2col .qr-lbl2{min-width:5em}
+}
+
+/* ① 中身の入力 */
+.qr-lbl{font-weight:700;margin:0 0 6px;font-size:.95rem}
+#qrText{min-height:96px;width:100%;word-break:break-all}
+.qr-count{display:flex;align-items:center;gap:10px;margin:6px 0 12px;font-size:.85rem;color:var(--ink-soft)}
+.qr-count #qrBytes:empty{display:none}
+
+/* できあがりの見本 */
+.qr-preview{display:flex;flex-direction:column;align-items:center;gap:8px;margin:6px 0 14px;padding:16px 10px;background:#fff;border:1px solid var(--line);border-radius:var(--radius)}
+.qr-preview canvas{display:block;width:240px;max-width:100%;height:auto;image-rendering:pixelated;image-rendering:crisp-edges;border:1px solid var(--line)}
+.qr-preview.empty canvas{display:none}
+.qr-msg{margin:0;font-size:.88rem;color:var(--ink-soft);text-align:center}
+.qr-msg:empty{display:none}
+.qr-info{margin:0;font-size:.78rem;color:var(--ink-soft);text-align:center}
+.qr-info:empty{display:none}
+
+/* ② 見た目：選ぶ欄（ラジオを押しやすいかたまりにする） */
+.qr-line{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin:0 0 14px}
+.qr-lbl2{font-size:.95rem;min-width:6.5em;display:inline-flex;align-items:center}
+.qr-color{display:inline-flex;align-items:center;gap:8px}
+.qr-color input[type=color]{width:44px;height:34px;padding:2px;border:1px solid var(--line);border-radius:var(--radius);background:#fff;cursor:pointer}
+/* 色番号の欄（2026-09-29） */
+.qr-hex{width:7.5em;font-family:ui-monospace,Consolas,monospace;font-size:.95rem;padding:6px 8px}
+.qr-hexhint{margin:-8px 0 12px}
+.qr-midnote{margin:-6px 0 14px}
+.qr-midnote[hidden]{display:none}
+/* ③ 文字を入れる */
+.qr-txt{width:100%;max-width:22em}
+.qr-warn{margin:-6px 0 12px;font-size:.8rem;color:#a84a72}
+.qr-warn[hidden]{display:none}
+.qr-check label{font-size:.95rem}
+
+/* 保存のボタン＝シャッターの外（ページの型 8-a の余白：上18px → ボタン 字20px・内側14px 48px → 6px → 案内 → 22px） */
+.qr-go{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin:18px 0 0}
+.qr-go .primary{font-size:1.25rem;padding:14px 48px}
+.qr-go .qr-go-sub{font-size:1rem;padding:12px 26px}
+.qr-go button:disabled{opacity:.45;cursor:default;box-shadow:none}
+.qr-go button:not(.primary):disabled:hover{background:#fff}
+.qr-go .primary:disabled{filter:none}
+.qr-gomsg{font-size:.82rem;color:var(--ink-soft);text-align:center;margin:6px 0 4px}
+.qr-gomsg.saved{color:var(--pink);font-weight:700}
+.qr-gohint{text-align:center;margin:0 0 22px}
+
+/* スマホ：横に出ないように */
+@media (max-width:430px){
+  .qr-lbl2{min-width:0;width:100%}
+  .qr-go button{flex:1 1 100%}
+}
+
+/* 誤り訂正の「？」：開いたら説明は下の段に（選ぶ欄は見出しの横のまま） */
+.qr-line > .tip-body{flex:1 1 100%;order:3;margin:0}
+
+/* ⭐この道具の読みもの（記事）へのリンク＝リードの箇条書きの下に1行（2026-09-29 本人）
+   ⚠いまはQRコード作成だけ。ほかの道具でも使うようになったら style.css に移す（ページの型 16-a） */
+.rel-art{font-size:.82rem;color:var(--ink-soft);margin:10px 0 0;line-height:1.7}
+.rel-art a{color:var(--pink);font-weight:700}
