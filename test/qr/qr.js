@@ -128,12 +128,14 @@ function addEccAndInterleave(data, ver, ecl) {
     if (i < numShort) dat.push(0);             /* 短いブロックの穴（並べるときに飛ばす） */
     blocks.push(dat.concat(ecc));
   }
-  var res = [];
+  var res = [], blockOf = [];
   for (var c = 0; c < blocks[0].length; c++) {
     for (var b = 0; b < blocks.length; b++) {
-      if (c !== shortLen - eccLen || b >= numShort) res.push(blocks[b][c]);
+      if (c !== shortLen - eccLen || b >= numShort) { res.push(blocks[b][c]); blockOf.push(b); }
     }
   }
+  /* ⭐blockOf＝並べたあとのコード語が、どのブロックのものか（真ん中の文字で隠れる量を数えるのに使う） */
+  res.blockOf = blockOf;
   return res;
 }
 
@@ -141,10 +143,11 @@ function addEccAndInterleave(data, ver, ecl) {
 function Grid(ver) {
   this.ver = ver;
   this.size = ver * 4 + 17;
-  this.m = []; this.fn = [];
+  this.m = []; this.fn = []; this.cw = [];
   for (var y = 0; y < this.size; y++) {
     this.m.push(new Array(this.size).fill(false));
     this.fn.push(new Array(this.size).fill(false));
+    this.cw.push(new Array(this.size).fill(-1));   /* そのマスが何番目のコード語か（-1＝コード語ではない） */
   }
 }
 Grid.prototype.setFn = function (x, y, dark) { this.m[y][x] = dark; this.fn[y][x] = true; };
@@ -213,6 +216,7 @@ function drawCodewords(g, cw) {
         var x = right - j, up = ((right + 1) & 2) === 0, y = up ? s - 1 - v : v;
         if (!g.fn[y][x] && i < total) {
           g.m[y][x] = ((cw[i >>> 3] >>> (7 - (i & 7))) & 1) !== 0;
+          g.cw[y][x] = i >>> 3;
           i++;
         }
       }
@@ -273,9 +277,9 @@ function penalty(g) {
 }
 
 /* 入り口：文字 → { size, modules[y][x], ver, ecl, mask } ／入りきらないときは null */
-QR.encode = function (text, ecl, forceMask) {
+QR.encode = function (text, ecl, forceMask, minVer) {
   var bytes = utf8(text), ver;
-  for (ver = 1; ver <= 40; ver++) {
+  for (ver = minVer || 1; ver <= 40; ver++) {
     var need = 4 + (ver <= 9 ? 8 : 16) + bytes.length * 8;
     if (need <= dataCodewords(ver, ecl) * 8) break;
   }
@@ -295,7 +299,28 @@ QR.encode = function (text, ecl, forceMask) {
     var sc = penalty(g);
     if (sc < bestScore) { bestScore = sc; best = { g: g, mask: mask }; }
   });
-  return { size: best.g.size, modules: best.g.m, ver: ver, ecl: ecl, mask: best.mask, bytes: bytes.length };
+  return { size: best.g.size, modules: best.g.m, ver: ver, ecl: ecl, mask: best.mask, bytes: bytes.length,
+           cwAt: base.cw, blockOf: cw.blockOf, eccLen: ECC_PER_BLOCK[ecl][ver], numBlocks: NUM_BLOCKS[ecl][ver], fn: base.fn };
+};
+
+/* ⭐真ん中を隠しても読めるか（2026-09-29 本人「QRコードに文字入れられないの？」）
+   隠れたマスが入っているコード語を、ブロックごとに数える。
+   1ブロックで直せるのは 誤り訂正のコード語の半分まで。⭐その7割までに抑える（汚れ・印刷のにじみの分を残す）
+   ⚠位置検出パターン（3つの角の大きい四角）にかかるときは読めないものとする
+   box＝{x0,y0,x1,y1}（マスの番号・x1,y1 は含まない） */
+QR.coverOk = function (q, box) {
+  var hit = {}, perBlock = [], b, x, y, s = q.size;
+  for (b = 0; b < q.numBlocks; b++) perBlock.push(0);
+  for (y = Math.max(0, box.y0); y < Math.min(s, box.y1); y++) {
+    for (x = Math.max(0, box.x0); x < Math.min(s, box.x1); x++) {
+      if ((x < 9 && y < 9) || (x >= s - 8 && y < 9) || (x < 9 && y >= s - 8)) return { ok: false, worst: 1 };
+      var k = q.cwAt[y][x];
+      if (k >= 0 && !hit[k]) { hit[k] = true; perBlock[q.blockOf[k]]++; }
+    }
+  }
+  var limit = Math.floor(Math.floor(q.eccLen / 2) * 0.7), worst = 0;
+  for (b = 0; b < perBlock.length; b++) worst = Math.max(worst, perBlock[b] / Math.max(1, limit));
+  return { ok: worst <= 1, worst: worst };
 };
 QR._formatBits = formatBits;
 QR._alignPositions = alignPositions;
@@ -310,10 +335,51 @@ var SIZES = { s: 256, m: 512, l: 1024 };      /* PNGのおよその大きさ（�
 var ECL_NAME = ["L", "M", "Q", "H"];
 var cur = null;                               /* いま出ているQR */
 
+var FONT = '"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","BIZ UDPGothic",Meiryo,sans-serif';
+
 function opts() {
   var size = document.querySelector('input[name="qrSize"]:checked').value;
   var ecl = parseInt(document.querySelector('input[name="qrEcl"]:checked').value, 10);
-  return { size: size, ecl: ecl, color: $("qrColor").value || "#000000", quiet: $("qrQuiet").checked ? 4 : 0 };
+  var mid = $("qrMid").value.replace(/^\s+|\s+$/g, ""), under = $("qrUnder").value.replace(/^\s+|\s+$/g, "");
+  return { size: size, ecl: mid ? 3 : ecl, eclPicked: ecl, color: $("qrColor").value || "#000000",
+           quiet: $("qrQuiet").checked ? 4 : 0, mid: mid, under: under };
+}
+
+/* 色番号（#1a3a6b・1a3a6b・#abc）→ #rrggbb ／読めないときは null */
+function normHex(v) {
+  v = (v || "").replace(/\s/g, "").replace(/^#/, "");
+  if (/^[0-9a-fA-F]{3}$/.test(v)) v = v.replace(/(.)/g, "$1$1");
+  return /^[0-9a-fA-F]{6}$/.test(v) ? "#" + v.toLowerCase() : null;
+}
+
+/* 文字の幅（1文字の高さ＝1 として）。canvas で測る */
+var measureCtx = null;
+function textWidth(t, weight) {
+  if (!measureCtx) measureCtx = document.createElement("canvas").getContext("2d");
+  measureCtx.font = weight + " 100px " + FONT;
+  return measureCtx.measureText(t).width / 100;
+}
+
+/* ⭐並べ方（単位＝マス）。真ん中の白い四角・下の文字の場所
+   真ん中＝高さはQRの約14%（奇数マス・3マス以上）、幅は文字に合わせる。⚠QRの幅の半分を超えたら入らない
+   下の文字＝字の高さはQRの幅の7%。長いときは幅に収まるまで小さくする */
+function layout(q, o) {
+  var n = q.size + o.quiet * 2, L = { n: n, w: n, h: n, mid: null, under: null };
+  if (o.mid) {
+    var hM = Math.max(3, Math.round(q.size * 0.14)); if (hM % 2 === 0) hM++;
+    var fs = hM * 0.6, tw = textWidth(o.mid, 700) * fs;
+    var wM = Math.max(hM, Math.ceil(tw + hM * 0.55)); if ((q.size - wM) % 2 !== 0) wM++;
+    var x0 = (q.size - wM) / 2, y0 = (q.size - hM) / 2;
+    L.mid = { x0: x0, y0: y0, x1: x0 + wM, y1: y0 + hM, fs: fs, tooWide: wM > q.size * 0.5 };
+  }
+  if (o.under) {
+    var ufs = q.size * 0.07, maxW = n * 0.92, uw = textWidth(o.under, 700) * ufs;
+    if (uw > maxW) ufs *= maxW / uw;
+    var gap = o.quiet ? 0 : ufs * 0.6, uh = gap + ufs * 1.9;
+    L.under = { fs: ufs, y: n + gap + ufs * 0.95, h: uh };
+    L.h = n + uh;
+  }
+  return L;
 }
 
 /* 色が明るすぎないか（白い紙の上で読めるか） */
@@ -324,19 +390,33 @@ function tooLight(hex) {
   return (1.05) / (L + 0.05) < 4.5;            /* 白との明るさの差が小さい */
 }
 
-function drawCanvas(canvas, q, o, scale) {
-  var n = q.size + o.quiet * 2, px = n * scale;
-  canvas.width = px; canvas.height = px;
+function drawCanvas(canvas, q, o, scale, L) {
+  L = L || layout(q, o);
+  var W = L.w * scale, H = Math.ceil(L.h * scale), qz = o.quiet;
+  canvas.width = W; canvas.height = H;
   var c = canvas.getContext("2d");
-  c.fillStyle = "#ffffff"; c.fillRect(0, 0, px, px);
+  c.fillStyle = "#ffffff"; c.fillRect(0, 0, W, H);
   c.fillStyle = o.color;
   for (var y = 0; y < q.size; y++) for (var x = 0; x < q.size; x++)
-    if (q.modules[y][x]) c.fillRect((x + o.quiet) * scale, (y + o.quiet) * scale, scale, scale);
+    if (q.modules[y][x]) c.fillRect((x + qz) * scale, (y + qz) * scale, scale, scale);
+  c.textAlign = "center"; c.textBaseline = "middle";
+  if (L.mid) {
+    var m = L.mid;
+    c.fillStyle = "#ffffff";
+    c.fillRect((m.x0 + qz) * scale, (m.y0 + qz) * scale, (m.x1 - m.x0) * scale, (m.y1 - m.y0) * scale);
+    c.fillStyle = o.color; c.font = "700 " + (m.fs * scale) + "px " + FONT;
+    c.fillText(o.mid, (qz + q.size / 2) * scale, (qz + q.size / 2) * scale + m.fs * scale * 0.04);
+  }
+  if (L.under) {
+    c.fillStyle = o.color; c.font = "700 " + (L.under.fs * scale) + "px " + FONT;
+    c.fillText(o.under, (L.w / 2) * scale, L.under.y * scale);
+  }
 }
 function pngScale(q, o) {
   var n = q.size + o.quiet * 2;
   return Math.max(1, Math.round(SIZES[o.size] / n));
 }
+function esc(t) { return t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
 
 function render() {
   var text = $("qrText").value.replace(/^\s+|\s+$/g, "");
@@ -347,19 +427,38 @@ function render() {
     cur = null; box.classList.add("empty"); msg.textContent = "①に入れると、QRコードが出ます。"; info.textContent = "";
     setSave(false); return;
   }
+  $("qrMidNote").hidden = !o.mid;
   var q = QR.encode(text, o.ecl);
   if (!q) {
     cur = null; box.classList.add("empty");
-    msg.textContent = o.ecl > 0
+    msg.textContent = o.mid
+      ? "文字が多すぎて、真ん中に文字を入れるとQRコードに入りません。①の文字を減らすか、③の中の真ん中の文字を消してください。"
+      : o.ecl > 0
       ? "文字が多すぎて、QRコードに入りません。文字を減らすか、②の中の誤り訂正をLにしてください。"
       : "文字が多すぎて、QRコードに入りません。文字を減らしてください。";
     info.textContent = ""; setSave(false); return;
   }
-  cur = { q: q, o: o };
+  var L = layout(q, o);
+  if (L.mid) {
+    var cv = L.mid.tooWide ? { ok: false } : QR.coverOk(q, L.mid);
+    /* ⭐隠れる量が多いときは、QRを少し大きく（型番を上げて）作り直す＝誤り訂正のコード語が増えて、真ん中の四角の割合も小さくなる。6段まで */
+    for (var up = 1; !cv.ok && up <= 6 && q.ver + 1 <= 40; up++) {
+      var q2 = QR.encode(text, o.ecl, undefined, q.ver + 1);
+      if (!q2) break;
+      q = q2; L = layout(q, o);
+      cv = L.mid.tooWide ? { ok: false } : QR.coverOk(q, L.mid);
+    }
+    if (!cv.ok) {
+      cur = null; box.classList.add("empty");
+      msg.textContent = "真ん中の文字が長すぎて、読み取れなくなるおそれがあります。③の中の真ん中の文字を短くしてください。";
+      info.textContent = ""; setSave(false); return;
+    }
+  }
+  cur = { q: q, o: o, L: L };
   box.classList.remove("empty"); msg.textContent = "";
-  drawCanvas($("qrCanvas"), q, o, Math.max(2, Math.floor(240 / (q.size + o.quiet * 2))));
-  var sc = pngScale(q, o), px = (q.size + o.quiet * 2) * sc;
-  info.textContent = q.size + "×" + q.size + "マス（型番" + q.ver + "・誤り訂正" + ECL_NAME[q.ecl] + "）／PNGは" + px + "×" + px + "ピクセル";
+  drawCanvas($("qrCanvas"), q, o, Math.max(2, Math.floor(240 / L.w)), L);
+  var sc = pngScale(q, o), pw = L.w * sc, ph = Math.ceil(L.h * sc);
+  info.textContent = q.size + "×" + q.size + "マス（型番" + q.ver + "・誤り訂正" + ECL_NAME[q.ecl] + "）／PNGは" + pw + "×" + ph + "ピクセル";
   setSave(true);
 }
 function setSave(on) { $("savePng").disabled = !on; $("saveSvg").disabled = !on; }
@@ -370,16 +469,18 @@ function download(blob, name) {
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
 }
-var msgTimer = null;
+/* ⭐保存の知らせ＝ボタンの下の案内の1行を書きかえて、3.5秒で元の文に戻す（ページの型 8-a「案内の1行は空にしない」） */
+var msgTimer = null, MSG0 = null;
 function saveMsg(t) {
-  var el = $("saveMsg"); el.textContent = t;
-  clearTimeout(msgTimer); msgTimer = setTimeout(function () { el.textContent = ""; }, 3500);
+  var el = $("saveMsg"); if (MSG0 === null) MSG0 = el.textContent;
+  el.textContent = t; el.classList.add("saved");
+  clearTimeout(msgTimer); msgTimer = setTimeout(function () { el.textContent = MSG0; el.classList.remove("saved"); }, 3500);
 }
 
 function savePng() {
   if (!cur) return;
   var cv = document.createElement("canvas");
-  drawCanvas(cv, cur.q, cur.o, pngScale(cur.q, cur.o));
+  drawCanvas(cv, cur.q, cur.o, pngScale(cur.q, cur.o), cur.L);
   if (cv.toBlob) {
     cv.toBlob(function (b) { if (b) { download(b, "qrcode.png"); saveMsg("PNG画像を保存しました"); } }, "image/png");
   } else {
@@ -389,13 +490,22 @@ function savePng() {
 }
 function saveSvg() {
   if (!cur) return;
-  var q = cur.q, o = cur.o, n = q.size + o.quiet * 2, d = [];
+  var q = cur.q, o = cur.o, L = cur.L, n = L.w, H = +L.h.toFixed(3), qz = o.quiet, d = [];
   for (var y = 0; y < q.size; y++) for (var x = 0; x < q.size; x++)
-    if (q.modules[y][x]) d.push("M" + (x + o.quiet) + "," + (y + o.quiet) + "h1v1h-1z");
+    if (q.modules[y][x]) d.push("M" + (x + qz) + "," + (y + qz) + "h1v1h-1z");
+  var extra = "", ff = ' font-family=\'' + FONT.replace(/"/g, "") + '\' font-weight="700" text-anchor="middle" dominant-baseline="central"';
+  if (L.mid) {
+    var m = L.mid;
+    extra += '<rect x="' + (m.x0 + qz) + '" y="' + (m.y0 + qz) + '" width="' + (m.x1 - m.x0) + '" height="' + (m.y1 - m.y0) + '" fill="#ffffff"/>\n' +
+      '<text x="' + (qz + q.size / 2) + '" y="' + (qz + q.size / 2) + '" font-size="' + m.fs.toFixed(3) + '" fill="' + o.color + '"' + ff + '>' + esc(o.mid) + '</text>\n';
+  }
+  if (L.under) {
+    extra += '<text x="' + (n / 2) + '" y="' + L.under.y.toFixed(3) + '" font-size="' + L.under.fs.toFixed(3) + '" fill="' + o.color + '"' + ff + '>' + esc(o.under) + '</text>\n';
+  }
   var svg = '<?xml version="1.0" encoding="UTF-8"?>\n' +
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + n + " " + n + '" width="' + n * 8 + '" height="' + n * 8 + '" shape-rendering="crispEdges">\n' +
-    '<rect width="' + n + '" height="' + n + '" fill="#ffffff"/>\n' +
-    '<path fill="' + o.color + '" d="' + d.join("") + '"/>\n</svg>\n';
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + n + " " + H + '" width="' + n * 8 + '" height="' + Math.round(H * 8) + '">\n' +
+    '<rect width="' + n + '" height="' + H + '" fill="#ffffff"/>\n' +
+    '<path fill="' + o.color + '" shape-rendering="crispEdges" d="' + d.join("") + '"/>\n' + extra + '</svg>\n';
   download(new Blob([svg], { type: "image/svg+xml" }), "qrcode.svg");
   saveMsg("SVGを保存しました");
 }
@@ -413,8 +523,17 @@ function start() {
   document.querySelectorAll('input[name="qrSize"],input[name="qrEcl"],#qrQuiet').forEach(function (el) {
     el.addEventListener("change", render);
   });
-  $("qrColor").addEventListener("input", render);
-  $("qrColorReset").addEventListener("click", function () { $("qrColor").value = "#000000"; render(); });
+  /* ⭐色は2通り（2026-09-29 本人「色番号で指示できるようにもしたほうがいいね」）＝色の見本から選ぶ／色番号を打つ。どちらを変えても、もう片方がそろう */
+  $("qrColor").addEventListener("input", function () { $("qrHex").value = $("qrColor").value; $("qrHexWarn").hidden = true; render(); });
+  $("qrHex").addEventListener("input", function () {
+    var h = normHex($("qrHex").value);
+    $("qrHexWarn").hidden = !!h || !$("qrHex").value;
+    if (h) { $("qrColor").value = h; render(); }
+  });
+  $("qrHex").addEventListener("change", function () { var h = normHex($("qrHex").value); if (h) $("qrHex").value = h; });
+  $("qrColorReset").addEventListener("click", function () { $("qrColor").value = "#000000"; $("qrHex").value = "#000000"; $("qrHexWarn").hidden = true; render(); });
+  $("qrMid").addEventListener("input", render);
+  $("qrUnder").addEventListener("input", render);
   $("qrClear").addEventListener("click", function () { $("qrText").value = ""; render(); $("qrText").focus(); });
   $("savePng").addEventListener("click", savePng);
   $("saveSvg").addEventListener("click", saveSvg);

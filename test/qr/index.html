@@ -13,7 +13,7 @@
 <title>【テスト】QRコード作成｜URLや文字を入れるだけ・PNGとSVGで保存</title>
 <meta name="description" content="URLや文字を入れるだけで、その場でQRコードができます。大きさ・色・誤り訂正を選んで、PNG画像やSVGで保存できます。日本語もそのまま入ります。登録なし・無料。">
 <link rel="stylesheet" href="../style.css?v=155">
-<link rel="stylesheet" href="qr.css?v=2">
+<link rel="stylesheet" href="qr.css?v=6">
 </head>
 <body>
 <div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
@@ -77,13 +77,18 @@
       <li>大きさ・色・<strong>誤り訂正</strong>を選べる</li>
       <li><strong>PNG画像とSVG</strong>で保存できる</li>
     </ul>
+    <!-- ⭐この道具の読みもの（2026-09-29 本人「QRコードのページのどこかに。本当は上に置きたい」→「箇条書きの下ならありか！そうしよう」）
+         ⭐📖はやめて「関連記事：」（2026-09-29 本人「関連記事のBのほうが読み物っぽくていいかも」）。⭐記事が増えたら「／」で横に足す（本人「学校じゃないのも書きたいなと思ったしね」＝会社・自治体の記事） -->
+    <p class="rel-art">関連記事：<a href="../articles/qr-school/">学校でQRコードを使うアイデア</a></p>
     </div>
-    <figure class="t-sample noprint"><img src="../img/qr-sample.png?v=1" width="1280" height="720" alt="QRコード作成（見本の画像は準備中）"></figure>
+    <figure class="t-sample noprint"><img src="../img/qr-sample.png?v=6" width="1280" height="720" alt="QRコード作成の見本。左に黒い大きなQRコード（真ん中に「さくら」・下に「さくらツールズ」）、右に色違いのQRコードが3つ（紺・真ん中に「申込」／桜色・真ん中に「→」／緑・下に「出欠はこちら」）"></figure>
   </div>
 
   <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
 
-  <!-- ⚠①だけ開いて始める（ページの型 2-a は「全部たたむ」。見本画像とサンプルがまだ無いので、たたむと何の道具か分からない＝本人に確認） -->
+  <!-- ⭐①と②を横並び（2026-09-29 本人「作るまでのボタンが遠いから、①と②を横並びにしたらどうかな？」）＝パソコンの幅だけ。859px以下は縦（ページの型 7）
+       ⭐①②とも開けて始める（ページの型 2-a の例外「押すものが最初の画面で見える」）。③はたたむ・保存のボタンは③の下（シャッターの外） -->
+  <div class="qr-2col">
   <details class="opt" id="opt1" open>
     <summary><span class="step">1</span>中身の入力</summary>
     <div class="body">
@@ -109,7 +114,7 @@
     </div>
   </details>
 
-  <details class="opt" id="opt2">
+  <details class="opt" id="opt2" open>
     <summary><span class="step">2</span>見た目</summary>
     <div class="body">
       <div class="qr-line">
@@ -139,32 +144,58 @@
           <label><input type="radio" name="qrEcl" value="3"><span class="seg-in">H</span></label>
         </div>
       </div>
+      <p class="hint qr-midnote" id="qrMidNote" hidden>③の中の真ん中の文字が入っているので、誤り訂正はHで作っています。</p>
 
+      <!-- ⭐色は2通り（2026-09-29 本人「色、無限に選べるのいいね。色番号で指示できるようにもしたほうがいいね」）＝色の見本／色番号。どちらを変えても、もう片方がそろう -->
       <div class="qr-line">
         <span class="qr-lbl2">色</span>
         <span class="qr-color">
-          <input type="color" id="qrColor" value="#000000" aria-label="QRコードの色">
+          <input type="color" id="qrColor" value="#000000" aria-label="QRコードの色（色の見本から選ぶ）">
+          <input type="text" id="qrHex" class="qr-hex" value="#000000" maxlength="7" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="色番号" placeholder="#000000">
           <button type="button" class="mini" id="qrColorReset">黒に戻す</button>
         </span>
       </div>
+      <p class="hint qr-hexhint">左の四角を押すと、色の見本から選べます。色番号（#1a3a6b のような、#と6けた）を打っても変えられます。</p>
+      <p class="qr-warn" id="qrHexWarn" hidden>⚠色番号は、#1a3a6b のように、#のあとに0〜9とa〜fの6けたで入れてください。</p>
       <p class="qr-warn" id="qrColorWarn" hidden>⚠色がうすいと、読み取れないことがあります。黒や紺のような濃い色にしてください。</p>
 
       <p class="qr-check"><label><input type="checkbox" id="qrQuiet" checked> まわりに白い余白をつける（4マス）</label></p>
       <p class="hint">白い余白がないと、読み取れないことがあります。白い紙やページの上に置くときも、余白はつけたままがおすすめです。</p>
     </div>
   </details>
+  </div><!-- /.qr-2col -->
 
+  <!-- ⭐文字を入れる（2026-09-29 本人「そのQRコードに文字入れられないの？ちょっとでいいから記号とか文字入れられるとわかりやすいな」→「両方入れられるようにお願いします」）
+       真ん中＝白い四角を敷いて短い文字（誤り訂正はHにする・隠れるコード語をブロックごとに数えて、直せる量の7割を超えたら作らない＝qr.js の QR.coverOk）
+       下＝QRの外（白い余白の下）に説明の文字。QRそのものには触らない -->
   <details class="opt" id="opt3">
-    <summary><span class="step">3</span>PNG・SVGで保存</summary>
+    <summary><span class="step">3</span>文字を入れる</summary>
     <div class="body">
-      <div class="qr-save">
-        <button type="button" class="primary" id="savePng" disabled>PNG画像で保存</button>
-        <button type="button" id="saveSvg" disabled>SVGで保存</button>
+      <p class="qr-lbl">真ん中の文字<button type="button" class="tip-btn" aria-label="説明"></button></p>
+      <div class="tip-body" hidden>
+        <p>QRコードの真ん中に白い四角を敷いて、短い文字や記号を入れます。</p>
+        <ul>
+          <li>QRコードには、一部が隠れても読める仕組み（誤り訂正）があります。真ん中に文字を入れるときは、いちばん強いHで作ります。</li>
+          <li>文字が長いと、隠れる所が増えて読めなくなるので、QRコード作成が隠れる量を数えています。多すぎるときは「短くしてください」と出て、保存できません。</li>
+          <li>2〜4文字くらいの短い文字や、「★」「→」のような記号が向いています。</li>
+        </ul>
       </div>
-      <p><span class="saving" id="saveMsg"></span></p>
-      <p class="hint">PNG画像は、WordやExcel、スライドにそのまま貼れます。SVGは拡大してもぼやけない形式で、ポスターやチラシの印刷に向いています。</p>
+      <input type="text" id="qrMid" class="qr-txt" maxlength="8" placeholder="例：申込" spellcheck="false" autocomplete="off">
+
+      <p class="qr-lbl" style="margin-top:14px">下の文字</p>
+      <input type="text" id="qrUnder" class="qr-txt" maxlength="30" placeholder="例：アンケートはこちら" spellcheck="false" autocomplete="off">
+      <p class="hint">QRコードの下に、説明の文字を入れます。QRコードの外に入るので、読み取りには影響しません。長い文字は、QRコードの幅に収まるように小さくなります。</p>
     </div>
   </details>
+
+  <!-- ⭐保存のボタンはシャッターの外（2026-09-29 本人「ボタンは外。だから④入らないな。今回は保存がメインだし」・ページの型 8-a）
+       余白＝上18px → ボタン → 6px → 案内の1行（空にしない） → 22px -->
+  <div class="qr-go">
+    <button type="button" class="primary" id="savePng" disabled>PNG画像で保存</button>
+    <button type="button" class="qr-go-sub" id="saveSvg" disabled>SVGで保存</button>
+  </div>
+  <p class="qr-gomsg" id="saveMsg">①〜③の内容で、QRコードの画像を保存します。</p>
+  <p class="hint qr-gohint">PNG画像は、WordやExcel、スライドにそのまま貼れます。SVGは拡大してもぼやけない形式で、ポスターやチラシの印刷に向いています。</p>
 
   <details class="howto">
     <summary>使い方</summary>
@@ -172,7 +203,8 @@
       <ol>
         <li>①に、URLや文字を入れます。入れたその場で、①の下にQRコードが出る作りです。</li>
         <li>②で、大きさ・誤り訂正・色・まわりの余白を選びます。はじめのままでも大丈夫です。</li>
-        <li>③の「PNG画像で保存」か「SVGで保存」を押すと、QRコードのファイルが保存されます。</li>
+        <li>③で、QRコードの真ん中や下に文字を入れられます。入れなくてもかまいません。</li>
+        <li>③の下の「PNG画像で保存」か「SVGで保存」を押すと、QRコードのファイルが保存されます。</li>
       </ol>
       <p class="sub">こんなときに</p>
       <ul>
@@ -186,6 +218,7 @@
         <li>②の中の「まわりに白い余白をつける」にチェックが入っているか見てください。</li>
         <li>色がうすいと読み取りにくくなるので、濃い色がおすすめです。</li>
         <li>小さく印刷したときは、大きくするか、①の文字を短くしてください。</li>
+        <li>③の中の真ん中の文字を入れたときは、文字を短くするか、消すと読みやすくなります。</li>
       </ul>
       <p>QRコードは株式会社デンソーウェーブの登録商標です。</p>
     </div>
@@ -203,7 +236,7 @@
       <p class="sub">学校や会社の決まりで、クラウドのサービスが使えません</p>
       <p>QRコード作成は、入れた文字をクラウドに置きません。使っている端末のブラウザの中だけで動きます。</p>
       <p class="sub">作ったQRコードに、使える期限はありますか？</p>
-      <p>ありません。QRコードの中に、入れたURLや文字そのものが入っています。さくらツールがなくなっても、読み取れます。ただし、入れたURLのページが消えたときは、そのページは開けません。</p>
+      <p>ありません。QRコードの中に、入れたURLや文字そのものが入っています。さくらツールズがなくなっても、読み取れます。ただし、入れたURLのページが消えたときは、そのページは開けません。</p>
     </div>
   </details>
 
@@ -224,7 +257,7 @@
     <span class="copy">さくらツールズ　© 2026 SAKURA tools</span></div>
 </footer>
 
-<script src="qr.js?v=2"></script>
+<script src="qr.js?v=5"></script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>

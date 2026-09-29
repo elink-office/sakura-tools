@@ -62,10 +62,14 @@
 .art .chikamichi li::marker{color:var(--pink)}
 /* 太字はピンクにしない（色を増やさない）。濃さだけ */
 .art strong{font-weight:bold;color:var(--ink)}
+/* ⭐蛍光ペン（2026-09-29 本人「蛍光ペンのように強調できないかな？全部塗りつぶさなくてもいい」→黄色）＝文字の下半分だけ、うすい黄色の帯
+   ⭐黄色にした理由＝桜色は見出し・リンク・ボタンに使っている。強調まで桜色にすると、押せる所と見分けにくい。使い方＝<mark class="pen">…</mark> */
+.art mark.pen{background:linear-gradient(transparent 58%,#fff09a 58%);color:inherit;padding:0 2px}
 /* 図 */
 .art .zu{margin:6px 0 1.4em}
 .art .zu img{width:100%;height:auto;border:1px solid var(--line);border-radius:8px;display:block}
-.art .zu.nowaku img{border:0;border-radius:0}   /* ⭐絵の中にもう枠があるものは、外の枠を付けない（二重になるため） */
+.art .zu.nowaku img{border:0;border-radius:0}
+.art .zu.photo img{border:0}   /* ⭐骨休めの写真（2026-09-29）＝写真は線なし・角だけ丸く */   /* ⭐絵の中にもう枠があるものは、外の枠を付けない（二重になるため） */
 .art .zu figcaption{font-size:.78rem;color:var(--ink-soft);margin-top:6px;line-height:1.6}
 
 /* ⭐目次（2026-09-26）＝「この記事でわかること」・まとめと同じグレーの枠 */
@@ -89,6 +93,65 @@
 .art .tanoshimi dt{font-weight:bold;margin-top:10px}
 .art .tanoshimi dt:first-child{margin-top:0}
 .art .tanoshimi dd{margin:0 0 0 1em}   /* ⭐説明は1字下げ（2026-09-26 本人「ミスをすると・ミスをしなければ・何文字までは字下げを」） */
+
+/* ⭐流れの図（2026-09-29 QRの記事・紙のアンケートの8つ）＝番号つきの縦の並び。先生の仕事だけ桜色の札
+   ⭐スマホの1画面を文字だけで埋めない（ライティングマニュアル）。画像にしない＝文字が検索に効く・直しやすい */
+.art .nagare{margin:6px 0 1.4em;padding:14px 16px 10px;border:1px solid var(--line);border-radius:8px;background:#fff}
+.art .nagare ol{margin:0;padding:0;list-style:none;counter-reset:ng}
+.art .nagare li{counter-increment:ng;position:relative;padding:7px 0 7px 2.2em;line-height:1.6;border-bottom:1px dashed var(--line)}
+.art .nagare li:last-child{border-bottom:0}
+.art .nagare li::before{content:counter(ng);position:absolute;left:0;top:8px;width:1.6em;height:1.6em;border-radius:50%;
+  background:#eef0f2;color:var(--ink-soft);font-size:.8rem;font-weight:bold;text-align:center;line-height:1.6em}
+.art .nagare li.sensei::before{background:var(--pink);color:#fff}
+.art .nagare .who{display:inline-block;min-width:3.6em;margin-right:8px;padding:0 6px;border:1px solid var(--line);border-radius:4px;
+  font-size:.74rem;color:var(--ink-soft);text-align:center}
+.art .nagare li.sensei .who{border-color:var(--pink);color:var(--pink);font-weight:bold}
+.art .nagare small{display:block;font-size:.8rem;color:var(--ink-soft)}
+.art .nagare figcaption{font-size:.78rem;color:var(--ink-soft);margin-top:8px;line-height:1.6}
+
+/* ⭐表（ページの型 9-a と同じ＝横の線だけ・項目名はうすいグレーの字・中央） */
+.art .hyo-wrap{overflow-x:auto;margin:0 0 1.2em}
+.art table.hyo{width:100%;border-collapse:collapse;font-size:.92rem;line-height:1.7}
+.art table.hyo th{color:#9a9ea4;font-weight:bold;text-align:center;font-size:.82rem;padding:6px 8px;border-bottom:1px solid var(--line)}
+.art table.hyo td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+.art table.hyo td:first-child{white-space:nowrap;font-weight:bold}
+.art table.hyo a{color:var(--pink)}
+
+/* ⭐参考（出典）＝まとめの下・小さい字 */
+.art .sanko{margin:28px 0 0;font-size:.82rem;color:var(--ink-soft)}
+.art .sanko-t{font-weight:bold;font-size:.86rem;margin:0 0 4px}
+.art .sanko ul{line-height:1.8;padding-left:1.2em}
+.art .sanko li{margin-bottom:4px}
+.art .sanko a{color:var(--ink-soft)}
+.art .sanko .tm{font-size:.78rem}
+
+/* ⭐2カラム・右に目次（2026-09-29 本人「やっぱり２カラムにしたい。右に目次欲しいわ」・見本＝たねまき）
+   前＝2026-09-26「アドセンスに通ったら記事だけ2カラム」→ 先に2カラムにした
+   ⭐広い画面（960px以上）だけ。本文の幅は37remのまま、右に14remの目次。全体で .wrap（900px）に収まる
+   ⭐目次の中身は articles.js が h2・h3 から作る。目次の下に、あとでツールの一覧も置ける（本人「今は置かなくていいよ」） */
+.toc-side{display:none}
+.art h3[id]{scroll-margin-top:90px}
+@media (min-width:960px){
+  main.art2{display:grid;grid-template-columns:minmax(0,37rem) 14rem;gap:32px;justify-content:center}
+  main.art2 > *{max-width:none;margin-left:0;margin-right:0}
+  .toc-side{display:block;position:sticky;top:64px;align-self:start;max-height:calc(100vh - 80px);overflow-y:auto;
+    padding:14px 0 14px 4px;margin-top:40px}
+}
+.toc-side-t{font-weight:bold;font-size:.82rem;color:var(--ink-soft);margin:0 0 8px 20px}
+.toc-side ol{list-style:none;margin:0;padding:0;position:relative}
+.toc-side ol::before{content:"";position:absolute;left:7px;top:10px;bottom:10px;width:2px;background:#e6e8eb}   /* 点をつなぐ縦の線 */
+.toc-side ol > li{position:relative;padding:5px 0 5px 22px}
+.toc-side ol > li::before{content:"";position:absolute;left:3px;top:11px;width:10px;height:10px;border-radius:50%;background:#e6e8eb}
+.toc-side ol > li.on::before{background:var(--pink)}
+.toc-side a{color:var(--ink-soft);text-decoration:none;font-size:.82rem;line-height:1.6;display:block}
+.toc-side a:hover{color:var(--pink)}
+.toc-side ol > li.on > a{color:var(--ink);font-weight:bold}
+.toc-side ul{list-style:none;margin:4px 0 2px;padding:0;display:none}
+.toc-side li.on > ul{display:block}
+/* ⭐小見出し（h3）は字下げ＋少し小さく（2026-09-29 本人「H３はインデントをするか文字を小さくして」） */
+.toc-side ul a{font-size:.74rem;padding:2px 0 2px 14px;position:relative}
+.toc-side ul a::before{content:"";position:absolute;left:3px;top:.85em;width:6px;height:1px;background:#c9ccd1}
+.toc-side ul a.on{color:var(--pink)}
 
 /* 記事の下の戻り道 */
 .art .after{margin:30px 0 40px;font-size:.88rem}

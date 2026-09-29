@@ -98,6 +98,7 @@
       <a href="roulette/">ルーレット</a>
       <a href="fukubiki/">福引</a>
       <a href="bingo/">ビンゴ</a>
+      <a href="qr/">QRコード作成</a>
       <span class="navsep" aria-hidden="true"></span>
       <a href="articles/">記事一覧</a>
       </div>
@@ -130,6 +131,7 @@
       <a href="roulette/">ルーレット</a>
       <a href="fukubiki/">福引</a>
       <a href="bingo/">ビンゴ</a>
+      <a href="qr/">QRコード作成</a>
     </nav>
   </div>
 
@@ -266,17 +268,20 @@
 
     <!-- ⭐経理は2枚に分けた（2026-09-12 本人）。⚠経理トップを経由せず直接入る。
          ⭐並び＝1段目に座席表・席次表＋右にスライド/早見表、2段目に見積書・請求書（右下は空く） -->
+    <!-- ⭐QRコード作成（2026-09-29 本人「トップは下の方でもいいよ。見積書と請求書を縦に並べて、その左隣に置いてみて！」）
+         ⭐HTMLの順＝QRコード作成→見積書→関数早見表→請求書（グリッドが左上から詰めるので、QRが左に2段・見積書と請求書がまん中に縦・関数早見表が右上） -->
+    <a class="t-card big work" id="qr" href="qr/">
+      <div class="t-tool">
+        <span class="nm">QRコード作成</span>
+        <span class="ds">URLを貼るだけで、その場でQRコード。色も変えられて、真ん中や下に文字も入る！チラシやおたよりにそのまま貼れる</span>
+        <img class="t-shot" src="img/qr-sample.png?v=6" width="1280" height="720" alt="QRコード作成で作ったQRコード。左に黒い大きなQRコード、右に色違いのQRコードが3つ">
+      </div>
+    </a>
+
     <a class="t-card work" id="mitsumori" href="keiri/mitsumori/">
       <div class="t-tool">
         <span class="nm">見積書メーカー</span>
         <span class="ds">見積が通ったら、その中身をそのまま請求書へ。もう一度入力し直す必要がありません。</span>
-      </div>
-    </a>
-
-    <a class="t-card work" id="seikyu" href="keiri/seikyu/">
-      <div class="t-tool">
-        <span class="nm">請求書メーカー</span>
-        <span class="ds">税抜でも税込でも入力OK。源泉徴収（10.21％）を引いた差引額まで自動で計算します。インボイス（適格請求書）にも対応。</span>
       </div>
     </a>
 
@@ -287,6 +292,14 @@
         <span class="ds">覚える順があるから、いつの間にか覚えてる。「SUMって何？」からも「〜したい」からも探せます。</span>
       </div>
     </a>
+
+    <a class="t-card work" id="seikyu" href="keiri/seikyu/">
+      <div class="t-tool">
+        <span class="nm">請求書メーカー</span>
+        <span class="ds">税抜でも税込でも入力OK。源泉徴収（10.21％）を引いた差引額まで自動で計算します。インボイス（適格請求書）にも対応。</span>
+      </div>
+    </a>
+
 
 
 
@@ -341,6 +354,7 @@
       <li><a href="roulette/">ルーレット</a></li>
       <li><a href="fukubiki/">福引</a></li>
       <li><a href="bingo/">ビンゴ</a></li>
+      <li><a href="qr/">QRコード作成</a></li>
     </ul>
 
     <!-- ⭐経理ツールはここに出さない。⭐ヘッダーの「経理ツール」から入る（2026-09-12 本人）
