@@ -9,8 +9,8 @@
 <!-- ⭐たたき台（2026-09-26）。どこともつなげない。名前・フォルダ名（bingo）は仮
      ⭐本人「福引のガラガラと、ビンゴは一緒にサクッと作ってもいいね」。番号1〜75を引いて、出た番号を表に並べる形（忘年会など）
      ⭐カゴ・玉・回し方は、ランダム指名メーカー（../random/）と同じ。見た目は random.css を共通で読む -->
-<meta name="robots" content="noindex,nofollow">
-<title>【テスト】ビンゴマシーン｜モニターに映せる無料のビンゴ抽選機</title>
+<meta name="robots" content="noindex,nofollow" data-test><!-- ⭐test だけの1行（原本に入れるときに消す）。site.js はこれを見てテスト版の印を出す -->
+<title>ビンゴマシーン｜モニターに映せる無料のビンゴ抽選機</title>
 <meta name="description" content="カゴをくるくる回して、番号の玉が転がってくる無料のビンゴ抽選機。出た番号は表に並びます。忘年会や学校のイベントで、モニターに映して使えます。登録なし。">
 <link rel="stylesheet" href="../style.css?v=155">
 <link rel="stylesheet" href="../random/random.css?v=20">
@@ -19,16 +19,6 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9296990556079874" crossorigin="anonymous"></script>
 </head>
 <body>
-<div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
-<script>
-(function(){
-  var b = document.getElementById('testBadge');
-  if(!b) return;
-  var d = new Date(document.lastModified), z = function(n){ return (n<10?'0':'') + n; };
-  b.textContent = 'テスト版 ' + z(d.getMonth()+1) + '/' + z(d.getDate()) +
-                  ' ' + z(d.getHours()) + ':' + z(d.getMinutes());
-})();
-</script>
 
 <header class="site-head noprint">
   <div class="wrap">
@@ -40,34 +30,12 @@
       <a class="navpin" href="../slide/">簡単スライド</a>
       <input type="checkbox" id="navtoggle" class="navtoggle">
       <label class="navburger" for="navtoggle">ツール一覧</label>
-      <div class="navlist">
-      <!-- ⭐2026-09-28 本人「ツール一覧はあくまでもツールのリスト」＝場面の区切りは入れない。トップは入れない（すぐ左にある）。いちばん上に先生用、棒線の下に道具（名前で分かりにくいものが上・くす玉〜ビンゴのように名前で分かるものが下） -->
-      <a href="../teacher/">先生ツールセット</a>
-      <span class="navsep" aria-hidden="true"></span>
-      <a href="../typing/">タッチタイピング</a>
-      <a href="../seat/">座席表</a>
-      <a href="../slide/">簡単スライド</a>
-      <a href="../random/">ランダム指名</a>
-      <a href="../timer/">カウントダウンタイマー</a>
-      <a href="../timer/progress/">進行タイマー</a>
-      <a href="../excel-fx/">関数早見表</a>
-      <a href="../seki/">席次表</a>
-      <a href="../bus/">バスの座席表</a>
-      <a href="../shinkansen/">新幹線の座席表</a>
-      <a href="../keiri/mitsumori/">見積書</a>
-      <a href="../keiri/seikyu/">請求書</a>
-      <a href="../kusudama/">くす玉</a>
-      <a href="../roulette/">ルーレット</a>
-      <a href="../fukubiki/">福引</a>
-      <span class="now" aria-current="page">ビンゴ</span>
-      <a href="../qr/">QRコード作成</a>
-      <span class="navsep" aria-hidden="true"></span>
-      <a href="../articles/">記事一覧</a>
-      </div>
+      <div class="navlist" data-site-nav></div>
     </nav>
   </div>
   <div class="site-sub"><div class="wrap"><span class="now-long">ビンゴマシーン</span><span class="now-short">ビンゴ</span></div></div>
 </header>
+<script src="../site.js?v=1"></script>
 
 <main class="wrap pk-set" id="setScreen">
   <h1>ビンゴマシーン</h1>
@@ -163,10 +131,7 @@
   </details>
 </main>
 
-<footer class="noprint">
-  <div class="wrap"><span class="fnav"><a href="../about/">運営者情報</a>　<a href="../contact/">お問い合わせ</a>　<a href="../privacy/">プライバシーポリシー</a></span>
-    <span class="copy">さくらツールズ　© 2026 SAKURA tools</span></div>
-</footer>
+<footer class="noprint" data-site-footer></footer>
 
 <!-- ===== 動かしている画面 ===== -->
 <div class="pk-demoback" id="demoBack" hidden></div>

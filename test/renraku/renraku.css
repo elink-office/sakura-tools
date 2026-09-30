@@ -1,0 +1,104 @@
+/* 連絡帳の板書（2026-09-29）
+   ⭐共通の部品（details.opt・.seg・.tip-btn・.primary・.mini・.safe・.hint）は style.css のものを使う。ここは道具だけの部品 */
+:root{ color-scheme: light; }
+input[type=checkbox], input[type=radio]{ accent-color: var(--pink); }
+
+.rk-set .lead{margin-bottom:10px}
+.rk-samples{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:6px 0 14px}
+.rk-samplemsg{font-size:.82rem;color:var(--ink-soft)}
+
+/* ①と②の横並び（QRコード作成と同じ区切り） */
+@media (min-width:860px){
+  .rk-2col{display:grid;grid-template-columns:var(--rk-cols,2fr 1fr);gap:18px;align-items:stretch}   /* ⭐①を広く（2026-09-29 本人）。前＝半分ずつ */
+  .rk-2col > details.opt{margin-bottom:0;min-width:0}
+  /* ⭐②はせまいので、選ぶ欄を詰めて1段に収める（2026-09-29） */
+  .rk-2col #opt2 .seg .seg-in{padding:5px 10px;font-size:.82rem}
+  .rk-2col #opt2 .rk-lbl2{width:100%;min-width:0}
+}
+
+/* ① */
+.rk-lbl{font-weight:700;margin:0 0 6px;font-size:.95rem}
+.rk-date-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 16px}
+.rk-date-row input[type=date]{padding:6px 8px;font-size:.95rem}
+.rk-rows{display:flex;flex-direction:column;gap:6px}
+.rk-row{display:grid;grid-template-columns:118px 1fr auto;gap:6px;align-items:center}
+.rk-row select{padding:6px 4px;font-size:.95rem;border:1px solid var(--line);border-radius:var(--radius);background:#fff}
+.rk-row input[type=text]{width:100%;padding:7px 8px;font-size:.95rem;border:1px solid var(--line);border-radius:var(--radius);background:#fff}
+.rk-row .mv{display:flex;gap:3px}
+.rk-row .mv button{margin:0;width:28px;height:26px;padding:0;font-size:11px;color:#8a8f96;background:#f3f4f6;border:1px solid #e3e5e8;border-radius:4px;box-shadow:none}
+.rk-row .mv button:disabled{opacity:.35}
+.rk-addrow{margin:8px 0 12px}
+.save-in1{margin-top:14px;padding-top:12px;border-top:1px dashed #dcdfe3}
+.save-head{margin:0 0 4px}
+.save-head label{font-weight:bold;display:inline-block;margin:0}
+
+/* ② 見本（16:9 の小窓） */
+.rk-framebox{aspect-ratio:16/9;width:100%;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin:0 0 14px;background:#284f3f}
+.rk-framebox{position:relative;cursor:pointer;transition:box-shadow .15s,border-color .15s}
+.rk-framebox:hover,.rk-framebox:focus-visible{border-color:var(--pink);box-shadow:0 0 0 3px var(--pink-light);outline:none}
+/* ⭐札は左下に、うんと小さく（2026-09-29 本人「左下に配置して、もっとすごく小さくして」） */
+.rk-frame-go{position:absolute;left:6px;bottom:6px;font-size:10px;line-height:1.4;font-weight:700;color:#fff;background:var(--pink);border-radius:999px;padding:1px 7px;
+  opacity:.9;pointer-events:none}
+#rkPreview .rk-page{inset:6% 5% 15% 5%}   /* ⭐見本の小窓だけ、左下の札のぶん下を空ける（札が中身にかぶらないように） */
+.rk-addrow{display:flex;flex-wrap:wrap;gap:8px}
+.rk-wraphint{margin:-2px 0 8px}
+.rk-pagemsg{margin:-8px 0 16px;color:var(--pink);font-weight:700}
+.rk-pagemsg:empty{display:none}
+#rkStart{padding:6px 8px;font-size:.95rem;border:1px solid var(--line);border-radius:var(--radius);background:#fff}
+.rk-line2{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin:0 0 6px}
+.rk-lbl2{font-size:.95rem;min-width:5em}
+.rk-line2 + .hint{margin:0 0 14px}
+
+/* 映すボタン（ページの型 8-a の余白） */
+.rk-go{text-align:center;margin:18px 0 0}
+.rk-go .primary{font-size:1.25rem;padding:14px 48px}
+.rk-gomsg{font-size:.82rem;color:var(--ink-soft);text-align:center;margin:6px 0 22px}
+.rk-gomsg .mini{margin-left:8px}
+
+/* ---------- 板書（見本と映す画面で共通） ---------- */
+.rk-board{position:relative;width:100%;height:100%;overflow:hidden;
+  font-family:"UD Digi Kyokasho N","UD デジタル 教科書体 N","UD Digi Kyokasho N-R","UD デジタル 教科書体 N-R","BIZ UDPGothic","Hiragino Sans","Noto Sans JP",sans-serif;
+  font-weight:700}
+/* ⭐字は太いほう（2026-09-29 本人「太いほうがいいかな」）＝UD デジタル 教科書体 の Bold（Windows 10 の2017年のアップデートから標準）。
+   ⚠名前は「UD Digi Kyokasho N」（このパソコンの登録名で確かめた）。前の「N-R」の名前では見つからず、ゴシック体で出ていた */
+.rk-board.green{background:#284f3f;color:#f6f5ee}   /* ⭐少し濃く（2026-09-29 本人「黒板、あと少しだけ濃ゆく」・前＝#2f5d4a） */
+.rk-board.white{background:#fbfbf7;color:#23262b}
+/* ⭐長い行は次の列に折り返す（黒板の書き方と同じ・2行目からは○の文字の下にそろえる） */
+/* ⭐ノートと同じ並び（2026-09-29）＝列は右から。どの列も「上の3段（月・日・曜日）」＋「中身（1列の字数）」 */
+.rk-page{position:absolute;inset:5% 4%;display:flex;flex-direction:row-reverse;align-items:flex-start;justify-content:center;line-height:1}   /* ⭐ノートの枠は画面の真ん中（2026-09-30 本人「線引くなら真ん中に罫線を持っていくといい」）。前＝右寄せ */
+.rk-c{inline-size:auto;width:1.9em;display:flex;flex-direction:column;flex:none}
+.rk-top{height:3.3em;display:flex;flex-direction:column}
+.rk-cell{height:1.1em;display:flex;align-items:center;justify-content:center;font-weight:700}
+.rk-body{writing-mode:vertical-rl;height:calc(var(--len) * 1em);padding-top:.35em;white-space:nowrap;display:flex;justify-content:center}
+.rk-body > *{flex:none}
+.rk-body{display:block;text-align:start}
+.rk-body{padding-right:.45em}
+.rk-mark{display:inline-block;width:1.25em;height:1.25em;line-height:1.12em;text-align:center;border:.07em solid currentColor;border-radius:50%;margin-bottom:.15em;font-weight:700}
+.rk-mark.none{border-color:transparent}
+.rk-indent{display:inline-block;inline-size:1.4em}
+.rk-gap{display:inline-block;inline-size:.9em}
+.rk-box{display:inline-block;border:.06em solid currentColor;padding:.05em .02em}
+.tcy{text-combine-upright:all;-webkit-text-combine:horizontal}
+/* うすいノートの線 */
+.rk-board.grid .rk-c{border-left:1px solid var(--rk-line)}
+.rk-board.grid .rk-c:first-child{border-right:1px solid var(--rk-line)}
+.rk-board.grid .rk-top{border-top:1px solid var(--rk-line);border-bottom:1px solid var(--rk-line)}
+.rk-board.grid .rk-cell + .rk-cell{border-top:1px solid var(--rk-line)}
+.rk-board.grid .rk-body{border-bottom:1px solid var(--rk-line)}
+/* ⭐前の日の分の列（past）とページの残り（rest）は空。今日の列が分かるように、今日の列の線を少しはっきり */
+.rk-board.grid .rk-c.today{--rk-line:var(--rk-line-today)}
+.rk-board.green{--rk-line:rgba(255,255,255,.28);--rk-line-today:rgba(255,255,255,.5)}
+.rk-board.white{--rk-line:rgba(40,150,200,.4);--rk-line-today:rgba(40,150,200,.8)}
+.rk-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;opacity:.7;writing-mode:horizontal-tb}
+
+/* 映す画面 */
+.rk-run{position:fixed;inset:0;z-index:1000;background:#000}
+.rk-run[hidden]{display:none}
+.rk-run .rk-board{position:absolute;inset:0}
+.rk-run .run-tr{opacity:.85}
+
+@media (max-width:430px){
+  .rk-row{grid-template-columns:110px 1fr}
+  .rk-row .mv{grid-column:1 / -1;justify-content:flex-end}
+  .rk-lbl2{min-width:0;width:100%}
+}

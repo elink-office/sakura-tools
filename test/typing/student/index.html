@@ -3,6 +3,7 @@
 <head>
 <!-- ⭐学生用（2026-09-15 本人）。検索には出さない＝大人用（../）と中身が同じため -->
 <meta name="robots" content="noindex,nofollow">
+<meta name="robots" content="noindex,nofollow" data-test><!-- ⭐test だけの1行（原本に入れるときに消す）。site.js はこれを見てテスト版の印を出す -->
 <meta charset="utf-8">
 <!-- ⭐タブのマーク＝さくらのロゴ（2026-09-22 本人「タブのマークと題名も変更できるならして」） -->
 <link rel="icon" href="../../favicon.ico?v=3" sizes="any">
@@ -31,7 +32,7 @@
 </script>
 <!-- ⭐名前は「タッチタイピング」（2026-09-15 本人「とりあえずタッチタイピングだけにしておいて」）。
      ⚠同じ日に一度「タイルタッチタイピング（TTT）」にした。また変えるかも（本人）。大人用はまだ「タイピング練習」のまま -->
-<title>【テスト】さくらタッチタイピング（学生用）｜さくらツールズ</title>
+<title>さくらタッチタイピング（学生用）｜さくらツールズ</title>
 <link rel="stylesheet" href="../../style.css?v=155">
 <link rel="stylesheet" href="../typing.css?v=165">
 </head>
@@ -42,16 +43,6 @@
      ⚠typing.js が使う部品（id）は大人用と同じ名前で全部置く。消すと動かなくなる
      ⭐body.gakusei ＝ステージの説明を短くする（typing.js の renderStageCards） -->
 <body class="gakusei hub">
-<div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
-<script>
-(function(){
-  var b = document.getElementById('testBadge');
-  if(!b) return;
-  var d = new Date(document.lastModified), z = function(n){ return (n<10?'0':'') + n; };
-  b.textContent = 'テスト版 ' + z(d.getMonth()+1) + '/' + z(d.getDate()) +
-                  ' ' + z(d.getHours()) + ':' + z(d.getMinutes());
-})();
-</script>
 
 <!-- ⭐学生用はヘッダーのリンクを全部なくす（2026-09-16 本人「ヘッダーのリンク全部消そう」）。
      ⭐ロゴだけはトップへのリンクを残す（2026-09-16 本人「気づいた人は他を見ていい」）。⚠太字は style.css の .site-head a が付けている＝リンクを外すと細くなる -->
@@ -62,6 +53,7 @@
   <!-- ⭐帯は名前だけ（2026-09-17 本人「ピンクの帯は、さくらタッチタイピングだけにして」）。前は帯にひとことも入れていた（2026-09-16）。⭐練習中もずっと見えるので、ページの見出しは置かない -->
   <!-- ⭐トップ（一覧）はピンクの帯なし（2026-09-20 本人「トップページはピンクの帯なしにできる？」）。⚠練習のページには残す -->
 </header>
+<script src="../../site.js?v=1"></script>
 
 <div class="tpwrap">
 
@@ -215,10 +207,7 @@
 </div></div>
 
 
-<footer class="noprint">
-  <!-- ⭐学生用はリンクなし（2026-09-16 本人「運営者情報とかなしにしてほしい」）。サイト名だけ残す -->
-  <div class="wrap"><span class="copy">さくらツールズ　© 2026 SAKURA tools</span></div>
-</footer>
+<footer class="noprint" data-site-footer="copy"></footer>
 
 <script src="../typing.js?v=159"></script>
 <script>

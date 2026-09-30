@@ -9,8 +9,8 @@
 <!-- ⭐作成中（2026-09-26）。どこともつなげない＝トップのカード・サイトマップ・ほかのページの「ツール一覧」に入れていない
      ⭐きっかけ＝先生からのリクエスト（本人経由・決定ログ 2026-09-26「ランダムで当てるアプリ」）
      ⚠道具の名前・フォルダ名は random（2026-09-26 本人「pickに違和感。ランダムの方が良くない？」＝pick から変えた）。置き場は設計室で決める -->
-<meta name="robots" content="noindex,nofollow">
-<title>【テスト】ランダム指名メーカー｜トランプとビンゴで名前・番号・班を選ぶ</title>
+<meta name="robots" content="noindex,nofollow" data-test><!-- ⭐test だけの1行（原本に入れるときに消す）。site.js はこれを見てテスト版の印を出す -->
+<title>ランダム指名メーカー｜トランプとビンゴで名前・番号・班を選ぶ</title>
 <meta name="description" content="名簿を貼るだけで、トランプをめくる・ビンゴの玉が転がる形で、名前・番号・班をランダムに選べます。1回に1〜5人。全員に一周するまで同じ人は出ません。登録なし・無料。">
 <link rel="stylesheet" href="../style.css?v=155">
 <link rel="stylesheet" href="random.css?v=24">
@@ -18,16 +18,6 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9296990556079874" crossorigin="anonymous"></script>
 </head>
 <body>
-<div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
-<script>
-(function(){
-  var b = document.getElementById('testBadge');
-  if(!b) return;
-  var d = new Date(document.lastModified), z = function(n){ return (n<10?'0':'') + n; };
-  b.textContent = 'テスト版 ' + z(d.getMonth()+1) + '/' + z(d.getDate()) +
-                  ' ' + z(d.getHours()) + ':' + z(d.getMinutes());
-})();
-</script>
 
 <header class="site-head noprint">
   <div class="wrap">
@@ -39,34 +29,12 @@
       <a class="navpin" href="../slide/">簡単スライド</a>
       <input type="checkbox" id="navtoggle" class="navtoggle">
       <label class="navburger" for="navtoggle">ツール一覧</label>
-      <div class="navlist">
-      <!-- ⭐2026-09-28 本人「ツール一覧はあくまでもツールのリスト」＝場面の区切りは入れない。トップは入れない（すぐ左にある）。いちばん上に先生用、棒線の下に道具（名前で分かりにくいものが上・くす玉〜ビンゴのように名前で分かるものが下） -->
-      <a href="../teacher/">先生ツールセット</a>
-      <span class="navsep" aria-hidden="true"></span>
-      <a href="../typing/">タッチタイピング</a>
-      <a href="../seat/">座席表</a>
-      <a href="../slide/">簡単スライド</a>
-      <span class="now" aria-current="page">ランダム指名</span>
-      <a href="../timer/">カウントダウンタイマー</a>
-      <a href="../timer/progress/">進行タイマー</a>
-      <a href="../excel-fx/">関数早見表</a>
-      <a href="../seki/">席次表</a>
-      <a href="../bus/">バスの座席表</a>
-      <a href="../shinkansen/">新幹線の座席表</a>
-      <a href="../keiri/mitsumori/">見積書</a>
-      <a href="../keiri/seikyu/">請求書</a>
-      <a href="../kusudama/">くす玉</a>
-      <a href="../roulette/">ルーレット</a>
-      <a href="../fukubiki/">福引</a>
-      <a href="../bingo/">ビンゴ</a>
-      <a href="../qr/">QRコード作成</a>
-      <span class="navsep" aria-hidden="true"></span>
-      <a href="../articles/">記事一覧</a>
-      </div>
+      <div class="navlist" data-site-nav></div>
     </nav>
   </div>
   <div class="site-sub"><div class="wrap"><span class="now-long">ランダム指名メーカー</span><span class="now-short">ランダム指名</span></div></div>
 </header>
+<script src="../site.js?v=1"></script>
 
 <main class="wrap pk-set" id="setScreen">
   <h1>ランダム指名メーカー</h1>
@@ -288,10 +256,7 @@
   </details>
 </main>
 
-<footer class="noprint">
-  <div class="wrap"><span class="fnav"><a href="../about/">運営者情報</a>　<a href="../contact/">お問い合わせ</a>　<a href="../privacy/">プライバシーポリシー</a></span>
-    <span class="copy">さくらツールズ　© 2026 SAKURA tools</span></div>
-</footer>
+<footer class="noprint" data-site-footer></footer>
 
 <!-- ===== 動かしている画面 ===== -->
 <div class="pk-demoback" id="demoBack" hidden></div>

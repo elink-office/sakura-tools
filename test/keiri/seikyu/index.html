@@ -8,7 +8,7 @@
 <link rel="apple-touch-icon" href="../../apple-touch-icon.png?v=2">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <!-- 🔴まだ公開しない（2026-09-09 本人「まだ、つなげないでね。testだけ」）。公開する日にこの1行を外す -->
-<meta name="robots" content="noindex,nofollow">
+<meta name="robots" content="noindex,nofollow" data-test><!-- ⭐test だけの1行（原本に入れるときに消す）。site.js はこれを見てテスト版の印を出す -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SAKURA tools">
 <meta property="og:title" content="請求書メーカー｜源泉徴収も自動・個人事業主や副業の請求書を無料作成">
@@ -28,28 +28,12 @@
   gtag('js', new Date());
   gtag('config', 'G-GCK29PTKBG');
 </script>
-<title>【テスト】請求書メーカー｜源泉徴収も自動・個人事業主や副業の請求書を無料作成</title>
+<title>請求書メーカー｜源泉徴収も自動・個人事業主や副業の請求書を無料作成</title>
 <meta name="description" content="副業・フリーランス・個人事業主のための請求書作成ツール。税抜でも税込でも入力でき、源泉徴収（10.21％）を引いた差引額まで自動で計算。ひな形やエクセルのテンプレートはいりません。取引先を保存できるので、2回目からは選ぶだけ。インボイス（適格請求書）の登録番号にも対応。保存するときのファイル名が「請求書_日付_取引先_金額」の形になるので、あとから探せます。登録もインストールも不要、すべて無料です。">
 <link rel="stylesheet" href="../../style.css?v=155">
 <link rel="stylesheet" href="../../keiri.css?v=64">
 </head>
 <body data-doc="seikyu">
-<div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
-<script>
-/* 🔴⭐テスト版の印は、文字ではなく自動で出す（2026-09-12 本人「アップするたびに、
-   最終更新日が表示されるようにして」）。
-   ⚠make_test.py が走った時刻を文字で埋め込む作りだった＝9/10のまま固まり、
-     手で直しても変わらなかった＝どれが最新か分からなくなっていた。
-   ⭐document.lastModified＝サーバーが返す「このHTMLが最後に変わった時刻」。
-     UPすれば必ず動く。⚠make_test.py を走らせると文字の印に戻る（2026-09-12 未対応） */
-(function(){
-  var b = document.getElementById('testBadge');
-  if(!b) return;
-  var d = new Date(document.lastModified), z = function(n){ return (n<10?'0':'') + n; };
-  b.textContent = 'テスト版 ' + z(d.getMonth()+1) + '/' + z(d.getDate()) +
-                  ' ' + z(d.getHours()) + ':' + z(d.getMinutes());
-})();
-</script>
 
 <header class="site-head">
   <div class="wrap">
@@ -63,34 +47,12 @@
       <a class="navpin" href="../../slide/">簡単スライド</a>
       <input type="checkbox" id="navtoggle" class="navtoggle">
       <label class="navburger" for="navtoggle">ツール一覧</label>
-      <div class="navlist">
-      <!-- ⭐2026-09-28 本人「ツール一覧はあくまでもツールのリスト」＝場面の区切りは入れない。トップは入れない（すぐ左にある）。いちばん上に先生用、棒線の下に道具（名前で分かりにくいものが上・くす玉〜ビンゴのように名前で分かるものが下） -->
-      <a href="../../teacher/">先生ツールセット</a>
-      <span class="navsep" aria-hidden="true"></span>
-      <a href="../../typing/">タッチタイピング</a>
-      <a href="../../seat/">座席表</a>
-      <a href="../../slide/">簡単スライド</a>
-      <a href="../../random/">ランダム指名</a>
-      <a href="../../timer/">カウントダウンタイマー</a>
-      <a href="../../timer/progress/">進行タイマー</a>
-      <a href="../../excel-fx/">関数早見表</a>
-      <a href="../../seki/">席次表</a>
-      <a href="../../bus/">バスの座席表</a>
-      <a href="../../shinkansen/">新幹線の座席表</a>
-      <a href="../../keiri/mitsumori/">見積書</a>
-      <span class="now" aria-current="page">請求書</span>
-      <a href="../../kusudama/">くす玉</a>
-      <a href="../../roulette/">ルーレット</a>
-      <a href="../../fukubiki/">福引</a>
-      <a href="../../bingo/">ビンゴ</a>
-      <a href="../../qr/">QRコード作成</a>
-      <span class="navsep" aria-hidden="true"></span>
-      <a href="../../articles/">記事一覧</a>
-      </div>
+      <div class="navlist" data-site-nav></div>
     </nav>
   </div>
   <div class="site-sub"><div class="wrap"><span class="now-long">請求書メーカー</span><span class="now-short">請求書</span></div></div>
 </header>
+<script src="../../site.js?v=1"></script>
 
 <main class="wrap">
   <h1>請求書メーカー</h1>
@@ -700,11 +662,7 @@
 
 </main>
 
-<footer class="noprint">
-  <div class="wrap"><span class="fnav"><a href="../../about/">運営者情報</a>　<a href="../../contact/">お問い合わせ</a>　<a href="../../privacy/">プライバシーポリシー</a></span>
-    <span class="copy">さくらツールズ　© 2026 SAKURA tools</span>
-  </div>
-</footer>
+<footer class="noprint" data-site-footer></footer>
 
 <script src="../../keiri.js?v=62"></script>
 <script src="../../keiri-pdf.js?v=2"></script>

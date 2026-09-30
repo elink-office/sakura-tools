@@ -10,8 +10,8 @@
      ⭐きっかけ＝本人「バスの座席表、新幹線の座席表、を作りたいね」。対象＝修学旅行（団体で号車と列がまとまって取れる）
      ⭐バスの座席表（bus/）とは別のページ・別の仕組み（本人「流用しないほうがいい。できるだけ単純なほうが使いやすい」）
      ⚠道具の名前・フォルダ名は仮 -->
-<meta name="robots" content="noindex,nofollow">
-<title>【テスト】修学旅行の新幹線座席表メーカー｜号車と列から名簿で無料作成</title>
+<meta name="robots" content="noindex,nofollow" data-test><!-- ⭐test だけの1行（原本に入れるときに消す）。site.js はこれを見てテスト版の印を出す -->
+<title>修学旅行の新幹線座席表メーカー｜号車と列から名簿で無料作成</title>
 <meta name="description" content="修学旅行や団体の新幹線の座席表を、名簿を貼るだけで作れます。旅行会社からもらった号車と列（例：5号車の1〜8列）を入れるだけで、2つの号車にまたがっても1枚に。普通車A〜E・グリーン車にも対応。エクセルのテンプレート不要、A4の1枚にPDFで保存。登録なし・無料。">
 <link rel="stylesheet" href="../style.css?v=155">
 <link rel="stylesheet" href="shinkansen.css?v=16">
@@ -19,16 +19,6 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9296990556079874" crossorigin="anonymous"></script>
 </head>
 <body>
-<div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
-<script>
-(function(){
-  var b = document.getElementById('testBadge');
-  if(!b) return;
-  var d = new Date(document.lastModified), z = function(n){ return (n<10?'0':'') + n; };
-  b.textContent = 'テスト版 ' + z(d.getMonth()+1) + '/' + z(d.getDate()) +
-                  ' ' + z(d.getHours()) + ':' + z(d.getMinutes());
-})();
-</script>
 
 <header class="site-head noprint">
   <div class="wrap">
@@ -40,34 +30,12 @@
       <a class="navpin" href="../slide/">簡単スライド</a>
       <input type="checkbox" id="navtoggle" class="navtoggle">
       <label class="navburger" for="navtoggle">ツール一覧</label>
-      <div class="navlist">
-      <!-- ⭐2026-09-28 本人「ツール一覧はあくまでもツールのリスト」＝場面の区切りは入れない。トップは入れない（すぐ左にある）。いちばん上に先生用、棒線の下に道具（名前で分かりにくいものが上・くす玉〜ビンゴのように名前で分かるものが下） -->
-      <a href="../teacher/">先生ツールセット</a>
-      <span class="navsep" aria-hidden="true"></span>
-      <a href="../typing/">タッチタイピング</a>
-      <a href="../seat/">座席表</a>
-      <a href="../slide/">簡単スライド</a>
-      <a href="../random/">ランダム指名</a>
-      <a href="../timer/">カウントダウンタイマー</a>
-      <a href="../timer/progress/">進行タイマー</a>
-      <a href="../excel-fx/">関数早見表</a>
-      <a href="../seki/">席次表</a>
-      <a href="../bus/">バスの座席表</a>
-      <span class="now" aria-current="page">新幹線の座席表</span>
-      <a href="../keiri/mitsumori/">見積書</a>
-      <a href="../keiri/seikyu/">請求書</a>
-      <a href="../kusudama/">くす玉</a>
-      <a href="../roulette/">ルーレット</a>
-      <a href="../fukubiki/">福引</a>
-      <a href="../bingo/">ビンゴ</a>
-      <a href="../qr/">QRコード作成</a>
-      <span class="navsep" aria-hidden="true"></span>
-      <a href="../articles/">記事一覧</a>
-      </div>
+      <div class="navlist" data-site-nav></div>
     </nav>
   </div>
   <div class="site-sub"><div class="wrap"><span class="now-long">新幹線の座席表メーカー</span><span class="now-short">新幹線座席表</span></div></div>
 </header>
+<script src="../site.js?v=1"></script>
 
 <main class="wrap sk-set">
   <h1>新幹線の座席表メーカー</h1>
@@ -377,10 +345,7 @@
   </details>
 </main>
 
-<footer class="noprint">
-  <div class="wrap"><span class="fnav"><a href="../about/">運営者情報</a>　<a href="../contact/">お問い合わせ</a>　<a href="../privacy/">プライバシーポリシー</a></span>
-    <span class="copy">さくらツールズ　© 2026 SAKURA tools</span></div>
-</footer>
+<footer class="noprint" data-site-footer></footer>
 
 <datalist id="nameList"></datalist>
 <script src="../paper-pdf.js?v=5"></script>

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta name="robots" content="noindex,nofollow">
+<meta name="robots" content="noindex,nofollow" data-test><!-- ⭐test だけの1行（原本に入れるときに消す）。site.js はこれを見てテスト版の印を出す -->
 <meta charset="utf-8">
 <!-- ⭐タブのマーク＝さくらのロゴ（2026-09-22 本人「タブのマークと題名も変更できるならして」） -->
 <link rel="icon" href="../favicon.ico?v=3" sizes="any">
@@ -27,28 +27,12 @@
   gtag('js', new Date());
   gtag('config', 'G-GCK29PTKBG');
 </script>
-<title>【テスト】Excel関数 早見表｜事務職がよく使う46個</title>
+<title>Excel関数 早見表｜事務職がよく使う46個</title>
 <meta name="description" content="事務職がよく使うExcel関数46個をまとめた早見表です。「SUMって何？」からも「〜したい」からも引けるので、関数名を知らなくても大丈夫。登録もダウンロードもいりません。">
 <link rel="stylesheet" href="../style.css?v=155">
 <link rel="stylesheet" href="fx.css?v=12">
 </head>
 <body>
-<div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
-<script>
-/* 🔴⭐テスト版の印は、文字ではなく自動で出す（2026-09-12 本人「アップするたびに、
-   最終更新日が表示されるようにして」）。
-   ⚠make_test.py が走った時刻を文字で埋め込む作りだった＝9/10のまま固まり、
-     手で直しても変わらなかった＝どれが最新か分からなくなっていた。
-   ⭐document.lastModified＝サーバーが返す「このHTMLが最後に変わった時刻」。
-     UPすれば必ず動く。⚠make_test.py を走らせると文字の印に戻る（2026-09-12 未対応） */
-(function(){
-  var b = document.getElementById('testBadge');
-  if(!b) return;
-  var d = new Date(document.lastModified), z = function(n){ return (n<10?'0':'') + n; };
-  b.textContent = 'テスト版 ' + z(d.getMonth()+1) + '/' + z(d.getDate()) +
-                  ' ' + z(d.getHours()) + ':' + z(d.getMinutes());
-})();
-</script>
 
 <header class="site-head noprint">
   <div class="wrap">
@@ -62,34 +46,12 @@
       <a class="navpin" href="../slide/">簡単スライド</a>
       <input type="checkbox" id="navtoggle" class="navtoggle">
       <label class="navburger" for="navtoggle">ツール一覧</label>
-      <div class="navlist">
-      <!-- ⭐2026-09-28 本人「ツール一覧はあくまでもツールのリスト」＝場面の区切りは入れない。トップは入れない（すぐ左にある）。いちばん上に先生用、棒線の下に道具（名前で分かりにくいものが上・くす玉〜ビンゴのように名前で分かるものが下） -->
-      <a href="../teacher/">先生ツールセット</a>
-      <span class="navsep" aria-hidden="true"></span>
-      <a href="../typing/">タッチタイピング</a>
-      <a href="../seat/">座席表</a>
-      <a href="../slide/">簡単スライド</a>
-      <a href="../random/">ランダム指名</a>
-      <a href="../timer/">カウントダウンタイマー</a>
-      <a href="../timer/progress/">進行タイマー</a>
-      <span class="now" aria-current="page">関数早見表</span>
-      <a href="../seki/">席次表</a>
-      <a href="../bus/">バスの座席表</a>
-      <a href="../shinkansen/">新幹線の座席表</a>
-      <a href="../keiri/mitsumori/">見積書</a>
-      <a href="../keiri/seikyu/">請求書</a>
-      <a href="../kusudama/">くす玉</a>
-      <a href="../roulette/">ルーレット</a>
-      <a href="../fukubiki/">福引</a>
-      <a href="../bingo/">ビンゴ</a>
-      <a href="../qr/">QRコード作成</a>
-      <span class="navsep" aria-hidden="true"></span>
-      <a href="../articles/">記事一覧</a>
-      </div>
+      <div class="navlist" data-site-nav></div>
     </nav>
   </div>
   <div class="site-sub"><div class="wrap"><span class="now-long">Excel 関数早見表</span><span class="now-short">関数早見表</span></div></div>
 </header>
+<script src="../site.js?v=1"></script>
 
 <div class="fxwrap">
 
@@ -200,10 +162,7 @@
 
 </div>
 
-<footer class="noprint">
-  <div class="wrap"><span class="fnav"><a href="../about/">運営者情報</a>　<a href="../contact/">お問い合わせ</a>　<a href="../privacy/">プライバシーポリシー</a></span>
-    <span class="copy">さくらツールズ　© 2026 SAKURA tools</span></div>
-</footer>
+<footer class="noprint" data-site-footer></footer>
 
 <script src="fx.js?v=3"></script>
 <script src="../paper-pdf.js?v=5"></script>

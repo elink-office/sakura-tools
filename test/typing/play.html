@@ -3,6 +3,7 @@
 <head>
 <!-- ⭐練習ページは検索に出さない（中身は一覧と同じ道具）。2026-09-16 -->
 <meta name="robots" content="noindex,nofollow">
+<meta name="robots" content="noindex,nofollow" data-test><!-- ⭐test だけの1行（原本に入れるときに消す）。site.js はこれを見てテスト版の印を出す -->
 <meta charset="utf-8">
 <!-- ⭐タブのマーク＝さくらのロゴ（2026-09-22 本人「タブのマークと題名も変更できるならして」） -->
 <link rel="icon" href="../favicon.ico?v=3" sizes="any">
@@ -28,28 +29,12 @@
   gtag('js', new Date());
   gtag('config', 'G-GCK29PTKBG');
 </script>
-<title>【テスト】さくらタッチタイピング　練習｜無料のタイピング練習</title>
+<title>さくらタッチタイピング　練習｜無料のタイピング練習</title>
 <meta name="description" content="登録なし・全部無料のタイピング練習です。ホームポジションから指ごとに順番に、ローマ字入力を11ステージで練習できます。早く打つことより、ミスをしないことを先に。">
 <link rel="stylesheet" href="../style.css?v=147">
 <link rel="stylesheet" href="typing.css?v=165">
 </head>
 <body class="playpage">
-<div id="testBadge" style="position:fixed;left:6px;top:56px;z-index:9999;background:#c86a8e;color:#fff;font-size:11px;padding:3px 8px;border-radius:999px;opacity:.85" class="noprint">テスト版</div>
-<script>
-/* 🔴⭐テスト版の印は、文字ではなく自動で出す（2026-09-12 本人「アップするたびに、
-   最終更新日が表示されるようにして」）。
-   ⚠make_test.py が走った時刻を文字で埋め込む作りだった＝9/10のまま固まり、
-     手で直しても変わらなかった＝どれが最新か分からなくなっていた。
-   ⭐document.lastModified＝サーバーが返す「このHTMLが最後に変わった時刻」。
-     UPすれば必ず動く。⚠make_test.py を走らせると文字の印に戻る（2026-09-12 未対応） */
-(function(){
-  var b = document.getElementById('testBadge');
-  if(!b) return;
-  var d = new Date(document.lastModified), z = function(n){ return (n<10?'0':'') + n; };
-  b.textContent = 'テスト版 ' + z(d.getMonth()+1) + '/' + z(d.getDate()) +
-                  ' ' + z(d.getHours()) + ':' + z(d.getMinutes());
-})();
-</script>
 
 <!-- 🔴 コインの形（2026-09-07）。パワポの円柱と同じ＝「側面（まっすぐ＋下の弧）」＋「上の楕円」の2枚。
      ⚠CSSのborder-radiusでは上の面と側面の境目が作れない。SVGなら1つ定義して使い回せる -->
@@ -98,34 +83,12 @@
       <a class="navpin" href="../slide/">簡単スライド</a>
       <input type="checkbox" id="navtoggle" class="navtoggle">
       <label class="navburger" for="navtoggle">ツール一覧</label>
-      <div class="navlist">
-      <!-- ⭐2026-09-28 本人「ツール一覧はあくまでもツールのリスト」＝場面の区切りは入れない。トップは入れない（すぐ左にある）。いちばん上に先生用、棒線の下に道具（名前で分かりにくいものが上・くす玉〜ビンゴのように名前で分かるものが下） -->
-      <a href="../teacher/">先生ツールセット</a>
-      <span class="navsep" aria-hidden="true"></span>
-      <span class="now" aria-current="page">タッチタイピング</span>
-      <a href="../seat/">座席表</a>
-      <a href="../slide/">簡単スライド</a>
-      <a href="../random/">ランダム指名</a>
-      <a href="../timer/">カウントダウンタイマー</a>
-      <a href="../timer/progress/">進行タイマー</a>
-      <a href="../excel-fx/">関数早見表</a>
-      <a href="../seki/">席次表</a>
-      <a href="../bus/">バスの座席表</a>
-      <a href="../shinkansen/">新幹線の座席表</a>
-      <a href="../keiri/mitsumori/">見積書</a>
-      <a href="../keiri/seikyu/">請求書</a>
-      <a href="../kusudama/">くす玉</a>
-      <a href="../roulette/">ルーレット</a>
-      <a href="../fukubiki/">福引</a>
-      <a href="../bingo/">ビンゴ</a>
-      <a href="../qr/">QRコード作成</a>
-      <span class="navsep" aria-hidden="true"></span>
-      <a href="../articles/">記事一覧</a>
-      </div>
+      <div class="navlist" data-site-nav></div>
     </nav>
   </div>
   <div class="site-sub"><div class="wrap"><span class="now-long">さくら<img class="inlogo" src="../img/logo-sakura-64.png?v=2" srcset="../img/logo-sakura-64.png?v=2 1x, ../img/logo-sakura-128.png?v=2 2x" alt="">タッチタイピング</span><span class="now-short">さくらタイピング</span></div></div>
 </header>
+<script src="../site.js?v=1"></script>
 
 <div class="tpwrap">
 
@@ -310,10 +273,7 @@
 </div></div>
 
 
-<footer class="noprint">
-  <div class="wrap"><span class="fnav"><a href="../about/">運営者情報</a>　<a href="../contact/">お問い合わせ</a>　<a href="../privacy/">プライバシーポリシー</a></span>
-    <span class="copy">さくらツールズ　© 2026 SAKURA tools</span></div>
-</footer>
+<footer class="noprint" data-site-footer></footer>
 
 <script src="typing.js?v=159"></script>
 </body>
