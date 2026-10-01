@@ -59,19 +59,27 @@
   max-height: 5.4em;
   justify-content: space-evenly;
   gap: .12em;
-  /* 🔴 枠に対して左右の余白を取る（2026-09-01 本人「名前が大きすぎる」）*/
-  width: 88%;
+  /* 🔴 枠に対して左右の余白を取る（2026-09-01 本人「名前が大きすぎる」）。
+     ⭐88% → 94%（2026-09-30 本人「A4縦で9×9、文字が小さすぎる」） */
+  width: 94%;
   line-height: 1.15;
   color: var(--ink);
 }
+/* ⭐2026-09-30 本人「名前の4文字を基準に大きく。5文字目から縮小」「フリガナはスペース入れて9字が基準」
+   ⭐文字の大きさは「名前4文字・フリガナ9字」が入る大きさで決める（seki.js の cellBaseEm）。
+   ⭐それより長い行だけ、その行を縮めて枠に収める。⚠前は、いちばん長い人に全員をそろえていた
+   --cw＝枠の中の幅（1マスの文字の大きさ何個ぶんか）。画面と紙で別に入れる（seki.js）
+   --lw＝その行の長さ（その行の文字の大きさ何個ぶんか）。行ごとに seki.js が入れる */
+@media screen{ .sheet{ --cw: var(--cwS, 99); } }
+@media print { .sheet{ --cw: var(--cwP, 99); } }
 .seat .ln{ display: block; white-space: nowrap; }
-.seat .ln.no  { font-size: calc(1em * var(--sNo));  opacity: .75; }
-.seat .ln.org { font-size: calc(1em * var(--sOrg)); }
-.seat .ln.ttl { font-size: calc(1em * var(--sTtl)); }
-.seat .ln.kana{ font-size: calc(1em * var(--sKana)); opacity: .8; letter-spacing: .04em; }
+.seat .ln.no  { font-size: calc(1em * var(--sNo)   * min(1, var(--cw, 99) / (var(--lw, .01) * var(--sNo))));  opacity: .75; }
+.seat .ln.org { font-size: calc(1em * var(--sOrg)  * min(1, var(--cw, 99) / (var(--lw, .01) * var(--sOrg)))); }
+.seat .ln.ttl { font-size: calc(1em * var(--sTtl)  * min(1, var(--cw, 99) / (var(--lw, .01) * var(--sTtl)))); }
+.seat .ln.kana{ font-size: calc(1em * var(--sKana) * min(1, var(--cw, 99) / (var(--lw, .01) * var(--sKana)))); opacity: .8; letter-spacing: .04em; }
 /* 🔴 日本の席札は名前がいちばん下・いちばん大きい */
 /* 🔴 名前の字間を少し空ける。詰まって見えると言われた（2026-09-01 本人）*/
-.seat .ln.nam { font-size: 1em; font-weight: 600; letter-spacing: .06em; }
+.seat .ln.nam { font-size: calc(1em * min(1, var(--cw, 99) / var(--lw, .01))); font-weight: 600; letter-spacing: .06em; }
 /* 🔴 敬称は名前より一回り小さく（2026-09-01 本人）*/
 .seat .ln.nam .hon{ font-size: .78em; letter-spacing: normal; margin-left: .34em; }
 .sheet.bold .seat .ln.nam{ font-weight: bold; }
