@@ -511,6 +511,9 @@
       var s = document.createElement('span');
       s.className = 'ln ' + L.k;
       s.textContent = L.t;
+      /* ⭐その行の長さ（CSS が、枠に入らない行だけを縮める）。
+         ⭐所属は、いちばん長い会社名の長さを全員に入れる＝全部同じ大きさにそろう（前からの決まり） */
+      if (L.t) s.style.setProperty('--lw', L.k === 'org' ? maxOrgEm() : lineOwnEm(L));
       // 敬称は同じ行の中に、一回り小さい字で足す
       if (L.hon) {
         var hs = document.createElement('span');
@@ -554,37 +557,65 @@
   // 紙の寸法(mm)を画面の単位に直すための係数
   var PX_PER_MM = 96 / 25.4;
   var measureBox = null;
-  // 紙に刷るときの文字の大きさ(mm)。
-  // ⚠ 画面の見え方から逆算しない（画面の幅で結果が変わってしまうため）。
-  //    いちばん長い行が紙の1マスに収まるところまで小さくする
-  function printCellMM(wmm, hmm, lineEm) {
+  /* ⭐1行の長さを「その行の文字の大きさ何個ぶんか」で返す（字間・敬称もふくむ）。
+     ⚠ 画面の既定の書体ではなく、実際に出す書体で測る。
+       ちがう書体で測ると幅を読みちがえて、紙で名前が切れる（本人の指摘） */
+  function lineOwnEm(L) {
     if (!measureBox) {
       measureBox = document.createElement('div');
       measureBox.style.cssText =
-        'position:absolute;left:-9999px;top:0;visibility:hidden;white-space:nowrap;line-height:1.15;';
+        'position:absolute;left:-9999px;top:0;visibility:hidden;white-space:nowrap;line-height:1.15;width:auto;';
       document.body.appendChild(measureBox);
     }
     var m = measureBox;
-    // ⚠ 画面の既定の書体ではなく、実際に出す書体で測る。
-    //   ちがう書体で測ると幅を読みちがえて、紙で名前が切れる（本人の指摘）
     m.style.fontFamily = fontStack();
-    m.style.whiteSpace = 'nowrap';
-    m.style.width = 'auto';
-    var worst = 0;      // 文字を1mmにしたときに、いちばん幅を使う行が何mmになるか
+    m.style.fontSize = '100px';
+    /* ⚠名前は画面で 600 の太さ。太字で測っておけば、どちらでも切れない */
+    m.style.fontWeight = L.k === 'nam' ? 'bold' : 'normal';
+    m.style.letterSpacing = L.k === 'nam' ? '.06em' : (L.k === 'kana' ? '.04em' : 'normal');
+    m.textContent = L.t;
+    var w = m.scrollWidth / 100;
+    if (L.hon) {
+      m.style.letterSpacing = 'normal';
+      m.textContent = L.hon;
+      w += (m.scrollWidth / 100) * .78 + .34 * .78;   // 敬称は .78em・名前との間は .34em（seki.css）
+    }
+    /* ⚠ぴったりに合わせると、機器によって端が切れる。2% だけ長めに見ておく */
+    return Math.round(w * 1.02 * 1000) / 1000;
+  }
+  /* ⭐所属の行は、いちばん長い会社名の長さ（全員をこの長さで縮める＝同じ大きさにそろう） */
+  var orgEmCache = null;
+  function maxOrgEm() {
+    if (orgEmCache != null) return orgEmCache;
+    var mx = .01;
     Object.keys(state.people).forEach(function (id) {
-      cellLines(state.people[id]).forEach(function (L) {
-        if (!L.t) return;
-        m.style.fontWeight = (L.b && $('bold').checked) ? 'bold' : 'normal';
-        m.style.fontSize = '10mm';
-        m.textContent = L.t;
-        var w = (m.scrollWidth / PX_PER_MM) / 10 * L.m;
-        if (w > worst) worst = w;
-      });
+      var o = state.people[id].org;
+      if (o) mx = Math.max(mx, lineOwnEm({ k: 'org', t: o }));
     });
-    // ⚠ わずかに小さめに出す。ぴったりに合わせると、機器によって端が切れる
-    var byW = worst > 0 ? (wmm - 5) / worst : 99;
+    return (orgEmCache = mx);
+  }
+  /* ⭐文字の大きさを決める「基準の長さ」（1マスの文字の大きさ何個ぶんか）。
+     ⭐2026-09-30 本人「名前の4文字を基準に」「フリガナはスペース入れて9字が基準」。
+     ⭐これより長い行は、その行だけ縮む（seki.css の --lw / --cw）。
+     ⚠所属・役職・番号は基準に入れない＝長い会社名で名前まで小さくしない */
+  function cellBaseEm() {
+    var w = lineOwnEm({ k: 'nam', t: '山田太郎', hon: honor() });
+    if (shown('szKana') && hasField('kana')) {
+      w = Math.max(w, lineOwnEm({ k: 'kana', t: 'ヤマモト ユウスケ' }) * sz('szKana', .44));
+    }
+    return w;
+  }
+  // 紙に刷るときの文字の大きさ(mm)と、枠の中の幅（文字の大きさ何個ぶんか）。
+  // ⚠ 画面の見え方から逆算しない（画面の幅で結果が変わってしまうため）。
+  function printCellMM(wmm, hmm, lineEm) {
+    /* ⭐紙の1マスの中身の幅＝マスの幅 − 左右の余白 1.5mm×2 − 枠線 → その 94%（seki.css の .cell）
+       ⚠グループの枠線は紙で 1mm（print.css）。ぬりつぶしは 0.3mm */
+    var bmm = (state.grp.on && state.grp.look !== 'fill') ? 1 : .36;
+    var inner = (wmm - 3 - 2 * bmm) * .94;
+    var byW = inner / cellBaseEm();
     var byH = (hmm - 3) / lineEm;
-    return Math.floor(Math.max(1.6, Math.min(byW, byH)) * 10) / 10;
+    var mmv = Math.floor(Math.max(1.6, Math.min(byW, byH)) * 10) / 10;
+    return { mm: mmv, cw: Math.round(inner / mmv * 1000) / 1000 };
   }
 
   // 座席表に出す日付（「日付を入れない」のときは空）
@@ -1000,6 +1031,7 @@
     fitSheet();
 
     state.orgFit = null;      // 所属の自動縮小は、毎回まっさらから決め直す
+    orgEmCache = null;        // いちばん長い会社名も、名簿・書体が変わるので毎回測り直す
 
     // 🔴 前方を下にする＝登壇者から見た向き＝紙を180度まわした形（2026-08-31 本人）
     //   ⚠ 上下だけ返すと鏡になる。左右も入れ替える
@@ -1081,29 +1113,31 @@
        2026-09-10 本人「席次表の画面の文字が小さくなる。更新すると直る」
        → かくした状態で描くと 13px が 6px になるのを再現して確かめた */
     var canMeasure = g.clientWidth >= 10;
-    // ⚠ 幅の判定から所属だけ外す。所属は下で別に詰めるので、
-    //    ここに入れると長い会社名のせいで名前まで小さくなってしまう
-    function overWide(cl) {
-      var lns = cl.querySelectorAll('.ln');
-      for (var k = 0; k < lns.length; k++) {
-        if (lns[k].classList.contains('org')) continue;
-        if (lns[k].scrollWidth > cl.clientWidth + 1) return true;
-      }
-      return false;
-    }
+    /* ⭐2026-09-30 幅は「名前4文字・フリガナ9字」の基準で決める（cellBaseEm）。
+       ⭐それより長い行は、その行だけが縮む（seki.css の --lw / --cw）。
+       ⚠前は、いちばん長い人の行に全員をそろえていた＝5文字の人が1人いると全員が小さくなった */
+    var baseEm = cellBaseEm();
     if (canMeasure) {
+      var cwPx = 0;
       cells.forEach(function (cl) {
-        var s = base, host = cl.parentNode;
+        if (cl.clientWidth > 0 && (!cwPx || cl.clientWidth < cwPx)) cwPx = cl.clientWidth;
+      });
+      if (cwPx) minSize = Math.max(6, Math.min(minSize, Math.floor(cwPx / baseEm)));
+      cells.forEach(function (cl) {
+        var s = minSize, host = cl.parentNode;
         cl.style.fontSize = s + 'px';
         var h = host.clientHeight - 4;
-        while (s > 6 && (overWide(cl) || cl.scrollHeight > h)) {
+        while (s > 6 && cl.scrollHeight > h) {
           s -= 1; cl.style.fontSize = s + 'px';
         }
         if (s < minSize) minSize = s;
       });
       cells.forEach(function (cl) { cl.style.fontSize = minSize + 'px'; });
       state.cellFont = minSize;   /* ⭐次に測れなかったときのために覚えておく */
+      if (cwPx) { state.cwS = Math.round(cwPx / minSize * 1000) / 1000; }
+      if (state.cwS) sh.style.setProperty('--cwS', state.cwS);
     } else if (state.cellFont) {
+      if (state.cwS) sh.style.setProperty('--cwS', state.cwS);
       /* ⭐測れないときは、前に決めた大きさをそのまま使う。
          ⚠何も入れないと、作り直したマスは CSS の初期値（16px）になって大きすぎる */
       minSize = state.cellFont;
@@ -1125,8 +1159,9 @@
     } else if (state.orgFit) {
       sh.style.setProperty('--sOrg', state.orgFit);   /* 所属の行も前の値を使う */
     }
-    var printMM = printCellMM(cellWmm, mm, lineEm);
+    var pfit = printCellMM(cellWmm, mm, lineEm), printMM = pfit.mm;
     sh.style.setProperty('--cellPrint', printMM + 'mm');
+    sh.style.setProperty('--cwP', pfit.cw);
     /* ⚠「紙にすると名前が○mm」の知らせはやめた（2026-09-10 本人）。
        ⭐画面の紙を A4 の形にし、文字も紙と同じ大きさで出すようになったので、
          本人「見て判断すればいい」 */
