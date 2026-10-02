@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&display=swap">
 <link rel="stylesheet" href="../style.css?v=155">
-<link rel="stylesheet" href="seki.css?v=40">
+<link rel="stylesheet" href="seki.css?v=43">
 <link rel="stylesheet" href="../print.css?v=63" media="print">
 <style>
 /* 🔴 見本は押すと大きくなる（2026-09-04 本人）。
@@ -134,13 +134,16 @@
   </div>
   <!-- ⭐サンプルのボタンは①の上（2026-09-14 本人「席次表もサンプルつくって。ひとつは今のサンプル。もうひとつは色付きで学科ごと。学籍番号入れてね」）。
        ⭐押すと①の欄にサンプルの名簿が入る。「サンプルを消す」で前の画面に戻る。⚠自動のサンプルはやめた・サンプルの間は保存しない（→ ページの型 12） -->
-  <div class="seki-sample noprint">
+  <!-- ⭐PCでは左に設定・右に席次表（2026-10-02 本人「ほかの座席ツールもこの考えでやってみて」＝座席表と同じ形）。
+       ⭐並べ方は seki.css の .lr と、下の小さなスクリプトだけ。class="lr" を外すと、今までの上から下の並びに戻る。スマホ・狭い画面は上から下のまま -->
+  <div class="lr" id="lr">
+  <div class="seki-sample noprint" id="lrSample">
     <button type="button" id="sample1Btn">サンプル①（研修）</button>
     <button type="button" id="sample2Btn">サンプル②（大学・学科で色分け）</button>
     <button type="button" id="sampleClear" hidden>サンプルを消す</button>
     <span class="saving" id="sampleMsg"></span>
   </div>
-  <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
+  <p class="tip-guide noprint" id="tipGuide"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
 
 
 
@@ -426,7 +429,7 @@
             <label><input type="radio" name="mode" value="cross"><span class="seg-in"><span class="mode-fig"><i></i><i class="on"></i><i></i><i class="on"></i><i class="me"></i><i class="on"></i><i></i><i class="on"></i><i></i></span>
               前後左右</span></label>
             <label><input type="radio" name="mode" value="king"><span class="seg-in"><span class="mode-fig"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="me"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>
-              まわり全部（ななめも）</span></label>
+              まわり全部<small class="mode-sub">（ななめも）</small></span></label>
           </div>
 
           <!-- ⚠「設定なし」をえらんでいる間は、この箱ごと薄くして触れなくする -->
@@ -457,6 +460,8 @@
   <div id="msg"></div>
 
   <div id="result" hidden>
+    <!-- ⭐右の列に出すもの（PCだけ）。PCでは小さなスクリプトが右の箱（.lr-side）へ移す -->
+    <div class="lr-r" id="lrR">
     <div class="tabs-row noprint">
       <div class="plan-tabs" id="tabs"></div>
       <button id="again" type="button">もう一度 作り直す</button>
@@ -492,6 +497,7 @@
 
     <p class="hint noprint">条件に反したところは赤くなりますが、そのままでもPDFにできます。</p>
     <div id="vio" class="noprint"></div>
+    </div>
 
     <details class="opt noprint" id="printCard">
       <summary><span class="step">5</span>見た目と用紙&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
@@ -523,14 +529,14 @@
           <input id="dt" type="text" placeholder="2026年4月10日 / 第1会議室 など" style="width:100%"></div>
       </div>
       <p style="margin-top:10px">
-        <label style="font-weight:normal;display:inline;margin-right:18px">
+        <label class="chk-inline">
           <!-- ⭐「入れない」→「入れる」にして、はじめからチェック（2026-09-24 本人「日付・自由記入を入れるにしてチェックを入れておいて」） -->
           <input type="checkbox" id="dtOn" checked> 日付・自由記入を入れる
         </label>
-        <label style="font-weight:normal;display:inline">
+        <label class="chk-inline">
           <input type="checkbox" id="bold" checked> 名前を太く（モニター用）
         </label>
-        <label style="font-weight:normal;display:inline;margin-left:18px">
+        <label class="chk-inline">
           <input type="checkbox" id="showCredit" checked> 右下にサイト名を入れる
         </label>
       </p>
@@ -604,6 +610,13 @@
 </div>
 
   </section>
+
+  <!-- ⭐右の列（PCだけ）＝席次表の箱。上の端が①とそろう。下にスクロールしても画面に残る（.lr-stick）。作る前は白い紙の形 -->
+  <aside class="lr-side"><div class="lr-stick" id="lrStick">
+    <div id="lrSlotR"></div>
+    <div class="lr-paper noprint">名簿を入れて「席次表を作る」を押すと、ここに席次表が出ます。</div>
+  </div></aside>
+  </div><!-- /.lr -->
 
   <section class="read">
 
@@ -718,7 +731,43 @@
 <script src="../paper-pdf.js?v=5"></script>
 <script src="../seating.js?v=57"></script>
 <script src="../roster-tools.js?v=1"></script>
-<script src="seki.js?v=102"></script>
+<script src="seki.js?v=103"></script>
+<script>
+/* ⭐PCで左右に並べる（2026-10-02 本人・座席表と同じ）。
+   ⭐PC（1000px以上）のときだけ、席次表（#lrR）を右の箱（.lr-side）へ移す。狭くなったら元の場所へ戻す。
+   ⭐class="lr" を外すと何もしない＝前の並びに戻る。
+   ⚠右の列は高さを数えない作り（contain:size）。.lr の高さの下限をここで入れる */
+(function () {
+  var lr = document.getElementById('lr');
+  if (!lr || !lr.classList.contains('lr') || !window.matchMedia) return;
+  var mq = window.matchMedia('(min-width:1000px)');
+  var el = document.getElementById('lrR'), slot = document.getElementById('lrSlotR');
+  var home = el.parentNode, next = el.nextSibling;
+  var stick = document.getElementById('lrStick');
+  var fitH = function () { lr.style.minHeight = mq.matches ? stick.offsetHeight + 'px' : ''; };
+  var t = 0, refit = function () {
+    clearTimeout(t);
+    t = setTimeout(function () { if (mq.matches) window.dispatchEvent(new Event('resize')); fitH(); }, 30);
+  };
+  var place = function () {
+    if (mq.matches) slot.appendChild(el);
+    else if (el.parentNode !== home) home.insertBefore(el, next);
+    window.dispatchEvent(new Event('resize'));   // 紙の大きさ（fitSheet）を新しい幅で計算し直す
+    fitH();
+  };
+  place();
+  if (mq.addEventListener) mq.addEventListener('change', place); else mq.addListener(place);
+  if (window.ResizeObserver) {
+    new ResizeObserver(fitH).observe(stick);
+    var ro2 = new ResizeObserver(refit);
+    document.querySelectorAll('#lrR .tabs-row, #lrR .drag-row').forEach(function (e) { ro2.observe(e); });
+  }
+  /* ⭐席次表を出した・タブが入ったときも計算し直す（大きさの見張りは、画面が描かれないと動かないことがある） */
+  var mo = new MutationObserver(refit);
+  mo.observe(document.getElementById('result'), { attributes: true, attributeFilter: ['hidden'] });
+  ['tabs'].forEach(function (id) { var e = document.getElementById(id); if (e) mo.observe(e, { childList: true, subtree: true }); });
+})();
+</script>
 <!-- 🔴 印刷用の1枚絵の置き場。⚠body の直下に置くこと -->
 <div id="printImgWrap"></div>
 <script src="../tip.js?v=3"></script>

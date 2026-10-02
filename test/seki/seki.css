@@ -334,3 +334,93 @@ body.picking .grid .seat:hover, body.picking .grid .dead.off:hover{ box-shadow: 
 
 /* 名簿順のとき「離す・隣にする」だけ薄くして触れなくする（2026-09-28） */
 #modeBox.off{pointer-events:none}
+
+/* ============================================================
+   ⭐PCでは左に設定・右に席次表（2026-10-02 本人「ほかの座席ツールもこの考えでやってみて」＝座席表と同じ形）。
+   ⭐並べるのはここと index.html の小さなスクリプトだけ。class="lr" を外すと、今までの上から下の並びに戻る。
+   ⭐スマホ・狭い画面（999px以下）と紙（印刷）は、今までどおり上から下。
+   ⭐いちばん上の段＝左に「？のしるし」の1行・右にサンプルのボタン。その下＝左に①〜⑦・右に席次表の箱（上の端が①とそろう）。
+   ⚠道具の幅は型7-aで900px。左右に並べる区画（.lr）だけ、トップと同じ 70rem（1120px）まではみ出させる。
+   ⚠右の列は contain:size＝行の高さを数えない。.lr の高さの下限はスクリプトで入れる
+   ============================================================ */
+.lr-side{display:none}
+@media screen and (min-width:1000px){
+  .lr{
+    display:grid;
+    grid-template-columns:minmax(0,360px) minmax(0,1fr);
+    column-gap:28px;
+    --lrW:min(70rem, calc(100vw - 60px));
+    width:var(--lrW);
+    margin-left:calc(50% - var(--lrW) / 2);
+    /* ⭐上のリード文（900px）との境目に、区画の幅いっぱいの線（2026-10-02 本人「PCだけ引いておいて」） */
+    border-top:1px solid var(--line, #ddd);
+    padding-top:18px;
+  }
+  .lr > *{grid-column:1; min-width:0; align-self:start}
+  /* ⚠align-self:start＝左の章の箱を、行の高さに合わせて引きのばさない（2026-10-02 本人「新幹線のボタンがまだ縦伸びしてる」）。
+     ⚠前は、バス・新幹線の閉じた章が 78px（座席表は 63px）＝行の高さに合わせて引きのばされていた */
+  /* ⭐行を上に詰める（align-content:start）（2026-10-02 本人「直ったけど、間隔が広い」）。
+     ⚠原因（測って確かめた）＝右の紙が左の列より長いと、.lr の高さの下限（スクリプト）が左の行の合計より大きくなる。
+       そのあまりが、左の行にも空の行にも均等に配られていた（新幹線で1行あたり約15px・章と章のすき間が15→30px）。
+       座席表は紙が短いので起きなかった */
+  .lr{align-content:start}
+  .lr > #tipGuide{grid-row:1; align-self:center; margin:0 0 14px}
+  .lr > #lrSample{grid-column:2; grid-row:1; align-self:center; margin:0 0 14px}
+  .lr > .lr-side{
+    display:block;
+    grid-column:2; grid-row:2 / span 40;
+    contain:size; align-self:stretch;
+  }
+  /* ⭐左の列は字も箱もまとめて小さく（座席表と同じ 0.86倍） */
+  .lr > :not(.lr-side):not(#lrSample){zoom:.86}
+  .lr .lr-stick{
+    position:sticky; top:56px;
+    background:#fff; border:1px solid var(--line, #ddd); border-radius:var(--radius, 4px);
+    padding:12px 14px 10px;
+  }
+  .lr:has(#result[hidden]) #lrSlotR{display:none}
+  .lr:has(#result:not([hidden])) .lr-paper{display:none}
+  .lr .lr-paper{
+    aspect-ratio:297/210; display:flex; align-items:center; justify-content:center;
+    padding:24px; text-align:center; color:var(--ink-soft, #82868c);
+    border:1px dashed var(--line, #ddd); border-radius:var(--radius, 4px);
+  }
+  /* ⭐席次表の上のボタンを小さくして1行に。並び＝案・もう一度作り直す・空ける席をえらぶ・1つ戻す・モニターに映す */
+  .lr #lrR{display:flex; flex-wrap:wrap; align-items:center; gap:6px}
+  .lr #lrR > .tabs-row, .lr #lrR > .drag-row{display:contents}
+  .lr #lrR > :not(.tabs-row):not(.drag-row){flex:0 0 100%; min-width:0}
+  .lr #lrR .drag-note{flex:0 0 100%; margin:0 0 6px}
+  .lr #lrR > .tabs-row button, .lr #lrR > .drag-row button, .lr #lrR .plan-tabs button{font-size:.78rem; padding:4px 9px}
+  .lr #lrR .plan-tabs{gap:4px}
+  .lr #lrR > *, .lr #lrR .drag-note{order:10}
+  .lr #tabs{order:1} .lr #again{order:2} .lr #offPick{order:3} .lr #undo{order:4} .lr #screenOn{order:7}
+  /* ⭐見せ方のボタン（モニターに映す）は丸い形・うすい青の地（座席表と同じ） */
+  .lr #lrR #screenOn{border-radius:999px; background:#eaf1f8; border-color:#c3d3e4; color:#2b4a6b}
+  .lr #lrR #screenOn:hover{background:#dbe7f3}
+  /* ⭐2つ目の「サンプルを消す」は、PCでは要らない（上の段にある） */
+  .lr #sampleClear2{display:none !important}
+  /* ⭐「席次表を作る」の上と下の余白をそろえる（左右に並べると余白が重ならない） */
+  .lr > p:has(> #go){margin-top:6px !important}
+  /* ⭐①は狭いので、貼り付け欄と人数などを縦に（.in-col の2列をやめる） */
+  .lr .in-col{grid-template-columns:1fr}
+  /* ⭐「どこまでを隣とみなすか」は図を上・言葉を下にして4つ1行（座席表と同じ） */
+  .lr .mode-pick{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); width:100%; border-radius:10px; gap:2px}
+  .lr .mode-pick > label{display:block}
+  .lr .mode-pick .seg-in{flex-direction:column; justify-content:flex-start; gap:5px; width:100%; box-sizing:border-box;
+    padding:8px 2px 7px; border-radius:8px; text-align:center; font-size:.8rem; line-height:1.25}
+  .lr .mode-pick .mode-fig{grid-template-columns:repeat(3,10px); grid-template-rows:repeat(3,10px); margin:0}
+  .lr .mode-pick .mode-sub{display:block; font-size:.7rem}
+  body.screen .lr .lr-stick{position:static}
+  body.screen .lr > .lr-side{contain:none}
+}
+@media screen and (max-width:700px){
+  .mode-pick{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); width:100%; border-radius:10px; gap:2px}
+  .mode-pick > label{display:block}
+  .mode-pick .seg-in{flex-direction:column; justify-content:flex-start; gap:5px; width:100%; box-sizing:border-box;
+    padding:8px 2px 7px; border-radius:8px; text-align:center; font-size:.8rem; line-height:1.25}
+  .mode-pick .mode-fig{grid-template-columns:repeat(3,10px); grid-template-rows:repeat(3,10px); margin:0}
+  .mode-pick .mode-sub{display:block; font-size:.7rem}
+}
+/* ⭐チェックボックスは1つずつ縦に並べて、左の端をそろえる（2026-10-02 座席表と同じ） */
+main .chk-inline{display:block; width:fit-content; margin:6px 0}
+main .chk-inline.gap{margin-left:0}

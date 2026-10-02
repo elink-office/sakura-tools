@@ -1258,6 +1258,13 @@
        ⭐印刷のときは liftSheet がその縮小をはがして、実寸に戻す
          （2026-09-10 本人の案：「縮小の前を拾って、紙だけを取り出す」）*/
     var maxH = Math.max(360, window.innerHeight * 0.72);
+    /* ⭐左右に並べているとき（PC・2026-10-02）は、右の列が画面に残る。
+       上の案のタブなどのぶんを引いて、紙の下の端まで画面に入る高さにする（座席表と同じ） */
+    var stk = box.closest && box.closest('.lr-stick');
+    if (stk && getComputedStyle(stk).position === 'sticky') {
+      var above = box.getBoundingClientRect().top - stk.getBoundingClientRect().top;
+      maxH = Math.max(300, window.innerHeight - (parseFloat(getComputedStyle(stk).top) || 0) - above - 16);
+    }
     var scale = Math.min(1, room / w, maxH / h);
     sh.style.width = Math.round(w) + 'px';
     sh.style.height = Math.round(h) + 'px';
@@ -2513,7 +2520,8 @@
       orderChanged();
       closeCond(); run(true);
       $('sampleClear').hidden = false; $('sampleClear2').hidden = false; $('undo').hidden = true;
-      $('sampleMsg').textContent = 'サンプル' + (kind === 2 ? '②（大学・学科で色分け）' : '①（研修）') + 'を出しました。下の席次表で見られます';
+      /* ⭐左右に並べているとき（PC）は知らせを出さない＝すぐ下に出る（2026-10-02・座席表と同じ） */
+      $('sampleMsg').textContent = getComputedStyle($('lr') || document.body).display === 'grid' ? '' : 'サンプル' + (kind === 2 ? '②（大学・学科で色分け）' : '①（研修）') + 'を出しました。下の席次表で見られます';
       refreshClsUI();   // ⭐サンプルの間は①の「保存済のデータ」を隠す
     }
     function clearSample() {
