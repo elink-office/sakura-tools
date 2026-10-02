@@ -12,8 +12,16 @@
      ⚠道具の名前・フォルダ名は仮 -->
 <title>修学旅行の新幹線座席表メーカー｜号車と列から名簿で無料作成</title>
 <meta name="description" content="修学旅行や団体の新幹線の座席表を、名簿を貼るだけで作れます。旅行会社からもらった号車と列（例：5号車の1〜8列）を入れるだけで、2つの号車にまたがっても1枚に。普通車A〜E・グリーン車にも対応。エクセルのテンプレート不要、A4の1枚にPDFで保存。登録なし・無料。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SAKURA tools">
+<meta property="og:title" content="修学旅行の新幹線座席表メーカー｜号車と列から名簿で無料作成">
+<meta property="og:description" content="修学旅行や団体の新幹線の座席表を、名簿を貼るだけで作れます。旅行会社からもらった号車と列（例：5号車の1〜8列）を入れるだけで、2つの号車にまたがっても1枚に。普通車A〜E・グリーン車にも対応。エクセルのテンプレート不要、A4の1枚にPDFで保存。登録なし・無料。">
+<!-- LINEで送ったときの絵＝白地にさくらだけ（2026-09-30 本人）。どのツールも同じ1枚。住所は公開用（testと原本で同じ中身にするため） -->
+<meta property="og:image" content="https://sakura-tools.com/img/ogp-sakura.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <link rel="stylesheet" href="../style.css?v=155">
-<link rel="stylesheet" href="shinkansen.css?v=16">
+<link rel="stylesheet" href="shinkansen.css?v=21">
 <!-- Google AdSense（2026-09-28 審査の前にそろえた） -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9296990556079874" crossorigin="anonymous"></script>
 </head>
@@ -54,13 +62,16 @@
   </div>
 
   <!-- ⭐サンプルのボタンは①の上（ページの型 12-a） -->
-  <div class="sk-sample noprint">
+  <!-- ⭐PCでは左に設定・右に④座席表（2026-10-02 本人「ほかの座席ツールもこの考えでやってみて」＝座席表と同じ形）。
+       ⭐並べ方は shinkansen.css の .lr と、下の小さなスクリプトだけ。class="lr" を外すと、今までの上から下の並びに戻る。スマホ・狭い画面は上から下のまま -->
+  <div class="lr" id="lr">
+  <div class="sk-sample noprint" id="lrSample">
     <button type="button" id="sample1Btn">サンプル①（班ごと）</button>
     <button type="button" id="sample2Btn">サンプル②（作成途中・手で入れる）</button>
     <button type="button" id="sampleClear" hidden>サンプルを消す</button>
     <span class="saving" id="sampleMsg"></span>
   </div>
-  <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
+  <p class="tip-guide noprint" id="tipGuide"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
 
   <details class="opt" id="opt1">
     <summary><span class="step">1</span>名簿の入力</summary>
@@ -220,7 +231,7 @@
       </div>
       <!-- ⭐結果の近くにも「サンプルを消す」（ページの型 12-a・2026-09-27 本人「追加してほしい」）。サンプルの間だけ出す -->
       <p class="noprint" id="sampleClear2Row" hidden><button type="button" id="sampleClear2">サンプルを消す</button></p>
-      <p class="hint"><b>席はドラッグで入れかえられます</b>（スマホは長押しで持ち上がります）。席を押して、もう1つの席を押しても入れかわります。下の「席に入っていない人」を押してから席を押すと、その席に入ります。</p>
+      <p class="hint"><b>席はドラッグで入れかえられます</b>。下の「席に入っていない人」を押してから席を押すと、その席に入ります。</p>
       <div class="sk-chips noprint" id="chipsRow" hidden>
         <span class="sk-chips-lbl">席に入っていない人</span>
         <div id="chips"></div>
@@ -230,7 +241,12 @@
       <p class="sk-warn noprint" id="condWarn" hidden></p>
       <p class="sk-selrow noprint" id="selRow" hidden><span id="selLbl"></span><button type="button" class="mini" id="emptyBtn">この席を空にする</button><button type="button" class="mini" id="unselBtn">選ぶのをやめる</button></p>
 
+      <!-- ⭐全画面で確認（2026-10-02 本人「全体が見えないのがしんどいね」→「全画面で確認とかは？」）。
+           ⭐座席表だけを画面いっぱいに出す。中でもマウスで席を動かせる。右上の「✕ とじる」か Esc で戻る（ページの型 14-7）。
+           ⭐PDFは元のまま（A4のたて）。横の1行は「全画面でも座席の入れ替えができます。」（2026-10-02 本人。前は「全画面にしても、PDFは元のまま（A4のたて）で出ます。」） -->
+      <p class="sk-fsrow noprint"><button type="button" id="fsBtn">⛶ 全画面で確認</button><span class="hint">全画面でも座席の入れ替えができます。</span></p>
       <div id="sheetBox">
+        <button type="button" id="fsClose" class="noprint">✕ とじる</button>
         <div class="sheet" id="sheet">
           <div class="sheet-head">
             <div class="sheet-title" id="shTitle">新幹線座席表</div>
@@ -278,6 +294,13 @@
       </details>
     </div>
   </section>
+
+  <!-- ⭐右の列（PCだけ）＝④座席表。上の端が①とそろう。PCでは小さなスクリプトが④をここへ移す。
+       ⚠座席表・席次表とちがって、画面に残す（sticky）はしない＝紙がたてで長い（横幅いっぱいで見せる・2026-09-27 本人「マスが小さくて読みにくい」） -->
+  <aside class="lr-side"><div class="lr-stick" id="lrStick">
+    <div id="lrSlotR"></div>
+  </div></aside>
+  </div><!-- /.lr -->
 
   <details class="howto">
     <summary>使い方</summary>
@@ -349,7 +372,32 @@
 <datalist id="nameList"></datalist>
 <script src="../paper-pdf.js?v=5"></script>
 <script src="../roster-tools.js?v=1"></script>
-<script src="shinkansen.js?v=25"></script>
+<script src="shinkansen.js?v=27"></script>
+<script>
+/* ⭐PCで左右に並べる（2026-10-02 本人・座席表と同じ考え）。
+   ⭐PC（1000px以上）のときだけ、④座席表（#opt4）を右の列（.lr-side）へ移す。狭くなったら元の場所へ戻す。
+   ⭐class="lr" を外すと何もしない＝前の並びに戻る。
+   ⚠右の列は高さを数えない作り（contain:size）。.lr の高さの下限をここで入れる */
+(function () {
+  var lr = document.getElementById('lr');
+  if (!lr || !lr.classList.contains('lr') || !window.matchMedia) return;
+  var mq = window.matchMedia('(min-width:1000px)');
+  var el = document.getElementById('opt4'), slot = document.getElementById('lrSlotR');
+  var home = el.parentNode, next = el.nextSibling;
+  var stick = document.getElementById('lrStick');
+  var fitH = function () { lr.style.minHeight = mq.matches ? stick.offsetHeight + 'px' : ''; };
+  var place = function () {
+    if (mq.matches) slot.appendChild(el);
+    else if (el.parentNode !== home) home.insertBefore(el, next);
+    window.dispatchEvent(new Event('resize'));   // 紙の大きさ（fitSheet）を新しい幅で計算し直す
+    fitH();
+  };
+  place();
+  if (mq.addEventListener) mq.addEventListener('change', place); else mq.addListener(place);
+  if (window.ResizeObserver) new ResizeObserver(fitH).observe(stick);
+  new MutationObserver(function () { setTimeout(fitH, 30); }).observe(el, { childList: true, subtree: true, attributes: true });
+})();
+</script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>

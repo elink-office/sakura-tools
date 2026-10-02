@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&display=swap">
 <link rel="stylesheet" href="../style.css?v=155">
-<link rel="stylesheet" href="seat.css?v=17">
+<link rel="stylesheet" href="seat.css?v=29">
 <link rel="stylesheet" href="../print.css?v=63" media="print">
 <style>
 /* 🔴 班長・前回とのくらべ・クラスの保存（2026-08-31）。
@@ -263,13 +263,16 @@ body.screen .seat.dup .nm{text-decoration:none}
   </div>
   <!-- ⭐サンプルのボタンは①の上（2026-09-14 本人「ボタンを押したらサンプルが見れて、こういう仕組みだってわかったほうがいい」）。
        並びはシフト表と同じ＝サンプルのボタン → ？の案内 -->
-  <div class="seat-sample noprint">
+  <!-- ⭐PCでは左に設定・右に座席表（2026-10-02 本人「左側にウィンドウ作って右側に見れるようにしたほうがよくない？」「見ながら操作できるから」）。
+       ⭐並べ方は seat.css の .lr だけ。class="lr" を外すと、今までの上から下の並びに戻る。スマホ・狭い画面は上から下のまま -->
+  <div class="lr" id="lr">
+  <div class="seat-sample noprint" id="seatSample">
     <button type="button" id="sample1Btn">サンプル①（出席番号順）</button>
     <button type="button" id="sample2Btn">サンプル②（班分け）</button>
     <button type="button" id="sampleClear" hidden>サンプルを消す</button>
     <span class="saving" id="sampleMsg"></span>
   </div>
-  <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
+  <p class="tip-guide noprint" id="tipGuide"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
 
 
 
@@ -296,10 +299,10 @@ body.screen .seat.dup .nm{text-decoration:none}
         <p class="tip-h">男女</p>
         <ul>
           <li><strong>Excelに書いてあれば、貼るだけで色が付きます。</strong>「男」「女」「男子」「女子」を読みます。</li>
-          <li>あとから<strong>② 男女の文字色</strong>のところで変更できます。転入生の対応に便利です。</li>
+          <li>あとから①の中の<strong>「男女の文字色」</strong>で変更できます。転入生の対応に便利です。</li>
         </ul>
 
-        <p><strong>いちばん上の「サンプル①（出席番号順）」「サンプル②（班分け）」を押すと、見本の座席表が出ます。</strong>名簿を入れる前でも、席を動かしたり班に分けたりして試せます。サンプルの名簿は①の欄に、班長は「詳しい条件」に入るので、どこに何を入れるかも見られます。自分の名簿を入れるときは、先に「サンプルを消す」を押してください。</p>
+        <p><strong>いちばん上の「サンプル①（出席番号順）」「サンプル②（班分け）」を押すと、見本の座席表が出ます。</strong>名簿を入れる前でも、席を動かしたり班に分けたりして試せます。サンプルの名簿は①の欄に、班長は②班分けの「班に1人ずつにする人」に入るので、どこに何を入れるかも見られます。自分の名簿を入れるときは、先に「サンプルを消す」を押してください。</p>
       </div>
       <p class="safe">🔒 <strong>使っている端末の中だけで完結しています。</strong>安心してご利用ください。</p>
       <!-- 🔴 次に使うとき⑧まで下がらなくていいように、呼び出しは①に置く（2026-08-31 本人）。
@@ -312,7 +315,9 @@ body.screen .seat.dup .nm{text-decoration:none}
         <div><label>&nbsp;</label>
           <button class="mini" id="clsDel2" type="button">削除</button></div>
       </div>
-      <div class="in-col">
+      <!-- ⭐貼り付け欄は横に広く、人数・学年・組・月はその下に横並び（2026-10-02 本人「エクセルから貼り付けるは横に広く、右側にある人数とかは、下に横並びで」）。
+           ⚠前は .in-col（左に貼り付け欄・右に人数など）の2列 -->
+      <div class="in-stack">
         <div>
       <!-- ⭐枠の上にも出す（2026-09-10 本人「エクセルから貼り付けるってあったほうがいいよね」）。
            ⚠知り合いの先生からも同じことを言われたとのこと -->
@@ -330,19 +335,12 @@ body.screen .seat.dup .nm{text-decoration:none}
             <option value="sei">名字だけ</option>
           </select>
         </div>
-        <div><label for="nameAlign">名前の位置</label>
-          <select id="nameAlign">
-            <option value="center">中央</option>
-            <option value="left">左</option>
-          </select>
-        </div>
+        <!-- 🚫「名前の位置（中央／左）」は外した（2026-10-02 本人「名前の位置は左揃えにする人はいないと思うから削除しよう」）。seat.js は無くても動く -->
       </div>
         </div>
         <div>
       <div class="row tight" style="margin-top:10px">
         <div><label>人数</label><div class="bignum" id="count">0人</div></div>
-      </div>
-      <div class="row tight" style="margin-top:8px">
         <div><label for="grade">学年</label>
           <select id="grade" class="narrow"><option value="">－</option><option value="e1">1年</option><option value="e2">2年</option><option value="e3">3年</option><option value="e4">4年</option><option value="e5">5年</option><option value="e6">6年</option></select></div>
         <div><label for="kumi">組</label>
@@ -358,6 +356,32 @@ body.screen .seat.dup .nm{text-decoration:none}
 
         </div>
       </div>
+      <!-- ⭐男女の文字色（前の②）。たたんだ小さな欄（2026-10-02 本人） -->
+      <details class="opt sub" id="sexCard">
+        <summary>男女の文字色&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
+        <div class="body">
+      <div class="tip-body" hidden>
+        <p><strong>赤と緑は、いちばん見分けにくい組み合わせ</strong>です。はじめは青系と赤紫系にしてあり、明るさも変えてあるので、色が分かりにくい人でも濃さで見分けられます。</p>
+        <p>色を付けたくないときは、下の「男女で色を分ける」のチェックを外してください。</p>
+      </div>
+      <!-- ⭐①で男女を入れれば自動で入ることも書く（2026-09-15 本人）。読み取る言葉＝男・女・男子・女子・M・F など（seat.js SEX_M/SEX_F） -->
+      <p class="note-sm">下の名前を押すたびに <b>青（男）→ 赤紫（女）→ 黒</b> と変わります。①名簿の入力で「男」「女」を入れておくと、自動で読み取ります。</p>
+      <!-- ⭐色は青と赤紫に決めた（2026-10-02 本人「男と女の色は今のまま固定に…多分色を変えることはない」）。
+           ⚠選ぶ欄は保存・呼び出しの仕組みが使っているので、消さずにかくすだけ。色は seat.js の sexColor で固定 -->
+      <div class="row tight" hidden>
+        <div><label for="colM">男の色</label><select id="colM"></select></div>
+        <div><label for="colF">女の色</label><select id="colF"></select></div>
+      </div>
+      <p style="margin-top:10px">
+        <label class="chk-inline">
+          <input type="checkbox" id="sexPrint" checked> 男女で色を分ける
+        </label>
+        <span class="hint chk-note">外すと<strong>画面上の文字が全部黒</strong>になります。<strong>⑤で、PDFのみ名前を黒に設定する</strong>こともできます。</span>
+      </p>
+
+      <div id="sexList" class="chips"></div>
+      </div>
+      </details>
       <!-- ⭐画面の保存は①の中（2026-09-23 本人「名簿をいれてさ、保存って先にしたほうがいい気がしてきた。せめて画面の保存。私何度も忘れてしまってさ」→ A-2「それでいこう」）。
            ⚠前は下のほうの枠（⑦）。⭐全ツール共通の形（ページの型 3） -->
       <div class="save-in1" style="margin-top:14px;padding-top:12px;border-top:1px dashed #dcdfe3">
@@ -365,7 +389,7 @@ body.screen .seat.dup .nm{text-decoration:none}
     <div class="tip-body" hidden>
       <ul>
         <li><strong>いま開いている画面をそのまま残します。</strong>名簿・教室の形・条件・男女の指定・座席表まで、次に開いたときそのまま出ます。</li>
-        <li><strong>残るのは1つだけ</strong>です。名簿を入れかえると、前のものは上書きされます。いくつも残したいときは<strong>⑦</strong>を使ってください。</li>
+        <li><strong>残るのは1つだけ</strong>です。名簿を入れかえると、前のものは上書きされます。いくつも残したいときは<strong>⑥</strong>を使ってください。</li>
         <li><strong>チェックを外すと、保存していたものは消えます。</strong>次に開いたときは最初からの設定になります。いま見ている画面はそのままです。</li>
         <li>残るのは<strong>使っている端末の中だけ</strong>です。<strong>どこにも送信されません。</strong>読み込んだ画像は保存されません。</li>
       </ul>
@@ -378,32 +402,11 @@ body.screen .seat.dup .nm{text-decoration:none}
       </div>
     </details>
 
-    <details class="opt noprint" id="sexCard">
-      <summary><span class="step">2</span>男女の文字色&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
-      <div class="body">
-      <div class="tip-body" hidden>
-        <p><strong>赤と緑は、いちばん見分けにくい組み合わせ</strong>です。はじめは青系と赤紫系にしてあり、明るさも変えてあるので、色が分かりにくい人でも濃さで見分けられます。</p>
-        <p>色を付けたくないときは、両方とも「黒」を選んでください。</p>
-      </div>
-      <!-- ⭐①で男女を入れれば自動で入ることも書く（2026-09-15 本人）。読み取る言葉＝男・女・男子・女子・M・F など（seat.js SEX_M/SEX_F） -->
-      <p class="note-sm">下の名前を押すたびに <b>なし → 男 → 女</b> と変わります。<br>①名簿の入力で「男」「女」を入れておくと、自動で読み取ります。</p>
-      <div class="row tight">
-        <div><label for="colM">男の色</label><select id="colM"></select></div>
-        <div><label for="colF">女の色</label><select id="colF"></select></div>
-      </div>
-      <p style="margin-top:10px">
-        <label class="chk-inline">
-          <input type="checkbox" id="sexPrint" checked> 男女で色を分ける
-        </label>
-        <span class="hint" style="margin-left:8px">外すと<strong>画面上の文字が全部黒</strong>になります。<strong>⑥で、PDFのみ名前を黒に設定する</strong>こともできます。</span>
-      </p>
-
-      <div id="sexList" class="chips"></div>
-      </div>
-    </details>
+    <!-- ⭐②男女の文字色は①の中へ移した（2026-10-02 本人「男女の文字の色って、①に入れるのどうかな？1度使ったらもう見ない」→「やっぱり男女を入れよう」）。
+         ⚠章の番号が1つずつ詰まった（③班分け→②…⑦→⑥） -->
 
     <details class="opt noprint" id="grpCard">
-      <summary><span class="step">3</span>班分け&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
+      <summary><span class="step">2</span>班分け&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
       <div class="body">
       <div class="tip-body" hidden>
         <p>班は<strong>机のかたまり</strong>に付きます。席をドラッグして人を入れ替えると、班もそのまま入れ替わります。</p>
@@ -412,7 +415,7 @@ body.screen .seat.dup .nm{text-decoration:none}
         <p>「班の番号を出す」を外しても、この画面には薄く残ります（押せば変えられます）。紙・モニター・画像には出ません。色はPDFにも画像にもそのまま出ます。</p>
       </div>
       <p class="note-sm">
-        席は<strong>マグネットのように、ドラッグで入れ替え</strong>ができます。班番号を押すと、その席の班と色を変えられます。
+        席は<strong>マグネットのように、ドラッグで入れ替え</strong>ができます。
       </p>
       <label class="chk-inline">
         <input type="checkbox" id="grpOn"> 班に分ける
@@ -434,6 +437,11 @@ body.screen .seat.dup .nm{text-decoration:none}
               <option value="block">机のかたまり</option>
               <option value="col">縦の列ごと</option>
             </select></div>
+        </div>
+        <!-- ⭐「班番号を押すと…」は色の付け方の上に（2026-10-02 本人「班番号を押すと、その席の班と色を変えられます。の文言は、色の付け方の上に」）。
+             ⚠前は②のいちばん上の「ドラッグで入れ替え」の文のうしろ。色の付け方は人数・分け方の行から1行下へ分けた -->
+        <p class="hint" style="margin:12px 0 0">班番号を押すと、その席の班と色を変えられます。</p>
+        <div class="row" style="margin-top:0">
           <div><label for="grpLook">色の付け方</label>
             <select id="grpLook">
               <option value="both">枠線＋うすい色</option>
@@ -445,6 +453,24 @@ body.screen .seat.dup .nm{text-decoration:none}
         <div id="gInfoSize" style="margin-top:10px"></div>
         <!-- 🔴 ★の話は、班に分けるを入れたときだけ出す（2026-09-03 本人「班に分けるを使わなかったら、★関係ないよね」） -->
         <p class="hint" id="leadWhat" style="margin:14px 0 10px"></p>
+        <!-- ⭐2026-10-02 ③の詳しい条件から②へ移した（本人）。
+             🔴 ★はここでえらぶ形にした（2026-09-03 本人「名簿に班長とは書かない」）。
+             ⚠名簿の★の読み取りは残してあるが、画面では案内しない。
+               Excelに班長列がある先生が貼ったときに、黙って拾うためだけのもの -->
+        <h3>班に1人ずつにする人&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h3>
+        <div class="tip-body" hidden>
+          <p>班長・リーダー・声かけ役など、<strong>班に1人ずつ置きたい人</strong>を決められます。使い道は自由です。</p>
+          <p>「班に分ける」を入れているときだけ効きます（★を座席表に表示するかどうかも、この下で選べます）。★の人数が足りないときは、いない班をお知らせします。</p>
+        </div>
+        <div id="leadList"></div>
+        <!-- 🔴 人数はボタンの右に、それだけ出す（2026-09-03 本人）。
+             ⚠班の数と見くらべる文は出さない。本人「班じゃないこともあるから」
+             ＝★を班分け以外の目じるしに使う先生がいる -->
+        <div class="lead-add">
+          <button class="mini" id="addLead" type="button">＋ 人を追加</button>
+          <span class="hint" id="leadCount"></span>
+        </div>
+        <p class="hint">下の<strong>「★を班に1人ずつにする」</strong>で、1つの班に1人ずつになるように設定できます。<strong>★が目印です。</strong></p>
         <div id="gInfo"></div>
         <div style="margin-bottom:6px">
           <label class="chk-inline">
@@ -477,7 +503,7 @@ body.screen .seat.dup .nm{text-decoration:none}
                 </select></div>
             </div>
             <p class="hint" id="avoidNote"></p>
-            <p class="hint">下の<strong>⑦「保存したデータの利用」</strong>で座席を記録しておくと使えます。人数と班の数によっては、どうしても重なることがあります。そのときは<strong>重なった人を画面に出します</strong>。</p>
+            <p class="hint">下の<strong>⑥「保存したデータの利用」</strong>で座席を記録しておくと使えます。人数と班の数によっては、どうしても重なることがあります。そのときは<strong>重なった人を画面に出します</strong>。</p>
           </div>
         </div>
       </div>
@@ -485,7 +511,7 @@ body.screen .seat.dup .nm{text-decoration:none}
     </details>
 
     <details class="opt noprint" id="ch2">
-      <summary><span class="step">4</span>教室の形</summary>
+      <summary><span class="step">3</span>教室の形</summary>
       <div class="body">
       <div class="row tight">
         <div><label for="cols">横のならび</label><span class="ctl"><select id="cols" class="narrow"><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6" selected>6</option><option value="7">7</option><option value="8">8</option></select><span class="unit">席</span></span></div>
@@ -556,7 +582,7 @@ body.screen .seat.dup .nm{text-decoration:none}
             <label><input type="radio" name="mode" value="cross"><span class="seg-in"><span class="mode-fig"><i></i><i class="on"></i><i></i><i class="on"></i><i class="me"></i><i class="on"></i><i></i><i class="on"></i><i></i></span>
               前後左右</span></label>
             <label><input type="radio" name="mode" value="king"><span class="seg-in"><span class="mode-fig"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="me"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>
-              まわり全部（ななめも）</span></label>
+              まわり全部<small class="mode-sub">（ななめも）</small></span></label>
           </div>
           <!-- 🔴 説明文（前後左右の4つの席を「隣」とみなします）は外した（2026-09-09 本人）。
                本人「これいらないね。図になったから」＝小さな図で伝わっているので、文が重複する。
@@ -581,23 +607,8 @@ body.screen .seat.dup .nm{text-decoration:none}
         <!-- ⚠「視力などの配慮は「前のほう」がおすすめです」は削除した（2026-09-09 本人）。また足さない -->
         <p class="hint">席をぴったり決めると、毎回まったく同じ席になります。</p>
 
-        <!-- 🔴 ★はここでえらぶ形にした（2026-09-03 本人「名簿に班長とは書かない」）。
-             ⚠名簿の★の読み取りは残してあるが、画面では案内しない。
-               Excelに班長列がある先生が貼ったときに、黙って拾うためだけのもの -->
-        <h3>班に1人ずつにする人&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h3>
-        <div class="tip-body" hidden>
-          <p>班長・リーダー・声かけ役など、<strong>班に1人ずつ置きたい人</strong>を決められます。使い道は自由です。</p>
-          <p>③で「班に分ける」を入れているときだけ効きます（★を座席表に表示するかどうかも③）。★の人数が足りないときは、いない班をお知らせします。</p>
-        </div>
-        <div id="leadList"></div>
-        <!-- 🔴 人数はボタンの右に、それだけ出す（2026-09-03 本人）。
-             ⚠班の数と見くらべる文は出さない。本人「班じゃないこともあるから」
-             ＝★を班分け以外の目じるしに使う先生がいる -->
-        <div class="lead-add">
-          <button class="mini" id="addLead" type="button">＋ 人を追加</button>
-          <span class="hint" id="leadCount"></span>
-        </div>
-        <p class="hint"><strong>③の画面</strong>で、1つの班に1人ずつになるように設定できます。<strong>★が目印です。</strong></p>
+        <!-- ⭐「班に1人ずつにする人（★）」は②班分けへ移した（2026-10-02 本人「私も班の中にあるほうがいいと思う」）。
+             ⚠前はここ（③教室の形の詳しい条件）にあり、★のチェック（②）と場所が分かれていた -->
       </div>
     </details>
       </div>
@@ -610,6 +621,8 @@ body.screen .seat.dup .nm{text-decoration:none}
   <div id="msg"></div>
 
   <div id="result" hidden>
+    <!-- ⭐右の列に出すもの（PCだけ）。PCでは小さなスクリプトが右の列（.lr-side）へ移す -->
+    <div class="lr-r" id="lrR">
     <div class="tabs-row noprint">
       <div class="plan-tabs" id="tabs"></div>
       <button id="again" type="button">もう一度 席替え</button>
@@ -626,7 +639,7 @@ body.screen .seat.dup .nm{text-decoration:none}
       <!-- ⭐サンプルの間は「1つ戻す」を隠して、ここに「サンプルを消す」（2026-09-14 本人「下だと見ない。上に入れてほしい」
            「サンプルの時は一つ戻すボタンを隠してもいいから、その行に入れたら」） -->
       <button id="sampleClear2" type="button" hidden>サンプルを消す</button>
-      <p class="hint drag-note">席はマグネットのように自分で入れ替えができます。班番号を押すと、席の班と色を変更できます。</p>
+      <p class="hint drag-note">席はマグネットのように自分で入れ替えができます。</p><!-- ⭐ドラッグの話だけに（2026-10-02 本人）。前は「班番号を押すと、席の班と色を変更できます。」も -->
     </div>
 
     <!-- ⭐ふわっと出て消える知らせ（黄色い枠の意味など）。⚠紙には出さない -->
@@ -652,22 +665,16 @@ body.screen .seat.dup .nm{text-decoration:none}
 
     <p class="hint noprint">条件に反したところは赤くなりますが、そのままでもPDFにできます。<strong>文字が小さい場合は更新してください。</strong></p>
     <div id="vio" class="noprint"></div>
+    </div>
 
     <details class="opt noprint" id="printCard">
-      <summary><span class="step">5</span>見た目&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
+      <summary><span class="step">4</span>見た目&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></summary>
       <div class="body">
       <div class="tip-body" hidden>
-        <p><strong>丸文字はWindowsとiPadだけ。</strong>ほかの機種ではゴシック体になりますが、崩れません。</p>
         <p><strong>「PDFを先生の向きで出す」</strong>にすると、紙は教卓から見た向きになります。画面はそのままなので、生徒に見せるのは画面で足ります。</p>
       </div>
       <div class="row">
-        <div><label for="font">書体</label>
-          <select id="font">
-            <option value="gothic" selected>ゴシック体</option>
-            <option value="maru">丸文字</option>
-            <option value="mincho">明朝体</option>
-          </select>
-        </div>
+        <!-- 🚫「書体（ゴシック体／丸文字／明朝体）」は外した＝ゴシック体だけ（2026-10-02 本人「ゴシック体だけでいいかなと思い始めた。削除しよう」）。seat.js は無くてもゴシックで描く -->
         <div><label for="kana">文字</label>
           <select id="kana">
             <option value="kanji">漢字（座席表・黒板）</option>
@@ -688,13 +695,13 @@ body.screen .seat.dup .nm{text-decoration:none}
           <input id="dt" type="text" placeholder="1学期 / 4月 など" style="width:100%"></div>
       </div>
       <p style="margin-top:10px">
-        <label style="font-weight:normal;display:inline;margin-right:18px">
+        <label class="chk-inline">
           <input type="checkbox" id="dtOff"> 日付・自由記入を入れない
         </label>
-        <label style="font-weight:normal;display:inline">
-          <input type="checkbox" id="bold" checked> 名前を大きく太く
-        </label>
-        <label style="font-weight:normal;display:inline;margin-left:18px">
+        <!-- 🚫「名前を大きく太く」は外した＝いつも大きく太く（2026-10-02 本人「名前を大きく太くもいらないな。大きく太くだけ（そのまま）にしよう」）。
+             ⚠seat.js が見ているので、チェックは見えないまま入れておく -->
+        <input type="checkbox" id="bold" checked hidden>
+        <label class="chk-inline">
           <input type="checkbox" id="showCredit" checked> 右下にサイト名を入れる
         </label>
       </p>
@@ -703,12 +710,12 @@ body.screen .seat.dup .nm{text-decoration:none}
     </details>
 
     <section class="card noprint">
-      <h2><span class="step">6</span>PDF・画像で保存&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+      <h2><span class="step">5</span>PDF・画像で保存&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
       <div class="tip-body" hidden>
         <p><strong>押すとPDFができます。</strong>上の見本と同じものが、そのままA4の1枚になります。スマホでもパソコンでも同じです。</p>
         <p><strong>用紙の向き</strong>は、この下で横と縦を選べます。紙に出したいときは、できたPDFを開いて印刷してください。</p>
         <p><strong>「先生の向き」</strong>にすると、紙は教卓から見た向き（180度まわした形）で出ます。画面はそのままです。</p>
-        <p><strong>「男女の色を出さない」</strong>にすると、紙だけ黒で出ます。<strong>画面は色が付いたままです。</strong>②で色を消すと画面も黒くなるので、紙だけ黒にしたいときはこちらを使ってください。</p>
+        <p><strong>「男女の色を出さない」</strong>にすると、紙だけ黒で出ます。<strong>画面は色が付いたままです。</strong>①の「男女の文字色」で色を消すと画面も黒くなるので、紙だけ黒にしたいときはこちらを使ってください。</p>
       </div>
       <p style="margin:0 0 10px">
         <label class="chk-inline"><input type="checkbox" id="printTeacher" checked> PDFを先生の向きで出す</label>
@@ -730,9 +737,9 @@ body.screen .seat.dup .nm{text-decoration:none}
   <!-- ⭐座席表を作る前も③〜⑥を見せる（グレー・押せない）（2026-09-14 本人「番号が崩れてる。③〜④がいない。グレーアウトでもいいから出しておいて」）
        ⚠#result が隠れているあいだだけ CSS で出す（JS は使わない）。作ったら本物の③〜⑥に入れ替わる -->
   <div id="resultStub" class="noprint" aria-hidden="true">
-    <p class="hint" style="text-align:center;margin:0 0 10px">⑤⑥はサンプルを入れるか、「席替えする」を押すと使えます</p>
-    <div class="opt stub"><div class="stub-head"><span class="step">5</span>見た目</div></div>
-    <div class="opt stub"><div class="stub-head"><span class="step">6</span>PDF・画像で保存</div></div>
+    <p class="hint" style="text-align:center;margin:0 0 10px">④⑤はサンプルを入れるか、「席替えする」を押すと使えます</p>
+    <div class="opt stub"><div class="stub-head"><span class="step">4</span>見た目</div></div>
+    <div class="opt stub"><div class="stub-head"><span class="step">5</span>PDF・画像で保存</div></div>
   </div>
 
 
@@ -742,7 +749,7 @@ body.screen .seat.dup .nm{text-decoration:none}
   <div id="msg2" class="noprint"></div>
 
   <section class="card noprint">
-    <h2><span class="step">7</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+    <h2><span class="step">6</span>保存したデータの利用&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
     <div class="tip-body" hidden>
       <!-- 🔴 ⑧の？の一番上にも置く（2026-09-09 本人）。①と同じ考え方 -->
       <p>🔒 <strong>保存先もインターネットではありません。</strong>使っている端末のブラウザの中だけに残るので、ほかの人からは見えません。パソコン・タブレット・スマホ、どれでも同じです。</p>
@@ -776,7 +783,7 @@ body.screen .seat.dup .nm{text-decoration:none}
       <details class="opt sub">
         <summary>座席の並びを保存<span id="recCount" class="cnt">0/20</span></summary>
         <div class="body">
-      <p class="hint">記録が2件以上たまると、③の<strong>「前の班と同じメンバーをさける」</strong>が使えます。また、前回と同じ席になった時も知らせることができます。</p>
+      <p class="hint">記録が2件以上たまると、②の<strong>「前の班と同じメンバーをさける」</strong>が使えます。また、前回と同じ席になった時も知らせることができます。</p>
       <p class="btn-row">
         <!-- ⭐並びは 記録 → 表示 → 削除（2026-09-15 本人「順番が違う。左から、今の座席を記録、記録の座席を〜に表示、削除」） -->
         <button class="mini" id="recSave" type="button">今の座席を記録</button>
@@ -790,6 +797,16 @@ body.screen .seat.dup .nm{text-decoration:none}
 </div>
 
   </section>
+
+  <!-- ⭐座席表を作る前の右の列（PCだけ）。作ったら消える -->
+  <!-- ⭐右の列（PCだけ）＝座席表の箱。上の端が①とそろう（2026-10-02 本人「①の名簿の入力と上をそろえるのに、箱の中に入ってたほうが見栄えがきれい」）。
+       下にスクロールしても画面に残る（.lr-stick）。作る前は白い紙の形。
+       ⭐サンプルのボタンと「？のしるし」の1行は、その上の段に横並び（左＝？の案内・右＝サンプル）＝seat.css -->
+  <aside class="lr-side"><div class="lr-stick" id="lrStick">
+    <div id="lrSlotR"></div>
+    <div class="lr-paper noprint">名簿を入れて「席替えする」を押すと、ここに座席表が出ます。</div>
+  </div></aside>
+  </div><!-- /.lr -->
 
   <section class="read">
 
@@ -890,7 +907,54 @@ body.screen .seat.dup .nm{text-decoration:none}
 <script src="../paper-pdf.js?v=5"></script>
 <script src="../seating.js?v=57"></script>
 <script src="../roster-tools.js?v=1"></script>
-<script src="seat.js?v=222"></script>
+<script src="seat.js?v=231"></script>
+<script>
+/* ⭐PCで左右に並べる（2026-10-02 本人）。
+   ⭐PC（1000px以上）のときだけ、サンプルのボタンと座席表（#lrR）を右の列（.lr-side）へ移す。
+     狭くなったら元の場所へ戻す＝スマホは今までどおり上から下。
+   ⭐class="lr" を外すと何もしない＝前の並びに戻る。
+   ⚠右の列は高さを数えない作り（contain:size）。座席表が左の列より長いと下の読みものに重なるので、
+     .lr の高さの下限をここで入れる */
+(function () {
+  var lr = document.getElementById('lr');
+  if (!lr || !lr.classList.contains('lr') || !window.matchMedia) return;
+  var mq = window.matchMedia('(min-width:1000px)');
+  var moves = [
+    { el: document.getElementById('lrR'), slot: document.getElementById('lrSlotR') }
+  ];
+  moves.forEach(function (m) { m.home = m.el.parentNode; m.next = m.el.nextSibling; });
+  var stick = document.getElementById('lrStick');
+  var fitH = function () { lr.style.minHeight = mq.matches ? stick.offsetHeight + 'px' : ''; };
+  var place = function () {
+    moves.forEach(function (m) {
+      if (mq.matches) m.slot.appendChild(m.el);
+      else if (m.el.parentNode !== m.home) m.home.insertBefore(m.el, m.next);
+    });
+    window.dispatchEvent(new Event('resize'));   // 紙の大きさ（fitSheet）を新しい幅で計算し直す
+    fitH();
+  };
+  place();
+  if (mq.addEventListener) mq.addEventListener('change', place); else mq.addListener(place);
+  if (window.ResizeObserver) {
+    new ResizeObserver(fitH).observe(stick);
+    /* ⭐紙の上のもの（サンプルのボタン・案のタブなど）の高さが変わったら、紙の大きさを計算し直す。
+       ⚠座席表を作った直後は、タブや知らせがあとから入るので、最初の計算だと紙の下が画面からはみ出していた */
+    var t = 0, refit = function () {
+      clearTimeout(t);
+      t = setTimeout(function () { if (mq.matches) window.dispatchEvent(new Event('resize')); }, 30);
+    };
+    var ro2 = new ResizeObserver(refit);
+    ['seatSample', 'tipGuide', 'seatFlash'].forEach(function (id) { var e = document.getElementById(id); if (e) ro2.observe(e); });
+    document.querySelectorAll('#lrR .tabs-row, #lrR .drag-row').forEach(function (e) { ro2.observe(e); });
+    /* ⭐座席表を出した・タブや知らせが入ったときも（大きさの見張りは、画面が描かれないと動かないことがある） */
+    var mo = new MutationObserver(refit);
+    mo.observe(document.getElementById('result'), { attributes: true, attributeFilter: ['hidden'] });
+    ['seatSample', 'tabs', 'seatFlash'].forEach(function (id) {
+      var e = document.getElementById(id); if (e) mo.observe(e, { childList: true, subtree: true, characterData: true });
+    });
+  }
+})();
+</script>
 <!-- 🔴 印刷用の1枚絵の置き場（2026-09-01）。画面には出ない。
      ⚠**body の直下に置くこと。**中に入れると、印刷のときに親ごと隠されて白紙になる -->
 <div id="printImgWrap"></div>

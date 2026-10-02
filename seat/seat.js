@@ -364,8 +364,10 @@
   }
   function sexColor(name) {
     var g = state.sex[name];        // 指定していない人は色を付けない（黒のまま）
-    if (g === 'm') return $('colM').value;
-    if (g === 'f') return $('colF').value;
+    /* ⭐色は青と赤紫に固定（2026-10-02 本人「男と女の色は今のまま固定に…多分色を変えることはない」）。
+       ⚠選ぶ欄（colM・colF）はかくしただけ。前に別の色で保存したデータを呼んでも、この2色で出る */
+    if (g === 'm') return '#1f5fbf';
+    if (g === 'f') return '#b02a7a';
     return '';
   }
 
@@ -386,10 +388,7 @@
       var g = state.sex[n];
       b.className = 'chip' + (g ? ' ' + g : '');
       b.textContent = n;
-      var mk = document.createElement('span');
-      mk.className = 'mk';
-      mk.textContent = g === 'm' ? '男' : g === 'f' ? '女' : '－';
-      b.appendChild(mk);
+      /* 🚫名前の横の「男・女・－」は付けない（2026-10-02 本人「文字の横の女とか男とかなしにして」）＝色で分かる */
       var col = sexColor(n);
       if (col) b.style.color = col;
       b.onclick = function () {
@@ -556,7 +555,8 @@
     //   ⚠下の2つのチェックの**両方**にかかるので、チェックの上に1行だけ置く
     var w = $('leadWhat');
     /* ⭐文は本人の文（2026-09-15）。人数は今えらんでいる数 */
-    if (w) w.innerHTML = '★は、②<strong>詳しい条件</strong>の<strong>「班に1人ずつにする人」</strong>で設定や解除をすることができます。' +
+    /* ⭐★の人を選ぶ欄は、この文のすぐ下に移した（2026-10-02 本人）。前は「③教室の形の詳しい条件の…」 */
+    if (w) w.innerHTML = '★は、すぐ下の<strong>「班に1人ずつにする人」</strong>で設定や解除をすることができます。' +
       '今★は<strong>' + n + '人</strong>です。';
   }
 
@@ -1177,12 +1177,10 @@
       //   ⚠長押しのことも「1つ戻す」のことも、ここには書かない。
       //     長押しは④の説明に、戻すのはこの文のすぐ左のボタンにある
       /* ⭐サンプル②のときだけ、★の設定場所も足す（2026-09-14 本人）。⚠章の名前は「教室の形」 */
-      note.innerHTML = state.grp.on
-        ? '席はマグネットのように自分で入れ替えができます。<strong>班番号を押すと、席の班と色を変更できます</strong>。' +
-          (state.sample && state.sampleKind === 2 ? '★は②教室の形の中の詳しい条件で自由に設定できます。' : '')
-        : '席はマグネットのように自分で入れ替えができます。' +
-          /* ⭐サンプル①（出席番号順）のときだけ、並ぶ向きも選べることを足す（2026-09-15 本人） */
-          (state.sample && state.sampleKind === 1 ? '出席番号順は右の列や前の左右スタートも可能です。男女の色を黒にするのもボタン一つです。' : '');
+      /* ⭐ドラッグの話だけにした（2026-10-02 本人「その隣の説明文はドラッグだけにしよう」）。
+         ⚠前は、班のとき「班番号を押すと、席の班と色を変更できます」、サンプル②で★の設定場所、
+           サンプル①で並ぶ向き・男女の色の話も足していた（班番号の話は③班分けの？にもある） */
+      note.innerHTML = '席はマグネットのように自分で入れ替えができます。';
     }
     drawCheck(chk, samap);
     updateLeadCount();          // 班の数が決まったので、★の人数の案内も出し直す
@@ -1323,6 +1321,13 @@
        ⭐印刷のときは liftSheet がその縮小をはがして、実寸に戻す
          （2026-09-10 本人の案：「縮小の前を拾って、紙だけを取り出す」）*/
     var maxH = Math.max(360, window.innerHeight * 0.72);
+    /* ⭐左右に並べているとき（PC・2026-10-02）は、右の列が画面に残る。
+       上のサンプルのボタン・案のタブのぶんを引いて、紙の下の端まで画面に入る高さにする */
+    var stk = box.closest && box.closest('.lr-stick');
+    if (stk && getComputedStyle(stk).position === 'sticky') {
+      var above = box.getBoundingClientRect().top - stk.getBoundingClientRect().top;
+      maxH = Math.max(300, window.innerHeight - (parseFloat(getComputedStyle(stk).top) || 0) - above - 16);
+    }
     var scale = Math.min(1, room / w, maxH / h);
     sh.style.width = Math.round(w) + 'px';
     sh.style.height = Math.round(h) + 'px';
@@ -2049,7 +2054,7 @@
         },
         numOn: $('numOn') ? $('numOn').checked : false,
         nameMode: $('nameMode').value, nameAlign: $('nameAlign') ? $('nameAlign').value : 'center',
-        font: $('font').value, bold: $('bold').checked,
+        font: 'gothic', bold: $('bold').checked,   // ⭐書体はゴシックだけ（2026-10-02 本人）
         showCredit: $('showCredit').checked,
         printTeacher: $('printTeacher') ? $('printTeacher').checked : true,
         printBW: $('printBW') ? $('printBW').checked : false,
@@ -2132,7 +2137,7 @@
       }
       // 条件が1つでも入っていたら、②の「詳しい条件」を開いておく（気づいてもらうため）
       if ($('condBlock') && ((c.sep && c.sep.length) || (c.adj && c.adj.length) ||
-          (c.fix && c.fix.length) || (c.leads && c.leads.length))) $('condBlock').open = true;
+          (c.fix && c.fix.length))) $('condBlock').open = true;   // ⚠★（leads）は②班分けへ移したので見ない（2026-10-02）
       // ⚠前に保存した人はこの項目を持っていない。そのときは既定（出さない）のまま
       if (d.numOn !== undefined && $('numOn')) {
         $('numOn').checked = !!d.numOn;
@@ -2141,8 +2146,8 @@
       }
       if (d.nameMode) $('nameMode').value = d.nameMode;
       if (d.nameAlign && $('nameAlign')) $('nameAlign').value = d.nameAlign;
-      if (d.font) $('font').value = d.font;
-      $('bold').checked = !!d.bold;
+      // ⭐書体はゴシックだけ（2026-10-02 本人）。前に丸文字・明朝で保存したデータもゴシックで出す
+      $('bold').checked = true;   // ⭐いつも大きく太く（2026-10-02 本人）。前に「太くしない」で保存したデータも太く出す
       if (d.showCredit !== undefined) $('showCredit').checked = !!d.showCredit;
       // ⚠前に保存した人はこの項目を持っていない。そのときは既定（オン）のまま
       if (d.printTeacher !== undefined && $('printTeacher'))
@@ -2730,7 +2735,10 @@
       renderSexList();
       closeCond(); run(true);
       $('sampleClear').hidden = false; $('sampleClear2').hidden = false; $('undo').hidden = true;
-      $('sampleMsg').textContent = 'サンプル' + (kind === 2 ? '②（班分け）' : '①（出席番号順）') + 'を出しました。下の座席表で見られます';
+      /* ⭐左右に並べているとき（.lr・PC）は知らせを出さない（2026-10-02 本人「すぐ下に出るからいらないね。
+         サンプルを消すをすぐ上で見れるようにしたいし」）。スマホは座席表が遠いので今までどおり */
+      $('sampleMsg').textContent = getComputedStyle($('lr') || document.body).display === 'grid' ? '' :
+        'サンプル' + (kind === 2 ? '②（班分け）' : '①（出席番号順）') + 'を出しました。下の座席表で見られます';
       refreshClsUI();   // ⭐サンプルの間は①の「保存済のデータ」を隠す
     }
     $('sample1Btn').onclick = function () { loadSample(1); };
@@ -2873,7 +2881,7 @@
     // 画像や字体が出そろってから、もう一度あてはめ直す
     window.addEventListener('load', function () { fitSheet(); });
     $('deco').addEventListener('change', drawDeco);
-    ['nameMode', 'font', 'bold', 'showCredit'].forEach(function (id) {
+    ['nameMode', 'bold', 'showCredit'].forEach(function (id) {   // ⚠'font'（書体）は外した（2026-10-02）
       $(id).addEventListener('change', function () {
         if (state.seats) drawSheet();
         if ($('save').checked) save();

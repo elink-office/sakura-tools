@@ -578,6 +578,17 @@ function fitNames(){
 /* ⭐紙は「1mm＝3.2点」で作り、画面に入らなければまるごと縮める（ページの型 16-b・座席表と同じ考え方） */
 function fitSheet(){
   var box=$("sheetBox"), sh=$("sheet"); if(!box||!sh) return;
+  /* ⭐全画面で確認（2026-10-02 本人）＝紙をまるごと画面に入る大きさにして、まん中に置く。PDFは別に作るので変わらない */
+  if(document.body.classList.contains("fs")){
+    var Kf=3.2, wf=210*Kf, hf=294*Kf;
+    var sf=Math.min((window.innerWidth-40)/wf, (window.innerHeight-70)/hf);
+    sh.style.width=Math.round(wf)+"px"; sh.style.height=Math.round(hf)+"px";
+    sh.style.setProperty("--pxmm",Kf);
+    sh.style.transformOrigin="center center";
+    sh.style.transform="scale("+sf+")";
+    box.style.height="";
+    return;
+  }
   var room=box.clientWidth; if(!room||room<200) return;   // ⚠親の clientWidth は padding をふくむので、紙がはみ出す（2026-09-27 スマホ幅で実測）
   var K=3.2, w=210*K, h=294*K;
   /* ⭐高さで縮めない＝横幅いっぱい（2026-09-27 本人「マスが小さくて読みにくい」）。紙の下はスクロールで見る */
@@ -767,4 +778,12 @@ document.addEventListener("click",function(e){
 /* ===== はじめ ===== */
 refreshBox("");
 if(!screenLoad()){ setType("45"); setOrder("random"); countNames(); refreshFix(); refreshCond(); drawSheet(); }
+/* ⭐全画面で確認（2026-10-02 本人「全体が見えないのがしんどいね」→「全画面で確認とかは？」）。
+   ⭐body に fs を付けると、#sheetBox が画面いっぱいに広がる（見た目は bus.css）。席はそのままドラッグで動かせる */
+function fsOpen(){ document.body.classList.add("fs"); fitSheet(); fitNames(); }
+function fsClose(){ document.body.classList.remove("fs"); fitSheet(); fitNames(); }
+$("fsBtn").addEventListener("click",fsOpen);
+$("fsClose").addEventListener("click",fsClose);
+document.addEventListener("keydown",function(e){ if((e.key==="Escape"||e.key==="Esc") && document.body.classList.contains("fs")) fsClose(); });
+
 })();
