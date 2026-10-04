@@ -289,8 +289,8 @@ function paintList(){
 function bigD(){ var r=$("stage").getBoundingClientRect();
   /* ⭐たての画面は上下に分けたので、玉は横幅を使って大きく（2026-10-04 本人「上下にするとき…1/3くらいでも」・fukubiki.css） */
   if(window.matchMedia && matchMedia("(orientation: portrait)").matches){
-    /* 玉は機械の下と賞の並びの上のあいだに入る大きさ（タブレットのたてで、賞の並びに重なった） */
-    var bx=$("box"), ls=$("list"), room=(bx && ls)? ls.getBoundingClientRect().top-bx.getBoundingClientRect().bottom-24 : r.height*0.3;
+    /* 玉は機械の上（画面の上のはしと機械のあいだ）に入る大きさ（2026-10-04 本人「玉は上に表示したい」）。前＝機械の下と賞の並びのあいだ */
+    var bx=$("box"), room=bx ? bx.getBoundingClientRect().top-r.top-16 : r.height*0.3;
     return Math.max(60, Math.min(room, r.width*0.4, 520));
   }
   return Math.min(r.height*0.56, r.width*0.28, 520); }   // ⭐大きく（2026-09-27 本人「サイズも大きくしていいよ」→「こうやって見ると、もっと球が大きくてもいいな」）。前＝0.36・0.2・260 → 0.46・0.23・420
@@ -313,9 +313,10 @@ function placeCur(d){
   cb.style.top=(cy-d/2-(ph?ph+gap:0))+"px";   // 名前を出さないとき（いま）は、玉だけ
   /* ⭐よこは、転がった先（受け皿の左のはし）の上（2026-09-27 本人「もう少し左に球を表示して」「転がった先の上にしようか」）。前＝画面のまん中 */
   $("curBox").style.left=(br.left+br.width*G3.tray.xL-wr.left)+"px";
-  /* ⭐たての画面（上下に分けた形）は、機械のすぐ下・横のまん中に出す（2026-10-04）。⚠受け皿の左のはしの上だと、スマホで画面の左にはみ出した */
+  /* ⭐たての画面（上下に分けた形）は、機械の上・横のまん中に出す（2026-10-04 本人「玉は上に表示したい」）。
+       ⚠受け皿の左のはしの上だと、スマホで画面の左にはみ出した。一度「機械のすぐ下」にしたが、上に替えた */
   if(window.matchMedia && matchMedia("(orientation: portrait)").matches){
-    cb.style.top=(br.bottom-wr.top+8-(ph?ph+gap:0))+"px";
+    cb.style.top=Math.max(4,(br.top-wr.top-8-d)-(ph?ph+gap:0))+"px";
     cb.style.left=(wr.width/2)+"px";
   }
 }

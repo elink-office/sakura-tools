@@ -92,7 +92,7 @@
   .fk-wrap{grid-template-columns:1fr;grid-template-rows:68% 32%}
   .fk-mach{order:0;grid-row:1}
   /* 絵は機械（0〜100）の左にすべり台（-70〜0）が長い＝幅は1.7倍。絵ぜんたいを横のまん中に置く */
-  .fk-box{--w:min(52cqw,28cqh);right:calc(50% - var(--w) * .85);top:6%}
+  .fk-box{--w:min(52cqw,28cqh);right:3cqw;top:34%}   /* ⭐機械は右に寄せて下へ・上を玉にあける（2026-10-04 本人「もっと右に寄せて、下に寄せて。で、玉は上に表示したい」）。前＝横のまん中・上から6% */
   .fk-run .fk-list{top:70%;left:3cqw;right:3cqw;transform:none;flex-direction:row;flex-wrap:wrap;justify-content:center;align-items:center;gap:1cqh 2cqw}
   .fk-item{transform-origin:center}
 }
