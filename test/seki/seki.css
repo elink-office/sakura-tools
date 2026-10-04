@@ -424,3 +424,18 @@ body.picking .grid .seat:hover, body.picking .grid .dead.off:hover{ box-shadow: 
 /* ⭐チェックボックスは1つずつ縦に並べて、左の端をそろえる（2026-10-02 座席表と同じ） */
 main .chk-inline{display:block; width:fit-content; margin:6px 0}
 main .chk-inline.gap{margin-left:0}
+
+/* ⭐狭い画面（タブレットのたて・スマホ）も、席次表の上のボタンをPCと同じ並びと形に（2026-10-04 本人「席次もそうしよ」・座席表と同じ）。
+   並び＝案・もう一度作り直す・空ける席をえらぶ・1つ戻す・モニターに映す・サンプルを消す。
+   モニターは丸い形・うすい青の地。⚠大きさは今のまま（指で押すため・PCだけ小さい） */
+@media (max-width: 999.98px){
+  #lrR{display:flex; flex-wrap:wrap; align-items:center; gap:8px}
+  #lrR > .tabs-row, #lrR > .drag-row{display:contents}
+  #lrR > :not(.tabs-row):not(.drag-row){flex:0 0 100%; min-width:0}
+  #lrR > *, #lrR .drag-note{order:10}
+  #lrR .drag-note{flex:0 0 100%; margin:0 0 6px}
+  #tabs{order:1} #again{order:2} #offPick{order:3} #undo{order:4}
+  #screenOn{order:7} #sampleClear2{order:8}
+  #lrR #screenOn{border-radius:999px; background:#eaf1f8; border-color:#c3d3e4; color:#2b4a6b}
+  #lrR #screenOn:hover{background:#dbe7f3}
+}

@@ -236,6 +236,13 @@ function numR(n){ var k=String(n).length; return k>2?0.4:(k>1?0.56:0.6); }
 /* ⭐大きい玉＝よこは「回す」ボタンの上（画面のまん中）、上のはしは表の B・I・N・G・O の字の上のはしとそろえる
      （2026-09-27 本人「そのボールを回すの中心に持って行って、上端は、bingoの文字の上端と一緒にしてみて」） */
 function bigD(){ var r=$("stage").getBoundingClientRect(); return Math.min(r.height*0.7, r.width*0.3, 600); }
+/* ⭐玉の数字が玉の内側（.t）に入りきらないときだけ、字を小さくする（2026-10-04 本人：タブレットで「38」が2行に分かれた）。
+     ⚠端末の字の形で幅が変わる（iPad では数字が太くて広い）。PCで入っているときは何もしない＝見た目は前のまま。画面に置いたあとに呼ぶ */
+function fitNum(b){
+  var t=b && b.firstChild, bn=t && t.querySelector(".bn"); if(!bn) return;
+  var max=t.clientWidth*0.94, w=bn.offsetWidth;
+  if(max>0 && w>max) t.style.fontSize=Math.floor(parseFloat(t.style.fontSize)*max/w)+"px";
+}
 function placeCur(){
   var cur=$("cur"), L=$("board") && $("board").querySelector(".bg-letter,.bg-cell"), wrap=cur && cur.parentNode; if(!L || !wrap) return;
   cur.style.top=(L.getBoundingClientRect().top-wrap.getBoundingClientRect().top)+"px";
@@ -287,7 +294,7 @@ function spin(){
     var kf=G.path.map(function(p,i){ var dx=W*(p.x-G.dish.x), dy=W*(p.y-G.dish.y); return {transform:"translate(calc(-50% + "+dx.toFixed(1)+"px),calc(-50% + "+dy.toFixed(1)+"px)) rotate("+(-i*60)+"deg)"}; });
     if(mini.animate) mini.animate(kf,{duration:2200,easing:"cubic-bezier(.4,0,.7,1)",fill:"forwards"});
     later(function(){
-      placeCur(); var big=ballEl(n,bigD()); big.style.opacity="0"; $("cur").appendChild(big);
+      placeCur(); var big=ballEl(n,bigD()); big.style.opacity="0"; $("cur").appendChild(big); fitNum(big);
       var a=mini.getBoundingClientRect(), b=big.getBoundingClientRect();
       var dx=(a.left+a.width/2)-(b.left+b.width/2), dy=(a.top+a.height/2)-(b.top+b.height/2), sc=a.width/b.width;
       mini.remove(); big.style.opacity="";
@@ -309,7 +316,7 @@ function start(isDemo){
   document.body.style.overflow="hidden";
   build();
   var last=st.drawn[st.drawn.length-1];
-  placeCur(); if(last) $("cur").appendChild(ballEl(last,bigD(),st.drawn.length-1));   // 続きから＝最後に出た玉を出しておく
+  placeCur(); if(last){ var lb=ballEl(last,bigD(),st.drawn.length-1); $("cur").appendChild(lb); fitNum(lb); }   // 続きから＝最後に出た玉を出しておく
   update();
   if(!demo) keepAwake(true);
 }
@@ -346,7 +353,7 @@ function resize(){
   if(!run) return;
   placeCur();
   Array.prototype.forEach.call($("cur").children,function(b){
-    var d=bigD(); b.style.width=b.style.height=d+"px"; b.firstChild.style.fontSize=Math.round(d*numR(b._n))+"px";
+    var d=bigD(); b.style.width=b.style.height=d+"px"; b.firstChild.style.fontSize=Math.round(d*numR(b._n))+"px"; fitNum(b);
   });
 }
 var rsT=0;

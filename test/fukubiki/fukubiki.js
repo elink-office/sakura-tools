@@ -9,7 +9,7 @@ function esc(t){ return String(t).replace(/[&<>"]/g,function(c){ return {"&":"&a
 function rnd(n){ try{ var a=new Uint32Array(1); crypto.getRandomValues(a); return a[0]%n; }catch(e){ return Math.floor(Math.random()*n); } }
 var COLORS=[["gold","金","#e6b422"],["silver","銀","#b8bec6"],["red","赤","#e2403f"],["blue","青","#3a7bd5"],["green","緑","#3aa55d"],["yellow","黄","#f2d14b"],["pink","桃","#f08fb0"],["white","白","#f4f4f4"]];
 function colorOf(k){ for(var i=0;i<COLORS.length;i++) if(COLORS[i][0]===k) return COLORS[i][2]; return "#f4f4f4"; }
-var DEF=[{c:"gold",n:"1等",k:1},{c:"red",n:"2等",k:3},{c:"blue",n:"3等",k:5},{c:"white",n:"はずれ",k:21}];
+var DEF=[{c:"gold",n:"1等",k:1},{c:"red",n:"2等",k:3},{c:"blue",n:"3等",k:5},{c:"white",n:"ざんねん",k:21}];
 
 var st={rows:JSON.parse(JSON.stringify(DEF)), drawn:[], sound:true};
 
@@ -286,7 +286,14 @@ function paintList(){
   });
   $("list").innerHTML=h;
 }
-function bigD(){ var r=$("stage").getBoundingClientRect(); return Math.min(r.height*0.56, r.width*0.28, 520); }   // ⭐大きく（2026-09-27 本人「サイズも大きくしていいよ」→「こうやって見ると、もっと球が大きくてもいいな」）。前＝0.36・0.2・260 → 0.46・0.23・420
+function bigD(){ var r=$("stage").getBoundingClientRect();
+  /* ⭐たての画面は上下に分けたので、玉は横幅を使って大きく（2026-10-04 本人「上下にするとき…1/3くらいでも」・fukubiki.css） */
+  if(window.matchMedia && matchMedia("(orientation: portrait)").matches){
+    /* 玉は機械の下と賞の並びの上のあいだに入る大きさ（タブレットのたてで、賞の並びに重なった） */
+    var bx=$("box"), ls=$("list"), room=(bx && ls)? ls.getBoundingClientRect().top-bx.getBoundingClientRect().bottom-24 : r.height*0.3;
+    return Math.max(60, Math.min(room, r.width*0.4, 520));
+  }
+  return Math.min(r.height*0.56, r.width*0.28, 520); }   // ⭐大きく（2026-09-27 本人「サイズも大きくしていいよ」→「こうやって見ると、もっと球が大きくてもいいな」）。前＝0.36・0.2・260 → 0.46・0.23・420
 function update(){
   var left=pool().length;
   $("roundLbl").textContent=st.drawn.length? st.drawn.length+"回目" : "";
@@ -306,6 +313,11 @@ function placeCur(d){
   cb.style.top=(cy-d/2-(ph?ph+gap:0))+"px";   // 名前を出さないとき（いま）は、玉だけ
   /* ⭐よこは、転がった先（受け皿の左のはし）の上（2026-09-27 本人「もう少し左に球を表示して」「転がった先の上にしようか」）。前＝画面のまん中 */
   $("curBox").style.left=(br.left+br.width*G3.tray.xL-wr.left)+"px";
+  /* ⭐たての画面（上下に分けた形）は、機械のすぐ下・横のまん中に出す（2026-10-04）。⚠受け皿の左のはしの上だと、スマホで画面の左にはみ出した */
+  if(window.matchMedia && matchMedia("(orientation: portrait)").matches){
+    cb.style.top=(br.bottom-wr.top+8-(ph?ph+gap:0))+"px";
+    cb.style.left=(wr.width/2)+"px";
+  }
 }
 function showBall(i,animFrom){
   var d=bigD(), b=document.createElement("div"); b.className="fk-ball";
@@ -321,6 +333,13 @@ function showBall(i,animFrom){
     $("prize").animate && $("prize").animate([{opacity:0,transform:"scale(.6)"},{opacity:0,offset:.6},{opacity:1,transform:"none"}],{duration:1100,easing:"ease-out"});
   }
 }
+/* ⭐画面の向きや大きさが変わったら、出ている玉の大きさと場所を合わせ直す（2026-10-04・タブレットを横にしたとき前の場所に残っていた） */
+var fkRsT=0;
+window.addEventListener("resize",function(){ clearTimeout(fkRsT); fkRsT=setTimeout(function(){
+  if(!run || run.busy) return;
+  var b=$("cur") && $("cur").firstChild; if(!b) return;
+  var d=bigD(); b.style.width=b.style.height=d+"px"; placeCur(d);
+},120); });
 function spin(){
   if(!run || run.busy) return;
   var p=pool(); if(!p.length) return;

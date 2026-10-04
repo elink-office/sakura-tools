@@ -83,3 +83,16 @@
 /* 音を鳴らす（①の中・ルーレットの「当たった項目を、次から外す」と同じ形） */
 .fk-opt{margin:6px 0 0;font-size:.95rem}
 .fk-opt label{display:inline-flex;align-items:center;gap:6px;font-weight:normal;cursor:pointer}
+
+/* ⭐たての画面（タブレットのたて・スマホ）は上下に分ける（2026-10-04 本人「上下にするとき、半分ずつでなくてもOK。1/3くらいでも」）。
+   ＝上の約2/3に機械と出た玉（横幅いっぱいに大きく）・下の約1/3に賞の並び（横に並べて折り返す）。横の画面は前のまま。
+   きっかけ＝本人「スマホで見たら、上でぐるぐる回ってて、文字がすごく大きく表示されてた」。
+   ⚠同じ日に一度「ビンゴと同じ並び（賞は左の上・玉はまん中・機械は右の下・601px以上だけ）」にしたが、これに替えた */
+@media (orientation: portrait){
+  .fk-wrap{grid-template-columns:1fr;grid-template-rows:68% 32%}
+  .fk-mach{order:0;grid-row:1}
+  /* 絵は機械（0〜100）の左にすべり台（-70〜0）が長い＝幅は1.7倍。絵ぜんたいを横のまん中に置く */
+  .fk-box{--w:min(52cqw,28cqh);right:calc(50% - var(--w) * .85);top:6%}
+  .fk-run .fk-list{top:70%;left:3cqw;right:3cqw;transform:none;flex-direction:row;flex-wrap:wrap;justify-content:center;align-items:center;gap:1cqh 2cqw}
+  .fk-item{transform-origin:center}
+}

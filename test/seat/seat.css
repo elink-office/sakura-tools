@@ -186,6 +186,21 @@ body.picking .grid .seat:hover, body.picking .grid .dead.off:hover{ box-shadow: 
   body.screen .lr > .lr-side{contain:none}
 }
 
+/* ⭐狭い画面（タブレットのたて・スマホ）も、座席表の上のボタンをPCと同じ並びと形に（2026-10-04 本人「タブレットで見たら前のまま」「スマホも一緒でいいよ」）。
+   並び＝案1〜3・もう一度席替え・空ける席をえらぶ・1つ戻す・座席表をかくす・モニターに映す・サンプルを消す。
+   かくす・モニターは丸い形・うすい青の地。⚠大きさは今のまま（指で押すため・PCだけ小さい） */
+@media (max-width: 999.98px){
+  #lrR{display:flex; flex-wrap:wrap; align-items:center; gap:8px}
+  #lrR > .tabs-row, #lrR > .drag-row{display:contents}
+  #lrR > :not(.tabs-row):not(.drag-row){flex:0 0 100%; min-width:0}
+  #lrR > *, #lrR .drag-note{order:10}
+  #lrR .drag-note{flex:0 0 100%; margin:0 0 6px}
+  #tabs{order:1} #again{order:2} #offPick{order:3} #undo{order:4}
+  #hideSheet{order:6} #screenOn{order:7} #sampleClear2{order:8}
+  #lrR #hideSheet, #lrR #screenOn{border-radius:999px; background:#eaf1f8; border-color:#c3d3e4; color:#2b4a6b}
+  #lrR #hideSheet:hover, #lrR #screenOn:hover{background:#dbe7f3}
+}
+
 /* ⭐チェックボックスは1つずつ縦に並べて、左の端をそろえる（2026-10-02 本人「横幅狭くしたから、チェックボックスが、空白分ズレてるんだと思う。全部確認して、チェックボックスの位置を揃えて」）。
    ⚠前は横に並べて間を 18px あけていた（.chk-inline.gap など）。狭いと2つ目が次の行に回り、その 18px ぶん右にずれた。
    ⭐このページだけ（style.css は席次表なども使う） */
