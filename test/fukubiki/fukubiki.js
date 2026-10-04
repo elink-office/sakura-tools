@@ -297,7 +297,8 @@ function bigD(){ var r=$("stage").getBoundingClientRect();
     /* ⭐玉のまん中＝八角形の箱の上のはしの高さ・箱の左のあいたところ（2026-10-04 本人「玉が小さいから、もう少し下に下げて、玉のサイズを大きくして。福引の箱の上端の高さが玉の中心くらい」）。
          大きさ＝上は画面からはみ出さない・横は箱にかからない。前＝機械の上（画面の上のはしと機械のあいだ） */
     var o=octRect(); if(!o) return Math.max(60, Math.min(r.height*0.3, r.width*0.4, 520));
-    return Math.max(60, Math.min(2*(o.top-r.top-4), o.left-r.left-24, r.width*0.55, 520));
+    /* ⭐入るいちばん大きいサイズの8割（2026-10-04 本人「大きすぎた笑 あと少し小さくして」）。まん中の位置は変えない */
+    return Math.max(60, 0.8*Math.min(2*(o.top-r.top-4), o.left-r.left-24, r.width*0.55, 520));
   }
   return Math.min(r.height*0.56, r.width*0.28, 520); }   // ⭐大きく（2026-09-27 本人「サイズも大きくしていいよ」→「こうやって見ると、もっと球が大きくてもいいな」）。前＝0.36・0.2・260 → 0.46・0.23・420
 function update(){
