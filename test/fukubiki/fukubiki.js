@@ -9,7 +9,9 @@ function esc(t){ return String(t).replace(/[&<>"]/g,function(c){ return {"&":"&a
 function rnd(n){ try{ var a=new Uint32Array(1); crypto.getRandomValues(a); return a[0]%n; }catch(e){ return Math.floor(Math.random()*n); } }
 var COLORS=[["gold","金","#e6b422"],["silver","銀","#b8bec6"],["red","赤","#e2403f"],["blue","青","#3a7bd5"],["green","緑","#3aa55d"],["yellow","黄","#f2d14b"],["pink","桃","#f08fb0"],["white","白","#f4f4f4"]];
 function colorOf(k){ for(var i=0;i<COLORS.length;i++) if(COLORS[i][0]===k) return COLORS[i][2]; return "#f4f4f4"; }
-var DEF=[{c:"gold",n:"1等",k:1},{c:"red",n:"2等",k:3},{c:"blue",n:"3等",k:5},{c:"white",n:"ざんねん",k:21}];
+var KU_COL=["gold","silver","bronze"], KU_NAME=["金","銀","銅"];   // くす玉の色＝行の順（1行目＝金・2行目＝銀・3行目＝銅）
+/* ku＝その賞が出たらくす玉を割る（1〜3行目だけ・1行目＝金・2行目＝銀・3行目＝銅）。見本は1等だけ入れておく（2026-10-04） */
+var DEF=[{c:"gold",n:"1等",k:1,ku:true},{c:"red",n:"2等",k:3},{c:"blue",n:"3等",k:5},{c:"white",n:"ざんねん",k:21}];
 
 var st={rows:JSON.parse(JSON.stringify(DEF)), drawn:[], sound:true};
 
@@ -39,6 +41,8 @@ function render(){
     li.innerHTML='<span class="fk-dot" style="background:'+colorOf(r.c)+'"></span>'+sel+
       '<input class="nm" data-i="'+i+'" data-k="n" maxlength="16" aria-label="賞の名前" value="'+esc(r.n)+'">'+
       '<input class="ct" type="number" min="0" max="999" data-i="'+i+'" data-k="k" aria-label="本数" value="'+r.k+'"> 本'+
+      /* ⭐くす玉のボタン＝1〜3行目だけ（2026-10-04 本人「①の賞と本数のところで、ただし3等までね。金銀銅で。１等だけボタンにすると、金だけくす玉」） */
+      (i<3 ? '<button type="button" class="kubtn '+KU_COL[i]+(r.ku?" on":"")+'" data-i="'+i+'" aria-pressed="'+(r.ku?"true":"false")+'" title="この賞が出たら、くす玉（'+KU_NAME[i]+'）を割る">🎊 くす玉</button>' : '<span class="kubtn-sp"></span>')+
       '<button type="button" class="mvbtn" data-i="'+i+'" data-a="up" aria-label="上へ"'+(i===0?" disabled":"")+'>▲</button>'+
       '<button type="button" class="mvbtn" data-i="'+i+'" data-a="down" aria-label="下へ"'+(i===st.rows.length-1?" disabled":"")+'>▼</button>'+
       '<button type="button" class="mvbtn" data-i="'+i+'" data-a="del" aria-label="消す">×</button>';
@@ -58,6 +62,8 @@ $("rows").addEventListener("change",function(e){
   st.rows[+t.getAttribute("data-i")].c=t.value; st.drawn=[]; render(); screenSave();
 });
 $("rows").addEventListener("click",function(e){
+  var kb=e.target.closest(".kubtn");
+  if(kb){ var ki=+kb.getAttribute("data-i"); st.rows[ki].ku=!st.rows[ki].ku; render(); screenSave(); return; }   // くす玉の入れる・外す（出た玉の記録は消さない）
   var b=e.target.closest(".mvbtn"); if(!b || b.disabled) return;
   var i=+b.getAttribute("data-i"), a=b.getAttribute("data-a");
   /* ⭐順番を入れかえる（2026-09-27 本人「賞と本数、間違えそうだから、入れ替えできるようにしてほしい。今緑足したら、外れの白より下になってるからさ」）
@@ -357,6 +363,7 @@ function spin(){
   if(!run || run.busy) return;
   var p=pool(); if(!p.length) return;
   run.busy=true; update();
+  KU.clear();   // 前のくす玉と紙吹雪を片付ける
   $("cur").innerHTML=""; $("prize").textContent="";
   run.hit=null; paintList();   // 回しはじめたら、光を消す
   $("box").classList.add("spin"); turn(true); snd("turn");
@@ -388,6 +395,7 @@ function spin(){
       var from=mini.getBoundingClientRect(); mini.remove();
       showBall(i,from);
       st.drawn.push(i); screenSave();
+      if(i<3 && st.rows[i].ku) later(function(){ KU.pop(KU_COL[i], st.rows[i].n); },500);   // ⭐くす玉を入れた賞（1〜3行目）なら割る
       later(function(){ run.hit=i; paintList(); run.busy=false; update(); },1000);
     },FALL+ROLL);
   },3000);
@@ -407,7 +415,7 @@ function start(demo){
   return true;
 }
 function stop(){
-  timers.forEach(clearTimeout); timers=[]; cancelAnimationFrame(turnRaf);
+  timers.forEach(clearTimeout); timers=[]; cancelAnimationFrame(turnRaf); KU.clear();
   $("stage").innerHTML=""; run=null;
   $("runScreen").hidden=true; $("runScreen").classList.remove("framed"); $("demoBack").hidden=true;
   document.body.style.overflow=""; keepAwake(false);
@@ -422,9 +430,190 @@ $("nextBtn").addEventListener("click",spin);
 $("resetBtn").addEventListener("click",function(){
   if(!run || run.busy) return;
   if(st.drawn.length && !confirm("出た玉を全部箱に戻して、はじめからにしますか？")) return;
-  st.drawn=[]; screenSave(); $("cur").innerHTML=""; $("prize").textContent=""; run.hit=null; paintList(); update();
+  KU.clear(); st.drawn=[]; screenSave(); $("cur").innerHTML=""; $("prize").textContent=""; run.hit=null; paintList(); update();
 });
 $("backBtn").addEventListener("click",stop);
+
+/* =====================================================================
+   ⭐くす玉（2026-10-04 本人「3等まで、くす玉やったらどうかな？」「ボタンで自動設定。①の賞と本数のところで、ただし3等までね。金銀銅で」）
+   ＝①でくす玉を入れた賞（1〜3行目）が出たら、画面の上から金・銀・銅のくす玉が下りてきて、自動で割れる。垂れ幕は賞の名前
+   ⭐絵と紙吹雪は くす玉メーカー（kusudama/kusudama.js）と同じ。写したもの＝GRAD・banner・kusuSvg・CONF・confetti。⚠向こうを直したら、ここも直す
+   ⭐割れてしばらくしたら、くす玉は上へ引っこむ（玉が見えるように）。紙吹雪（金は積もる）は次に回すまで残る
+   ===================================================================== */
+var KU=(function(){
+  var GRAD={ gold:["#ffe98a","#f2b82c","#c98a10","#b07a0c"], silver:["#ffffff","#c4cad2","#8a929c","#7a828c"], bronze:["#f6c89a","#c47a3a","#8a4f1e","#7a4418"] };
+  var KUSU_INDENT=2, KUSU_BY=150, KUSU_R=230, uid=0, tms=[], rafs=[], box=null;
+  function banner(raw,ex){
+    raw=(raw||"").trim()||ex;
+    raw=raw.replace(/[0-9]/g,function(d){ return String.fromCharCode(d.charCodeAt(0)+0xFEE0); });   // 数字は全角＝縦書きで立つ
+    var cols=raw.split(/[\/／]+/).map(function(c){ return c.trim(); }).filter(Boolean).slice(0,2); if(!cols.length) cols=[ex];
+    var n=Math.max.apply(null, cols.map(function(c,i){ return c.length+(i>0?KUSU_INDENT:0); }));
+    var fs=Math.max(14, Math.min(34, Math.floor(262/(n*1.12)))), sp=Math.round(fs*0.12);
+    var gapX=Math.round(fs*1.2), w=cols.length===2 ? Math.max(86, gapX+fs+36) : 86, x0=250-w/2, BY=KUSU_BY, fid="fksh"+uid;
+    var h='<line x1="250" y1="0" x2="250" y2="'+BY+'" stroke="#d9a93a" stroke-width="4"/>'+
+          '<rect x="'+x0+'" y="'+BY+'" width="'+w+'" height="290" rx="5" fill="#fff" stroke="#e2403f" stroke-width="4" filter="url(#'+fid+')"/>';
+    var step=fs+sp, blockH=Math.max.apply(null, cols.map(function(c,i){ return (c.length+(i>0?KUSU_INDENT:0))*step-sp; }));
+    var top=BY+Math.max(12,(290-blockH)/2);
+    cols.forEach(function(c,i){
+      var cx=cols.length===2 ? (i===0 ? 250+gapX/2 : 250-gapX/2) : 250, y=top+(i>0 ? KUSU_INDENT*step : 0);
+      h+='<text x="'+cx+'" y="'+y+'" font-size="'+fs+'" font-weight="800" fill="#e2403f" style="writing-mode:vertical-rl" letter-spacing="'+sp+'">'+esc(c)+'</text>';
+    });
+    return h;
+  }
+  function kusuSvg(color,text){
+    uid++;
+    var g=GRAD[color]||GRAD.gold, sp="fksp"+uid, lb="fklb"+uid, rf="fkrf"+uid, bl="fkbl"+uid, R=KUSU_R;
+    var B=banner(text,"おめでとう");
+    var half=function(sw){ return 'M250 -'+R+' A'+R+' '+R+' 0 0 '+sw+' 250 '+R; };
+    function body(sw,hl){
+      return '<path d="'+half(sw)+' Z" fill="url(#'+sp+')"/>'+'<path d="'+half(sw)+' Z" fill="url(#'+rf+')"/>'+'<path d="'+half(sw)+' Z" fill="url(#'+lb+')"/>'+
+        (hl ? '<ellipse cx="190" cy="150" rx="58" ry="26" transform="rotate(-22 190 150)" fill="#fff" opacity=".5" filter="url(#'+bl+')"/>' : '')+
+        '<path d="'+half(sw)+'" fill="none" stroke="'+g[3]+'" stroke-opacity=".55" stroke-width="1.2"/>';
+    }
+    return '<svg viewBox="0 0 500 460" xmlns="http://www.w3.org/2000/svg"><defs>'+
+     '<filter id="fksh'+uid+'" x="-30%" y="-10%" width="160%" height="120%"><feDropShadow dx="4" dy="6" stdDeviation="5" flood-color="#000" flood-opacity=".35"/></filter>'+
+     '<filter id="'+bl+'" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="10"/></filter>'+
+     '<radialGradient id="'+sp+'" gradientUnits="userSpaceOnUse" cx="195" cy="115" r="300" fx="185" fy="125"><stop offset="0" stop-color="'+g[0]+'"/><stop offset=".45" stop-color="'+g[1]+'"/><stop offset=".85" stop-color="'+g[2]+'"/><stop offset="1" stop-color="'+g[3]+'"/></radialGradient>'+
+     '<radialGradient id="'+lb+'" gradientUnits="userSpaceOnUse" cx="250" cy="0" r="'+R+'"><stop offset=".72" stop-color="#000" stop-opacity="0"/><stop offset=".94" stop-color="#000" stop-opacity=".16"/><stop offset="1" stop-color="#000" stop-opacity=".28"/></radialGradient>'+
+     '<radialGradient id="'+rf+'" gradientUnits="userSpaceOnUse" cx="300" cy="'+(R+40)+'" r="120"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>'+
+     '</defs><g class="banner">'+B+'</g><g class="half l">'+body(0,true)+'</g><g class="half r">'+body(1,false)+'</g></svg>';
+  }
+  var CONF={
+    bronze:{cols:["#c47a3a"], k:0.3, glint:true, glintCol:"#ffe2bf", glintTh:0.9, glintBlur:6},
+    silver:{cols:["#c4cad2","#c4cad2","#ffffff","#c86a8e","#eaa6c0","#b8a6e0"], k:0.8, glint:true},
+    gold:  {cols:["#f2b82c","#f2b82c","#f2b82c","#ffe98a","#ffe98a","#c4cad2","#c4cad2","#ffffff","#e67999","#f2a163","#69b992","#58baca","#6e89d8","#a17ad9","#ff4fa3"], k:1.6, glint:true, stars:0.22, hearts:0.07, star5:0.07, linger:true}
+  };
+  function later2(fn,ms){ tms.push(setTimeout(fn,ms)); }
+  function host(){
+    if(box && box.parentNode) return box;
+    box=document.createElement("div"); box.className="fk-kx"; $("runScreen").appendChild(box); return box;
+  }
+  function confetti(q,color){
+    var hb=host(), fb=hb.getBoundingClientRect(), W=fb.width, H=fb.height; if(!W||!H) return;
+    var cv=document.createElement("canvas"), dpr=window.devicePixelRatio||1; cv.width=W*dpr; cv.height=H*dpr; hb.appendChild(cv);
+    var ctx=cv.getContext("2d"); ctx.scale(dpr,dpr);
+    var conf=CONF[color]||CONF.gold, G=3400, N=Math.round(Math.min(300, W/2.6)*conf.k), ps=[];
+    for(var i=0;i<N;i++){
+      var p, side=(Math.random()<.5?-1:1);
+      if(i<N*0.3){ p={x:q.cx+(Math.random()-.5)*q.ballR*4.2, y:-20-Math.random()*H*0.25, vx:(Math.random()-.5)*120, vy:40+Math.random()*120, delay:0.05+Math.random()*0.9}; }
+      else if(i<N*0.6){ var off=Math.random()*q.ballR; p={x:q.cx+side*off, y:q.top+Math.random()*q.ballR*0.85, vx:side*(150+Math.random()*450)*(0.4+off/q.ballR), vy:-80-Math.random()*320, delay:Math.random()*0.35}; }
+      else{ var bh=q.bBot-q.bTop; p={x:q.cx+side*Math.random()*q.ballR*1.7, y:q.bTop+bh*(0.45+Math.random()*0.6), vx:side*(120+Math.random()*560), vy:-250-Math.random()*450, delay:0.15+Math.random()*0.5}; }
+      p.term=80+Math.random()*80; p.sw=18+Math.random()*34; p.sf=1.5+Math.random()*2.5; p.ph=Math.random()*6.3;
+      p.rot=Math.random()*6.3; p.vr=(Math.random()-.5)*12; p.flip=Math.random()*6.3; p.vf=5+Math.random()*9;
+      var sz=Math.max(0.55, Math.min(1, W/1100));
+      p.w=(7+Math.random()*6)*sz; p.h=(10+Math.random()*8)*sz; p.round=Math.random()<.18;
+      p.col=conf.cols[Math.floor(Math.random()*conf.cols.length)];
+      p.glint=conf.glint && (p.col==="#c4cad2" || p.col==="#f2b82c" || p.col==="#ffe98a" || p.col==="#ffffff" || p.col==="#c47a3a");
+      if(conf.linger){ if(Math.random()<0.35){ p.term=28+Math.random()*34; p.sw*=1.7; } if(Math.random()<0.5) p.floor=H-3-Math.random()*16; }
+      p.gc=conf.glintCol||"#ffffff"; p.gt=conf.glintTh||0.72; p.gb=conf.glintBlur||10;
+      p.star=conf.stars && Math.random()<conf.stars;
+      if(!p.star){ var rr=Math.random();
+        if(conf.hearts && rr<conf.hearts){ p.shape="heart"; p.col=["#ff4f8b","#e67999","#ff7aa8"][Math.floor(Math.random()*3)]; p.glint=false; }
+        else if(conf.star5 && rr<conf.hearts+conf.star5){ p.shape="star5"; p.col=["#f2b82c","#ffd84a"][Math.floor(Math.random()*2)]; p.glint=false; } }
+      ps.push(p);
+    }
+    var h={stop:false}, last=performance.now(), t0=last; rafs.push(h);
+    function f(now){
+      if(h.stop){ if(cv.parentNode) cv.remove(); return; }
+      var dt=Math.min(0.04,(now-last)/1000), t=(now-t0)/1000; last=now;
+      ctx.clearRect(0,0,W,H);
+      var alive=0;
+      for(var i=0;i<ps.length;i++){
+        var p=ps[i]; if(t<p.delay){ alive++; continue; }
+        if(!p.rest){
+          if(p.vy<0) p.vy+=G*dt; else { p.vy=Math.min(p.term,p.vy+G*dt*0.15); p.vx*=0.94; }
+          p.x+=p.vx*dt+(p.vy>0?Math.sin(t*p.sf+p.ph)*p.sw*dt:0); p.y+=p.vy*dt; p.rot+=p.vr*dt; p.flip+=p.vf*dt;
+          if(p.floor && p.vy>0 && p.y>=p.floor){ p.y=p.floor; p.rest=true; p.flip=Math.PI*0.08+Math.random()*0.5; p.star=false; }
+        }
+        if(p.y>H+20 && p.vy>0) continue;
+        alive++;
+        var fc=Math.cos(p.flip);
+        if(p.star){
+          var a=0.35+0.65*Math.abs(Math.sin(t*7+p.ph)), R=Math.max(9, p.w*1.7);
+          ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*0.3); ctx.globalAlpha=a; ctx.shadowColor="rgba(255,236,150,.95)"; ctx.shadowBlur=10; ctx.fillStyle="#fff6c8";
+          ctx.beginPath(); ctx.moveTo(0,-R); ctx.quadraticCurveTo(0,0,R,0); ctx.quadraticCurveTo(0,0,0,R); ctx.quadraticCurveTo(0,0,-R,0); ctx.quadraticCurveTo(0,0,0,-R); ctx.fill(); ctx.restore(); continue;
+        }
+        if(p.shape){
+          var S=(p.shape==="star5") ? Math.max(13, p.h*1.5) : Math.max(8, p.h*0.95);
+          /* ⭐ハートと星も紙なので、ある程度くるくる回る（2026-10-04 本人「紙でハートとか星が入ってるなら、ある程度回ったほうがいい」）。
+               ＝くるっと回り（四角い紙の6割の速さ）、裏返りもする。⚠真横を向いて細い線にならないよう、幅は3割より細くしない
+               前＝回らずに少しだけゆれる（くす玉メーカーのまま）。くす玉メーカー（kusudama.js）も同じにした */
+          var sx=(fc<0?-1:1)*Math.max(0.3,Math.abs(fc));
+          ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*0.6); ctx.scale(sx,1); ctx.fillStyle=p.col; ctx.beginPath();
+          if(p.shape==="heart"){ ctx.moveTo(0,S*0.35); ctx.bezierCurveTo(-S*1.1,-S*0.35,-S*0.45,-S*1.05,0,-S*0.45); ctx.bezierCurveTo(S*0.45,-S*1.05,S*1.1,-S*0.35,0,S*0.35); }
+          else{ for(var k=0;k<10;k++){ var rad=(k%2===0)?S*0.75:S*0.32, an=-Math.PI/2+k*Math.PI/5; if(k===0) ctx.moveTo(Math.cos(an)*rad,Math.sin(an)*rad); else ctx.lineTo(Math.cos(an)*rad,Math.sin(an)*rad); } ctx.closePath(); }
+          ctx.fill(); ctx.restore(); continue;
+        }
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.scale(1,fc);
+        var shine=p.glint && Math.abs(fc)>p.gt; ctx.fillStyle=shine ? p.gc : p.col; if(shine){ ctx.shadowColor=p.gc; ctx.shadowBlur=p.gb; }
+        if(p.round){ ctx.beginPath(); ctx.arc(0,0,p.w*0.55,0,6.3); ctx.fill(); } else ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+        ctx.restore();
+      }
+      if(conf.linger ? t<40 : (alive && t<14)) requestAnimationFrame(f); else if(!conf.linger && cv.parentNode) cv.remove();
+    }
+    requestAnimationFrame(f);
+  }
+  function clear(){ tms.forEach(clearTimeout); tms=[]; rafs.forEach(function(h){ h.stop=true; }); rafs=[]; if(box){ box.innerHTML=""; } }
+  /* 下りてくる → 0.7秒で割れる（紙吹雪）→ 3.5秒で上へ引っこむ */
+  function pop(color,text){
+    clear();
+    var hb=host(), el=document.createElement("div"); el.className="kusu"; el.innerHTML=kusuSvg(color,text); hb.appendChild(el);
+    requestAnimationFrame(function(){ el.classList.add("in"); }); setTimeout(function(){ el.classList.add("in"); },30);
+    later2(function(){
+      el.classList.add("open");
+      var fb=hb.getBoundingClientRect(), r=el.getBoundingClientRect(), k=r.width/500, L=r.left-fb.left, T=r.top-fb.top;
+      confetti({cx:L+r.width/2, top:T, ballR:KUSU_R*k, bTop:T+KUSU_BY*k, bBot:T+(KUSU_BY+290)*k}, color);
+    },700);
+    later2(function(){ el.classList.add("out"); },4200);
+    later2(function(){ if(el.parentNode) el.remove(); },4800);
+  }
+  return {pop:pop, clear:clear};
+})();
+
+/* ⭐クラッカー＝当たりが出たら押す（2026-10-04 本人「福引もビンゴみたいに、左下にあたり！のボタン作って、クラッカー配置して」）
+   ＝ビンゴ（bingo.js の cracker）と同じ。左下と右下の角から、紙吹雪が放射状に上へ飛んで、落ちてくる。音はなし */
+var CF_COLS=["#e2536b","#f0a33a","#4aa3df","#58b368","#9b6fd1","#e86fb0","#e0b52e","#3fb8af"];
+var cfRaf=0;
+function cracker(){
+  var host=$("runScreen"); if(!host || host.hidden) return;
+  var old=host.querySelector("canvas.bg-cf"); if(old){ cancelAnimationFrame(cfRaf); old.remove(); }
+  var W=host.clientWidth, H=host.clientHeight; if(!W||!H) return;
+  var dpr=window.devicePixelRatio||1;
+  var cv=document.createElement("canvas"); cv.className="bg-cf";
+  cv.width=W*dpr; cv.height=H*dpr;
+  cv.style.cssText="position:absolute;left:0;top:0;width:"+W+"px;height:"+H+"px;z-index:60;pointer-events:none;transition:opacity .5s";
+  host.appendChild(cv);
+  var ctx=cv.getContext("2d"); ctx.scale(dpr,dpr);
+  var G=H*3.2, N=Math.min(220,Math.round(W/5)), ps=[];
+  for(var i=0;i<N;i++){
+    var dir=(i%2===0)?1:-1;
+    var x0=(dir===1)? W*(-0.06+Math.random()*0.1) : W*(1.06-Math.random()*0.1);
+    var y0=H+10+H*Math.random()*0.15;
+    var peak=H*(-0.1+Math.random()*0.6);
+    var vy=-Math.sqrt(2*G*(y0-peak));
+    var ang=(6+Math.random()*34)*Math.PI/180;
+    ps.push({x:x0,y:y0,vx:dir*(-vy)*Math.tan(ang),vy:vy,term:H*(0.12+Math.random()*0.1),
+      w:6+Math.random()*6,h:8+Math.random()*8,rot:Math.random()*6.3,vr:(Math.random()-.5)*12,
+      sw:10+Math.random()*25,ph:Math.random()*6.3,col:CF_COLS[i%CF_COLS.length],delay:(dir===1?0:0.12)+Math.random()*0.15});
+  }
+  var t0=performance.now(), last=t0, END=5.5;
+  function step(now){
+    var dt=Math.min(0.05,(now-last)/1000), t=(now-t0)/1000; last=now;
+    ctx.clearRect(0,0,W,H);
+    for(var i=0;i<ps.length;i++){
+      var p=ps[i]; if(t<p.delay) continue;
+      if(p.vy<p.term){ p.vy+=G*dt; if(p.vy>p.term) p.vy=p.term; p.vx*=Math.pow(0.35,dt); } else { p.vx*=Math.pow(0.2,dt); }
+      p.x+=p.vx*dt+(p.vy>0? Math.sin(t*3+p.ph)*p.sw*dt:0); p.y+=p.vy*dt; p.rot+=p.vr*dt;
+      if(p.y>H+30 && p.vy>0) continue;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.scale(1,Math.cos(t*6+p.ph));
+      ctx.fillStyle=p.col; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore();
+    }
+    if(t>END-0.6) cv.style.opacity="0";
+    if(t<END) cfRaf=requestAnimationFrame(step); else cv.remove();
+  }
+  cfRaf=requestAnimationFrame(step);
+}
+$("crackerBtn").addEventListener("click",cracker);
 $("fsBtn").addEventListener("click",function(){
   var el=document.documentElement;
   if(document.fullscreenElement) document.exitFullscreen().catch(function(){}); else if(el.requestFullscreen) el.requestFullscreen().catch(function(){});

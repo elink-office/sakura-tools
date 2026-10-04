@@ -23,7 +23,7 @@
 <meta property="og:image:height" content="630">
 <link rel="stylesheet" href="../style.css?v=156">
 <link rel="stylesheet" href="../random/random.css?v=20">
-<link rel="stylesheet" href="fukubiki.css?v=28">
+<link rel="stylesheet" href="fukubiki.css?v=30">
 <!-- Google AdSense（2026-09-28 審査の前にそろえた） -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9296990556079874" crossorigin="anonymous"></script>
 </head>
@@ -68,7 +68,7 @@
   <details class="opt" id="opt1">
     <summary><span class="step">1</span>賞と本数</summary>
     <div class="body">
-      <p class="tm-hint fk-lead">上から順に、玉の色・賞の名前・本数です。はずれも1行として入れます。</p>
+      <p class="tm-hint fk-lead">上から順に、玉の色・賞の名前・本数です。はずれも1行として入れます。1〜3行目の「🎊 くす玉」を押すと、その賞が出たときにくす玉が割れます（1行目＝金・2行目＝銀・3行目＝銅）。</p>
       <ul class="fk-rows" id="rows"></ul>
       <p><button type="button" class="mini" id="rowAdd">＋ 賞を足す</button> <span class="fk-total" id="total"></span></p>
       <p class="fk-opt"><label><input type="checkbox" id="soundOn" checked> 🔊 音を鳴らす（回す音・玉が出る音）</label></p>
@@ -158,12 +158,13 @@
   <div class="pk-demo" id="demoBadge" hidden>見本（モニターの形 16:9）</div>
   <div class="pk-stage" id="stage"></div>
   <div class="pk-btns">
+    <button type="button" class="pk-b cracker" id="crackerBtn" title="当たりが出たら押す">🎉 あたり！</button><!-- ⭐ビンゴと同じクラッカー（2026-10-04 本人「福引もビンゴみたいに、左下にあたり！のボタン作って、クラッカー配置して」） -->
     <button type="button" class="pk-b next" id="nextBtn">▶ 回す</button>
     <button type="button" class="pk-b back" id="resetBtn">はじめから</button>
   </div>
 </div>
 
-<script src="fukubiki.js?v=34"></script>
+<script src="fukubiki.js?v=37"></script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>

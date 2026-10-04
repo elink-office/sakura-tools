@@ -54,6 +54,12 @@
 /* ⭐「はじめから」は右端（本人「はじめからボタンは右において！」・ビンゴマシーンと同じ） */
 .fk-run .pk-btns #resetBtn{position:absolute;right:3cqw;bottom:0}
 @media (max-width:600px){ .fk-run .pk-btns #resetBtn{position:static} }   /* ⚠スマホの見本の枠では「回す」と重なるので、横に並べたまま */
+/* ⭐「🎉 あたり！」は左下（2026-10-04 本人「福引もビンゴみたいに、左下にあたり！のボタン」）。見た目はビンゴの「🎉 ビンゴ！」と同じ */
+.fk-run .pk-btns #crackerBtn{position:absolute;left:3cqw;bottom:0}
+.pk-b.cracker{background:#fff;color:var(--pink);border:1px solid color-mix(in srgb,var(--pink) 45%,#fff)}
+.pk-b.cracker:hover{background:color-mix(in srgb,var(--pink) 8%,#fff)}
+@media (min-width:601px){ .fk-run .pk-demo{bottom:calc(2.5cqh + clamp(14px,2.4cqmin,22px)*2.4 + 16px)} }   /* 見本の枠のときは、見本のしるしをボタンの上へ（ビンゴと同じ） */
+@media (max-width:600px){ .fk-run .pk-btns #crackerBtn{position:static} }   /* スマホは横に並べたまま（ビンゴと同じ） */
 
 /* ⭐賞の名前は玉の上（2026-09-27 本人「文字、上にしてみて」）。前＝玉の下 */
 .fk-cur .fk-prize{order:-1}
@@ -96,3 +102,26 @@
   .fk-run .fk-list{top:70%;left:3cqw;right:3cqw;transform:none;flex-direction:row;flex-wrap:wrap;justify-content:center;align-items:center;gap:1cqh 2cqw}
   .fk-item{transform-origin:center}
 }
+/* ⭐①のくす玉のボタン（1〜3行目だけ・2026-10-04 本人「①の賞と本数のところで、ただし3等までね。金銀銅で」）
+   外しているとき＝白・うすい字／入れているとき＝金・銀・銅の地。4行目からは同じ幅のあき（列がそろう） */
+.fk-rows .kubtn{font-size:.8rem;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:#fff;color:#9a9ea4;box-shadow:none;min-width:6.4em}
+.fk-rows .kubtn.on.gold{background:linear-gradient(#ffe98a,#f2b82c);border-color:#c98a10;color:#5a3e05;font-weight:700}
+.fk-rows .kubtn.on.silver{background:linear-gradient(#ffffff,#c4cad2);border-color:#8a929c;color:#3d434a;font-weight:700}
+.fk-rows .kubtn.on.bronze{background:linear-gradient(#f6c89a,#c47a3a);border-color:#8a4f1e;color:#fff;font-weight:700}
+.fk-rows .kubtn-sp{display:inline-block;min-width:6.4em}
+
+/* ⭐くす玉（動かす画面）＝画面の上から下りてきて割れる。絵と動きは くす玉メーカー（kusudama.css の .ks-stage .kusu）と同じ */
+.fk-kx{position:absolute;inset:0;z-index:55;pointer-events:none;overflow:hidden;container-type:size}
+.fk-kx canvas{position:absolute;inset:0;width:100%;height:100%}
+.fk-kx .kusu{position:absolute;left:50%;top:-25cqh;width:min(82cqw,106cqh,850px);transform:translate(-50%,-110%)}
+.fk-kx .kusu.in{animation:fkHang .6s cubic-bezier(.3,1.4,.5,1) forwards}
+@keyframes fkHang{from{transform:translate(-50%,-110%)}to{transform:translate(-50%,0)}}
+.fk-kx .kusu.out{animation:fkKOut .5s ease-in forwards}
+@keyframes fkKOut{from{transform:translate(-50%,0);opacity:1}to{transform:translate(-50%,-30%);opacity:0}}
+.fk-kx .kusu svg{width:100%;height:auto;overflow:visible;display:block}
+.fk-kx .kusu .half{transition:transform .9s cubic-bezier(.3,1.3,.5,1);transform-box:view-box;transform-origin:250px -230px}
+.fk-kx .kusu.open .half.l{transform:rotate(30deg)}
+.fk-kx .kusu.open .half.r{transform:rotate(-30deg)}
+.fk-kx .kusu .banner{transform:scaleY(0);transform-origin:250px 0px;transform-box:view-box;transition:transform .7s .25s cubic-bezier(.3,1.2,.5,1)}
+.fk-kx .kusu.open .banner{transform:scaleY(1)}
+@media (prefers-reduced-motion: reduce){ .fk-kx .kusu.in,.fk-kx .kusu.out{animation-duration:.01s} }
