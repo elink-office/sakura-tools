@@ -260,6 +260,11 @@ function drawBox(th){
   var hm=(45+HOLE_TH)*Math.PI/180, hrr=G3.R*Math.cos(Math.PI/8), hp=v3proj(v3view([hrr*Math.cos(hm)-0.05,G3.CY+hrr*Math.sin(hm),0]));
   G3.hole={x:(hp[0]+70)/170, y:hp[1]/170};   // 回る箱のまん中（絵の幅に対する割合）
   G3.tray={x:(tp[0]+70)/170, y1:tp[1]/170, y0:tq[1]/170, xL:(lp[0]+70)/170, yL:lp[1]/170, d:vis/3/170};
+  /* 八角形の箱の、画面で見えている上のはしと左のはし（絵の幅に対する割合）。たての画面で玉を置く目安（2026-10-04） */
+  var mnx=1e9, mny=1e9;
+  for(var k=0;k<8;k++){ var a=(22.5+k*45)*Math.PI/180; [-G3.D/2,G3.D/2].forEach(function(z){
+    var p=v3proj(v3view([G3.R*Math.cos(a),G3.CY+G3.R*Math.sin(a),z])); if(p[0]<mnx) mnx=p[0]; if(p[1]<mny) mny=p[1]; }); }
+  G3.oct={left:(mnx+70)/170, top:mny/170};
 }
 var turnRaf=0;
 /* ⭐回る＝3秒。はじめ速く、最後はゆっくり、出口の面が左を向く角度（HOLE_TH）でぴたりと止まる（2026-09-27 出口を足したとき）
@@ -289,9 +294,10 @@ function paintList(){
 function bigD(){ var r=$("stage").getBoundingClientRect();
   /* ⭐たての画面は上下に分けたので、玉は横幅を使って大きく（2026-10-04 本人「上下にするとき…1/3くらいでも」・fukubiki.css） */
   if(window.matchMedia && matchMedia("(orientation: portrait)").matches){
-    /* 玉は機械の上（画面の上のはしと機械のあいだ）に入る大きさ（2026-10-04 本人「玉は上に表示したい」）。前＝機械の下と賞の並びのあいだ */
-    var bx=$("box"), room=bx ? bx.getBoundingClientRect().top-r.top-16 : r.height*0.3;
-    return Math.max(60, Math.min(room, r.width*0.4, 520));
+    /* ⭐玉のまん中＝八角形の箱の上のはしの高さ・箱の左のあいたところ（2026-10-04 本人「玉が小さいから、もう少し下に下げて、玉のサイズを大きくして。福引の箱の上端の高さが玉の中心くらい」）。
+         大きさ＝上は画面からはみ出さない・横は箱にかからない。前＝機械の上（画面の上のはしと機械のあいだ） */
+    var o=octRect(); if(!o) return Math.max(60, Math.min(r.height*0.3, r.width*0.4, 520));
+    return Math.max(60, Math.min(2*(o.top-r.top-4), o.left-r.left-24, r.width*0.55, 520));
   }
   return Math.min(r.height*0.56, r.width*0.28, 520); }   // ⭐大きく（2026-09-27 本人「サイズも大きくしていいよ」→「こうやって見ると、もっと球が大きくてもいいな」）。前＝0.36・0.2・260 → 0.46・0.23・420
 function update(){
@@ -304,6 +310,8 @@ function update(){
 }
 /* ⭐大きい玉の置き場所＝よこは「回す」ボタンの上（画面のまん中）、たては回る箱（八角形）のまん中と同じ高さ
      （2026-09-27 本人「拡大する位置は、今ある回すボタンの上が中心で、高さはぐるぐる回す中心（8角形の中心）と同じ高さにしてみて」） */
+/* 八角形の箱（回るところ）の画面の上の四角。たての画面で玉を置く目安 */
+function octRect(){ var bx=$("box"); if(!bx || !G3.oct) return null; var b=bx.getBoundingClientRect(); return {top:b.top+b.width*G3.oct.top, left:b.left+b.width*G3.oct.left}; }
 function placeCur(d){
   var box=$("box"), wrap=box && box.closest(".fk-wrap"); if(!wrap || !G3.center) return;
   var br=box.getBoundingClientRect(), wr=wrap.getBoundingClientRect();
@@ -313,11 +321,14 @@ function placeCur(d){
   cb.style.top=(cy-d/2-(ph?ph+gap:0))+"px";   // 名前を出さないとき（いま）は、玉だけ
   /* ⭐よこは、転がった先（受け皿の左のはし）の上（2026-09-27 本人「もう少し左に球を表示して」「転がった先の上にしようか」）。前＝画面のまん中 */
   $("curBox").style.left=(br.left+br.width*G3.tray.xL-wr.left)+"px";
-  /* ⭐たての画面（上下に分けた形）は、機械の上・横のまん中に出す（2026-10-04 本人「玉は上に表示したい」）。
-       ⚠受け皿の左のはしの上だと、スマホで画面の左にはみ出した。一度「機械のすぐ下」にしたが、上に替えた */
+  /* ⭐たての画面（上下に分けた形）は、玉のまん中を八角形の箱の上のはしの高さに、横は箱の左のあいたところのまん中に（2026-10-04 本人「福引の箱の上端の高さが玉の中心くらい」）。
+       ⚠受け皿の左のはしの上だと、スマホで画面の左にはみ出した。「機械のすぐ下」→「機械の上・横のまん中」→ これ、と変えてきた */
   if(window.matchMedia && matchMedia("(orientation: portrait)").matches){
-    cb.style.top=Math.max(4,(br.top-wr.top-8-d)-(ph?ph+gap:0))+"px";
-    cb.style.left=(wr.width/2)+"px";
+    var o=octRect();
+    if(o){
+      cb.style.top=Math.max(4,(o.top-wr.top-d/2)-(ph?ph+gap:0))+"px";
+      cb.style.left=((o.left-wr.left)/2)+"px";
+    }
   }
 }
 function showBall(i,animFrom){
