@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
+<meta name="robots" content="noindex,nofollow" data-test><!-- ⭐test だけの1行（原本に入れるときに消す）。site.js はこれを見てテスト版の印を出す -->
 <meta charset="utf-8">
 <!-- ⭐タブのマーク＝さくらのロゴ（2026-09-22 本人「タブのマークと題名も変更できるならして」） -->
 <link rel="icon" href="../favicon.ico?v=3" sizes="any">
@@ -28,8 +29,8 @@
 </script>
 <title>簡単スライドメーカー｜パワーポイントの代わりに大きく映す</title>
 <meta name="description" content="パワーポイントの代わりに、文字と写真をそのまま大きくモニターに映せる無料の道具です。今日のめあて、問題文、作品の写真、発表する子の名前に。スライドを作り込まなくていいので、思いついたその場で出せます。写真の上に文字を重ねることもできます。名簿は座席表・席次表と共通。登録なし・インストールなし・写真も名簿も外に送りません。">
-<link rel="stylesheet" href="../style.css?v=155">
-<link rel="stylesheet" href="slide.css?v=76">
+<link rel="stylesheet" href="../style.css?v=159">
+<link rel="stylesheet" href="slide.css?v=86">
 </head>
 <body>
 
@@ -75,15 +76,20 @@
   <!-- 準備（見せたくないものは全部この中。閉じれば一度に隠れる） -->
   <!-- ⭐サンプルのボタンは①の上（2026-09-14 本人「一番上にサンプルデータ」「スライドも文字と人のサンプル」。座席表・シフト表と同じ並び）
        ⭐押すと①②に入る。「サンプルを消す」で前の画面に戻る。⚠サンプルの間は保存しない -->
+  <!-- ⭐「？のしるし」の1行はサンプルのボタンの上（2026-10-04 本人「？のしるしをの文章も連絡に合わせて」） -->
+  <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
   <div class="slide-sample noprint">
     <!-- ⭐名前は①の切り替えに寄せる（2026-09-15 本人） -->
-    <button type="button" id="sampleT">サンプル①（文字をスライド）</button>
-    <button type="button" id="sampleL">サンプル②（発表者をスライド）</button>
-    <button type="button" id="sampleOff" hidden>サンプルを消す</button>
+    <button type="button" class="mini" id="sampleT">サンプル①（文字をスライド）</button>
+    <button type="button" class="mini" id="sampleL">サンプル②（発表者をスライド）</button>
+    <button type="button" class="mini" id="sampleOff" hidden>サンプルを消す</button>
     <span class="saving" id="sampleMsg"></span>
   </div>
-  <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
 
+  <!-- ⭐PCでは左右に並べる（2026-10-04 本人「左右になってないよ」「座席表も何も入ってなくても表示あるよね。そんな風に箱を出しておこう」）。
+       左＝①②（と③の見出し）・右＝見本の小窓の箱（何も無いときも箱は出す）。並べ方は slide.css の .lr と、ページの下の小さなスクリプトだけ。
+       class="lr" を外すと、今までの上から下の並びに戻る。スマホ・狭い画面は上から下のまま（ページの型22） -->
+  <div class="lr empty" id="lr">
   <details class="opt" id="d1" open>
     <summary><span class="step">1</span>スライドにする準備</summary>
     <div class="body">
@@ -96,7 +102,7 @@
         <label><input type="radio" name="kind" value="list" autocomplete="off"><span class="seg-in">発表者をスライドにする</span></label>
       </div>
       <!-- ⭐はじめはどちらも選ばない（2026-09-15 本人「最初はどっちも白にしておくことできないかな？選択したら色がつく」）。選ぶまで入力の欄は出さない -->
-      <p class="hint" id="kindHint" style="margin:-6px 0 8px">上のどちらかを選ぶと、入力の欄が出ます。</p>
+      <p class="hint" id="kindHint" style="margin:6px 0 8px">上のどちらかを選ぶと、入力の欄が出ます。</p>
 
       <!-- ===== 文字を出す：入力 ===== -->
       <div id="paneText">
@@ -200,7 +206,8 @@
 
   <!-- 🔴 ②は①の分岐で中身が変わる（2026-09-05 本人「①準備 ②を、①の分岐で表示変更したら？」
        「どちらともシャッターにする」＝どちらも折りたたみ）。閉じれば見ている人に設定が見えない -->
-  <details class="opt" id="d2" open>
+  <!-- ⭐はじめは閉じておく（2026-10-04 本人「スライドにする順番は閉じておいて」）。①で「入れる」を押すと開く -->
+  <details class="opt" id="d2">
     <summary><span class="step">2</span><span id="d2title">スライドにする順番</span></summary>
     <div class="body">
 
@@ -258,17 +265,33 @@
   <div class="card" id="checkCard" hidden>
     <h2><span class="step">3</span>1枚だけスライドを表示&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
     <div class="tip-body" hidden>
-      <p><strong>この画面で見る</strong>＝選んだ1枚を映します。<strong>全画面にはなりません</strong>ので、見て、直して、また見る、がすぐできます。</p>
+      <p><strong>見本の小窓</strong>＝選んだ1枚が小さく映ります。<strong>押すと大きく</strong>なります（全画面にはなりません）。見て、直して、また見る、がすぐできます。</p>
       <p>⚠<strong>文字の大きさと改行は、画面の広さで変わります。</strong>本番の見え方は、下の<strong>「スライド表示にする」</strong>で確かめられます。</p>
       <p><strong>1枚だけモニターで表示</strong>＝選んだ1枚から、全画面で出します。途中から出したいときや、1枚だけ出しておきたいときに。</p>
     </div>
+    <!-- ⭐見本の小窓（2026-10-04 本人「小窓でどういう風に表示されるか見ながら確認したい」・連絡帳の板書と同じ）。
+         選んだ1枚が、打つたびにその場で小さく映る。押すと「この画面で見る」と同じ大きさ。中身は slide.js が #show を入れる -->
+    <!-- ⭐右の列に出すもの（PCだけ）。PCでは小さなスクリプトが右の箱（.lr-side）へ移す -->
+    <div id="lrR">
+    <div class="mini" id="mini" role="button" tabindex="0" title="押すと大きく表示" aria-label="見本の小窓。押すと大きく表示"><div class="mini-in" id="miniIn"></div><span class="mini-tag">押すと大きく</span></div>
     <div class="row">
       <select id="checkNo"></select>
-      <button id="checkBtn">この画面で見る</button>
+      <!-- ⭐「この画面で見る」はなくした（2026-10-04 本人「この画面で見ると1枚だけモニターで表示が全く同じ動きをすることになった。だからどっちかだけにしよう。1枚だけのほうがわかりやすい」）。大きく見るのは小窓を押す -->
       <button id="fromBtn">1枚だけモニターで表示</button>
+    </div>
     </div>
   </div>
 
+  <!-- ⭐右の箱（PCだけ）＝見本の小窓。上の端は①とそろう・下にスクロールしても画面に残る（座席表と同じ）。
+       ⭐何も無いときも箱は出す（本人「座席表も何も入ってなくても表示あるよね」）＝白い紙の形に案内の1行 -->
+  <aside class="lr-side"><div class="lr-stick" id="lrStick">
+    <p class="lr-ttl"><span class="step">3</span>見本（1枚ずつ）</p>
+    <div id="lrSlotR"></div>
+    <div class="lr-paper noprint">①に文字を入れて「入れる」を押すと、<br>ここにスライドの見本が出ます。</div>
+  </div></aside>
+  </div><!-- /.lr -->
+
+  <!-- ⭐「スライドをモニターで表示」は左右の区画の外＝全体の真ん中（2026-10-04 本人「スライドをモニターで表示は、全体の真ん中に」） -->
   <!-- 出す。枠に入れず、ボタンと枚数だけ -->
   <div class="startbox">
     <!-- ⭐ボタンの文は「モニターで表示」（2026-09-14 本人「ボタン長いけど、そのほうがわかりやすい」） -->
@@ -278,6 +301,7 @@
          比べる設定になっていたらそれを表示しておくとか」）。映す画面には出さない＝映す前に、映す人にだけ見せる -->
     <p class="hint" id="compareHint" hidden>⭐<b>比べるスライドがあります。</b>モニターで表示して2つが並んだときに写真を押すと、大きく表示されます</p>
   </div>
+
 
   <!-- 保存 -->
 
@@ -465,7 +489,39 @@
 </div>
 
 <script src="../roster-tools.js?v=1"></script>
-<script src="slide.js?v=104"></script>
+<script src="slide.js?v=109"></script>
+<script>
+/* ⭐PCで左右に並べる（2026-10-04 本人・座席表と同じ作り＝ページの型22）。
+   ⭐PC（1000px以上）のときだけ、見本の小窓（#lrR）を右の箱（.lr-side）へ移す。狭くなったら元の場所（③の中）へ戻す。
+   ⭐class="lr" を外すと何もしない＝前の並びに戻る。
+   ⚠右の列は高さを数えない作り（contain:size）。右の箱が左の列より長いと下の読みものに重なるので、.lr の高さの下限をここで入れる */
+(function () {
+  var lr = document.getElementById('lr');
+  if (!lr || !lr.classList.contains('lr') || !window.matchMedia) return;
+  var mq = window.matchMedia('(min-width:1000px)');
+  var el = document.getElementById('lrR'), slot = document.getElementById('lrSlotR');
+  var home = el.parentNode, next = el.nextSibling;
+  var stick = document.getElementById('lrStick');
+  /* ⭐右の箱が止まる位置＝上の帯（ヘッダー＋道具の名前の帯）のすぐ下（2026-10-04 本人「ここで止まってほしい。スクロールすると③が上にずれる」）。
+     ⚠前は top:56px で、帯（74px）の下にもぐっていた。帯の高さは画面で変わるので測る。⚠左右の区画は0.86倍なので、その分を戻して入れる */
+  var setTop = function () {
+    if (!mq.matches) { stick.style.top = ''; return; }
+    var hd = document.querySelector('.site-head'), z = parseFloat(getComputedStyle(stick.parentNode).zoom) || 1;
+    var hb = hd ? hd.getBoundingClientRect().bottom : 56;
+    stick.style.top = Math.round((hb + 12) / z) + 'px';
+  };
+  var fitH = function () { setTop(); lr.style.minHeight = mq.matches ? stick.offsetHeight + 'px' : ''; };
+  var place = function () {
+    if (mq.matches) slot.appendChild(el);
+    else if (el.parentNode !== home) home.insertBefore(el, next);
+    window.dispatchEvent(new Event('resize'));   // 小窓の縮め方（miniScale）を新しい幅で計算し直す
+    fitH();
+  };
+  place();
+  if (mq.addEventListener) mq.addEventListener('change', place); else mq.addListener(place);
+  if (window.ResizeObserver) new ResizeObserver(fitH).observe(stick);
+})();
+</script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>

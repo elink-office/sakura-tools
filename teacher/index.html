@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
+<meta name="robots" content="noindex,nofollow" data-test><!-- ⭐test だけの1行（原本に入れるときに消す）。site.js はこれを見てテスト版の印を出す -->
 <meta charset="utf-8">
 <link rel="icon" href="../favicon.ico?v=3" sizes="any">
 <link rel="icon" type="image/png" href="../favicon-32.png?v=3">
@@ -11,12 +12,12 @@
 <meta property="og:site_name" content="SAKURA tools">
 <meta property="og:title" content="先生におすすめの無料ツールセット｜さくらツールズ">
 <meta property="og:description" content="授業ですぐ使えるタイマー・くす玉・スライドと、名簿のコピペで作れる座席表。登録なし・全部無料。子どもの名前を入れても、使っている端末の中だけで完結します。">
-<!-- ⭐og:url と og:image は、原本に入れたとき公開の住所に直した（2026-09-28）。前＝test の住所（2026-09-25）。知り合いの先生にLINEで test を送るため。
+<!-- ⚠og:url と og:image は、いまは test の住所（2026-09-25）。知り合いの先生にLINEで test を送るため。
      ⚠公開用の /teacher/ はまだ無い＝そこを書くと、LINEが無いページを見に行くおそれがある。
      🔴公開するときに https://sakura-tools.com/teacher/ と /img/ogp-teacher.png に戻す（img も一緒に上げる） -->
-<meta property="og:url" content="https://sakura-tools.com/teacher/">
+<meta property="og:url" content="https://sakura-tools.com/test/teacher/">
 <!-- ⭐先生向けの絵＝タイピングの白地のOGPと同じ形（さくら＋「さくらツールズ」＋先生におすすめ｜登録なし・全部無料）2026-09-25 本人「やってみて」 -->
-<meta property="og:image" content="https://sakura-tools.com/img/ogp-teacher.png">
+<meta property="og:image" content="https://sakura-tools.com/test/img/ogp-teacher.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
@@ -33,7 +34,7 @@
      ⚠ここの文はぜんぶ仮。⭐言葉はゆうこさんが決める -->
 <title>先生におすすめの無料ツールセット｜さくらツールズ</title>
 <meta name="description" content="授業ですぐ使えるタイマー・くす玉・スライドと、名簿のコピペで作れる座席表。登録なし・全部無料。子どもの名前を入れても、使っている端末の中だけで完結します。">
-<link rel="stylesheet" href="../style.css?v=155">
+<link rel="stylesheet" href="../style.css?v=159">
 <link rel="stylesheet" href="../top.css?v=68">
 <link rel="stylesheet" href="teacher.css?v=4">
 </head>
@@ -119,7 +120,7 @@
       <div class="t-tool">
         <span class="nm">カウントダウンタイマー</span>
         <span class="ds">時間を打つだけ。丸やタイルが減っていき、残りが少なくなると赤に。間に合ったら紙吹雪、時間切れには幕が閉まる！</span>
-        <img class="t-shot" src="../img/timer-sample.png?v=3" width="1280" height="720" alt="丸が減っていくカウントダウンタイマー。のこり49秒">
+        <img class="t-shot" src="../img/timer-sample.png?v=4" width="1280" height="720" alt="丸が減っていくカウントダウンタイマー（のこり49秒）。右上は間に合ったときの紙吹雪、右下は時間切れで転がってきた爆弾">
       </div>
     </a>
 
@@ -155,7 +156,7 @@
       </div>
     </a>
 
-    <!-- ⭐QRコード作成（2026-09-29 本人「先生ツールにも入れたい」）＝開いてすぐ使えるの最後 -->
+    <!-- ⭐QRコード作成（2026-09-29 本人「先生ツールにも入れたい」）＝開いてすぐ使えるの最後。文＝コードの案 -->
     <a class="t-card big school" id="qr" href="../qr/">
       <div class="t-tool">
         <span class="nm">QRコード作成</span>

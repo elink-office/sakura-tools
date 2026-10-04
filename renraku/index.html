@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="../favicon.ico?v=3" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png?v=3">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
+<!-- ⭐連絡帳の板書（2026-09-29 本人「一番絶対必要」「100％使い始めたら毎日使うもの」「即testでもいいよ。間違いなく別の道具」）
+     ⭐1つのアプリは1つのこと（本人）＝簡単スライドとは分ける。⭐PDFで保存は最初は入れない（本人「あってもいいんだけど、基本はしないとおもうよ」＝あとで足してよい）
+     ⭐ツール一覧には、まだ自分のページにだけ出る（site.js の onlySelf）。どこに入れるかは本人に聞く
+     材料＝sakura-tools\_つくる予定\この箱について.md の連絡帳のメモ -->
+<meta name="robots" content="noindex,nofollow" data-test><!-- ⭐test だけの1行（原本に入れるときに消す）。site.js はこれを見てテスト版の印を出す -->
+<title>連絡帳の板書｜縦書きで大きく映せる無料ツール</title>
+<meta name="description" content="明日の予定・宿題・持ち物を打つだけで、連絡帳の板書が縦書きでできあがります。行の頭の○の文字（し・れ・て・も・じ）も自動。黒板やモニターに大きく映せます。登録なし・無料。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SAKURA tools">
+<meta property="og:title" content="連絡帳の板書｜縦書きで大きく映せる無料ツール">
+<meta property="og:description" content="明日の予定・宿題・持ち物を打つだけで、連絡帳の板書が縦書きでできあがります。登録なし・無料。">
+<!-- ⭐LINEで送ったときの絵＝白地にさくらだけ（2026-09-30 本人「後ろの背景がピンクになるのが本当に嫌」「各ツールは無地でもいい。画像が増えるだけだもんね」）。
+     絵が無いとLINEはマークを拾って、左右をピンクでぼかして埋める。⭐どのツールも同じ1枚（img/ogp-sakura.png）を使ってよい
+     ⭐絵の住所は公開用（testと原本で同じ中身にするため・2026-09-30）。og:url は入れない（test の住所を送ったとき、そのまま test が開くように） -->
+<meta property="og:image" content="https://sakura-tools.com/img/ogp-sakura.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<link rel="stylesheet" href="../style.css?v=159">
+<link rel="stylesheet" href="renraku.css?v=18">
+</head>
+<body>
+
+<header class="site-head noprint">
+  <div class="wrap">
+    <a class="logo" href="../"><span class="logo-mark"><img src="../img/logo-sakura-64.png?v=2" srcset="../img/logo-sakura-64.png?v=2 1x, ../img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA tools</span><span class="logo-sub">さくらツールズ</span></a>
+    <nav>
+      <a class="navpin" href="../">トップ</a>
+      <a class="navpin" href="../typing/">タッチタイピング</a>
+      <a class="navpin" href="../seat/">座席表</a>
+      <a class="navpin" href="../slide/">簡単スライド</a>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">ツール一覧</label>
+      <div class="navlist" data-site-nav></div>
+    </nav>
+  </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">連絡帳の板書</span><span class="now-short">連絡帳</span></div></div>
+</header>
+<script src="../site.js?v=2"></script>
+
+<main class="wrap rk-set">
+  <h1>連絡帳の板書</h1>
+  <p class="catch">打つだけで、連絡帳の板書ができあがる</p>
+  <div class="intro i169">
+    <div class="intro-txt">
+    <p class="lead"><strong>登録なし・全部無料。</strong>明日の予定や持ち物を打つと、○の文字つきの縦書きで、モニターに大きく映せます。</p>
+    <ul class="can-do">
+      <li>行の頭に<strong>○の文字</strong>（し・れ・て・も・じ）</li>
+      <li><strong>日付と曜日</strong>は自動で入る</li>
+      <li><strong>黒板</strong>の緑と<strong>ホワイトボード</strong>の白</li>
+    </ul>
+    </div>
+    <figure class="t-sample noprint"><img src="../img/renraku-sample.png?v=10" width="1280" height="720" alt="連絡帳の板書の見本。緑の黒板に縦書きで、右に日付と曜日、行の頭に○で囲んだ「じ」「し」「れ」「も」"></figure>
+  </div>
+
+  <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
+
+  <!-- ⭐サンプル＝①の上（ページの型 12-a）。押すと結果まで出る・消すと前の中身に戻る・サンプルの間は保存しない -->
+  <p class="rk-samples noprint">
+    <button type="button" class="mini" id="sample1">サンプル①（ひらがな）</button>
+    <button type="button" class="mini" id="sample2">サンプル②（漢字）</button>
+    <button type="button" class="mini" id="sampleClear" hidden>サンプルを消す</button>
+    <span class="rk-samplemsg" id="sampleMsg"></span>
+  </p>
+
+  <!-- ⭐①と②は隣（2026-09-29 本人「やっぱり隣がいいね。①と②のバランスを変えて、半分ずつじゃなくしては？」）＝①を広く・②をせまく（860px以上）
+       ⭐見本の小窓を押すと映る（A）。大きいボタンは①②の下（②をたたんだときの逃げ道） -->
+  <div class="rk-2col">
+  <details class="opt" id="opt1" open>
+    <summary><span class="step">1</span>連絡の中身</summary>
+    <div class="body">
+      <p class="rk-lbl">日付<button type="button" class="tip-btn" aria-label="説明"></button></p>
+      <div class="tip-body" hidden>
+        <p>はじめは今日の日付です。明日の分を書くときは、明日の日付にしてください。曜日は日付から自動で入ります。</p>
+      </div>
+      <p class="rk-date-row"><input type="date" id="rkDate"><button type="button" class="mini" id="rkToday">今日</button><button type="button" class="mini" id="rkTomorrow">明日</button></p>
+
+      <!-- ⭐今日はノートの何列目から（2026-09-30 本人「10行ずつで、前回の続きから書けるシステムも欲しいね」→「作ってみて」）
+           ノートの1ページ＝10列。入りきらないときは次のページの1列目から。前の列は空けて映す -->
+      <p class="rk-lbl">今日はノートの何列目から<button type="button" class="tip-btn" aria-label="説明"></button></p>
+      <div class="tip-body" hidden>
+        <p>連絡帳は、1ページに10列あります。前の日の続きの列から書くときは、その列を選んでください。板書も、ノートと同じ位置から映ります（前の列は空けておきます）。</p>
+        <ul>
+          <li>今日の分が残りの列に入りきらないときは、次のページの1列目から映します。</li>
+          <li>「次の日の続きにする」を押すと、今日の最後の列の次の列になります。次の日に開いたときに押すと便利です（「この画面を保存する」にチェックがあるとき、選んだ列も残ります）。</li>
+        </ul>
+      </div>
+      <p class="rk-date-row"><select id="rkStart" aria-label="今日はノートの何列目から"><option value="1">1列目</option><option value="2">2列目</option><option value="3">3列目</option><option value="4">4列目</option><option value="5">5列目</option><option value="6">6列目</option><option value="7">7列目</option><option value="8">8列目</option><option value="9">9列目</option><option value="10">10列目</option></select><button type="button" class="mini" id="rkNext">次の日の続きにする</button></p>
+      <p class="hint rk-pagemsg" id="rkPageMsg" aria-live="polite"></p>
+
+      <p class="rk-lbl">1行ずつ<button type="button" class="tip-btn" aria-label="説明"></button></p>
+      <div class="tip-body" hidden>
+        <p>🔒 <strong>打った中身はインターネットに送りません。</strong>使っている端末のブラウザの中だけで板書を作っているので、どこかに保存されることも、AIの学習に使われることもありません。パソコン・タブレット・スマホ、どれでも同じです。</p>
+        <ul>
+          <li>左の欄で、行の頭の○の文字を選びます。し＝宿題、れ＝連絡、て＝手紙、も＝持ち物、じ＝時間割です。</li>
+          <li>「②」「④」のような丸数字は、そのまま打てば映ります（「まる2」と打って変換）。</li>
+          <li>ページや番号を四角で囲みたいときは、<b>[12]</b> のように [ ] で囲みます。</li>
+          <li>「40分」「P9」のような短い数字や英字は、縦書きの中で横に並べて映します。</li>
+          <li>②の「1列の字数」（はじめは13字）より長い行は、スペースを入れたところで次の列に折り返します。スペースのないところでは折り返しません。1つのかたまりが字数より長いときは、その列だけ長くなり、全体の字が少し小さくなります。</li>
+          <li>行は20行まで足せます。▲▼で並べかえ、×で消せます。全部消して打ち直すときは「今の中身をクリア」を押します。</li>
+        </ul>
+      </div>
+      <!-- ⭐折り返しの決まりが見て分かるように（2026-09-29 本人「今のままじゃわからない」）。⭐置き場＝「1行ずつ」のすぐ下（本人） -->
+      <p class="hint rk-wraphint">②の「1列の字数」より長い行は、スペースを入れたところで次の列に折り返します。</p>
+      <div class="rk-rows" id="rkRows"></div>
+      <!-- ⭐クリア（2026-09-29 本人「サンプルじゃないのが入力してあったら、それを消せる？クリアボタン」）＝打った中身だけ消す。②の見た目は残す。サンプルの間は出さない -->
+      <p class="rk-addrow"><button type="button" class="mini" id="rkAdd">＋ 行を足す</button><button type="button" class="mini" id="rkClear">今の中身をクリア</button></p>
+
+      <p class="safe">🔒 <strong>使っている端末の中だけで完結しています。</strong>安心してご利用ください。</p>
+
+      <!-- ⭐画面の保存＝①の中のいちばん下（ページの型 2） -->
+      <div class="save-in1">
+        <p class="save-head"><label><input type="checkbox" id="save"> この画面を保存する</label><button type="button" class="tip-btn" aria-label="説明"></button></p>
+        <div class="tip-body" hidden>
+          <ul>
+            <li><strong>打った中身と②の見た目を残します。</strong>次に開いたとき、そのまま出ます。日付だけは、開いた日の日付になります。</li>
+            <li>残るのは<strong>1つだけ</strong>です。書きかえると上書きされます。</li>
+            <li><strong>チェックを外すと、保存していたものは消えます。</strong>いま見ている画面はそのままです。</li>
+            <li>残るのは<strong>使っている端末の中だけ</strong>です。どこにも送信されません。</li>
+          </ul>
+        </div>
+        <p class="hint">チェックを入れると、<b>この画面の状態が保存されます</b>。<br>⚠<b>共用の端末で使ったときは、このチェックを外して、この画面を閉じてください。</b></p>
+        <p><span class="saving" id="savingLabel"></span></p>
+      </div>
+    </div>
+  </details>
+
+  <details class="opt" id="opt2" open>
+    <summary><span class="step">2</span>見た目</summary>
+    <div class="body">
+      <!-- ⭐見本の小窓そのものがボタン（2026-09-29 本人「表示するとき、大きなボタンをスクロールするのが嫌」→ A「見本の小窓を押す」）。右下に札 -->
+      <div class="rk-framebox" id="rkFrame" role="button" tabindex="0" aria-label="押すと、板書をモニターいっぱいに映します"><div class="rk-board" id="rkPreview"></div><span class="rk-frame-go">▶ モニターで表示</span></div>
+
+      <div class="rk-line2">
+        <span class="rk-lbl2">○の文字</span>
+        <div class="seg" role="radiogroup" aria-label="○の文字">
+          <label><input type="radio" name="rkSet" value="hira" checked><span class="seg-in">ひらがな</span></label>
+          <label><input type="radio" name="rkSet" value="g2"><span class="seg-in">2年生まで</span></label>
+          <label><input type="radio" name="rkSet" value="kanji"><span class="seg-in">漢字</span></label>
+        </div>
+      </div>
+      <p class="hint">ひらがな＝し・れ・て・も・じ<br>2年生まで＝し・れ・手・も・時<br>漢字＝宿・連・手・持・時</p>
+
+      <!-- ⭐1列の字数（2026-09-29 本人「とりあえず、字数を決めておこうか」）＝はじめは13字（本人の黒板の写真を数えた） -->
+      <div class="rk-line2">
+        <span class="rk-lbl2">1列の字数</span>
+        <select id="rkPer" aria-label="1列の字数"><option value="8">8字</option><option value="9">9字</option><option value="10">10字</option><option value="11">11字</option><option value="12">12字</option><option value="13" selected>13字</option><option value="14">14字</option><option value="15">15字</option><option value="16">16字</option><option value="17">17字</option><option value="18">18字</option><option value="19">19字</option><option value="20">20字</option></select>
+      </div>
+      <p class="hint">この字数より長い行は、スペースを入れたところで次の列に折り返します。</p>
+      <!-- ⭐うすいノートの線（2026-09-29 本人「ノートと同じ並びにしないと低学年は書けないって言ってた」）＝はじめは出す -->
+      <p class="rk-check"><label><input type="checkbox" id="rkGrid" checked> ノートの線を出す</label></p>
+      <p class="hint">連絡帳と同じ、上の3段（月・日・曜日）と列の区切りを、うすい線で出します。</p>
+
+      <div class="rk-line2">
+        <span class="rk-lbl2">地の色</span>
+        <div class="seg" role="radiogroup" aria-label="地の色">
+          <label><input type="radio" name="rkTheme" value="green" checked><span class="seg-in">黒板</span></label>
+          <label><input type="radio" name="rkTheme" value="white"><span class="seg-in">ホワイトボード</span></label>
+        </div>
+      </div>
+    </div>
+  </details>
+  </div>
+
+  <!-- ⭐映すボタンはシャッターの外・中央（ページの型 8-a）。案内の1行は空にしない。⭐①②の下 -->
+  <p class="rk-go"><button type="button" class="primary" id="goBtn">▶ モニターで表示</button></p>
+  <p class="rk-gomsg" id="goMsg">①と②の内容で、板書を画面いっぱいに映します。<button type="button" class="mini" id="sampleClear2" hidden>サンプルを消す</button></p>
+
+
+
+  <details class="howto">
+    <summary>使い方</summary>
+    <div class="body">
+      <ol>
+        <li>①の日付を、連絡帳に書く日にします（はじめは今日）。</li>
+        <li>①で、行ごとに○の文字を選んで、中身を打ちます。右の②の見本が、その場で変わる作りです。</li>
+        <li>②で、○の文字の形（ひらがな・2年生まで・漢字）と、地の色（黒板・ホワイトボード）を選びます。</li>
+        <li>②の見本の小窓か、「▶ モニターで表示」を押すと、板書が画面いっぱいに映ります。とじるときは右上の「✕ とじる」か、Escキーです。</li>
+      </ol>
+      <p class="sub">こんなときに</p>
+      <ul>
+        <li>帰りの会の前に、明日の時間割・宿題・持ち物をモニターに映して、連絡帳に写してもらう</li>
+        <li>黒板に書く時間を減らして、そのぶん子どもたちに話す時間にしたい</li>
+        <li>毎日同じ形で映して、写しまちがいを減らしたい</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="howto">
+    <summary>よくある質問</summary>
+    <div class="body">
+      <p class="sub">ネットにつながっていないと使えませんか？</p>
+      <p>ページを開いたあとは、使っている端末の中だけで動いています。打つたびに通信はしません。</p>
+      <p class="sub">打った中身が外に送られることはありますか？</p>
+      <p>ありません。打った中身はブラウザの中だけで使い、どこにも送りません。</p>
+      <p class="sub">AIの学習に使われませんか？</p>
+      <p>使われません。どこにも送らないので、学習に使われることもありません。</p>
+      <p class="sub">学校の決まりで、クラウドのサービスが使えません</p>
+      <p>連絡帳の板書は、打った中身をクラウドに置きません。使っている端末のブラウザの中だけで動きます。</p>
+      <p class="sub">○の文字は、ほかの字にできますか？</p>
+      <p>いまは、し（宿題）・れ（連絡）・て（手紙）・も（持ち物）・じ（時間割）の5つと、「なし」から選べます。</p>
+    </div>
+  </details>
+
+  <details class="howto">
+    <summary>データの扱い</summary>
+    <div class="body">
+      <ul>
+        <li>①で打った中身は、使っている端末のブラウザの中だけで使います。インターネットには送りません。</li>
+        <li>①の中の「この画面を保存する」にチェックを入れたときだけ、使っている端末の中に残ります。</li>
+      </ul>
+    </div>
+  </details>
+</main>
+
+<footer class="noprint" data-site-footer></footer>
+
+<!-- 映す画面（右上の角は「✕ とじる」・その左に「⛶ 全画面」＝ページの型 14-7） -->
+<div class="rk-run" id="rkRun" hidden>
+  <div class="rk-board" id="rkRunBoard"></div>
+  <div class="run-tr"><button type="button" class="run-fs" id="fsBtn">⛶ 全画面</button><button type="button" class="run-close" id="closeBtn">✕ とじる</button></div>
+</div>
+
+<script src="renraku.js?v=13"></script>
+<script src="../tip.js?v=3"></script>
+</body>
+</html>

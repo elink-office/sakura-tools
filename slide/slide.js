@@ -762,7 +762,8 @@
      ⚠こちらは全画面にせず、設定もたたまない。本番の「大きく出す」だけがたたむ。 */
   function fillCheck(){
     var row = $('checkCard'), sel = $('checkNo');
-    if (!slides.length){ row.hidden = true; return; }
+    if ($('lr')) $('lr').classList.toggle('empty', !slides.length);   // ⭐PCの右の箱＝何も無いときは案内の1行（slide.css）
+    if (!slides.length){ row.hidden = true; miniSoon(); return; }
     var keep = sel.value;
     sel.innerHTML = '';
     slides.forEach(function(sl,i){
@@ -778,6 +779,40 @@
     });
     if (keep && parseInt(keep,10) < slides.length) sel.value = keep;
     row.hidden = false;
+    miniSoon();
+  }
+
+  /* ================= 見本の小窓 =================
+     ⭐打ちながら、選んだ1枚がどう映るかを小さく見る（2026-10-04 本人「小窓でどういう風に表示されるか見ながら確認したい。
+       文字は見にくくていいから（入力分を見るため）雰囲気を確かめたい。雰囲気がわかったら、拡大して最終調整」・連絡帳の板書と同じ）
+     ＝映す画面（#show）そのものを、小窓の中の「画面と同じ大きさの箱」に入れて縮めて見せる（作りは1つ・映る中身は本番と同じ）
+     ⭐小窓を押すと「この画面で見る」と同じ（大きく・全画面にはしない）。✕ とじる で小窓に戻る */
+  var miniT = 0;
+  function miniSoon(){ clearTimeout(miniT); miniT = setTimeout(miniRefresh, 150); }
+  function isDock(){ return $('show').classList.contains('dock'); }
+  function miniRefresh(){
+    var show = $('show'), box = $('miniIn'), mini = $('mini');
+    if (!box || !mini) return;
+    if (show.classList.contains('on') && !isDock()) return;   // 大きく映しているあいだは触らない
+    if (!slides.length){ undock(); return; }
+    if (show.parentNode !== box) box.appendChild(show);
+    show.classList.add('dock', 'on');
+    show.classList.remove('check');
+    pos = Math.min(Math.max(parseInt($('checkNo').value,10) || 0, 0), slides.length-1);
+    miniScale();
+    render();
+  }
+  function miniScale(){
+    var mini = $('mini'), box = $('miniIn'); if (!mini || !box) return;
+    var W = window.innerWidth || 1280, H = window.innerHeight || 720;
+    mini.style.aspectRatio = W + ' / ' + H;                  // 小窓の形＝この画面の形（本番と同じ割合で縮む）
+    box.style.width = W + 'px'; box.style.height = H + 'px';
+    box.style.transform = 'scale(' + (mini.clientWidth / W) + ')';
+  }
+  function undock(){
+    var show = $('show');
+    if (show.parentNode !== document.body) document.body.appendChild(show);
+    if (isDock()){ show.classList.remove('dock', 'on'); }
   }
 
   /* ================= 並べ替え ================= */
@@ -944,6 +979,7 @@
   /* checkAt … 0以上なら「見る」（全画面にせず・設定もたたまない）
      startAt … 何枚目から出すか（「この1枚から出す」用。ふつうは0） */
   function openShow(checkAt, startAt){
+    undock();   // 小窓から出して、画面いっぱいの映す画面に戻す
     build();
     if (!slides.length) return;
     var check = (typeof checkAt === 'number' && checkAt >= 0);
@@ -970,6 +1006,7 @@
     if (document.fullscreenElement && document.exitFullscreen){
       document.exitFullscreen().catch(function(){});
     }
+    miniSoon();   // 小窓に戻す
   }
   function move(d){
     var n = pos+d; if (n<0 || n>=slides.length) return;
@@ -1185,7 +1222,7 @@
        ⚠openStep2 は②まで画面を送るので、ここでは使わない */
     $('d1').open = true; $('d2').open = true;
     $('sampleOff').hidden = false;
-    $('sampleMsg').textContent = name + 'を出しました';
+    $('sampleMsg').textContent = '';   // ⭐「〇〇を出しました」は出さない（2026-10-04 本人「不要」・連絡帳の板書に合わせた）
     showAdd(name + 'を入れました');
   }
   function clearSample(){
@@ -1201,7 +1238,7 @@
       var m = document.querySelector('input[name=mode][value="' + s.mode + '"]'); if (m) m.checked = true;
       var kr = s.kind ? document.querySelector('input[name=kind][value="' + s.kind + '"]') : null;
       if (kr) kr.checked = true;
-      else Array.prototype.forEach.call(document.querySelectorAll('input[name=kind]'), function(x){ x.checked = false; });   // ⭐選んでいなかったら白にもどす
+      else Array.prototype.forEach.call(document.querySelectorAll('input[name=kind]'), function(x){ x.checked = (x.value === 'text'); });   // ⭐選んでいなかったら、はじめの「文字」に（2026-10-04）
       $('d1').open = s.d1; $('d2').open = s.d2;
     }
     showAdd('');
@@ -1685,7 +1722,7 @@
   });
 
   $('start').addEventListener('click', function(){ openShow(); });
-  $('checkBtn').addEventListener('click', function(){
+  if ($('checkBtn')) $('checkBtn').addEventListener('click', function(){   // ⚠ボタンはなくした（2026-10-04）。残っていても動くように
     openShow(parseInt($('checkNo').value,10) || 0);
   });
   // 🔴 パワポの「現在のスライドから表示」と同じ（2026-09-05 本人）
@@ -1707,7 +1744,7 @@
   });
 
   document.addEventListener('keydown', function(e){
-    if (!$('show').classList.contains('on')) return;
+    if (!$('show').classList.contains('on') || isDock()) return;   // ⚠小窓のときは、打っている字のキーで動かさない
     if (e.key==='ArrowRight' || e.key===' ' || e.key==='Enter'){ e.preventDefault(); move(1); }
     else if (e.key==='ArrowLeft'){ e.preventDefault(); move(-1); }
     else if (e.key==='Escape'){ closeShow(); }
@@ -1715,8 +1752,14 @@
 
   // 画面の向きや大きさが変わったら、写真の位置を測り直す
   window.addEventListener('resize', function(){
+    if (isDock()){ miniScale(); fitBox(); return; }
     if ($('show').classList.contains('on')) fitBox();
   });
+  if ($('mini')){
+    $('mini').addEventListener('click', function(){ openShow(parseInt($('checkNo').value,10) || 0); });
+    $('mini').addEventListener('keydown', function(e){ if (e.key==='Enter' || e.key===' '){ e.preventDefault(); openShow(parseInt($('checkNo').value,10) || 0); } });
+  }
+  $('checkNo').addEventListener('change', miniSoon);
 
   /* 🔴 マウスを止めたらボタンを薄くする。⚠**指で使う機器ではやらない**（2026-09-06 本人
      「下に押しながらスワイプすると消えて、出てこないから焦る。軽くタップしたら出てくる」）。
@@ -1727,7 +1770,7 @@
   try{ canHover = window.matchMedia('(hover:hover) and (pointer:fine)').matches; }catch(e){}
   if (canHover){
     document.addEventListener('mousemove', function(){
-      if (!$('show').classList.contains('on')) return;
+      if (!$('show').classList.contains('on') || isDock()) return;
       document.body.classList.remove('hidebar');
       clearTimeout(hideTimer);
       hideTimer = setTimeout(function(){ document.body.classList.add('hidebar'); }, 2500);
@@ -1758,8 +1801,8 @@
   });
 
   fillClassSelect();
-  /* ⭐はじめはどちらも選ばない。⚠ブラウザが読み込み直しで前の選択を戻すことがあるので、ここで外す（保存があれば load() が戻す） */
-  Array.prototype.forEach.call(document.querySelectorAll('input[name=kind]'), function(x){ x.checked = false; });
+  /* ⭐はじめは「文字をスライドにする」を選んでおく（2026-10-04 本人「規定値は文字をスライドにするにしておいて」）。前（9/15）＝どちらも選ばない。保存があれば load() が戻す */
+  Array.prototype.forEach.call(document.querySelectorAll('input[name=kind]'), function(x){ x.checked = (x.value === 'text'); });
   load();
   switchKind();
 })();

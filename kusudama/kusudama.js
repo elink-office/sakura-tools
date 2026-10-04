@@ -312,9 +312,11 @@ function confetti(q,color){
         ctx.beginPath(); ctx.moveTo(0,-R); ctx.quadraticCurveTo(0,0,R,0); ctx.quadraticCurveTo(0,0,0,R); ctx.quadraticCurveTo(0,0,-R,0); ctx.quadraticCurveTo(0,0,0,-R); ctx.fill();
         ctx.restore(); continue;
       }
-      if(p.shape){   /* ハートと⭐＝形が分かるように、ひっくり返さず少しだけゆらす */
+      if(p.shape){   /* ⭐ハートと⭐も紙なので、ある程度くるくる回る（2026-10-04 本人「紙でハートとか星が入ってるなら、ある程度回ったほうがいい」→ 福引で見て「このほうがいいよ」）
+                        ＝くるっと回り（四角い紙の6割の速さ）、裏返りもする。⚠真横を向いて細い線にならないよう、幅は3割より細くしない。前＝回らずに少しだけゆれる */
         var S=(p.shape==="star5") ? Math.max(13, p.h*1.5) : Math.max(8, p.h*0.95);   // ⭐星は大きめ（とがっていて小さく見えるため・2026-09-24 本人「そうして」）
-        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(Math.sin(p.rot)*0.5); ctx.scale(0.75+0.25*Math.abs(fc),1); ctx.fillStyle=p.col;
+        var sx=(fc<0?-1:1)*Math.max(0.3,Math.abs(fc));
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*0.6); ctx.scale(sx,1); ctx.fillStyle=p.col;
         ctx.beginPath();
         if(p.shape==="heart"){
           ctx.moveTo(0,S*0.35); ctx.bezierCurveTo(-S*1.1,-S*0.35,-S*0.45,-S*1.05,0,-S*0.45); ctx.bezierCurveTo(S*0.45,-S*1.05,S*1.1,-S*0.35,0,S*0.35);

@@ -30,7 +30,7 @@
 /* ⭐B・I・N・G・O の字は補助＝上に小さく。数字は玉の真ん中（2026-09-27 本人「数字をもっと中心寄りにして大きく。Nとかは補助だから少し上でOK」） */
 .pk-ball .t{position:relative}
 .pk-ball .t .bl{position:absolute;left:0;right:0;top:8%;text-align:center;font-size:.2em;line-height:1;color:var(--ink-soft)}
-.pk-ball .t .bn{display:block;line-height:1}
+.pk-ball .t .bn{display:block;line-height:1;white-space:nowrap}   /* ⭐数字は折り返さない（2026-10-04 本人：タブレットで「38」が「3」と「8」の2行に分かれた）。入りきらないときは bingo.js の fitNum が字を小さくする */
 
 /* ⭐上の字（n回目・「回す」で次の番号・のこり）はカゴの上に寄せて、右の上を玉にあける（2026-09-27 本人「左に寄せるともっと大きくなる」「全画面で球と数字が小さい」）
    ＝右の列だけ上の帯のぶん上にのばす。玉の最大 300px → 560px */

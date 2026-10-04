@@ -7,6 +7,7 @@
 <link rel="icon" type="image/png" href="../favicon-32.png?v=3">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow" data-test><!-- ⭐test だけの1行（原本に入れるときに消す）。site.js はこれを見てテスト版の印を出す -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SAKURA tools">
 <meta property="og:title" content="教室の座席表メーカー｜席替えを簡単に・30人40人・4列">
@@ -33,8 +34,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&display=swap">
-<link rel="stylesheet" href="../style.css?v=155">
-<link rel="stylesheet" href="seat.css?v=29">
+<link rel="stylesheet" href="../style.css?v=159">
+<link rel="stylesheet" href="seat.css?v=30">
 <link rel="stylesheet" href="../print.css?v=63" media="print">
 <style>
 /* 🔴 班長・前回とのくらべ・クラスの保存（2026-08-31）。
@@ -42,11 +43,12 @@
 .seat{position:relative}
 /* ⭐座席表を作る前の③〜⑥（グレー・押せない・2026-09-14）。#result が隠れているときだけ出る */
 #resultStub{display:none}
-#result[hidden] + #resultStub{display:block;margin-bottom:18px}
+#result[hidden] + #resultStub{display:block;margin-bottom:10px}
 /* ⚠.opt の見た目は details.opt にしか付いていないので、本物の章（白・線・角丸・下のあき）に合わせてここで書く */
 #resultStub .opt.stub{opacity:.45;pointer-events:none;user-select:none;
-  background:#fff;border:1px solid #e3e5e8;border-radius:4px;margin:0 0 18px}
-#resultStub .stub-head{position:relative;display:flex;align-items:center;gap:10px;padding:22px 18px 22px 38px;font-weight:bold}
+  background:#fff;border:1px solid #e3e5e8;border-radius:4px;margin:0 0 10px}   /* ⭐すき間 18→10px（2026-10-04 本人「４以降も細く詰めてね」・本物の章と同じ） */
+#resultStub .stub-head{position:relative;display:flex;align-items:center;gap:10px;padding:16px 18px 16px 38px;font-weight:bold}   /* ⭐上下 22→16px＝本物の章（シャッター）と同じ高さ（2026-10-04） */
+#resultStub .opt.stub:last-child{margin-bottom:0}   /* ⭐最後の1つは下のあきなし＝#resultStub の下のあき（10px）だけ。PCで⑤と⑥のあいだが広くならないように */
 /* ⭐番号は本物の章と同じ付箋（2026-09-14 本人「③が〇になってる。付箋タイプにしてほしい」）。
    ⚠style.css の付箋は details.opt > summary > .step にしか付かないので、同じ指定をここに写した */
 #resultStub .stub-head > .step{position:absolute;top:50%;left:-11px;transform:translateY(-50%);

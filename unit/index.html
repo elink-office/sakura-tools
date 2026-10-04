@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="../favicon.ico?v=3" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png?v=3">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
+<!-- ⭐たたき台（2026-09-26）。どこともつなげない＝トップのカード・サイトマップ・ほかのページの「ツール一覧」に入れていない
+     ⭐狙い＝世界向け。需要は cm⇔mm ではなく cm⇔インチ側（決定ログ 2026-09-01ごろ）。⚠Excel の CONVERT 関数の式は 2026-09-27 にはずした（本人「ない単位とかもあるから、いらないね」）
+     ⚠道具の名前・フォルダ名（unit）・ツール一覧での位置（ランダム指名メーカーの下＝QRコード作成の近く）は仮
+     ⚠入れた数は保存しない（画面の保存も作らない）。計算は unit.js の中で全部やる（外から何も読み込まない） -->
+<meta name="robots" content="noindex,nofollow" data-test><!-- ⭐test だけの1行（原本に入れるときに消す）。site.js はこれを見てテスト版の印を出す -->
+<title>単位変換｜cmとインチ・kgとポンド・坪と㎡をその場で</title>
+<meta name="description" content="数を入れた瞬間に、cmとインチ、kgとポンド、°Cと°F、坪と㎡などを変換します。長さ・重さ・面積・体積・温度・速さ・データ量。尺貫法も入っています。登録なし・無料。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SAKURA tools">
+<meta property="og:title" content="単位変換｜cmとインチ・kgとポンド・坪と㎡をその場で">
+<meta property="og:description" content="数を入れた瞬間に、cmとインチ、kgとポンド、°Cと°F、坪と㎡などを変換します。長さ・重さ・面積・体積・温度・速さ・データ量。尺貫法も入っています。登録なし・無料。">
+<!-- LINEで送ったときの絵＝白地にさくらだけ（2026-09-30 本人）。どのツールも同じ1枚。住所は公開用（testと原本で同じ中身にするため） -->
+<meta property="og:image" content="https://sakura-tools.com/img/ogp-sakura.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<link rel="stylesheet" href="../style.css?v=159">
+<link rel="stylesheet" href="unit.css?v=3">
+</head>
+<body>
+
+<header class="site-head noprint">
+  <div class="wrap">
+    <a class="logo" href="../"><span class="logo-mark"><img src="../img/logo-sakura-64.png?v=2" srcset="../img/logo-sakura-64.png?v=2 1x, ../img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA tools</span><span class="logo-sub">さくらツールズ</span></a>
+    <nav>
+      <a class="navpin" href="../">トップ</a>
+      <a class="navpin" href="../typing/">タッチタイピング</a>
+      <a class="navpin" href="../seat/">座席表</a>
+      <a class="navpin" href="../slide/">簡単スライド</a>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">ツール一覧</label>
+      <div class="navlist" data-site-nav></div>
+    </nav>
+  </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">単位変換</span><span class="now-short">単位変換</span></div></div>
+</header>
+<script src="../site.js?v=1"></script>
+
+<main class="wrap un-set">
+  <h1>単位変換</h1>
+  <p class="catch">数を入れた瞬間に、インチもポンドも坪も</p>
+  <div class="intro i169">
+    <div class="intro-txt">
+    <p class="lead"><strong>登録なし・全部無料。</strong>cmとインチ、kgとポンド、坪と㎡のような単位を、数を入れた瞬間に変換します。</p>
+    <ul class="can-do">
+      <li><strong>長さ・重さ・面積・体積・温度</strong>・速さ・データ量</li>
+      <li>尺・坪・畳・合・升など<strong>日本の単位</strong>も</li>
+      <li>カップ・大さじは<strong>日本とアメリカ</strong>を別に</li>
+    </ul>
+    </div>
+    <figure class="t-sample noprint"><img src="../img/unit-sample.png?v=1" width="1280" height="720" alt="単位変換（見本の画像は準備中）"></figure>
+  </div>
+
+  <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
+
+  <!-- ⚠①②は開いて始める（ページの型 2-a は「全部たたむ」。見本画像とサンプルがまだ無いので、たたむと何の道具か分からない＝本人に確認） -->
+  <details class="opt" id="opt1" open>
+    <summary><span class="step">1</span>種類の選択</summary>
+    <div class="body">
+      <p class="un-lbl">何を変換するか<button type="button" class="tip-btn" aria-label="説明"></button></p>
+      <div class="tip-body" hidden>
+        <p>🔒 <strong>入れた数はインターネットに送りません。</strong>使っている端末のブラウザの中だけで計算しているので、数がどこかに保存されることも、AIの学習に使われることもありません。パソコン・タブレット・スマホ、どれでも同じです。だから、仕事の数字もそのまま入れて大丈夫です。</p>
+        <ul>
+          <li>長さ・重さ・面積・体積・温度・速さ・データ量の7種類です。はじめは長さが選ばれています。</li>
+          <li>種類を変えると、②の中の単位の欄と、③の一覧が、その種類の単位に入れかわります。</li>
+          <li>体積には、料理のカップ・大さじ・小さじも入っています。日本（カップ200mL・大さじ15mL・小さじ5mL）とアメリカ（cup・tbsp・tsp）は量が違うので、別の単位にしてあります。</li>
+        </ul>
+      </div>
+      <div class="seg" id="cats" role="group" aria-label="種類"></div>
+      <p class="safe">🔒 <strong>使っている端末の中だけで完結しています。</strong>安心してご利用ください。</p>
+    </div>
+  </details>
+
+  <details class="opt" id="opt2" open>
+    <summary><span class="step">2</span>数の入力</summary>
+    <div class="body">
+      <p class="un-lbl">左に数と単位、右に変えたい単位<button type="button" class="tip-btn" aria-label="説明"></button></p>
+      <div class="tip-body" hidden>
+        <p>数を入れた瞬間に、右の単位に変えた結果が下に出ます。ボタンを押す必要はありません。</p>
+        <ul>
+          <li>「⇄」を押すと、左右の単位が入れかわります。</li>
+          <li>よく使う組み合わせ（cm → in、kg → lb など）は、小さいボタンを押すと単位の欄が切りかわります。</li>
+          <li>結果は有効数字6けたで出します。末尾の0は消し、大きい数は3けたごとに「,」で区切ります。</li>
+          <li>温度だけは倍率ではなく式で計算しています（°F ＝ °C × 9 ÷ 5 ＋ 32、K ＝ °C ＋ 273.15）。</li>
+        </ul>
+      </div>
+      <div class="un-row">
+        <div class="un-side">
+          <input type="text" id="num" inputmode="decimal" value="1" autocomplete="off" aria-label="数">
+          <select id="from" aria-label="元の単位"></select>
+        </div>
+        <button type="button" class="un-swap" id="swap" aria-label="左右の単位を入れかえる" title="左右を入れかえる">⇄</button>
+        <div class="un-side">
+          <select id="to" aria-label="変えたい単位"></select>
+        </div>
+      </div>
+      <div class="un-quick" id="quick" aria-label="よく使う組み合わせ"></div>
+      <p class="hint" id="dataNote" hidden>KB・MB・GB・TBは、Windowsのファイルの大きさと同じ1024倍で数えています。</p>
+      <p class="hint" id="joNote" hidden>畳の大きさは地域で違います。関東は江戸間、関西は京間、名古屋は中京間、公団住宅は団地間が目安です。</p>
+
+      <div class="un-result" aria-live="polite">
+        <span class="val" id="result">—</span>
+        <span class="unit" id="resultUnit"></span>
+        <button type="button" class="mini" id="copyResult">結果をコピー</button>
+      </div>
+      <p><span class="saving" id="copyMsg"></span></p>
+    </div>
+  </details>
+
+  <details class="opt" id="opt3">
+    <summary><span class="step">3</span>一覧</summary>
+    <div class="body">
+      <p class="hint">②に入れた数を、選んだ種類の全部の単位に変えた表です。②の中の左の単位の行は、桜色で出ます。</p>
+      <p class="un-tbl-head" id="allHead"></p>
+      <div class="un-tbl-wrap">
+        <table class="un-tbl">
+          <thead><tr><th>単位</th><th>値</th></tr></thead>
+          <tbody id="allBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+
+  <details class="howto">
+    <summary>使い方</summary>
+    <div class="body">
+      <ol>
+        <li>①で、長さ・重さ・面積・体積・温度・速さ・データ量から種類を選びます。</li>
+        <li>②の左に数と単位、右に変えたい単位を選びます。入れた瞬間に、②の下に結果が出る作りです。</li>
+        <li>③一覧を開くと、入れた数をその種類の全部の単位に変えた表が見られます。</li>
+      </ol>
+      <p class="sub">できること</p>
+      <ul class="can">
+        <li><b>7種類の単位</b><small>長さ・重さ・面積・体積・温度・速さ・データ量</small></li>
+        <li><b>日本の単位</b><small>尺・寸・間・坪・畳・合・升・貫・匁も変換できる</small></li>
+        <li><b>料理の単位</b><small>カップ・大さじ・小さじ（日本とアメリカを別に）</small></li>
+      </ul>
+      <p class="sub">こんなときに</p>
+      <ul>
+        <li>海外の通販で、インチやポンドで書かれた大きさ・重さを知りたいとき</li>
+        <li>不動産の広告の坪数・畳数を㎡に直したいとき</li>
+        <li>海外のレシピのcupやtbspを、日本の計量カップ・大さじに直したいとき</li>
+        <li>学校や職場で、外国の天気予報の°Fを°Cに直したいとき</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="howto">
+    <summary>よくある質問</summary>
+    <div class="body">
+      <p class="sub">ネットにつながっていないと使えませんか？</p>
+      <p>ページを開いたあとは、使っている端末の中だけで動いています。変換するたびに通信はしません。</p>
+      <p class="sub">入れた数が外に送られることはありますか？</p>
+      <p>ありません。入れた数はブラウザの中だけで計算して、どこにも送りません。だから、見積の数字や設計の寸法も、そのまま入れて安心です。</p>
+      <p class="sub">AIの学習に使われませんか？</p>
+      <p>使われません。入れた数はどこにも送らないので、学習に使われることもありません。</p>
+      <p class="sub">学校や会社の決まりで、クラウドのサービスが使えません</p>
+      <p>単位変換は、入れた数をクラウドに置きません。使っている端末のブラウザの中だけで動きます。</p>
+      <p class="sub">換算の数値は何にもとづいていますか？</p>
+      <p>インチ・ポンド・ガロンなどは、国際的に決められた定義値（1インチ＝2.54cm、1ポンド＝0.45359237kg）を使っています。尺・坪・升・貫は、明治24年の度量衡法の定義（1尺＝10/33m、1坪＝400/121㎡、1升＝2401/1331L、1貫＝3.75kg）です。畳は地域で大きさが違うので、江戸間・中京間・京間・団地間を別の単位にしています。</p>
+      <p class="sub">1KBは1000バイトではないのですか？</p>
+      <p>数え方が2つあります。Windowsのファイルの大きさは1024倍です。単位変換もそれに合わせて、KB・MB・GB・TBを1024倍で数えています。通信速度やハードディスクの表記で使う1000倍とは、少し数が違います。</p>
+    </div>
+  </details>
+
+  <details class="howto">
+    <summary>データの扱い</summary>
+    <div class="body">
+      <ul>
+        <li>②に入れた数は、使っている端末のブラウザの中だけで計算します。インターネットには送りません。</li>
+        <li>入れた数は保存しません。ページを閉じると消えます。</li>
+        <li>コピーした結果は、端末のクリップボードに入ります。</li>
+      </ul>
+    </div>
+  </details>
+</main>
+
+<footer class="noprint" data-site-footer></footer>
+
+<script src="unit.js?v=2"></script>
+<script src="../tip.js?v=3"></script>
+</body>
+</html>

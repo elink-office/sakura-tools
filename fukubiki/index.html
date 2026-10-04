@@ -8,13 +8,22 @@
 <link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
 <!-- ⭐たたき台（2026-09-26）。どこともつなげない。名前・フォルダ名（fukubiki）は仮
      ⭐本人「福引のガラガラと、ビンゴは一緒にサクッと作ってもいいね」。八角形の箱を回すと、色の玉がコロンと出て、当たりの賞が出る -->
+<meta name="robots" content="noindex,nofollow" data-test><!-- ⭐test だけの1行（原本に入れるときに消す）。site.js はこれを見てテスト版の印を出す -->
 <!-- ⭐検索の言葉（2026-09-27 本人「アプリっていうキーワードが強そう」「説明文にちりばめて」・リサーチ＝ゆうこ社/リサーチ部/成果物/2026-09-27_福引ガラガラの検索キーワード.md）
      ＝ガラガラ抽選機・ガラポン・抽選アプリ（無料・PC・web・インストール不要）・抽選会・忘年会・新年会・子ども会・夏祭り・商店街・レンタル・手作り -->
 <title>福引ガラガラ抽選機｜無料の抽選アプリ（PC・インストール不要）</title>
 <meta name="description" content="ガラガラ抽選機（ガラポン）の福引を、無料の抽選アプリとしてブラウザで。インストール不要・登録なし。1等・2等・はずれの本数を決めて、PCからモニターに映せば、忘年会・新年会・子ども会・夏祭り・商店街の抽選会が盛り上がります。">
-<link rel="stylesheet" href="../style.css?v=155">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SAKURA tools">
+<meta property="og:title" content="福引ガラガラ抽選機｜無料の抽選アプリ（PC・インストール不要）">
+<meta property="og:description" content="ガラガラ抽選機（ガラポン）の福引を、無料の抽選アプリとしてブラウザで。インストール不要・登録なし。1等・2等・はずれの本数を決めて、PCからモニターに映せば、忘年会・新年会・子ども会・夏祭り・商店街の抽選会が盛り上がります。">
+<!-- LINEで送ったときの絵＝白地にさくらだけ（2026-09-30 本人）。どのツールも同じ1枚。住所は公開用（testと原本で同じ中身にするため） -->
+<meta property="og:image" content="https://sakura-tools.com/img/ogp-sakura.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<link rel="stylesheet" href="../style.css?v=159">
 <link rel="stylesheet" href="../random/random.css?v=20">
-<link rel="stylesheet" href="fukubiki.css?v=23">
+<link rel="stylesheet" href="fukubiki.css?v=30">
 <!-- Google AdSense（2026-09-28 審査の前にそろえた） -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9296990556079874" crossorigin="anonymous"></script>
 </head>
@@ -59,7 +68,7 @@
   <details class="opt" id="opt1">
     <summary><span class="step">1</span>賞と本数</summary>
     <div class="body">
-      <p class="tm-hint fk-lead">上から順に、玉の色・賞の名前・本数です。はずれも1行として入れます。</p>
+      <p class="tm-hint fk-lead">上から順に、玉の色・賞の名前・本数です。はずれも1行として入れます。1〜3行目の「🎊 くす玉」を押すと、その賞が出たときにくす玉が割れます（1行目＝金・2行目＝銀・3行目＝銅）。</p>
       <ul class="fk-rows" id="rows"></ul>
       <p><button type="button" class="mini" id="rowAdd">＋ 賞を足す</button> <span class="fk-total" id="total"></span></p>
       <p class="fk-opt"><label><input type="checkbox" id="soundOn" checked> 🔊 音を鳴らす（回す音・玉が出る音）</label></p>
@@ -149,12 +158,13 @@
   <div class="pk-demo" id="demoBadge" hidden>見本（モニターの形 16:9）</div>
   <div class="pk-stage" id="stage"></div>
   <div class="pk-btns">
+    <button type="button" class="pk-b cracker" id="crackerBtn" title="当たりが出たら押す">🎉 あたり！</button><!-- ⭐ビンゴと同じクラッカー（2026-10-04 本人「福引もビンゴみたいに、左下にあたり！のボタン作って、クラッカー配置して」） -->
     <button type="button" class="pk-b next" id="nextBtn">▶ 回す</button>
     <button type="button" class="pk-b back" id="resetBtn">はじめから</button>
   </div>
 </div>
 
-<script src="fukubiki.js?v=24"></script>
+<script src="fukubiki.js?v=37"></script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>
