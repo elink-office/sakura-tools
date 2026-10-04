@@ -188,6 +188,9 @@ h3.sub{font-size:1.02rem;margin:0 0 12px;display:flex;align-items:center}
    ⚠ 参観日は保護者が並んで見ている。映す面に広告が出ると台無しになる
    ========================================================= */
 #show{display:none;position:fixed;inset:0;background:#fff;z-index:99;flex-direction:column}
+/* ⭐文字の大きさは映す画面（#show）の大きさで決める（vw→cqw・vh→cqh・2026-10-04）。全画面のときは今までと同じ。
+   見本の小窓では 1280×720（16:9）の箱の大きさで決まる＝小窓がモニターと同じ見え方になる（本人「こういう見本は基本が16：9に。今モニターの基準がそうだから」） */
+#show{container-type:size}
 #show.on{display:flex}
 #stage{
   flex:1;position:relative;display:flex;width:100%;overflow:hidden;
@@ -210,7 +213,7 @@ h3.sub{font-size:1.02rem;margin:0 0 12px;display:flex;align-items:center}
 #box{
   position:relative;z-index:1;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:2.4vh;padding:4vh 5vw;text-align:center;width:100%;
+  gap:2.4cqh;padding:4cqh 5cqw;text-align:center;width:100%;
 }
 #stage[data-pos="top"]    #box{justify-content:flex-start}
 #stage[data-pos="bottom"] #box{justify-content:flex-end}
@@ -233,12 +236,12 @@ h3.sub{font-size:1.02rem;margin:0 0 12px;display:flex;align-items:center}
 /* 班名（発表者のときだけ出る） */
 /* 🔴 班は大きく出す（2026-09-05 本人「班ごとにまとめて映した時は、班はもっと大きくしたい」）。
    ⚠班が入るのは「班ごとにまとめて映す」のときだけ（1人ずつのときは空） */
-#group{font-size:clamp(30px,5.5vw,110px);color:var(--pink);font-weight:800;letter-spacing:.06em;line-height:1.15}
+#group{font-size:clamp(30px,5.5cqw,110px);color:var(--pink);font-weight:800;letter-spacing:.06em;line-height:1.15}
 
 /* 主役の文字。長さで4段階に自動で縮む（いちばん長い行で決める） */
 #title{
   font-weight:900;letter-spacing:.03em;line-height:1.5;
-  max-width:92vw;color:var(--ink);font-size:clamp(46px,11vw,190px);
+  max-width:92cqw;color:var(--ink);font-size:clamp(46px,11cqw,190px);
 }
 /* ⭐見出し（// の前側）は小さく、少し藄い色で。
    発表者の「作品名＋名前」と同じ見せ方に揃える */
@@ -253,39 +256,39 @@ h3.sub{font-size:1.02rem;margin:0 0 12px;display:flex;align-items:center}
 #title .bd{display:block}
 #title[data-al="left"]  .bd{text-align:left}
 #title[data-al="right"] .bd{text-align:right}
-#title[data-len="m"]{font-size:clamp(40px,8vw,140px)}
-#title[data-len="l"]{font-size:clamp(34px,6vw,104px)}
-#title[data-len="xl"]{font-size:clamp(28px,4.4vw,78px)}
-#title[data-len="xxl"]{font-size:clamp(22px,3.2vw,56px)}
+#title[data-len="m"]{font-size:clamp(40px,8cqw,140px)}
+#title[data-len="l"]{font-size:clamp(34px,6cqw,104px)}
+#title[data-len="xl"]{font-size:clamp(28px,4.4cqw,78px)}
+#title[data-len="xxl"]{font-size:clamp(22px,3.2cqw,56px)}
 /* 🔴 1枚ごとに大きさを決めたときはこちらが勝つ（2026-09-05 本人）。
    ⚠詳細度が同じなので、必ず data-len のあとに書く */
-#title[data-size="xs"]{font-size:clamp(20px,3.1vw,54px)}
-#title[data-size="s"]{font-size:clamp(28px,4.4vw,78px)}
-#title[data-size="m"]{font-size:clamp(38px,7.2vw,124px)}
-#title[data-size="l"]{font-size:clamp(50px,12vw,210px)}
+#title[data-size="xs"]{font-size:clamp(20px,3.1cqw,54px)}
+#title[data-size="s"]{font-size:clamp(28px,4.4cqw,78px)}
+#title[data-size="m"]{font-size:clamp(38px,7.2cqw,124px)}
+#title[data-size="l"]{font-size:clamp(50px,12cqw,210px)}
 
 /* 名前。⚠名前は覚えているので、作品名より小さくする（本人・2026-09-05） */
 #name{
-  font-weight:700;letter-spacing:.02em;line-height:1.35;max-width:94vw;
+  font-weight:700;letter-spacing:.02em;line-height:1.35;max-width:94cqw;
   color:var(--ink-soft);
   display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;
   column-gap:.15em;row-gap:.1em;
 }
-#name span{font-size:clamp(26px,4.6vw,76px)}
-#name[data-n="3"] span,#name[data-n="4"] span{font-size:clamp(24px,3.9vw,64px)}
-#name[data-n="5"] span{font-size:clamp(22px,3.4vw,56px)}
-#name[data-n="many"] span{font-size:clamp(20px,2.9vw,48px)}
+#name span{font-size:clamp(26px,4.6cqw,76px)}
+#name[data-n="3"] span,#name[data-n="4"] span{font-size:clamp(24px,3.9cqw,64px)}
+#name[data-n="5"] span{font-size:clamp(22px,3.4cqw,56px)}
+#name[data-n="many"] span{font-size:clamp(20px,2.9cqw,48px)}
 /* ⚠名前どうしがくっついて見えるので中黒で区切る（本人の指摘・2026-09-05） */
 #name span + span::before{content:"・";opacity:.4;font-weight:400;margin:0 .18em 0 .06em;letter-spacing:0}
 
 /* 作品名が無いときは、名前を主役に戻す */
 #stage.noTitle #name{color:var(--ink);font-weight:900;letter-spacing:.06em}
-#stage.noTitle #name span{font-size:clamp(48px,13vw,220px)}
-#stage.noTitle #name[data-n="2"] span{font-size:clamp(42px,9.5vw,164px)}
-#stage.noTitle #name[data-n="3"] span{font-size:clamp(36px,7.6vw,132px)}
-#stage.noTitle #name[data-n="4"] span{font-size:clamp(32px,6.4vw,112px)}
-#stage.noTitle #name[data-n="5"] span{font-size:clamp(30px,5.6vw,96px)}
-#stage.noTitle #name[data-n="many"] span{font-size:clamp(26px,4.6vw,80px)}
+#stage.noTitle #name span{font-size:clamp(48px,13cqw,220px)}
+#stage.noTitle #name[data-n="2"] span{font-size:clamp(42px,9.5cqw,164px)}
+#stage.noTitle #name[data-n="3"] span{font-size:clamp(36px,7.6cqw,132px)}
+#stage.noTitle #name[data-n="4"] span{font-size:clamp(32px,6.4cqw,112px)}
+#stage.noTitle #name[data-n="5"] span{font-size:clamp(30px,5.6cqw,96px)}
+#stage.noTitle #name[data-n="many"] span{font-size:clamp(26px,4.6cqw,80px)}
 
 /* 🔴 フッターは3つの列（2026-09-05 本人「2/5は…ボタンの近くに。文字を中央にしてほしい」）。
    ⭐左に「ボタンと同じ幅の空き」を作ると、まん中の文字が画面のまん中に来る。
@@ -348,7 +351,7 @@ body.hidebar #bar .row{opacity:0}
 #cap{
   min-width:0; max-width:100%; text-align:center;
   font-weight:800; color:var(--ink); letter-spacing:.02em;
-  font-size:clamp(15px,2.2vw,34px); line-height:1.2;
+  font-size:clamp(15px,2.2cqw,34px); line-height:1.2;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   padding:0 12px;
 }
@@ -373,7 +376,7 @@ body.hidebar #bar .row{opacity:0}
   #bar button{font-size:.85rem;padding:7px 10px}
   #bar .primary{font-size:.9rem;padding:8px 14px}
   #pos{font-size:.82rem}
-  #cap{font-size:clamp(14px,2.6vw,26px)}
+  #cap{font-size:clamp(14px,2.6cqw,26px)}
 }
 @media (max-width:620px){
   #bar{grid-template-columns:1fr;justify-items:center;gap:4px;padding:6px 8px}
@@ -381,7 +384,7 @@ body.hidebar #bar .row{opacity:0}
   #bar .row{justify-self:center}
   #bar button{font-size:.8rem;padding:6px 9px}
   #bar .primary{font-size:.85rem;padding:7px 12px}
-  #cap{font-size:clamp(13px,3.4vw,20px);padding:0 4px}
+  #cap{font-size:clamp(13px,3.4cqw,20px);padding:0 4px}
 }
 @media (max-width:470px){
   #bar{padding:5px 6px;gap:3px}
@@ -410,15 +413,16 @@ body.hidebar #show .run-tr:hover{opacity:1}
 
 /* ⭐見本の小窓（2026-10-04 本人「小窓でどういう風に表示されるか見ながら確認したい。文字は見にくくていいから…雰囲気を確かめたい」）
    ＝映す画面（#show）を「この画面と同じ大きさの箱」（.mini-in）に入れて、小窓の幅まで縮める（slide.js の miniScale）。
-   ⭐小さくていい（本人）＝幅は 360px まで。右下に札（連絡帳の板書と同じ）。押すと大きく */
+   ⭐小さくていい（本人）＝幅は 360px まで。左下に札「▶ モニターで表示」（2026-10-04 本人「位置を揃えたい左下にしよう」＝連絡帳の板書と同じ）。押すとその1枚からモニターで表示 */
 #lrR .mini{position:relative;width:100%;max-width:360px;overflow:hidden;margin:4px 0 12px;
   border:1px solid var(--line,#ddd);border-radius:8px;background:#fff;cursor:pointer;
   box-shadow:0 2px 6px rgba(0,0,0,.08)}
 #lrR .mini:hover{box-shadow:0 4px 12px rgba(0,0,0,.14)}
 #lrR .mini:focus-visible{outline:3px solid var(--pink);outline-offset:2px}
 #lrR .mini-in{position:absolute;left:0;top:0;transform-origin:0 0;pointer-events:none}
-#lrR .mini-tag{position:absolute;right:6px;bottom:6px;z-index:2;font-size:.72rem;padding:2px 8px;border-radius:999px;
-  background:rgba(255,255,255,.9);color:var(--ink-soft,#666);border:1px solid var(--line,#ddd);pointer-events:none}
+/* ⭐札の見た目は連絡帳の板書（renraku.css の .rk-frame-go）と同じピンク（2026-10-04 本人「どっちかにそろえたいね。ピンクかな」・前＝白地にグレーの字） */
+#lrR .mini-tag{position:absolute;left:6px;bottom:6px;z-index:2;font-size:10px;line-height:1.4;font-weight:700;color:#fff;
+  background:var(--pink);border-radius:999px;padding:1px 7px;opacity:.9;pointer-events:none}
 /* 小窓の中の映す画面＝箱いっぱい・操作のボタンは出さない（文字の帯 #cap は見え方の一部なので残す） */
 #show.dock{position:absolute;inset:0;z-index:0}
 #show.dock .run-tr,#show.dock #bar .row{display:none}
@@ -438,7 +442,8 @@ body.hidebar #show .run-tr:hover{opacity:1}
   .lr > .lr-side{display:block; grid-column:2; grid-row:1 / span 40; contain:size; align-self:stretch}
   /* 左も右も、字も箱もまとめて0.86倍（ほかの道具と同じ・ページの型22-g） */
   .lr > *{zoom:.86}
-  .lr .lr-stick{position:sticky; top:56px; background:#fff; border:1px solid var(--line, #ddd); border-radius:var(--radius, 4px); padding:12px 14px 14px}
+  /* ⭐右の箱は③のシャッター（details.opt・2026-10-04 本人「③もシャッターにしたらいいじゃん」）＝見た目は①②と同じ。画面に残る（sticky）だけ足す */
+  .lr .lr-stick{position:sticky; top:56px}
   .lr .lr-ttl{position:relative; margin:2px 0 12px; padding-left:28px; font-weight:bold; font-size:1.15rem; display:flex; align-items:center; min-height:28px}
   .lr .lr-ttl > .step{position:absolute; left:-25px; top:50%; transform:translateY(-50%); width:38px; height:28px; margin:0; border-radius:var(--radius,4px);
     display:flex; align-items:center; justify-content:center; font-size:.9rem; font-weight:700; background-image:var(--gloss);

@@ -20,7 +20,7 @@
 <meta property="og:image" content="https://sakura-tools.com/img/ogp-sakura.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<link rel="stylesheet" href="../style.css?v=159">
+<link rel="stylesheet" href="../style.css?v=161">
 <link rel="stylesheet" href="random.css?v=24">
 <!-- Google AdSense（2026-09-28 審査の前にそろえた） -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9296990556079874" crossorigin="anonymous"></script>
@@ -60,13 +60,16 @@
   </div>
 
   <!-- ⭐サンプルのボタンは①の上（ページの型 12-a） -->
+  <!-- ⭐？の案内の右にサンプルのボタン・ボタンは小さく（2026-10-04 本人「全体のサンプルのボタンも小さくしたい。？の右にサンプルボタンを配置してほしい」） -->
+  <div class="guide-row noprint">
+  <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
   <div class="pk-sample noprint">
-    <button type="button" id="sample1Btn">サンプル①（名前・トランプ）</button>
-    <button type="button" id="sample2Btn">サンプル②（班・ビンゴ）</button>
-    <button type="button" id="sampleClear" hidden>サンプルを消す</button>
+    <button type="button" class="mini" id="sample1Btn">サンプル①（名前・トランプ）</button>
+    <button type="button" class="mini" id="sample2Btn">サンプル②（班・ビンゴ）</button>
+    <button type="button" class="mini" id="sampleClear" hidden>サンプルを消す</button>
     <span class="saving" id="sampleMsg"></span>
   </div>
-  <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
+  </div>
 
   <details class="opt" id="opt1">
     <summary><span class="step">1</span>選ぶもの</summary>
@@ -307,7 +310,7 @@
 <script src="../roster-tools.js?v=1"></script>
 <script src="../mini3d.js?v=1"></script>
 <script src="../bingo-machine.js?v=1"></script>
-<script src="random.js?v=22"></script>
+<script src="random.js?v=23"></script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>

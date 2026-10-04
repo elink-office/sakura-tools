@@ -23,8 +23,8 @@
 <meta property="og:image" content="https://sakura-tools.com/img/ogp-sakura.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<link rel="stylesheet" href="../style.css?v=159">
-<link rel="stylesheet" href="renraku.css?v=18">
+<link rel="stylesheet" href="../style.css?v=161">
+<link rel="stylesheet" href="renraku.css?v=19">
 </head>
 <body>
 
@@ -57,18 +57,21 @@
       <li><strong>黒板</strong>の緑と<strong>ホワイトボード</strong>の白</li>
     </ul>
     </div>
-    <figure class="t-sample noprint"><img src="../img/renraku-sample.png?v=10" width="1280" height="720" alt="連絡帳の板書の見本。緑の黒板に縦書きで、右に日付と曜日、行の頭に○で囲んだ「じ」「し」「れ」「も」"></figure>
+    <figure class="t-sample noprint"><img src="../img/renraku-sample.png?v=11" width="1280" height="720" alt="連絡帳の板書の見本。緑の黒板に縦書きで、右に日付と曜日、行の頭に○で囲んだ「じ」「し」「も」"></figure>
   </div>
 
+  <!-- ⭐？の案内の右にサンプルのボタン・ボタンは小さく（2026-10-04 本人「全体のサンプルのボタンも小さくしたい。？の右にサンプルボタンを配置してほしい」） -->
+  <div class="guide-row noprint">
   <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
-
-  <!-- ⭐サンプル＝①の上（ページの型 12-a）。押すと結果まで出る・消すと前の中身に戻る・サンプルの間は保存しない -->
   <p class="rk-samples noprint">
     <button type="button" class="mini" id="sample1">サンプル①（ひらがな）</button>
     <button type="button" class="mini" id="sample2">サンプル②（漢字）</button>
     <button type="button" class="mini" id="sampleClear" hidden>サンプルを消す</button>
-    <span class="rk-samplemsg" id="sampleMsg"></span>
+    <span class="saving" id="sampleMsg"></span>
   </p>
+  </div>
+
+  <!-- ⭐サンプル＝①の上（ページの型 12-a）。押すと結果まで出る・消すと前の中身に戻る・サンプルの間は保存しない -->
 
   <!-- ⭐①と②は隣（2026-09-29 本人「やっぱり隣がいいね。①と②のバランスを変えて、半分ずつじゃなくしては？」）＝①を広く・②をせまく（860px以上）
        ⭐見本の小窓を押すと映る（A）。大きいボタンは①②の下（②をたたんだときの逃げ道） -->
@@ -156,7 +159,10 @@
       <p class="hint">この字数より長い行は、スペースを入れたところで次の列に折り返します。</p>
       <!-- ⭐うすいノートの線（2026-09-29 本人「ノートと同じ並びにしないと低学年は書けないって言ってた」）＝はじめは出す -->
       <p class="rk-check"><label><input type="checkbox" id="rkGrid" checked> ノートの線を出す</label></p>
-      <p class="hint">連絡帳と同じ、上の3段（月・日・曜日）と列の区切りを、うすい線で出します。</p>
+      <p class="hint">連絡帳と同じ、列の区切りを、うすい線で出します。</p>
+      <!-- ⭐上の3段を外せる（2026-10-04 本人「上のマスを外せるようにしよう。1行目に日付を書くノートもあるかもだから」）＝はじめは出す。外すと日付は今日の1列目 -->
+      <p class="rk-check"><label><input type="checkbox" id="rkTop" checked> 上に日付のマスを出す</label></p>
+      <p class="hint">チェックを外すと、上の3段（月・日・曜日）がなくなり、日付は今日の1列目に書きます。</p>
 
       <div class="rk-line2">
         <span class="rk-lbl2">地の色</span>
@@ -228,7 +234,7 @@
   <div class="run-tr"><button type="button" class="run-fs" id="fsBtn">⛶ 全画面</button><button type="button" class="run-close" id="closeBtn">✕ とじる</button></div>
 </div>
 
-<script src="renraku.js?v=13"></script>
+<script src="renraku.js?v=18"></script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>

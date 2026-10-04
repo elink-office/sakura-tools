@@ -21,8 +21,8 @@
 <meta property="og:image" content="https://sakura-tools.com/img/ogp-sakura.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<link rel="stylesheet" href="../style.css?v=159">
-<link rel="stylesheet" href="shinkansen.css?v=21">
+<link rel="stylesheet" href="../style.css?v=161">
+<link rel="stylesheet" href="shinkansen.css?v=23">
 <!-- Google AdSense（2026-09-28 審査の前にそろえた） -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9296990556079874" crossorigin="anonymous"></script>
 </head>
@@ -66,13 +66,16 @@
   <!-- ⭐PCでは左に設定・右に④座席表（2026-10-02 本人「ほかの座席ツールもこの考えでやってみて」＝座席表と同じ形）。
        ⭐並べ方は shinkansen.css の .lr と、下の小さなスクリプトだけ。class="lr" を外すと、今までの上から下の並びに戻る。スマホ・狭い画面は上から下のまま -->
   <div class="lr" id="lr">
+  <!-- ⭐？の案内の右にサンプルのボタン・ボタンは小さく（2026-10-04 本人「全体のサンプルのボタンも小さくしたい。？の右にサンプルボタンを配置してほしい」） -->
+  <div class="guide-row noprint">
+  <p class="tip-guide noprint" id="tipGuide"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
   <div class="sk-sample noprint" id="lrSample">
-    <button type="button" id="sample1Btn">サンプル①（班ごと）</button>
-    <button type="button" id="sample2Btn">サンプル②（作成途中・手で入れる）</button>
-    <button type="button" id="sampleClear" hidden>サンプルを消す</button>
+    <button type="button" class="mini" id="sample1Btn">サンプル①（班ごと）</button>
+    <button type="button" class="mini" id="sample2Btn">サンプル②（作成途中・手で入れる）</button>
+    <button type="button" class="mini" id="sampleClear" hidden>サンプルを消す</button>
     <span class="saving" id="sampleMsg"></span>
   </div>
-  <p class="tip-guide noprint" id="tipGuide"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
+  </div>
 
   <details class="opt" id="opt1">
     <summary><span class="step">1</span>名簿の入力</summary>

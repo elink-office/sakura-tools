@@ -34,8 +34,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&display=swap">
-<link rel="stylesheet" href="../style.css?v=159">
-<link rel="stylesheet" href="seat.css?v=30">
+<link rel="stylesheet" href="../style.css?v=161">
+<link rel="stylesheet" href="seat.css?v=33">
 <link rel="stylesheet" href="../print.css?v=63" media="print">
 <style>
 /* 🔴 班長・前回とのくらべ・クラスの保存（2026-08-31）。
@@ -268,13 +268,16 @@ body.screen .seat.dup .nm{text-decoration:none}
   <!-- ⭐PCでは左に設定・右に座席表（2026-10-02 本人「左側にウィンドウ作って右側に見れるようにしたほうがよくない？」「見ながら操作できるから」）。
        ⭐並べ方は seat.css の .lr だけ。class="lr" を外すと、今までの上から下の並びに戻る。スマホ・狭い画面は上から下のまま -->
   <div class="lr" id="lr">
+  <!-- ⭐？の案内の右にサンプルのボタン・ボタンは小さく（2026-10-04 本人「全体のサンプルのボタンも小さくしたい。？の右にサンプルボタンを配置してほしい」） -->
+  <div class="guide-row noprint">
+  <p class="tip-guide noprint" id="tipGuide"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
   <div class="seat-sample noprint" id="seatSample">
-    <button type="button" id="sample1Btn">サンプル①（出席番号順）</button>
-    <button type="button" id="sample2Btn">サンプル②（班分け）</button>
-    <button type="button" id="sampleClear" hidden>サンプルを消す</button>
+    <button type="button" class="mini" id="sample1Btn">サンプル①（出席番号順）</button>
+    <button type="button" class="mini" id="sample2Btn">サンプル②（班分け）</button>
+    <button type="button" class="mini" id="sampleClear" hidden>サンプルを消す</button>
     <span class="saving" id="sampleMsg"></span>
   </div>
-  <p class="tip-guide noprint" id="tipGuide"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
+  </div>
 
 
 
@@ -909,7 +912,7 @@ body.screen .seat.dup .nm{text-decoration:none}
 <script src="../paper-pdf.js?v=5"></script>
 <script src="../seating.js?v=57"></script>
 <script src="../roster-tools.js?v=1"></script>
-<script src="seat.js?v=231"></script>
+<script src="seat.js?v=232"></script>
 <script>
 /* ⭐PCで左右に並べる（2026-10-02 本人）。
    ⭐PC（1000px以上）のときだけ、サンプルのボタンと座席表（#lrR）を右の列（.lr-side）へ移す。

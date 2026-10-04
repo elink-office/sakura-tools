@@ -85,6 +85,7 @@ input[type=checkbox], input[type=radio]{ accent-color: var(--pink); }
 .rk-board.grid .rk-top{border-top:1px solid var(--rk-line);border-bottom:1px solid var(--rk-line)}
 .rk-board.grid .rk-cell + .rk-cell{border-top:1px solid var(--rk-line)}
 .rk-board.grid .rk-body{border-bottom:1px solid var(--rk-line)}
+.rk-board.grid.notop .rk-body{border-top:1px solid var(--rk-line)}   /* ⭐上の3段を外したとき（2026-10-04）＝列の上にも線 */
 /* ⭐前の日の分の列（past）とページの残り（rest）は空。今日の列が分かるように、今日の列の線を少しはっきり */
 .rk-board.grid .rk-c.today{--rk-line:var(--rk-line-today)}
 .rk-board.green{--rk-line:rgba(255,255,255,.28);--rk-line-today:rgba(255,255,255,.5)}

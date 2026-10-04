@@ -17,7 +17,7 @@
   ];
   var WD = ["日", "月", "火", "水", "木", "金", "土"];
 
-  var st = { rows: [], set: "hira", theme: "green", per: 13, grid: true, start: 1 };   /* start＝今日はノートの何列目から（2026-09-30 本人「10行ずつで、前回の続きから書けるシステムも欲しい」） */   /* per＝1列の字数（2026-09-29 本人「とりあえず、字数を決めておこうか」・黒板の写真を数えて13字） */
+  var st = { rows: [], set: "hira", theme: "green", per: 13, grid: true, top: true, start: 1 };   /* top＝上の3段（月・日・曜日）を出す（2026-10-04 本人「上のマスを外せるようにしよう。1行目に日付を書くノートもあるかもだから」）。外すと日付は今日の1列目に書く */   /* start＝今日はノートの何列目から（2026-09-30 本人「10行ずつで、前回の続きから書けるシステムも欲しい」） */   /* per＝1列の字数（2026-09-29 本人「とりあえず、字数を決めておこうか」・黒板の写真を数えて13字） */
   var sampleBackup = null;   /* サンプルの間だけ、前の中身を取っておく */
 
   function markChar(key, set) {
@@ -80,10 +80,11 @@
      板書も同じ＝上の3段（日付はいちばん右の列だけ）、中身はどの列も3段の下から。うすいノートの線（st.grid） */
   var PAGE = 10;   /* ⭐ノートの1ページ＝10列（本人が見せてくれた連絡帳） */
   function colHtml(col, dp, cls) {
-    var top = '<div class="rk-top">' + (dp ? '<div class="rk-cell"><span class="tcy">' + dp.m + '</span></div><div class="rk-cell"><span class="tcy">' + dp.d +
+    var top = !st.top ? "" : '<div class="rk-top">' + (dp ? '<div class="rk-cell"><span class="tcy">' + dp.m + '</span></div><div class="rk-cell"><span class="tcy">' + dp.d +
               '</span></div><div class="rk-cell">' + dp.wd + "</div>" : '<div class="rk-cell"></div><div class="rk-cell"></div><div class="rk-cell"></div>') + "</div>";
     var body = "";
-    if (col) {
+    if (col && col.date) body = chunk(col.items[0]);   // ⭐上の3段を外したときの日付の列（○の文字なし）
+    else if (col) {
       var head = col.first ? '<span class="rk-mark' + (col.mark ? "" : " none") + '">' + esc(col.mark || "　") + "</span>" : '<span class="rk-indent"></span>';
       body = head + col.items.map(chunk).join('<span class="rk-gap"></span>');
     }
@@ -98,10 +99,12 @@
     return { start: s, end: s + n - 1, next: next };
   }
   function render(board) {
-    board.className = "rk-board " + st.theme + (st.grid ? " grid" : "");
+    board.className = "rk-board " + st.theme + (st.grid ? " grid" : "") + (st.top ? "" : " notop");
     var rows = st.rows.filter(function (r) { return r.t.replace(/\s/g, "") || r.m !== "none"; });
     if (!rows.length) { board.innerHTML = '<div class="rk-empty">①に中身を打つと、ここに板書が出ます</div>'; lastPlace = null; pageMsg(); return; }
     var dp = dateParts(), cols = [], longest = st.per;
+    /* ⭐上の3段を外したときは、日付を今日の1列目に書く（例「10月5日（月）」） */
+    if (!st.top && dp) { var dt = dp.m + "月" + dp.d + "日（" + dp.wd + "）"; cols.push({ date: true, items: [dt], used: len(dt) }); longest = Math.max(longest, len(dt)); }
     rows.forEach(function (r) { columns(r).forEach(function (c) { cols.push(c); longest = Math.max(longest, c.used); }); });
     var p = place(cols.length), slots = Math.max(PAGE, p.end), h = [];
     for (var i = 1; i <= slots; i++) {
@@ -128,7 +131,7 @@
   function fit(board, ncol, longest) {
     var page = board.querySelector(".rk-page"); if (!page) return;
     var W = page.clientWidth, H = page.clientHeight; if (!W || !H) return;
-    var fs = Math.min(H / (3.3 + longest + 0.7), W / (ncol * 1.9 + 0.2));
+    var fs = Math.min(H / ((st.top ? 3.3 : 0) + longest + 0.7), W / (ncol * 1.9 + 0.2));
     for (var i = 0; i < 60; i++) {
       page.style.fontSize = fs + "px";
       if (page.scrollWidth <= W + 1 && page.scrollHeight <= H + 1) break;
@@ -166,11 +169,14 @@
 
   /* ---------- サンプル（ページの型 12-a） ---------- */
   var SAMPLES = {
+    /* ⭐サンプル①＝本人が書いた連絡帳の見本（2026-10-04 本人が写真で見せてくれた「サンプルをこれにして」・前の中身にあった「わくもん」はなくした）
+       ○の文字のない行（けいド・おんどく）は、上の「し」の続き */
     1: { set: "hira", rows: [
-      { m: "jikan", t: "②しカけんさ　④算" },
-      { m: "shukudai", t: "かん字ノート[12]　わくもんP9（丸つけ）" },
-      { m: "renraku", t: "4じかんで かえります" },   /* ⭐やさしい中身に（2026-09-29 本人「短縮は難しい感じだからなくして。40分4時間もあやしい笑」） */
-      { m: "mochi", t: "めがね（もっている人）" } ] },
+      { m: "jikan", t: "どおり" },
+      { m: "shukudai", t: "かんド[6]" },
+      { m: "none", t: "けいド[8]" },   /* ⭐ひらがなに（2026-10-04 本人「けいド　おんどく　にしよう」） */
+      { m: "none", t: "おんどく" },
+      { m: "mochi", t: "えのぐセット" } ] },
     2: { set: "kanji", rows: [
       { m: "jikan", t: "①国語　②算数　③体育　④音楽" },
       { m: "shukudai", t: "音読カード　計算ドリル[7]" },
@@ -182,7 +188,7 @@
     st.rows = SAMPLES[k].rows.map(function (r) { return { m: r.m, t: r.t }; });
     st.set = SAMPLES[k].set; setRadio("rkSet", st.set);
     $("sampleClear").hidden = false; $("sampleClear2").hidden = false; $("rkClear").hidden = true;
-    $("sampleMsg").textContent = "サンプル" + (k === 1 ? "①" : "②") + "を入れました。保存はしません。";
+    $("sampleMsg").textContent = "";   // ⭐入れたときは知らせを出さない（2026-10-04 本人「揃えよう」・全部の道具で同じ）
     drawRows(); draw();
     $("opt1").open = true; $("opt2").open = true;
   }
@@ -190,7 +196,9 @@
     if (!sampleBackup) return;
     st.rows = sampleBackup.rows; st.set = sampleBackup.set; setRadio("rkSet", st.set);
     sampleBackup = null;
-    $("sampleClear").hidden = true; $("sampleClear2").hidden = true; $("rkClear").hidden = false; $("sampleMsg").textContent = "";
+    $("sampleClear").hidden = true; $("sampleClear2").hidden = true; $("rkClear").hidden = false;
+    /* ⭐消したときは「サンプルを消しました」を3秒（2026-10-04 本人「揃えよう」） */
+    $("sampleMsg").textContent = "サンプルを消しました"; clearTimeout(clearSample.t); clearSample.t = setTimeout(function () { $("sampleMsg").textContent = ""; }, 3000);
     drawRows(); draw();
   }
 
@@ -199,13 +207,13 @@
   function save() {
     if (sampleBackup) return;
     try {
-      if ($("save").checked) localStorage.setItem(KEY, JSON.stringify({ v: 1, rows: st.rows, set: st.set, theme: st.theme, per: st.per, grid: st.grid, start: st.start }));
+      if ($("save").checked) localStorage.setItem(KEY, JSON.stringify({ v: 1, rows: st.rows, set: st.set, theme: st.theme, per: st.per, grid: st.grid, top: st.top, start: st.start }));
     } catch (e) {}
   }
   function load() {
     try {
       var s = JSON.parse(localStorage.getItem(KEY) || "null");
-      if (s && s.rows) { st.rows = s.rows.slice(0, MAX); st.set = s.set || "hira"; st.theme = s.theme || "green"; st.per = s.per || 13; st.grid = s.grid !== false; st.start = s.start || 1; $("save").checked = true; return true; }
+      if (s && s.rows) { st.rows = s.rows.slice(0, MAX); st.set = s.set || "hira"; st.theme = s.theme || "green"; st.per = s.per || 13; st.grid = s.grid !== false; st.top = s.top !== false; st.start = s.start || 1; $("save").checked = true; return true; }
     } catch (e) {}
     return false;
   }
@@ -237,7 +245,7 @@
 
   function start() {
     if (!load()) st.rows = blankRows();
-    setRadio("rkSet", st.set); setRadio("rkTheme", st.theme); $("rkPer").value = String(st.per); $("rkGrid").checked = st.grid; $("rkStart").value = String(st.start);
+    setRadio("rkSet", st.set); setRadio("rkTheme", st.theme); $("rkPer").value = String(st.per); $("rkGrid").checked = st.grid; $("rkTop").checked = st.top; $("rkStart").value = String(st.start);
     $("rkDate").value = ymd(new Date());
     drawRows(); draw();
 
@@ -269,6 +277,12 @@
     $("rkDate").addEventListener("input", draw);
     $("rkPer").addEventListener("change", function () { st.per = +$("rkPer").value || 13; draw(); });
     $("rkGrid").addEventListener("change", function () { st.grid = $("rkGrid").checked; draw(); });
+    $("rkTop").addEventListener("change", function () { st.top = $("rkTop").checked; draw(); });
+    /* ⭐①と②は一緒に開け閉め（2026-10-04 本人「①を閉じたら②も閉じる（逆もそう）」・くす玉と同じ） */
+    ["opt1", "opt2"].forEach(function (id, i) {
+      var me = $(id), other = $(i ? "opt1" : "opt2");
+      me.addEventListener("toggle", function () { if (other.open !== me.open) other.open = me.open; });
+    });
     $("rkStart").addEventListener("change", function () { st.start = +$("rkStart").value || 1; draw(); });
     /* 「次の日の続き」＝今日の最後の列の次から（10列をこえたら1列目） */
     $("rkNext").addEventListener("click", function () {

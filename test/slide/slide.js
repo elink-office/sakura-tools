@@ -786,7 +786,7 @@
      ⭐打ちながら、選んだ1枚がどう映るかを小さく見る（2026-10-04 本人「小窓でどういう風に表示されるか見ながら確認したい。
        文字は見にくくていいから（入力分を見るため）雰囲気を確かめたい。雰囲気がわかったら、拡大して最終調整」・連絡帳の板書と同じ）
      ＝映す画面（#show）そのものを、小窓の中の「画面と同じ大きさの箱」に入れて縮めて見せる（作りは1つ・映る中身は本番と同じ）
-     ⭐小窓を押すと「この画面で見る」と同じ（大きく・全画面にはしない）。✕ とじる で小窓に戻る */
+     ⭐小窓を押すと、その1枚からモニターで表示（2026-10-04）。✕ とじる で小窓に戻る */
   var miniT = 0;
   function miniSoon(){ clearTimeout(miniT); miniT = setTimeout(miniRefresh, 150); }
   function isDock(){ return $('show').classList.contains('dock'); }
@@ -804,8 +804,10 @@
   }
   function miniScale(){
     var mini = $('mini'), box = $('miniIn'); if (!mini || !box) return;
-    var W = window.innerWidth || 1280, H = window.innerHeight || 720;
-    mini.style.aspectRatio = W + ' / ' + H;                  // 小窓の形＝この画面の形（本番と同じ割合で縮む）
+    /* ⭐小窓は16:9（1280×720のモニター）で見せる（2026-10-04 本人「こういう見本は基本が16：9に。今モニターの基準がそうだから」）。
+       前＝この画面の形（スマホでは縦長になった）。文字の大きさは #show の大きさで決まる（slide.css の cqw） */
+    var W = 1280, H = 720;
+    mini.style.aspectRatio = W + ' / ' + H;
     box.style.width = W + 'px'; box.style.height = H + 'px';
     box.style.transform = 'scale(' + (mini.clientWidth / W) + ')';
   }
@@ -1243,7 +1245,9 @@
     }
     showAdd('');
     switchKind();   // ⚠ここで描き直す＝save() も走るが、中身は押す前と同じ
-    $('sampleMsg').textContent = 'サンプルを消して、前の画面に戻しました';
+    /* ⭐消したときは「サンプルを消しました」を3秒（2026-10-04 本人「揃えよう」・全部の道具で同じ） */
+    $('sampleMsg').textContent = 'サンプルを消しました';
+    clearTimeout(clearSample.t); clearSample.t = setTimeout(function(){ $('sampleMsg').textContent = ''; }, 3000);
   }
   $('sampleT').addEventListener('click', function(){ loadSample(1); });
   $('sampleL').addEventListener('click', function(){ loadSample(2); });
@@ -1726,7 +1730,7 @@
     openShow(parseInt($('checkNo').value,10) || 0);
   });
   // 🔴 パワポの「現在のスライドから表示」と同じ（2026-09-05 本人）
-  $('fromBtn').addEventListener('click', function(){
+  if ($('fromBtn')) $('fromBtn').addEventListener('click', function(){   // ⚠ボタンはなくした（2026-10-04・小窓を押すのと同じ動き）
     openShow(-1, parseInt($('checkNo').value,10) || 0);
   });
   $('next').addEventListener('click', function(){ move(1); });
@@ -1756,8 +1760,10 @@
     if ($('show').classList.contains('on')) fitBox();
   });
   if ($('mini')){
-    $('mini').addEventListener('click', function(){ openShow(parseInt($('checkNo').value,10) || 0); });
-    $('mini').addEventListener('keydown', function(e){ if (e.key==='Enter' || e.key===' '){ e.preventDefault(); openShow(parseInt($('checkNo').value,10) || 0); } });
+    /* ⭐小窓を押す＝小窓に映っている1枚からモニターで表示（2026-10-04 本人・連絡帳の板書と同じ。前＝ページの中で大きく） */
+    var fromMini = function(){ openShow(-1, parseInt($('checkNo').value,10) || 0); };
+    $('mini').addEventListener('click', fromMini);
+    $('mini').addEventListener('keydown', function(e){ if (e.key==='Enter' || e.key===' '){ e.preventDefault(); fromMini(); } });
   }
   $('checkNo').addEventListener('change', miniSoon);
 
@@ -1799,6 +1805,23 @@
       b.setAttribute('aria-expanded', String(!open));
     }
   });
+
+  /* ⭐①と③は一緒に開け閉め・閉じるときは②も（2026-10-04 本人「③を閉じたら①も②も閉じる　開くのは①を開いたら③も。③を開いたら①も。②は基本閉じている」）
+     ③＝PCの右の箱（#lrStick）とスマホの③（#checkCard）の2つ。どちらも同じにそろえる。②だけの開け閉めは、ほかを動かさない */
+  (function(){
+    var d1 = $('d1'), d2 = $('d2'), d3s = [$('lrStick'), $('checkCard')].filter(Boolean);
+    function setAll(list, v){ list.forEach(function(d){ if (d.open !== v) d.open = v; }); }
+    d1.addEventListener('toggle', function(){
+      if (d1.open) setAll(d3s, true);
+      else { setAll([d2], false); setAll(d3s, false); }
+    });
+    d3s.forEach(function(d){
+      d.addEventListener('toggle', function(){
+        if (d.open){ setAll(d3s, true); setAll([d1], true); miniSoon(); }   // 開いたら小窓の大きさを測り直す
+        else { setAll(d3s, false); setAll([d1, d2], false); }
+      });
+    });
+  })();
 
   fillClassSelect();
   /* ⭐はじめは「文字をスライドにする」を選んでおく（2026-10-04 本人「規定値は文字をスライドにするにしておいて」）。前（9/15）＝どちらも選ばない。保存があれば load() が戻す */
