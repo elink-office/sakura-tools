@@ -297,6 +297,11 @@ main.wrap, .site-head .wrap, .site-foot .wrap{max-width:var(--page)}
   /* ⭐カードは3列→2列（900px以下）。⚠2列では span を外す（組み合わせが崩れるため） */
   .t-cards{grid-template-columns:1fr 1fr}
   .t-card.big{grid-row:auto}
+  /* ⭐2列のときは、バスと新幹線（絵なしの小さいカード）を同じ行に並べる（2026-10-04 本人 A）。
+     ⚠前は絵のあるカード（ランダム指名・ルーレット）と同じ行になり、その高さまでのびて中が空っぽの大きいカードになっていた。
+     ＝ルーレットから後ろを1つ後ろへ送り、新幹線だけをバスのすぐ後ろへ。PC（3列）の並びは変えない */
+  #roulette, #roulette ~ .t-card{order:1}
+  .t-cards #shinkansen{order:0}
   /* ⭐下の段も1列に。⭐リンクは文章の下に回る */
   .t-lower{grid-template-columns:1fr;gap:0}
 }

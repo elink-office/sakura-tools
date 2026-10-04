@@ -167,7 +167,7 @@ h3{font-size:1rem;margin:20px 0 6px}
 /* カード */
 .card{
   background:#fff;border:1px solid var(--line);border-radius:var(--radius);
-  padding:20px 18px;margin-bottom:18px;
+  padding:20px 18px;margin-bottom:10px;   /* ⭐箱と箱のすき間 18→10px（2026-10-04 本人「全体もこれでやってみよう（ノートパソコン縦が低い16:9だからさ）」・章と同じ） */
 }
 .card > h2{margin-top:0}
 /* 🔴 ぬりつぶしの丸。⚠ 幅と高さをそろえないと、数字によって楕円になる。
@@ -291,7 +291,7 @@ a.primary{display:inline-block;text-decoration:none;border:1px solid var(--pink)
    こうしないと、押したときの色がカードの端まで届かず、白いすき間が残る（本人の指摘） */
 details.opt{
   border:1px solid var(--line);border-radius:var(--radius);background:#fff;
-  margin-bottom:18px;
+  margin-bottom:10px;   /* ⭐章と章のすき間 18→10px（2026-10-04 本人「①と②の間を詰めることできる？」「全部だよ」・シャッターを低くしたのに合わせた）。PCは0.86倍で約9px */
 }
 /* 🔴 開け閉めする帯は、うすい色を敷いて「押せる」と分かるようにする。
    中身は白のまま＝帯だけが操作するところ、と見分けられる */
@@ -300,7 +300,7 @@ details.opt{
    ⚠ 余白が無いと文字の高さぶんしか反応せず、少し上や下を押すと開かない（本人の指摘） */
 details.opt > summary{
   cursor:pointer;list-style:none;margin:0;
-  padding:20px 18px 20px 33px;
+  padding:14px 18px 14px 33px;   /* ⭐上下20→14px＝シャッターを低く（2026-10-04 本人「本当はしゃたーも、全部高さを低くしたい」→ A）。⚠押せる高さは残す（前に本人「少し上や下を押すと開かない」）＝PCで約53px・スマホで約61px */
   font-size:1.15rem;font-weight:bold;
   display:flex;align-items:center;gap:8px;
   border-radius:var(--radius);
@@ -991,3 +991,27 @@ main.yomu > *{max-width:37rem;margin-left:auto;margin-right:auto}
 .run-tr button{margin:0;font-size:13px;padding:6px 12px;opacity:.8;background:#fff;border:1px solid var(--line);border-radius:6px;box-shadow:none;color:var(--ink)}
 .run-tr button:hover{opacity:1;background:#fff}
 .run-tr .run-close{font-weight:700}
+
+/* ============================================================
+   ⭐道具の章を0.86倍（2026-10-02 本人「ほかのページも全体的に同じくらい文字を小さくしたい。座席と同じくらいの型にして」
+     →「ツールだけでお願いします。タイピングはほかのツールとは違うからこのままにしておいて。関数もだよね」）。
+   ⭐座席表・席次表・バス・新幹線の左の列（.lr・0.86倍）と同じ大きさにそろえる。
+   ⭐小さくする＝章の箱（①②…）と中の字・ボタン、「保存したデータの利用」、スタート・作るボタンとその下の1行。
+   ⭐そのまま＝題名・キャッチ・リード・見本画像・サンプルのボタン・？の案内・下の読みもの・できたもの（QRの見本・板書・見積書の紙）・映す画面。
+   ⭐PC（1000px以上）だけ＝座席表と同じ。スマホは今までどおり。
+   ⚠タイピング・Excel関数・トップ・記事・先生用ページは対象外（main.wrap の直下に章が無い／別の作り）。
+   ⚠座席表・席次表・バス・新幹線の章は .lr の中なので、ここには当たらない（.lr の中で 0.86倍にしている）
+   ============================================================ */
+@media screen and (min-width:1000px){
+  main.wrap > details.opt,
+  main.wrap > section.card,
+  main.wrap > div.card,
+  main.wrap > .startbox,
+  main.wrap > p.tm-start, main.wrap > p.tm-hint,
+  main.wrap > .qr-go, main.wrap > .qr-gomsg, main.wrap > .qr-gohint,
+  main.wrap > .rk-go, main.wrap > .rk-gomsg,
+  .tm-grid > .card, .ks-grid > details.opt, .qr-2col > details.opt, .rk-2col > details.opt,
+  .tb-panels > details.opt{zoom:.86}
+  /* ⭐できたものは元の大きさに戻す（1÷0.86） */
+  .qr-2col .qr-preview, .rk-2col .rk-framebox, #prevBox .inv-stage{zoom:1.1628}
+}
