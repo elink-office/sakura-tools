@@ -1015,3 +1015,18 @@ main.yomu > *{max-width:37rem;margin-left:auto;margin-right:auto}
   /* ⭐できたものは元の大きさに戻す（1÷0.86） */
   .qr-2col .qr-preview, .rk-2col .rk-framebox, #prevBox .inv-stage{zoom:1.1628}
 }
+
+/* =====================================================================
+   ⭐境目の線（2026-10-04 本人「リード文の下に細い線…全部に入れたほうがいい」「使い方の上の線も全体に引いたほうがいい」
+     「上の線と、使い方の上の線の幅をそろえたい」「いまの座席表の上の線に合わせる」「スマホもあってもいい」）
+   ＝道具のページは、リード文と見本の画像（.intro）の下に細い線。使い方の上の線（.read／1本目の details.howto）と同じ幅。スマホも
+   ⚠座席表の形（区画1120px＝座席表・席次表・バス・新幹線）のPCは、上の線＝区画の上の線・使い方の上の線も1120px（各道具のCSS）
+   ⚠タイピングは .intro だけ（i169・tate が無い）なので入らない
+   ===================================================================== */
+.intro.i169, .intro.tate{border-bottom:1px solid var(--line);padding-bottom:18px}
+
+/* ⭐？の案内の右にサンプルのボタン（2026-10-04 本人「全体のサンプルのボタンも小さくしたい。？の右にサンプルボタンを配置してほしい」）
+   ＝<div class="guide-row"> の中に、？の案内（p.tip-guide）→ サンプルのボタンの塊、の順。ボタンは class="mini"。入りきらないときは折り返す
+   ⚠座席表の形（座席表・席次表・バス・新幹線）のPCは、各道具のCSSで display:contents（案内は左の列・サンプルは右の列のまま） */
+.guide-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin:0 0 14px}
+.guide-row > p.tip-guide, .guide-row > div{margin:0}
