@@ -33,7 +33,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&display=swap">
-<link rel="stylesheet" href="../style.css?v=155">
+<link rel="stylesheet" href="../style.css?v=159">
 <link rel="stylesheet" href="seki.css?v=44">
 <link rel="stylesheet" href="../print.css?v=63" media="print">
 <style>
@@ -75,10 +75,11 @@
 .seki-sample{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;margin:0 0 14px}
 /* ⭐席次表を作る前の③〜⑥（グレー・押せない・2026-09-14）。#result が隠れているときだけ出る。座席表と同じ */
 #resultStub{display:none}
-#result[hidden] + #resultStub{display:block;margin-bottom:18px}
+#result[hidden] + #resultStub{display:block;margin-bottom:10px}
 #resultStub .opt.stub{opacity:.45;pointer-events:none;user-select:none;
-  background:#fff;border:1px solid #e3e5e8;border-radius:4px;margin:0 0 18px}
-#resultStub .stub-head{position:relative;display:flex;align-items:center;gap:10px;padding:22px 18px 22px 38px;font-weight:bold}
+  background:#fff;border:1px solid #e3e5e8;border-radius:4px;margin:0 0 10px}   /* ⭐すき間 18→10px（2026-10-04 本人「４以降も細く詰めてね」・本物の章と同じ） */
+#resultStub .stub-head{position:relative;display:flex;align-items:center;gap:10px;padding:16px 18px 16px 38px;font-weight:bold}   /* ⭐上下 22→16px＝本物の章（シャッター）と同じ高さ（2026-10-04） */
+#resultStub .opt.stub:last-child{margin-bottom:0}   /* ⭐最後の1つは下のあきなし＝#resultStub の下のあき（10px）だけ。PCで⑤と⑥のあいだが広くならないように */
 #resultStub .stub-head > .step{position:absolute;top:50%;left:-11px;transform:translateY(-50%);
   width:38px;height:28px;margin:0;border-radius:var(--radius,4px);font-size:.9rem;font-weight:700;
   box-shadow:0 1px 0 rgba(0,0,0,.08),0 3px 6px rgba(0,0,0,.16)}

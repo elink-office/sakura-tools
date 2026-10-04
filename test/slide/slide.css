@@ -407,3 +407,61 @@ body.hidebar #bar .row{opacity:0}
 #show .run-tr{transition:opacity .3s}
 body.hidebar #show .run-tr{opacity:0}
 body.hidebar #show .run-tr:hover{opacity:1}
+
+/* ⭐見本の小窓（2026-10-04 本人「小窓でどういう風に表示されるか見ながら確認したい。文字は見にくくていいから…雰囲気を確かめたい」）
+   ＝映す画面（#show）を「この画面と同じ大きさの箱」（.mini-in）に入れて、小窓の幅まで縮める（slide.js の miniScale）。
+   ⭐小さくていい（本人）＝幅は 360px まで。右下に札（連絡帳の板書と同じ）。押すと大きく */
+#lrR .mini{position:relative;width:100%;max-width:360px;overflow:hidden;margin:4px 0 12px;
+  border:1px solid var(--line,#ddd);border-radius:8px;background:#fff;cursor:pointer;
+  box-shadow:0 2px 6px rgba(0,0,0,.08)}
+#lrR .mini:hover{box-shadow:0 4px 12px rgba(0,0,0,.14)}
+#lrR .mini:focus-visible{outline:3px solid var(--pink);outline-offset:2px}
+#lrR .mini-in{position:absolute;left:0;top:0;transform-origin:0 0;pointer-events:none}
+#lrR .mini-tag{position:absolute;right:6px;bottom:6px;z-index:2;font-size:.72rem;padding:2px 8px;border-radius:999px;
+  background:rgba(255,255,255,.9);color:var(--ink-soft,#666);border:1px solid var(--line,#ddd);pointer-events:none}
+/* 小窓の中の映す画面＝箱いっぱい・操作のボタンは出さない（文字の帯 #cap は見え方の一部なので残す） */
+#show.dock{position:absolute;inset:0;z-index:0}
+#show.dock .run-tr,#show.dock #bar .row{display:none}
+
+/* =====================================================================
+   ⭐PCで左右に並べる（2026-10-04 本人「左右になってないよ」「座席表も何も入ってなくても表示あるよね。そんな風に箱を出しておこう」
+     「同じサイズというのは、横幅のこと。スライドは①と②が狭い」）
+   ＝連絡帳の板書と同じ形（renraku.css の .rk-2col）＝左（①②）を広く・右（見本の小窓の箱）をせまく、2：1・すき間18px。幅は道具の幅（900px）のまま
+   ⭐右の箱の小窓は、箱の横幅いっぱい（連絡帳の板書の②と同じ）。PC（1000px以上）だけ
+   ⚠右の列は contain:size（行の高さを数えない）。.lr の高さの下限は index.html の小さなスクリプトが入れる
+   ⚠一度、座席表と同じ「左360px・右いっぱい・1120px」にしたが、①②が狭かった（本人）ので、これに替えた
+   ===================================================================== */
+.lr-side{display:none}
+@media screen and (min-width:1000px){
+  .lr{display:grid; grid-template-columns:minmax(0,2fr) minmax(0,1fr); column-gap:18px; align-content:start}
+  .lr > *{grid-column:1; min-width:0; align-self:start}
+  .lr > .lr-side{display:block; grid-column:2; grid-row:1 / span 40; contain:size; align-self:stretch}
+  /* 左も右も、字も箱もまとめて0.86倍（ほかの道具と同じ・ページの型22-g） */
+  .lr > *{zoom:.86}
+  .lr .lr-stick{position:sticky; top:56px; background:#fff; border:1px solid var(--line, #ddd); border-radius:var(--radius, 4px); padding:12px 14px 14px}
+  .lr .lr-ttl{position:relative; margin:2px 0 12px; padding-left:28px; font-weight:bold; font-size:1.15rem; display:flex; align-items:center; min-height:28px}
+  .lr .lr-ttl > .step{position:absolute; left:-25px; top:50%; transform:translateY(-50%); width:38px; height:28px; margin:0; border-radius:var(--radius,4px);
+    display:flex; align-items:center; justify-content:center; font-size:.9rem; font-weight:700; background-image:var(--gloss);
+    box-shadow:inset 0 1px 1px rgba(255,255,255,.85),0 2px 4px rgba(85,74,58,.16)}
+  /* ③の箱の中身は右へ移るので、左の③は出さない */
+  .lr > #checkCard{display:none}
+  /* 何も無いときは白い紙の形に案内の1行。あるときは小窓 */
+  .lr.empty #lrSlotR{display:none}
+  .lr:not(.empty) .lr-paper{display:none}
+  .lr .lr-paper{aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; text-align:center; padding:12px;
+    color:var(--ink-soft, #82868c); border:1px dashed var(--line, #ddd); border-radius:var(--radius, 4px); line-height:1.6; font-size:.85rem}
+  /* 右の箱の小窓＝箱の横幅いっぱい（連絡帳の板書の②と同じ） */
+  .lr-side #lrR .mini{max-width:none; margin:0 0 10px}
+  .lr-side .row{display:flex; flex-wrap:wrap; gap:6px; align-items:center}
+  .lr-side .row select{width:100%; max-width:100%}
+  .lr-side .row button{font-size:.85rem; padding:5px 10px}
+}
+/* ⭐①の「文字をスライドにする／発表者をスライドにする」は、新幹線の「普通車／グリーン車」と同じ共通の .seg のまま（ここで見た目を変えない）
+   （2026-10-04 本人「新幹線の、さっきのスクショのボタンを参考にして」「規定値は文字をスライドにするにしておいて」＝はじめから「文字」を選んでおく＝slide.js）
+   ⚠前（9/15）は「はじめはどちらも選ばない・白」だったが、選ぶ前に2つともグレーになっていた。⚠一度、白い地に変えたが、新幹線と同じに戻した */
+/* ⭐「保存のデータを使う」は、上の切り替えとくっつかないように少しあける（2026-10-04 本人「保存のデータを使うとまたくっついてる」） */
+#clsBoxT .cls-use, #clsBox .cls-use{margin-top:12px}
+/* ⭐「文字をスライドにする」のほうの「保存のデータを使う」は出さない（2026-10-04 本人「文字をスライドにするのは単純に文字をスライドにしたいはず。名前は発表者だね」
+   「名前だけでも使えたから。推しにしよう」）。名簿は「発表者をスライドにする」のほう（#clsBox）だけ。
+   ⚠中身（#clsBoxT と slide.js の名簿の読み込み）は残してある＝ここの1行を消せば戻る。前＝2026-09-05 本人「名簿から選択できるようにしたい」で付けた */
+#clsBoxT{display:none !important}
