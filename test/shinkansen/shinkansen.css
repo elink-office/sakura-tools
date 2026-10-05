@@ -215,3 +215,10 @@ body.fs #fsClose{display:block; position:fixed; top:12px; right:12px; z-index:90
   .lr #opt4 .body button{font-size:.9rem; padding:5px 10px}
   .lr > .sk-go .primary{font-size:1.1rem; padding:14px 30px}
 }
+
+/* ⭐「班でまとめ直す」と「全画面で確認」を1行に（2026-10-05 本人「横にしたい」）。狭いときは折り返す */
+.sk-tools{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;margin:6px 0 10px}
+.sk-tools > .sk-regroup{margin:0}
+/* ボタンと説明を別々に並べる＝スマホでもボタン2つは横に。説明の1行は入らなければ下へ */
+.sk-tools > .sk-fsrow{display:contents}
+@media (max-width:700px){ .sk-tools > .sk-fsrow .hint{flex-basis:100%} }

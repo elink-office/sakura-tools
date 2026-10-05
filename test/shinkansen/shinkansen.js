@@ -12,10 +12,10 @@ function $(id){ return document.getElementById(id); }
 function esc(t){ return String(t).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
 function rnd(n){ try{ var a=new Uint32Array(1); crypto.getRandomValues(a); return a[0]%n; }catch(e){ return Math.floor(Math.random()*n); } }
 
-var SAMPLE_NAMES=["あいざわ ゆい","いしかわ はる","いのうえ そうた","うえだ りこ","えんどう はると","おおの ゆず","おかだ みお","かとう ゆうと","きむら あおい",
-  "くどう れん","こばやし ひなた","さいとう けんた","しみず さら","すずき だいち","せきぐち ほのか","たかはし りん","たなか りく","ちば かえで",
-  "つじ こうき","なかむら めい","にしだ しょう","のむら あかり","はせがわ そうま","はやし たくみ","ひらの ゆな","ふじい かいと","ほんだ ことね",
-  "まつもと ゆうき","みやざき いろは","むらかみ そら","もりた つばさ","やまぐち ゆうな","やまだ まな","よしだ ひろと","わたなべ すず"];
+var SAMPLE_NAMES=["相沢 ゆい","石川 はる","井上 そうた","上田 りこ","遠藤 はると","大野 ゆず","岡田 みお","加藤 ゆうと","木村 あおい",
+  "工藤 れん","小林 ひなた","斉藤 けんた","清水 さら","鈴木 だいち","関口 ほのか","高橋 りん","田中 りく","千葉 かえで",
+  "辻 こうき","中村 めい","西田 しょう","野村 あかり","長谷川 そうま","林 たくみ","平野 ゆな","藤井 かいと","本田 ことね",
+  "松本 ゆうき","宮崎 いろは","村上 そら","森田 つばさ","山口 ゆうな","山田 まな","吉田 ひろと","渡辺 すず"];
 var MAXROW=20;
 
 /* ===== いまの中身 ===== */
@@ -447,10 +447,17 @@ function unassigned(){
 }
 
 /* ===== ④ 紙 ===== */
+/* ⭐名前の字の大きさの基準＝空白を入れない5字（「遠藤 はると」）。4字も5字も同じ大きさ（2026-10-05 本人「名前の4字と5字は同じサイズにして。5字が基準」）。
+   ⚠前は空白を1字に数えていたので、4字（田中 りく）と5字（遠藤 はると）で大きさがちがった。5字＋半角の空白（.62）＝5.62 */
+var BASE5=5.62;
+/* ⭐名字と名前のあいだの全角の空白は、半角にして出す＝バスと同じ見え方（2026-10-05 本人「先生方は全角スペースかもしれないから」「挙動が一緒ならいいよ」）。表示だけ */
+function dispName(n){ return String(n).replace(/[ 　]+/g," "); }
 var SW=29, AW=14, NW=7;   // 席の幅・通路の幅・番号の幅（mm）。⚠右にも番号を足したので席を30→29（紙の中186mmに収める）
 function nameFs(n,w,sh){
   var len=0; for(var i=0;i<n.length;i++) len+= n.charCodeAt(i)<256 ? .62 : 1;
-  return Math.max(2, Math.min(3.6, (w-3)/(Math.max(len,1)*1.08), sh*0.42));   // ⭐名前は太字（2026-09-27）＝字の幅が広いぶん1.08で割る
+  /* ⭐上限＝5文字（「石川 はる」）が席の幅いっぱいになる大きさ（2026-10-05 本人「5文字に合わせて文字を全体的に大きく」）。前は 3.6mm。
+     長い名前はその名前だけ縮む。マスの高さ（sh×0.42）の上限はそのまま */
+  return Math.max(2, Math.min((w-3)/(BASE5*1.08), (w-3)/(Math.max(len,1)*1.08), sh*0.42));   // ⭐名前は太字（2026-09-27）＝字の幅が広いぶん1.08で割る
 }
 function drawSheet(){
   var tr=$("train"), L=letters(), lc=leftCount(), rows=rowList();
@@ -481,7 +488,7 @@ function drawSheet(){
   function hanOf(c){ var pp=st.assign[c], g=pp?(st.hanOf[pp]|0):0;   /* ⭐班は人に付く */ return g ? {cls:" hg", sty:";--hc:"+HAN_COLORS[(g-1)%HAN_COLORS.length], badge:'<span class="hb">'+g+'班</span>'} : {cls:"", sty:"", badge:""}; }
   function seat(c){
     var n=st.assign[c]||"", hg=hanOf(c);
-    return '<div class="seat'+hg.cls+(badSet[c]?" bad":"")+(sel===c?" sel":"")+'" data-c="'+esc(c)+'" style="--fs:'+nameFs(n,SW,sh).toFixed(2)+hg.sty+'"><span class="cd">'+esc(shortCode(c))+'</span>'+hg.badge+(n?'<span class="nm">'+esc(n)+'</span>':'')+'</div>';
+    return '<div class="seat'+hg.cls+(badSet[c]?" bad":"")+(sel===c?" sel":"")+'" data-c="'+esc(c)+'" style="--fs:'+nameFs(dispName(n),SW,sh).toFixed(2)+hg.sty+'"><span class="cd">'+esc(shortCode(c))+'</span>'+hg.badge+(n?'<span class="nm">'+esc(dispName(n))+'</span>':'')+'</div>';
   }
   rows.forEach(function(x){
     if(x.gap){ h+='<div class="gap"></div>'; return; }                                  // 同じ号車の続き＝ただの空白
@@ -725,10 +732,10 @@ function sampleIn(s,msg,partial){
   $("sampleMsg").textContent=msg; setTimeout(function(){ $("sampleMsg").textContent=""; },3500);
 }
 $("sample1Btn").addEventListener("click",function(){
-  sampleIn({names:SAMPLE_NAMES.map(function(n,i){ return n+"\t"+(Math.floor(i/5)+1); }).join("\n"), kind:"std", car:5, from:1, to:8, rs:false, r2:false, up:"none", order:"han", fixed:[{label:"山田先生",code:"5-1C"},{label:"おおの ゆず",code:"5-1D"}], title:"6年1組", assign:{}},"名簿に班（1〜7班）が入っているので、班ごとに並べました");
+  sampleIn({names:SAMPLE_NAMES.map(function(n,i){ return (i+1)+"\t"+n+"\t"+(Math.floor(i/5)+1); }).join("\n")   /* ⭐出席番号・名前・班の3列（2026-10-05 名簿の基準にそろえた） */, kind:"std", car:5, from:1, to:8, rs:false, r2:false, up:"none", order:"han", fixed:[{label:"山田先生",code:"5-1C"},{label:"大野 ゆず",code:"5-1D"}], title:"6年1組", assign:{}},"名簿に班（1〜7班）が入っているので、班ごとに並べました");
 });
 $("sample2Btn").addEventListener("click",function(){
-  sampleIn({names:SAMPLE_NAMES.join("\n"), kind:"std", car:5, car2:6, from:15, to:20, rs:false, r2:true, from2:1, to2:2, up:"lo", order:"random", fixed:[{label:"山田先生",code:"5-15C"},{label:"おおの ゆず",code:"5-15D"}], title:"6年1組", assign:{}},"作成途中の形です（5号車と6号車にまたがる）。4人が席に入っていません",true);
+  sampleIn({names:SAMPLE_NAMES.join("\n"), kind:"std", car:5, car2:6, from:15, to:20, rs:false, r2:true, from2:1, to2:2, up:"lo", order:"random", fixed:[{label:"山田先生",code:"5-15C"},{label:"大野 ゆず",code:"5-15D"}], title:"6年1組", assign:{}},"作成途中の形です（5号車と6号車にまたがる）。4人が席に入っていません",true);
 });
 $("sampleClear2").addEventListener("click",function(){ $("sampleClear").click(); });   // ④の中のもう1つ＝上と同じ動き
 $("sampleClear").addEventListener("click",function(){
