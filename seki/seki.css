@@ -344,6 +344,8 @@ body.picking .grid .seat:hover, body.picking .grid .dead.off:hover{ box-shadow: 
    ⚠右の列は contain:size＝行の高さを数えない。.lr の高さの下限はスクリプトで入れる
    ============================================================ */
 .lr-side{display:none}
+/* ⭐境目の線（2026-10-04 本人「スマホもあってもいい」）＝このページの見本の並べ方は .intro だけ（i169 ではない）ので、ここで線を引く。PCは区画の上の線（下の @media） */
+.intro{border-bottom:1px solid var(--line, #ddd);padding-bottom:18px}
 @media screen and (min-width:1000px){
   .lr{
     display:grid;
@@ -357,6 +359,12 @@ body.picking .grid .seat:hover, body.picking .grid .dead.off:hover{ box-shadow: 
     padding-top:18px;
   }
   .lr > *{grid-column:1; min-width:0; align-self:start}
+  /* ⭐境目の線（2026-10-04 本人「上の線と、使い方の上の線の幅をそろえたい」「いまの座席表の上の線に合わせる」）
+     ＝PCでは上の線は区画の上の線（.intro の線は消す）。使い方の上の線も区画と同じ幅（1120px）に伸ばす */
+  .intro{border-bottom:0;padding-bottom:0}
+  .lr + .read, .lr + details.howto{border-top:0;position:relative}
+  .lr + .read::before, .lr + details.howto::before{content:"";position:absolute;top:0;left:50%;width:min(70rem, calc(100vw - 60px));
+    transform:translateX(-50%);border-top:1px solid var(--line, #ddd)}
   /* ⚠align-self:start＝左の章の箱を、行の高さに合わせて引きのばさない（2026-10-02 本人「新幹線のボタンがまだ縦伸びしてる」）。
      ⚠前は、バス・新幹線の閉じた章が 78px（座席表は 63px）＝行の高さに合わせて引きのばされていた */
   /* ⭐行を上に詰める（align-content:start）（2026-10-02 本人「直ったけど、間隔が広い」）。
@@ -364,15 +372,17 @@ body.picking .grid .seat:hover, body.picking .grid .dead.off:hover{ box-shadow: 
        そのあまりが、左の行にも空の行にも均等に配られていた（新幹線で1行あたり約15px・章と章のすき間が15→30px）。
        座席表は紙が短いので起きなかった */
   .lr{align-content:start}
-  .lr > #tipGuide{grid-row:1; align-self:center; margin:0 0 14px}
-  .lr > #lrSample{grid-column:2; grid-row:1; align-self:center; margin:0 0 14px}
+  /* ⭐？の案内とサンプルは .guide-row に包んだ（2026-10-04）。PCでは包みを消して、案内は左の列・サンプルは右の列のまま */
+  .lr > .guide-row{display:contents}
+  .lr #tipGuide{zoom:.86; grid-column:1; grid-row:1; align-self:center; margin:0 0 14px}
+  .lr #lrSample{grid-column:2; grid-row:1; align-self:center; margin:0 0 14px}
   .lr > .lr-side{
     display:block;
     grid-column:2; grid-row:2 / span 40;
     contain:size; align-self:stretch;
   }
   /* ⭐左の列は字も箱もまとめて小さく（座席表と同じ 0.86倍） */
-  .lr > :not(.lr-side):not(#lrSample){zoom:.86}
+  .lr > :not(.lr-side):not(.guide-row){zoom:.86}
   .lr .lr-stick{
     position:sticky; top:56px;
     background:#fff; border:1px solid var(--line, #ddd); border-radius:var(--radius, 4px);

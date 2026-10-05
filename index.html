@@ -44,7 +44,7 @@
   "url": "https://sakura-tools.com/"
 }
 </script>
-<link rel="stylesheet" href="style.css?v=159">
+<link rel="stylesheet" href="style.css?v=162">
 <link rel="stylesheet" href="top.css?v=69">
 </head>
 <body>
@@ -65,7 +65,7 @@
     </nav>
   </div>
 </header>
-<script src="site.js?v=1"></script>
+<script src="site.js?v=4"></script>
 
 <main class="wrap">
   <div class="t-hero">
@@ -79,6 +79,7 @@
       <a href="typing/">タッチタイピング</a>
       <a href="seat/">座席表</a>
       <a href="slide/">簡単スライド</a>
+      <a href="renraku/">連絡帳の板書</a>
       <a href="random/">ランダム指名</a>
       <a href="timer/">カウントダウンタイマー</a>
       <a href="timer/progress/">進行タイマー</a>
@@ -127,7 +128,7 @@
       <div class="t-tool">
         <span class="nm">座席表メーカー</span>
         <span class="ds">名簿のコピペで、簡単席替え。席の形、30人・40人でも思いどおり。そのうえPDFもモニター表示もボタンひとつ！</span>
-        <img class="t-shot" src="img/seat-sample.png?v=10" width="1280" height="720" alt="33人・6列の教室の座席表。3人の班やかぎ型の班も作れる">
+        <img class="t-shot" src="img/seat-sample.png?v=13" width="1280" height="720" alt="33人・6列の教室の座席表。3人の班やかぎ型の班も作れる">
       </div>
     </a>
 
@@ -159,19 +160,29 @@
       </div>
     </a>
 
+    <!-- ⭐連絡帳の板書＝ルーレットの前（2026-10-04 本人「トップにもカードを。ルーレットの前に」）。文は先生ツールセットと同じ -->
+    <a class="t-card big school" id="renraku" href="renraku/">
+      <div class="t-tool">
+        <span class="nm">連絡帳の板書</span>
+        <span class="ds">打つだけで、連絡帳の板書ができあがる。○の文字も日付も自動で入って、縦書きでモニターに大きく映せる！</span>
+        <img class="t-shot" src="img/renraku-sample.png?v=11" width="1280" height="720" alt="連絡帳の板書の見本。緑の黒板に縦書きで、右に日付と曜日、行の頭に○で囲んだ「じ」「し」「も」">
+      </div>
+    </a>
+
+    <!-- ⚠HTMLの順＝バス→連絡帳の板書→新幹線→ルーレット（新幹線がバスの下の空きに入る） -->
+    <a class="t-card school" id="shinkansen" href="shinkansen/">
+      <div class="t-tool">
+        <span class="nm">新幹線の座席表メーカー</span>
+        <span class="ds">旅行会社からの号車と列を入れるだけ。号車がまたがっても1枚に。修学旅行の新幹線の座席を、班ごとに！</span>
+      </div>
+    </a>
+
     <!-- ⭐ルーレット・福引・ビンゴ（2026-09-28 本人「あれ？ビンゴとかは？」）。⚠カードの文は先生ツールセットのものをそのまま。並びは本人があとで考える -->
     <a class="t-card big school" id="roulette" href="roulette/">
       <div class="t-tool">
         <span class="nm">ルーレット</span>
         <span class="ds">項目を入れて回すだけ。当たった項目は次から外せるから、係決めや発表の順番決めにも使える！</span>
         <img class="t-shot" src="img/roulette-sample.png?v=3" width="1280" height="720" alt="ルーレットの画面。左にお昼ごはんの5つを2回ずつ並べた円、右に当たりのラーメン">
-      </div>
-    </a>
-
-    <a class="t-card school" id="shinkansen" href="shinkansen/">
-      <div class="t-tool">
-        <span class="nm">新幹線の座席表メーカー</span>
-        <span class="ds">旅行会社からの号車と列を入れるだけ。号車がまたがっても1枚に。修学旅行の新幹線の座席を、班ごとに！</span>
       </div>
     </a>
 
@@ -246,18 +257,19 @@
       </div>
     </a>
 
-    <!-- ⭐関数早見表（2026-09-08 公開）。⚠仕事のほうの道具なので work -->
-    <a class="t-card work" id="excel-fx" href="excel-fx/">
-      <div class="t-tool">
-        <span class="nm">Excel関数 早見表</span>
-        <span class="ds">覚える順があるから、いつの間にか覚えてる。「SUMって何？」からも「〜したい」からも探せます。</span>
-      </div>
-    </a>
-
     <a class="t-card work" id="seikyu" href="keiri/seikyu/">
       <div class="t-tool">
         <span class="nm">請求書メーカー</span>
         <span class="ds">税抜でも税込でも入力OK。源泉徴収（10.21％）を引いた差引額まで自動で計算します。インボイス（適格請求書）にも対応。</span>
+      </div>
+    </a>
+
+    <!-- ⭐関数早見表（2026-09-08 公開）。⚠仕事のほうの道具なので work
+         ⚠2026-10-04 連絡帳の板書を足したので、見積書・請求書がビンゴ・QRの横に上がり、関数早見表だけ次の段に1つ（本人「関数早見表がはみ出すね笑　次は事務系のツールにしようとは思ってる」） -->
+    <a class="t-card work" id="excel-fx" href="excel-fx/">
+      <div class="t-tool">
+        <span class="nm">Excel関数 早見表</span>
+        <span class="ds">覚える順があるから、いつの間にか覚えてる。「SUMって何？」からも「〜したい」からも探せます。</span>
       </div>
     </a>
 
@@ -302,6 +314,7 @@
       <li><a href="typing/">さくら<img class="inlogo" src="img/logo-sakura-64.png?v=2" srcset="img/logo-sakura-64.png?v=2 1x, img/logo-sakura-128.png?v=2 2x" alt="">タッチタイピング</a></li>
       <li><a href="seat/">座席表</a></li>
       <li><a href="slide/">簡単スライド</a></li>
+      <li><a href="renraku/">連絡帳の板書</a></li>
       <li><a href="random/">ランダム指名</a></li>
       <li><a href="timer/">カウントダウンタイマー</a></li>
       <li><a href="timer/progress/">進行タイマー</a></li>

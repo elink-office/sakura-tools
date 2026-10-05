@@ -28,8 +28,8 @@
 </script>
 <title>簡単スライドメーカー｜パワーポイントの代わりに大きく映す</title>
 <meta name="description" content="パワーポイントの代わりに、文字と写真をそのまま大きくモニターに映せる無料の道具です。今日のめあて、問題文、作品の写真、発表する子の名前に。スライドを作り込まなくていいので、思いついたその場で出せます。写真の上に文字を重ねることもできます。名簿は座席表・席次表と共通。登録なし・インストールなし・写真も名簿も外に送りません。">
-<link rel="stylesheet" href="../style.css?v=159">
-<link rel="stylesheet" href="slide.css?v=86">
+<link rel="stylesheet" href="../style.css?v=162">
+<link rel="stylesheet" href="slide.css?v=90">
 </head>
 <body>
 
@@ -50,7 +50,7 @@
   </div>
   <div class="site-sub"><div class="wrap"><span class="now-long">簡単スライドメーカー</span><span class="now-short">簡単スライド</span></div></div>
 </header>
-<script src="../site.js?v=1"></script>
+<script src="../site.js?v=4"></script>
 
 <main class="wrap">
   <h1>簡単スライドメーカー</h1>
@@ -76,6 +76,8 @@
   <!-- ⭐サンプルのボタンは①の上（2026-09-14 本人「一番上にサンプルデータ」「スライドも文字と人のサンプル」。座席表・シフト表と同じ並び）
        ⭐押すと①②に入る。「サンプルを消す」で前の画面に戻る。⚠サンプルの間は保存しない -->
   <!-- ⭐「？のしるし」の1行はサンプルのボタンの上（2026-10-04 本人「？のしるしをの文章も連絡に合わせて」） -->
+  <!-- ⭐？の案内の右にサンプルのボタン・ボタンは小さく（2026-10-04 本人「全体のサンプルのボタンも小さくしたい。？の右にサンプルボタンを配置してほしい」） -->
+  <div class="guide-row noprint">
   <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
   <div class="slide-sample noprint">
     <!-- ⭐名前は①の切り替えに寄せる（2026-09-15 本人） -->
@@ -83,6 +85,7 @@
     <button type="button" class="mini" id="sampleL">サンプル②（発表者をスライド）</button>
     <button type="button" class="mini" id="sampleOff" hidden>サンプルを消す</button>
     <span class="saving" id="sampleMsg"></span>
+  </div>
   </div>
 
   <!-- ⭐PCでは左右に並べる（2026-10-04 本人「左右になってないよ」「座席表も何も入ってなくても表示あるよね。そんな風に箱を出しておこう」）。
@@ -261,33 +264,40 @@
   </details>
 
   <!-- 1枚だけ見る（準備と本番のあいだ） -->
-  <div class="card" id="checkCard" hidden>
-    <h2><span class="step">3</span>1枚だけスライドを表示&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></h2>
+  <!-- ⭐スマホの③もシャッター（2026-10-04・PCの右の箱と同じ開け閉め）。⚠summary の中にボタンを置かない＝？は中の1行に -->
+  <details class="opt" id="checkCard" hidden open>
+    <summary><span class="step">3</span>見本の小窓</summary>
+    <div class="body">
+    <p class="hint">見本の小窓の使い方&#8288;<button type="button" class="tip-btn" aria-label="説明"></button></p>
     <div class="tip-body" hidden>
-      <p><strong>見本の小窓</strong>＝選んだ1枚が小さく映ります。<strong>押すと大きく</strong>なります（全画面にはなりません）。見て、直して、また見る、がすぐできます。</p>
-      <p>⚠<strong>文字の大きさと改行は、画面の広さで変わります。</strong>本番の見え方は、下の<strong>「スライド表示にする」</strong>で確かめられます。</p>
-      <p><strong>1枚だけモニターで表示</strong>＝選んだ1枚から、全画面で出します。途中から出したいときや、1枚だけ出しておきたいときに。</p>
+      <p><strong>見本の小窓</strong>＝選んだ1枚が小さく映ります。打つたびにその場で変わるので、見て、直して、また見る、がすぐできます。</p>
+      <p><strong>小窓を押すと</strong>、小窓に映っている1枚から、モニターいっぱいに映します。そのまま左右に進められます。途中から出したいときに。</p>
+      <p>⚠<strong>文字の大きさと改行は、画面の広さで変わります。</strong>本番の見え方は、小窓を押して確かめてください。</p>
     </div>
     <!-- ⭐見本の小窓（2026-10-04 本人「小窓でどういう風に表示されるか見ながら確認したい」・連絡帳の板書と同じ）。
-         選んだ1枚が、打つたびにその場で小さく映る。押すと「この画面で見る」と同じ大きさ。中身は slide.js が #show を入れる -->
+         選んだ1枚が、打つたびにその場で小さく映る。中身は slide.js が #show を入れる
+         ⭐押すと、その1枚からモニターで表示（2026-10-04 本人「全部モニターで表示でいいかも」「1枚だけモニターで表示で、右左に進めてた。これ、いる？」→ ボタンは外して小窓に1つ・連絡帳の板書と同じ） -->
     <!-- ⭐右の列に出すもの（PCだけ）。PCでは小さなスクリプトが右の箱（.lr-side）へ移す -->
     <div id="lrR">
-    <div class="mini" id="mini" role="button" tabindex="0" title="押すと大きく表示" aria-label="見本の小窓。押すと大きく表示"><div class="mini-in" id="miniIn"></div><span class="mini-tag">押すと大きく</span></div>
+    <div class="mini" id="mini" role="button" tabindex="0" title="押すと、この1枚からモニターで表示" aria-label="見本の小窓。押すと、この1枚からモニターで表示"><div class="mini-in" id="miniIn"></div><span class="mini-tag">▶ モニターで表示</span></div>
     <div class="row">
       <select id="checkNo"></select>
-      <!-- ⭐「この画面で見る」はなくした（2026-10-04 本人「この画面で見ると1枚だけモニターで表示が全く同じ動きをすることになった。だからどっちかだけにしよう。1枚だけのほうがわかりやすい」）。大きく見るのは小窓を押す -->
-      <button id="fromBtn">1枚だけモニターで表示</button>
+      <!-- ⭐「この画面で見る」「1枚だけモニターで表示」はなくした（2026-10-04 本人）。モニターで表示は小窓を押す -->
     </div>
     </div>
-  </div>
+    </div>
+  </details>
 
   <!-- ⭐右の箱（PCだけ）＝見本の小窓。上の端は①とそろう・下にスクロールしても画面に残る（座席表と同じ）。
        ⭐何も無いときも箱は出す（本人「座席表も何も入ってなくても表示あるよね」）＝白い紙の形に案内の1行 -->
-  <aside class="lr-side"><div class="lr-stick" id="lrStick">
-    <p class="lr-ttl"><span class="step">3</span>見本（1枚ずつ）</p>
+  <!-- ⭐③もシャッター（2026-10-04 本人「③もシャッターにしたらいいじゃん」）。開け閉めは①と一緒（slide.js のいちばん下） -->
+  <aside class="lr-side"><details class="opt lr-stick" id="lrStick" open>
+    <summary><span class="step">3</span>見本（1枚ずつ）</summary>
+    <div class="body">
     <div id="lrSlotR"></div>
     <div class="lr-paper noprint">①に文字を入れて「入れる」を押すと、<br>ここにスライドの見本が出ます。</div>
-  </div></aside>
+    </div>
+  </details></aside>
   </div><!-- /.lr -->
 
   <!-- ⭐「スライドをモニターで表示」は左右の区画の外＝全体の真ん中（2026-10-04 本人「スライドをモニターで表示は、全体の真ん中に」） -->
@@ -398,7 +408,7 @@
       <h3>作っているとき</h3>
       <ul>
         <li>⭐<b>「作成中」にチェック</b>を入れておくと、出したあとも設定が開いたままです。作りながら何度も見られます。</li>
-        <li><b>枚数を選んで「この画面で見る」</b>を押すと、その1枚だけ確かめられます（全画面になりません）。</li>
+        <li><b>何枚目かを選ぶと</b>、見本の小窓にその1枚が映ります。<b>小窓を押すと</b>、その1枚からモニターいっぱいに映します。</li>
         <li>⚠<b>本番のときはチェックを外してください。</b>外しておくと、出したときに設定がたたまれて、見ている人に見えません。</li>
       </ul>
 
@@ -488,7 +498,7 @@
 </div>
 
 <script src="../roster-tools.js?v=1"></script>
-<script src="slide.js?v=109"></script>
+<script src="slide.js?v=113"></script>
 <script>
 /* ⭐PCで左右に並べる（2026-10-04 本人・座席表と同じ作り＝ページの型22）。
    ⭐PC（1000px以上）のときだけ、見本の小窓（#lrR）を右の箱（.lr-side）へ移す。狭くなったら元の場所（③の中）へ戻す。

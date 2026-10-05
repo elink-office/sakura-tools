@@ -32,8 +32,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&display=swap">
-<link rel="stylesheet" href="../style.css?v=159">
-<link rel="stylesheet" href="seki.css?v=44">
+<link rel="stylesheet" href="../style.css?v=162">
+<link rel="stylesheet" href="seki.css?v=47">
 <link rel="stylesheet" href="../print.css?v=63" media="print">
 <style>
 /* 🔴 見本は押すと大きくなる（2026-09-04 本人）。
@@ -110,7 +110,7 @@
   </div>
   <div class="site-sub"><div class="wrap"><span class="now-long">席次表メーカー</span><span class="now-short">席次表</span></div></div>
 </header>
-<script src="../site.js?v=1"></script>
+<script src="../site.js?v=4"></script>
 
 <main class="wrap">
   <h1>席次表メーカー</h1>
@@ -137,13 +137,16 @@
   <!-- ⭐PCでは左に設定・右に席次表（2026-10-02 本人「ほかの座席ツールもこの考えでやってみて」＝座席表と同じ形）。
        ⭐並べ方は seki.css の .lr と、下の小さなスクリプトだけ。class="lr" を外すと、今までの上から下の並びに戻る。スマホ・狭い画面は上から下のまま -->
   <div class="lr" id="lr">
+  <!-- ⭐？の案内の右にサンプルのボタン・ボタンは小さく（2026-10-04 本人「全体のサンプルのボタンも小さくしたい。？の右にサンプルボタンを配置してほしい」） -->
+  <div class="guide-row noprint">
+  <p class="tip-guide noprint" id="tipGuide"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
   <div class="seki-sample noprint" id="lrSample">
-    <button type="button" id="sample1Btn">サンプル①（研修）</button>
-    <button type="button" id="sample2Btn">サンプル②（大学・学科で色分け）</button>
-    <button type="button" id="sampleClear" hidden>サンプルを消す</button>
+    <button type="button" class="mini" id="sample1Btn">サンプル①（研修）</button>
+    <button type="button" class="mini" id="sample2Btn">サンプル②（大学・学科で色分け）</button>
+    <button type="button" class="mini" id="sampleClear" hidden>サンプルを消す</button>
     <span class="saving" id="sampleMsg"></span>
   </div>
-  <p class="tip-guide noprint" id="tipGuide"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
+  </div>
 
 
 
@@ -731,7 +734,7 @@
 <script src="../paper-pdf.js?v=5"></script>
 <script src="../seating.js?v=57"></script>
 <script src="../roster-tools.js?v=1"></script>
-<script src="seki.js?v=103"></script>
+<script src="seki.js?v=104"></script>
 <script>
 /* ⭐PCで左右に並べる（2026-10-02 本人・座席表と同じ）。
    ⭐PC（1000px以上）のときだけ、席次表（#lrR）を右の箱（.lr-side）へ移す。狭くなったら元の場所へ戻す。

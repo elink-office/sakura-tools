@@ -20,8 +20,8 @@
 <meta property="og:image" content="https://sakura-tools.com/img/ogp-sakura.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<link rel="stylesheet" href="../style.css?v=159">
-<link rel="stylesheet" href="bus.css?v=16">
+<link rel="stylesheet" href="../style.css?v=162">
+<link rel="stylesheet" href="bus.css?v=21">
 <!-- Google AdSense（2026-09-28 審査の前にそろえた） -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9296990556079874" crossorigin="anonymous"></script>
 </head>
@@ -42,7 +42,7 @@
   </div>
   <div class="site-sub"><div class="wrap"><span class="now-long">バスの座席表メーカー</span><span class="now-short">バス座席表</span></div></div>
 </header>
-<script src="../site.js?v=1"></script>
+<script src="../site.js?v=4"></script>
 
 <main class="wrap bs-set">
   <h1>バスの座席表メーカー</h1>
@@ -58,20 +58,23 @@
     </div>
     <!-- ⭐たての見本＝見積書メーカーと同じ形。上だけ見せて、押すと全体（2026-09-27 本人）。⚠JSは使わない -->
     <input type="checkbox" id="sampleOpen" class="t-sample-open noprint">
-    <figure class="t-sample noprint"><img src="../img/bus-sample.png?v=5" width="800" height="1120" alt="バスの座席表の見本。前に入口と運転席、2席と2席の並びに名前が入り、左右に列の番号"><label for="sampleOpen" aria-label="見本を大きく見る"></label></figure>
+    <figure class="t-sample noprint"><img src="../img/bus-sample.png?v=8" srcset="../img/bus-sample-s.png?v=8 792w, ../img/bus-sample.png?v=8 1600w" sizes="(min-width:860px) 460px, 396px" width="800" height="1120" alt="バスの座席表の見本。前に入口と運転席、2席と2席の並びに名前が入り、左右に列の番号"><label for="sampleOpen" aria-label="見本を大きく見る"></label></figure>
   </div>
 
   <!-- ⭐サンプルのボタンは①の上（ページの型 12-a） -->
   <!-- ⭐PCでは左に設定・右に④座席表（2026-10-02 本人「ほかの座席ツールもこの考えでやってみて」＝座席表と同じ形）。
        ⭐並べ方は bus.css の .lr と、下の小さなスクリプトだけ。class="lr" を外すと、今までの上から下の並びに戻る。スマホ・狭い画面は上から下のまま -->
   <div class="lr" id="lr">
+  <!-- ⭐？の案内の右にサンプルのボタン・ボタンは小さく（2026-10-04 本人「全体のサンプルのボタンも小さくしたい。？の右にサンプルボタンを配置してほしい」） -->
+  <div class="guide-row noprint">
+  <p class="tip-guide noprint" id="tipGuide"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
   <div class="bs-sample noprint" id="lrSample">
-    <button type="button" id="sample1Btn">サンプル①（班ごと）</button>
-    <button type="button" id="sample2Btn">サンプル②（作成途中・手で入れる）</button>
-    <button type="button" id="sampleClear" hidden>サンプルを消す</button>
+    <button type="button" class="mini" id="sample1Btn">サンプル①（班ごと）</button>
+    <button type="button" class="mini" id="sample2Btn">サンプル②（作成途中・手で入れる）</button>
+    <button type="button" class="mini" id="sampleClear" hidden>サンプルを消す</button>
     <span class="saving" id="sampleMsg"></span>
   </div>
-  <p class="tip-guide noprint" id="tipGuide"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
+  </div>
 
   <details class="opt" id="opt1">
     <summary><span class="step">1</span>名簿の入力</summary>
@@ -81,7 +84,7 @@
         <select id="clsSel" aria-label="保存済の名簿"></select>
         <button class="mini" id="clsLoad" type="button">この名簿を読み込む</button>
       </div>
-      <p class="bs-lbl">名前（1行に1人）<button type="button" class="tip-btn" aria-label="説明"></button></p>
+      <p class="bs-lbl">エクセルから貼り付ける（項目名不要）<button type="button" class="tip-btn" aria-label="説明"></button></p>
       <div class="tip-body" hidden>
         <p>🔒 <strong>名簿はインターネットに送りません。</strong>使っている端末のブラウザの中だけで並べているので、名前がどこかに保存されることも、AIの学習に使われることもありません。パソコン・タブレット・スマホ、どれでも同じです。</p>
         <ul>
@@ -90,8 +93,19 @@
           <li>1台ぶんの名簿を貼ってください。2台に分かれるときは、1台ずつ作ります。</li>
         </ul>
       </div>
-      <textarea id="names" rows="6" placeholder="あいざわ ゆい&#10;いのうえ そうた&#10;うえだ りこ"></textarea>
+      <p class="hint names-fmt" style="margin:2px 0 6px">出席番号・名前（名字と名前の間を空けると、改行できます）</p><!-- ⭐欄の上に何を貼るかの1行（2026-10-05 本人「出席番号　名前　性別（名前の空白で改行可能）って書くってのはどう？」→ コードの案「男女」「名字と名前の間を空けると」→「書いて」） -->
+      <!-- ⭐名簿の書き方の基準＝出席番号と名前（と男女）。4つ（座席表・バス・新幹線・ランダム指名）でそろえた（2026-10-05 本人「出席番号と名前（と男女）だけでいい」「班は毎回変わるし」）。カンマの見本はやめた（本人「手書きしないと思うから。それやめよう」）。班の列の貼り方は②で説明する -->
+      <textarea id="names" rows="6" placeholder="クリックして貼り付け（手入力可）&#10;&#10;1　相沢 ゆい&#10;2　石川 はる&#10;3　井上 そうた&#10;（名前だけでもOK）"></textarea>
       <p class="bs-count"><span id="nameCount">0人</span><button type="button" class="mini" id="namesClear">消す</button></p>
+      <!-- ⭐名前の見せ方（2026-10-05 本人「ひらがなの1年生は改行の指示がいる？座席表みたいに」「バスは1年生でも遠足に行くからね」）。
+           ⭐言葉と選べるものは座席表と同じ。はじめは「1行のまま」。新幹線には付けない（本人「新幹線はひらがな使わない」） -->
+      <div class="bs-line"><label for="nameMode">名前の見せ方</label>
+        <select id="nameMode">
+          <option value="one">1行のまま</option>
+          <option value="wrap">姓と名で改行</option>
+          <option value="sei">名字だけ</option>
+        </select>
+      </div>
 
       <p class="safe">🔒 <strong>使っている端末の中だけで完結しています。</strong>安心してご利用ください。</p>
 
@@ -174,7 +188,7 @@
           <div class="tip-body" hidden>
             <p>班は、名前ごとに決めます。<strong>決めた班は人に付くので、④で席を動かすと、班の色もいっしょに動きます。</strong></p>
             <ul>
-              <li>①の名簿に、Excelの「班」の列（1・2・3… または 1班・2班…）をいっしょに貼ると、そのまま読み取ります。</li>
+              <li><strong>いちばん速いのは、Excelで名前の右に「班」の列（1・2・3… または 1班・2班…）を作って、①にいっしょに貼る方法です。</strong>そのまま班になります。サンプル①の名簿がこの形です。<!-- ⭐2026-10-05 本人「Excelで班を入力したほうが仕事が早いと私は思ってる」＝①の基準には入れず、②で説明する --></li>
               <li>座席表メーカーで名簿を保存して「記録」を残していると、「座席表の班を使う」でその記録の班を入れられます。記録にいない人は班なしになるので、この下の一覧で選んでください。</li>
               <li>この下の一覧で、1人ずつ選び直せます。</li>
               <li>班の数を入れて「自動で分ける」を押すと、名簿の人を班に分けます。並べ方が名簿の順なら上から順に、それ以外はランダムです。</li>
@@ -212,15 +226,19 @@
         <span class="bs-chips-lbl">席に入っていない人</span>
         <div id="chips"></div>
       </div>
+      <!-- ⭐「班でまとめ直す」の横に「全画面で確認」（2026-10-05 本人「全画面で確認のボタンが班でまとめなおすの下にある。これ、横にしたい」）。
+           班が1人もいないときは「班でまとめ直す」だけ出さない＝「全画面で確認」は左に寄る -->
+      <div class="bs-tools noprint">
       <!-- ⭐班でまとめ直す（2026-09-27 本人）。班が1人もいないときは出さない -->
       <p class="bs-regroup noprint" id="regroupRow" hidden><button type="button" class="mini" id="regroupBtn">班でまとめ直す</button><button type="button" class="mini" id="regroupUndo" hidden>1つ戻す</button><span class="tm-hint" id="regroupMsg"></span></p>
-      <p class="bs-warn noprint" id="condWarn" hidden></p>
-      <p class="bs-selrow noprint" id="selRow" hidden><span id="selLbl"></span><button type="button" class="mini" id="emptyBtn">この席を空にする</button><button type="button" class="mini" id="unselBtn">選ぶのをやめる</button></p>
-
       <!-- ⭐全画面で確認（2026-10-02 本人「全体が見えないのがしんどいね」→「全画面で確認とかは？」）。
            ⭐座席表だけを画面いっぱいに出す。中でもマウスで席を動かせる。右上の「✕ とじる」か Esc で戻る（ページの型 14-7）。
            ⭐PDFは元のまま（A4のたて）。横の1行は「全画面でも座席の入れ替えができます。」（2026-10-02 本人。前は「全画面にしても、PDFは元のまま（A4のたて）で出ます。」） -->
       <p class="bs-fsrow noprint"><button type="button" id="fsBtn">⛶ 全画面で確認</button><span class="hint">全画面でも座席の入れ替えができます。</span></p>
+      </div>
+      <p class="bs-warn noprint" id="condWarn" hidden></p>
+      <p class="bs-selrow noprint" id="selRow" hidden><span id="selLbl"></span><button type="button" class="mini" id="emptyBtn">この席を空にする</button><button type="button" class="mini" id="unselBtn">選ぶのをやめる</button></p>
+
       <div id="sheetBox">
         <button type="button" id="fsClose" class="noprint">✕ とじる</button>
         <div class="sheet" id="sheet">
@@ -346,7 +364,7 @@
 <datalist id="nameList"></datalist>
 <script src="../paper-pdf.js?v=5"></script>
 <script src="../roster-tools.js?v=1"></script>
-<script src="bus.js?v=20"></script>
+<script src="bus.js?v=25"></script>
 <script>
 /* ⭐PCで左右に並べる（2026-10-02 本人・座席表と同じ考え）。
    ⭐PC（1000px以上）のときだけ、④座席表（#opt4）を右の列（.lr-side）へ移す。狭くなったら元の場所へ戻す。

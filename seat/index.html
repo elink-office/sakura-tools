@@ -33,8 +33,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&display=swap">
-<link rel="stylesheet" href="../style.css?v=159">
-<link rel="stylesheet" href="seat.css?v=30">
+<link rel="stylesheet" href="../style.css?v=162">
+<link rel="stylesheet" href="seat.css?v=33">
 <link rel="stylesheet" href="../print.css?v=63" media="print">
 <style>
 /* 🔴 班長・前回とのくらべ・クラスの保存（2026-08-31）。
@@ -234,7 +234,7 @@ body.screen .seat.dup .nm{text-decoration:none}
   </div>
   <div class="site-sub"><div class="wrap"><span class="now-long">座席表メーカー</span><span class="now-short">座席表</span></div></div>
 </header>
-<script src="../site.js?v=1"></script>
+<script src="../site.js?v=4"></script>
 
 <main class="wrap">
   <h1>教室の座席表メーカー</h1>
@@ -259,7 +259,7 @@ body.screen .seat.dup .nm{text-decoration:none}
     <!-- 🔴 押して大きくするのはやめた（2026-09-06 本人「見本はもういらない。画像を押さなくても
          いいようにしよう…そのままでもちゃんと見本は見える。それより下にスクロールしてもらいたい」）-->
     <figure class="t-sample noprint">
-      <img src="../img/seat-sample.png?v=10" width="1280" height="720" alt="33人・6列の教室の座席表の完成見本。3人の班やかぎ型の班も作れる">
+      <img src="../img/seat-sample.png?v=13" width="1280" height="720" alt="33人・6列の教室の座席表の完成見本。3人の班やかぎ型の班も作れる">
     </figure>
   </div>
   <!-- ⭐サンプルのボタンは①の上（2026-09-14 本人「ボタンを押したらサンプルが見れて、こういう仕組みだってわかったほうがいい」）。
@@ -267,13 +267,16 @@ body.screen .seat.dup .nm{text-decoration:none}
   <!-- ⭐PCでは左に設定・右に座席表（2026-10-02 本人「左側にウィンドウ作って右側に見れるようにしたほうがよくない？」「見ながら操作できるから」）。
        ⭐並べ方は seat.css の .lr だけ。class="lr" を外すと、今までの上から下の並びに戻る。スマホ・狭い画面は上から下のまま -->
   <div class="lr" id="lr">
+  <!-- ⭐？の案内の右にサンプルのボタン・ボタンは小さく（2026-10-04 本人「全体のサンプルのボタンも小さくしたい。？の右にサンプルボタンを配置してほしい」） -->
+  <div class="guide-row noprint">
+  <p class="tip-guide noprint" id="tipGuide"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
   <div class="seat-sample noprint" id="seatSample">
-    <button type="button" id="sample1Btn">サンプル①（出席番号順）</button>
-    <button type="button" id="sample2Btn">サンプル②（班分け）</button>
-    <button type="button" id="sampleClear" hidden>サンプルを消す</button>
+    <button type="button" class="mini" id="sample1Btn">サンプル①（出席番号順）</button>
+    <button type="button" class="mini" id="sample2Btn">サンプル②（班分け）</button>
+    <button type="button" class="mini" id="sampleClear" hidden>サンプルを消す</button>
     <span class="saving" id="sampleMsg"></span>
   </div>
-  <p class="tip-guide noprint" id="tipGuide"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
+  </div>
 
 
 
@@ -291,7 +294,6 @@ body.screen .seat.dup .nm{text-decoration:none}
         <ul>
           <li><strong>名前の列をコピーして、この欄に貼るだけです。</strong></li>
           <li><strong>出席番号や男女の列が一緒でもかまいません。</strong>読み分けます。<strong>列の順番も自由</strong>で、見出しの行（番号・氏名・性別など）はとばします。</li>
-          <li>手で書くときは、<strong>カンマ（,）で区切って</strong>もかまいません。<span class="hint">1,やまだ たろう,男</span></li>
           <li>⚠住所やメモの列が<strong>名前より左</strong>にあると、そちらを名前と読みます。左には置かないでください。</li>
           <li><strong>貼ったあとに手で足したり直したりできます。</strong>転入生が来たときは1行足すだけです。</li>
           <li>名字と名前のあいだの空白は、あってもなくても大丈夫です（空白があると「姓と名で改行」が使えます）。同じ名字の子がいるときは、<strong>名前まで入れておく</strong>と取りちがえません。</li>
@@ -323,7 +325,9 @@ body.screen .seat.dup .nm{text-decoration:none}
       <!-- ⭐枠の上にも出す（2026-09-10 本人「エクセルから貼り付けるってあったほうがいいよね」）。
            ⚠知り合いの先生からも同じことを言われたとのこと -->
       <label for="names">エクセルから貼り付ける（項目名不要）</label><!-- ⭐（項目名不要）を足した（2026-09-28 本人） -->
-      <textarea id="names" placeholder="クリックして貼り付け（手入力可）&#10;&#10;1,やまだ たろう,男&#10;2,さとう はなこ,女&#10;すずき いちろう（名前だけでもOK）"></textarea>
+      <p class="hint names-fmt" style="margin:2px 0 6px">出席番号・名前・男女（名字と名前の間を空けると、改行できます）</p><!-- ⭐欄の上に何を貼るかの1行（2026-10-05 本人「出席番号　名前　性別（名前の空白で改行可能）って書くってのはどう？」→ コードの案「男女」「名字と名前の間を空けると」→「書いて」） -->
+      <!-- ⭐名簿の書き方の基準＝出席番号と名前（と男女）。4つ（座席表・バス・新幹線・ランダム指名）でそろえた（2026-10-05 本人「出席番号と名前（と男女）だけでいい」「班は毎回変わるし」）。カンマの見本はやめた（本人「手書きしないと思うから。それやめよう」）。班の列の貼り方は②で説明する -->
+      <textarea id="names" placeholder="クリックして貼り付け（手入力可）&#10;&#10;1　相沢 ゆい　女&#10;2　石川 はる　男&#10;3　井上 そうた　男&#10;（名前だけでもOK）"></textarea>
       <!-- ⭐今のデータをクリア（2026-09-28 本人「2クラス目を入力したいときに、削除しかない。削除じゃなくてクリアしたいんだけど」）。
            ⭐置き場所は貼り付け欄のすぐ下（本人「Excelから貼り付けるの下がいいと思ってた」）。⚠最初は人数のとなりに置いてしまった
            ⚠「削除」は保存したデータを消す。こちらは画面の名簿だけ。空けた席も消す。会場の形・見た目・保存したデータは残す -->
@@ -908,7 +912,7 @@ body.screen .seat.dup .nm{text-decoration:none}
 <script src="../paper-pdf.js?v=5"></script>
 <script src="../seating.js?v=57"></script>
 <script src="../roster-tools.js?v=1"></script>
-<script src="seat.js?v=231"></script>
+<script src="seat.js?v=232"></script>
 <script>
 /* ⭐PCで左右に並べる（2026-10-02 本人）。
    ⭐PC（1000px以上）のときだけ、サンプルのボタンと座席表（#lrR）を右の列（.lr-side）へ移す。

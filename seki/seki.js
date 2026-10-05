@@ -2521,7 +2521,8 @@
       closeCond(); run(true);
       $('sampleClear').hidden = false; $('sampleClear2').hidden = false; $('undo').hidden = true;
       /* ⭐左右に並べているとき（PC）は知らせを出さない＝すぐ下に出る（2026-10-02・座席表と同じ） */
-      $('sampleMsg').textContent = getComputedStyle($('lr') || document.body).display === 'grid' ? '' : 'サンプル' + (kind === 2 ? '②（大学・学科で色分け）' : '①（研修）') + 'を出しました。下の席次表で見られます';
+      /* ⭐入れたときは知らせを出さない（2026-10-04 本人「揃えよう」・スマホも。全部の道具で同じ） */
+      $('sampleMsg').textContent = '';
       refreshClsUI();   // ⭐サンプルの間は①の「保存済のデータ」を隠す
     }
     function clearSample() {
@@ -2553,7 +2554,9 @@
       }
       $('msg').innerHTML = '';
       showSample(); showSaving();
-      $('sampleMsg').textContent = (s && s.snap.names) ? 'サンプルを消して、元の名簿に戻しました' : 'サンプルを消しました';
+      /* ⭐消したときは「サンプルを消しました」を3秒（2026-10-04 本人「揃えよう」・全部の道具で同じ） */
+    $('sampleMsg').textContent = 'サンプルを消しました';
+    clearTimeout(clearSample.t); clearSample.t = setTimeout(function () { $('sampleMsg').textContent = ''; }, 3000);
       refreshClsUI();   // ⭐「保存済のデータ」を元どおり出す
     }
     $('sample1Btn').onclick = function () { loadSample(1); };

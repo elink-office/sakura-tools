@@ -169,7 +169,7 @@ function sampleIn(s,msg){
   $("sampleMsg").textContent=msg; setTimeout(function(){ $("sampleMsg").textContent=""; },3500);
 }
 $("sample1Btn").addEventListener("click",function(){
-  sampleIn({src:"name", names:SAMPLE_NAMES.join("\n"), num:st.num, han:st.han, k:1, view:"card"},"サンプルの名前を35人入れました");
+  sampleIn({src:"name", names:SAMPLE_NAMES.join("\n"), num:st.num, han:st.han, k:1, view:"card"},"");   // ⭐入れたときは知らせを出さない（2026-10-04 本人「揃えよう」・全部の道具で同じ）
 });
 $("sample2Btn").addEventListener("click",function(){
   sampleIn({src:"han", names:st.names, num:st.num, han:8, k:1, view:"bingo"},"8班・ビンゴにしました");

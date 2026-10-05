@@ -2737,8 +2737,8 @@
       $('sampleClear').hidden = false; $('sampleClear2').hidden = false; $('undo').hidden = true;
       /* ⭐左右に並べているとき（.lr・PC）は知らせを出さない（2026-10-02 本人「すぐ下に出るからいらないね。
          サンプルを消すをすぐ上で見れるようにしたいし」）。スマホは座席表が遠いので今までどおり */
-      $('sampleMsg').textContent = getComputedStyle($('lr') || document.body).display === 'grid' ? '' :
-        'サンプル' + (kind === 2 ? '②（班分け）' : '①（出席番号順）') + 'を出しました。下の座席表で見られます';
+      /* ⭐入れたときは知らせを出さない（2026-10-04 本人「揃えよう」・スマホも。全部の道具で同じ） */
+      $('sampleMsg').textContent = '';
       refreshClsUI();   // ⭐サンプルの間は①の「保存済のデータ」を隠す
     }
     $('sample1Btn').onclick = function () { loadSample(1); };
@@ -2779,14 +2779,19 @@
         } else {
           $('result').hidden = true;
         }
-        $('sampleMsg').textContent = s.hasNames ? 'サンプルを消して、元の名簿に戻しました' : 'サンプルを消しました';
+        sampleGone();
         refreshClsUI();   // ⭐「保存済のデータ」を元どおり出す
       } else {
         $('result').hidden = true;
         refreshNames();
-        $('sampleMsg').textContent = 'サンプルを消しました';
+        sampleGone();
         refreshClsUI();
       }
+    }
+    /* ⭐消したときは「サンプルを消しました」を3秒（2026-10-04 本人「揃えよう」・全部の道具で同じ） */
+    function sampleGone() {
+      $('sampleMsg').textContent = 'サンプルを消しました';
+      clearTimeout(sampleGone.t); sampleGone.t = setTimeout(function () { $('sampleMsg').textContent = ''; }, 3000);
     }
     $('sampleClear').onclick = clearSample;
     $('sampleClear2').onclick = clearSample;
