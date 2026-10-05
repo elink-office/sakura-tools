@@ -399,7 +399,7 @@ function count321(fn){
   var box=$("cnt"), n=3;
   function step(){
     if(n===0){ box.innerHTML=""; run.busy=false; fn(); updateBtn(); return; }
-    box.innerHTML='<span>'+n+'</span>'; n--; later(step,800);
+    box.innerHTML='<span>'+n+'</span>'; n--; later(step,1200);   // ⭐1つ1.2秒（2026-10-05 本人「ちょっと早くない？」「少し遅いくらいがいいのに」。前は0.8秒）
   }
   step();
 }
