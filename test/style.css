@@ -61,7 +61,8 @@ body{
    （2026-09-06 本人「詳しくは押すと、スマホで上が見にくい」）。
    ⭐ヘッダーは約40px。少し余裕を見て52px空ける＝飛び先の頭が画面の上に出る */
 [id]{scroll-margin-top:52px}
-.site-head .wrap{display:flex;align-items:center;gap:10px;padding:7px 16px}
+.site-head .wrap{display:flex;align-items:center;gap:10px;padding:7px 16px;
+  max-width:70rem}   /* ⭐ヘッダーは全ページ1120px＝トップと同じ（2026-10-04 本人「ヘッダーはトップにそろえよう」）。ページを移ってもロゴが動かない。本文の幅は道具ごと（あとで考える） */
 .site-head a{color:var(--ink);text-decoration:none;font-weight:bold}
 .site-head .logo{font-size:1.1rem}
 .site-head nav{margin-left:auto;font-size:.9rem}
