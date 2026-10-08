@@ -69,11 +69,11 @@
 
 <main class="wrap">
   <div class="t-hero">
-    <h1>仕事を徹底的に時短したい人のための道具箱</h1>
+    <h1>仕事を徹底的に時短したい人のためのツールの宝箱</h1>
     <p class="t-catch">
       <span>今使っている端末で仕事を完結<span class="nl">データは漏れない、だから安心</span></span>
     </p>
-    <p class="lead">「同じことの繰り返しはもうイヤ」「この2つのデータ、ほぼ一緒なのにまた入力」<strong>そんな時間を減らしたい人のための道具箱</strong>。すべて無料です。<a class="more" href="#naze">くわしくは →</a></p>
+    <p class="lead">「同じことの繰り返しはもうイヤ」「この2つのデータ、ほぼ一緒なのにまた入力」<strong>そんな時間を、さくらツールズで減らしませんか</strong>。すべて無料です。<a class="more" href="#naze">くわしくは →</a></p>
     <!-- ⭐道具の札（2026-09-28 本人「これから増えていくなら、そこにいろいろ置いてぱっと見で見れるの面白いよね」「並びは左から順にツール一覧の並び」）。形＝保存欄の「共通で使えます」の札（.rt-list）と同じ -->
     <nav class="t-chips" aria-label="無料ツール">
       <a href="typing/">タッチタイピング</a>
@@ -84,6 +84,10 @@
       <a href="timer/">カウントダウンタイマー</a>
       <a href="timer/progress/">進行タイマー</a>
       <a href="excel-fx/">関数早見表</a>
+      <a href="space-delete/">スペース削除</a>
+      <a href="space-unify/">スペース統一</a>
+      <a href="name-join/">姓と名の結合</a>
+      <a href="qr/">QRコード作成</a>
       <a href="seki/">席次表</a>
       <a href="bus/">バスの座席表</a>
       <a href="shinkansen/">新幹線の座席表</a>
@@ -93,7 +97,6 @@
       <a href="roulette/">ルーレット</a>
       <a href="fukubiki/">福引</a>
       <a href="bingo/">ビンゴ</a>
-      <a href="qr/">QRコード作成</a>
     </nav>
   </div>
 
@@ -264,12 +267,39 @@
       </div>
     </a>
 
+    <!-- ⭐スペースの3つ（2026-10-08 本人「トップのカードは画像1つだけ置いてみようか。一番検索されるに置きたい」）。
+         絵つきはスペース削除だけ＝Googleトレンド（日本・過去12か月・2026-10-08）で スペース削除60・名前結合9・スペース統一1。
+         説明文はコードの下書き。スペース削除は本人「名前は合っているのに見つからない…後出しならいいよ」で順を入れかえた -->
+    <!-- ⭐トップだけの並び（2026-10-08 本人「トップだけ関数早見表を右にしてスペース統一と名前の結合を並べてください」）
+         ＝左の列に スペース統一・名前の結合（縦に並ぶ）／まん中に スペース削除（絵つき）／右に 関数早見表。⚠ヘッダーのツール一覧の並びは変えない -->
+    <a class="t-card work" id="space-unify" href="space-unify/">
+      <div class="t-tool">
+        <span class="nm">スペース統一</span>
+        <span class="ds">集めた名簿、名前の間が全角と半角でバラバラ。貼るだけで、どちらか1つにそろう！VLOOKUPでも見つかる</span>
+      </div>
+    </a>
+
+    <a class="t-card big work" id="space-delete" href="space-delete/">
+      <div class="t-tool">
+        <span class="nm">スペース削除</span>
+        <span class="ds">Excelから貼るだけで、全角も半角もまとめて消せる！「名前は合っているのに見つからない」の原因はこれかも</span>
+        <img class="t-shot" src="img/space-sample.png?v=2" width="1280" height="720" alt="スペース削除の画面。左に貼った表のスペースに印が付き、右にスペースを消した結果が出ている">
+      </div>
+    </a>
+
     <!-- ⭐関数早見表（2026-09-08 公開）。⚠仕事のほうの道具なので work
          ⚠2026-10-04 連絡帳の板書を足したので、見積書・請求書がビンゴ・QRの横に上がり、関数早見表だけ次の段に1つ（本人「関数早見表がはみ出すね笑　次は事務系のツールにしようとは思ってる」） -->
     <a class="t-card work" id="excel-fx" href="excel-fx/">
       <div class="t-tool">
         <span class="nm">Excel関数 早見表</span>
         <span class="ds">覚える順があるから、いつの間にか覚えてる。「SUMって何？」からも「〜したい」からも探せます。</span>
+      </div>
+    </a>
+
+    <a class="t-card work" id="name-join" href="name-join/">
+      <div class="t-tool">
+        <span class="nm">姓と名の結合</span>
+        <span class="ds">姓と名が別の列に入った名簿も、貼るだけで「山田　太郎」の1列に。関数もフラッシュフィルもいらない！</span>
       </div>
     </a>
 
@@ -319,6 +349,10 @@
       <li><a href="timer/">カウントダウンタイマー</a></li>
       <li><a href="timer/progress/">進行タイマー</a></li>
       <li><a href="excel-fx/">Excel関数 早見表</a></li>
+      <li><a href="space-delete/">スペース削除</a></li>
+      <li><a href="space-unify/">スペース統一</a></li>
+      <li><a href="name-join/">姓と名の結合</a></li>
+      <li><a href="qr/">QRコード作成</a></li>
       <li><a href="seki/">席次表</a></li>
       <li><a href="bus/">バスの座席表</a></li>
       <li><a href="shinkansen/">新幹線の座席表</a></li>
@@ -328,7 +362,6 @@
       <li><a href="roulette/">ルーレット</a></li>
       <li><a href="fukubiki/">福引</a></li>
       <li><a href="bingo/">ビンゴ</a></li>
-      <li><a href="qr/">QRコード作成</a></li>
     </ul>
 
     <!-- ⭐経理ツールはここに出さない。⭐ヘッダーの「経理ツール」から入る（2026-09-12 本人）
@@ -338,8 +371,8 @@
     <!-- ⭐記事（2026-09-26 本人「記事はすぐにUPして、アドセンスの審査を出したい」「リンクを貼ることを始めよう」）。新しい記事を上に足す。⭐2本くらいしか入らない（2026-09-29 本人）＝増えたら新しい2本だけ残して、あとは「記事一覧へ」から -->
     <h2>記事</h2>
     <ul>
+      <li><a href="articles/space-name/">名前のスペースは全角？半角？</a></li>
       <li><a href="articles/qr-school/">学校でQRコードを使うアイデア</a></li>
-      <li><a href="articles/home-position/">タッチタイピングへの近道の話</a></li>
     </ul>
     <p class="more"><a href="articles/">記事一覧へ →</a></p>
 

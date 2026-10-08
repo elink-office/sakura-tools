@@ -33,7 +33,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&display=swap">
 <link rel="stylesheet" href="../style.css?v=162">
-<link rel="stylesheet" href="seki.css?v=47">
+<link rel="stylesheet" href="seki.css?v=51">
 <link rel="stylesheet" href="../print.css?v=63" media="print">
 <style>
 /* 🔴 見本は押すと大きくなる（2026-09-04 本人）。
@@ -313,6 +313,9 @@
       <label class="chk-inline gap" id="grpNumWrap" hidden>
         <input type="checkbox" id="grpNum"> グループ記号をPDFに出す
       </label>
+      <!-- ⭐記号オフのときの知らせ（2026-10-08 本人「チェックを外しているときに、見本には…ちょっとメッセージがあるといいな」）。
+           薄い記号は押してグループを変えるために残している（本人「意図があってやってあるから、それは逆にいい」）。出し入れは seki.js の gnoNote -->
+      <p class="note-sm" id="grpNumNote" hidden>見本の薄いグループ記号は、押してグループを変えるためのものです。PDF・画像・モニターには出ません。</p>
       <div id="grpOpts" hidden style="margin-top:12px">
         <div class="row">
           <div><label for="grpStyle">分け方</label>
@@ -734,7 +737,7 @@
 <script src="../paper-pdf.js?v=5"></script>
 <script src="../seating.js?v=57"></script>
 <script src="../roster-tools.js?v=1"></script>
-<script src="seki.js?v=104"></script>
+<script src="seki.js?v=110"></script>
 <script>
 /* ⭐PCで左右に並べる（2026-10-02 本人・座席表と同じ）。
    ⭐PC（1000px以上）のときだけ、席次表（#lrR）を右の箱（.lr-side）へ移す。狭くなったら元の場所へ戻す。

@@ -238,3 +238,11 @@ main .chk-note{display:block; margin:2px 0 0}
   .mode-pick .mode-fig{grid-template-columns:repeat(3,10px); grid-template-rows:repeat(3,10px); margin:0}
   .mode-pick .mode-sub{display:block; font-size:.7rem}
 }
+
+/* 🔴グループ記号を「PDFに出す」を外したときの薄い記号（.gno.dim）は、PDFにも出さない（2026-10-08 本人「グループ記号をPDFに出すをチェックオフにしてるのに、記号が入っちゃった」）。
+   原因＝PDFは画面の見本をそのまま写す（paper-pdf.js）。薄い記号は画面に残しているので、紙にも写っていた。PDFを作るあいだ（body.pdfing）だけ消す */
+body.pdfing .sheet .seat .gno.dim{display:none !important}
+
+/* 🔴「色なし（番号だけ）」でも、薄い記号（.gno.dim）は薄いまま（2026-10-08 本人「色なし括弧番号だけを選択すると濃いグループ記号になる」）。
+   原因＝style.css の後ろのほうにある「.seat.g-none .gno{color:#555}」が、薄くする決まり（.seat .gno.dim）より後ろにあって勝っていた */
+.sheet .seat.g-none .gno.dim{ color: #c4c4c4; }

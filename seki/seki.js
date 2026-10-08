@@ -925,6 +925,12 @@
   }
 
   // ---- 座席表を描く ----
+  /* ⭐見本に薄い記号（.gno.dim）が出ているときだけ、「PDFには出ません」の知らせを出す（2026-10-08 本人） */
+  function gnoNote() {
+    var n = $('grpNumNote'); if (!n) return;
+    // ⚠見本が空になっても前の席が残っていることがあるので、チェックの状態も見る
+    n.hidden = !($('grpOn').checked && !$('grpNum').checked && state.seats && document.querySelector('#sheet .gno.dim'));
+  }
   function drawSheet() {
     // ⭐作る前にも②③と用紙の向きを触れるようになった（2026-09-28）＝まだ席が無いときは描かない
     if (!state.opt) return;
@@ -1187,9 +1193,9 @@
       note.innerHTML = (state.grp.on
         ? '席をドラッグすると、配置の移動ができます。<strong>グループ記号を押すと、席のグループと色を変更できます</strong>'
         : '席をドラッグすると、配置の移動ができます')
-        // 🔴 長押しにしたので、そのことを画面に書く（2026-09-03。座席表と同じ直し）
-        // ⭐改行しないで続ける（2026-09-23 本人「3行になるから、変更できます。スマホ・・・にして」）
-        + '。スマホ・タブレットは<strong>席を長押ししてから</strong>動かします。';
+        // ⭐「スマホ・タブレットは席を長押ししてから動かします」を外して、モニターのことを書いた（2026-10-08 本人の文そのまま）。
+        //   前＝長押しにしたので、そのことを画面に書く（2026-09-03。座席表と同じ直し）
+        + '。（モニターに映しても同様に操作できます）';
     }
     bindDrag();
     drawViolations();
@@ -1197,6 +1203,7 @@
     fitSheet();
     drawPreview();
     pickNote();
+    gnoNote();
     if (anchor && document.contains(anchor)) {
       var moved = anchor.getBoundingClientRect().top - keepTop;
       if (Math.abs(moved) > 1) window.scrollBy(0, moved);
@@ -1926,7 +1933,7 @@
         if (isDeadCol(sc, cols) || isOffSeat(r * cols + sc)) {
           /* ⭐空けた席＝点線だけ */
           roundRect(x, px + 4, py + 4, colW[c] - 8, ch - 8, 10);
-          x.setLineDash([6, 5]); x.strokeStyle = '#d4d4d4'; x.lineWidth = 2; x.stroke(); x.setLineDash([]);
+          x.setLineDash([6, 5]); x.strokeStyle = '#e6e6e6'; x.lineWidth = 1;   /* ⭐2→1（2026-10-08 本人「点線も実線も、ちょっと細く」＝空けた席の点線） */ x.stroke(); x.setLineDash([]);
           continue;
         }
         var gi = state.gmap ? state.gmap[r * cols + sc] : 0;
@@ -1939,7 +1946,7 @@
             x.fill();
           }
           if (look === 'fill') { x.strokeStyle = '#c9c9c9'; x.lineWidth = 2; }
-          else { x.strokeStyle = gc[0]; x.lineWidth = 3; }
+          else { x.strokeStyle = gc[0]; x.lineWidth = 2; }   // ⭐3→2（2026-10-08 本人「枠線が太すぎて見えにくい」）
         } else {
           x.strokeStyle = '#c9c9c9'; x.lineWidth = 2;
         }
@@ -2541,7 +2548,7 @@
         orderChanged();
       }
       state.sample = false; state.sampleKind = null;
-      refreshNames(); numStyleChanged(); grpStyleChanged(); drawPreview();
+      refreshNames(); numStyleChanged(); grpStyleChanged(); drawPreview(); gnoNote();
       var seats = s && s.snap.seats;
       if (seats && seats.length) {
         state.opt = collect();

@@ -1,0 +1,67 @@
+/* 名前の結合（2026-10-07）＝この道具にしか無い見た目だけ。共通は style.css。⭐スペース削除・スペース統一の space.css を写して作った＝印・左右の形は同じ。直すときは3つとも */
+.sp-samples{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.sp-lbl{font-weight:bold;margin:0 0 8px}
+.sp-lbl2{font-size:.9rem;font-weight:bold;color:var(--ink-soft);margin-right:10px}
+.sp-line{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:16px}
+#spIn,#spOut{min-height:150px;font-family:"BIZ UDGothic","Hiragino Sans","Noto Sans JP",Meiryo,monospace;tab-size:8}
+#spOut{background:transparent}   /* 地の白は後ろの印の層（.mk-bd）が出す */
+.sp-count{font-size:.85rem;color:var(--ink-soft);margin:6px 0 0}
+.sp-count b{color:var(--pink);font-size:1rem}
+.sp-addrow{margin:6px 0 0}
+.sp-result-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:10px 0 0}
+.sp-done{font-size:.88rem;color:var(--ink-soft)}
+#spModeNote{margin-top:6px}
+@media (max-width:480px){
+  .sp-line{margin-top:12px}
+}
+
+/* ⭐PC（1000px以上）は左＝①②・右＝③結果（2026-10-07 本人「結果が右のほうがいいね」）。ページの型 9 の連絡帳の形の並べ方（すき間18px・0.86倍）。⭐ただし幅は1：1＝貼った表と結果を同じ幅で見比べる（2：1だと結果の欄が細く、表の行が折れて崩れて見えた）
+   ⚠.lr{align-content:start} と .lr > *{align-self:start} が無いと閉じた章がのびる（ページの型 9-a）
+   ⚠③は sticky。止まる位置（top）は index.html の小さなスクリプトが入れる */
+@media screen and (min-width:1000px){
+  .lr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:18px;align-content:start;align-items:start}
+  .lr > *{grid-column:1;min-width:0;align-self:start;zoom:.86}
+  .lr > .lr-res{grid-column:2;grid-row:1 / span 2;position:sticky;top:86px}
+  .lr-res #spOut{min-height:0;height:21.5em}
+}
+
+/* ⭐消し方のボタン＝上の段に「前と後ろだけ」「全部」・下の段に「前と後ろ＋連続したスペースを1つに」（2026-10-07 本人）。PC・スマホとも同じ */
+#spMode{display:inline-grid;grid-template-columns:1fr 1fr;border-radius:18px}
+#spMode > label:nth-child(3){grid-column:1 / span 2}
+#spMode .seg-in{justify-content:center;width:100%}
+#spMode > label{display:flex}
+
+/* ⭐「結果をコピー」は③の真ん中（2026-10-07 本人「結果をコピーは③の中央がいいな」）。「〇個消しました」とコピーの知らせも真ん中 */
+.sp-result-row{flex-direction:column;gap:6px}   /* ⚠横に並べると右の「〇個消しました」の分だけボタンが左にずれるので、文はボタンの下の行 */
+#opt3 .body > p:last-child{text-align:center}
+
+/* ⭐間のスペース（全角・半角にそろえる・2026-10-07）。「全部」のときは間に残らないので薄くして押せなくする */
+#spWidthLine{margin-top:12px}
+#spWidthLine.off{opacity:.45}
+#spWidthLine.off label{cursor:default}
+
+/* ⭐間のスペース（全角・半角にそろえる・2026-10-07）。「全部」のときは間に残らないので薄くして押せなくする */
+#spWidthLine{margin-top:12px}
+#spWidthLine.off{opacity:.45}
+#spWidthLine.off label{cursor:default}
+
+/* ⭐スペースの印（2026-10-07 本人「その□の表示」）。欄の後ろに印の層（.mk-bd）を敷く。字は透明・欄の地も透明にして層を見せる
+   全角＝桜色の□／半角＝うすい桜色の地／見えない空白＝点線の枠（色はさくら色1本＝ページの型 8-a） */
+.mk-wrap{position:relative}
+.mk-bd{position:absolute;box-sizing:border-box;overflow:hidden;color:transparent;background:#fff;pointer-events:none;border-radius:6px}
+.mk-wrap > textarea{position:relative;background:transparent}
+.mk{border-radius:2px}
+.mk-f{box-shadow:inset 0 0 0 1.5px var(--pink)}
+.mk-h{background:rgba(200,106,142,.35)}
+.mk-o{outline:1.5px dashed #a84a72;outline-offset:-2px}
+.sp-legend{font-size:.82rem;color:var(--ink-soft);margin:4px 0 0;font-family:"BIZ UDGothic","Hiragino Sans","Noto Sans JP",Meiryo,monospace}
+.sp-legend .mk{display:inline-block;height:1.1em;vertical-align:-.2em;color:transparent;white-space:pre}
+.sp-legend .mk-f{width:1.1em}
+.sp-legend .mk-h,.sp-legend .mk-o{width:.55em}
+
+.sp-legend .sp-lg{white-space:nowrap}   /* 1つの印と言葉は途中で折らない */
+.sp-tabnote{margin:-4px 0 6px}   /* 「エクセルから貼り付ける」の下・欄の上 */
+
+/* ⭐関連記事の1行＝QRコード作成と同じ書式（2026-10-08 本人「各ツールの記事のリンク。QRコードのリンクと同じ書式でお願い」）。⚠今は各ツールの css に置いている（qr.css と同じ中身） */
+.rel-art{font-size:.82rem;color:var(--ink-soft);margin:10px 0 0;line-height:1.7}
+.rel-art a{color:var(--pink);font-weight:700}

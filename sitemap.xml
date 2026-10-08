@@ -36,6 +36,21 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://sakura-tools.com/space-delete/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://sakura-tools.com/space-unify/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://sakura-tools.com/name-join/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
     <loc>https://sakura-tools.com/keiri/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
@@ -124,6 +139,11 @@
     <loc>https://sakura-tools.com/articles/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://sakura-tools.com/articles/space-name/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://sakura-tools.com/articles/qr-school/</loc>
