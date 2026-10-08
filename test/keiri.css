@@ -507,3 +507,7 @@ body{touch-action:pan-y}
   .catch .c-long{display:none}
   .catch .c-short{display:inline}
 }
+
+/* ⭐経理のまとめページへの戻り道（2026-10-08 本人「なくすこともできるなら作っていいと思う」）＝できることの下の1行。書式は関連記事（qr.css の .rel-art）と同じ。⚠やめるときは、この2行と見積書・請求書の index.html の rel-art の1行を消す */
+.rel-art{font-size:.82rem;color:var(--ink-soft);margin:10px 0 0;line-height:1.7}
+.rel-art a{color:var(--pink);font-weight:700}
