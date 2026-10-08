@@ -35,7 +35,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&display=swap">
 <link rel="stylesheet" href="../style.css?v=162">
-<link rel="stylesheet" href="seat.css?v=33">
+<link rel="stylesheet" href="seat.css?v=35">
 <link rel="stylesheet" href="../print.css?v=63" media="print">
 <style>
 /* 🔴 班長・前回とのくらべ・クラスの保存（2026-08-31）。
@@ -645,7 +645,7 @@ body.screen .seat.dup .nm{text-decoration:none}
       <!-- ⭐サンプルの間は「1つ戻す」を隠して、ここに「サンプルを消す」（2026-09-14 本人「下だと見ない。上に入れてほしい」
            「サンプルの時は一つ戻すボタンを隠してもいいから、その行に入れたら」） -->
       <button id="sampleClear2" type="button" hidden>サンプルを消す</button>
-      <p class="hint drag-note">席はマグネットのように自分で入れ替えができます。</p><!-- ⭐ドラッグの話だけに（2026-10-02 本人）。前は「班番号を押すと、席の班と色を変更できます。」も -->
+      <p class="hint drag-note">席はマグネットのように自分で入れ替えができます。（モニターに映しても同様に操作できます）</p><!-- ⭐ドラッグの話だけに（2026-10-02 本人）。前は「班番号を押すと、席の班と色を変更できます。」も -->
     </div>
 
     <!-- ⭐ふわっと出て消える知らせ（黄色い枠の意味など）。⚠紙には出さない -->
@@ -913,7 +913,7 @@ body.screen .seat.dup .nm{text-decoration:none}
 <script src="../paper-pdf.js?v=5"></script>
 <script src="../seating.js?v=57"></script>
 <script src="../roster-tools.js?v=1"></script>
-<script src="seat.js?v=232"></script>
+<script src="seat.js?v=233"></script>
 <script>
 /* ⭐PCで左右に並べる（2026-10-02 本人）。
    ⭐PC（1000px以上）のときだけ、サンプルのボタンと座席表（#lrR）を右の列（.lr-side）へ移す。

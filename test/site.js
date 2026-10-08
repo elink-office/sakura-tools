@@ -18,6 +18,10 @@
     ["timer/", "カウントダウンタイマー"],
     ["timer/progress/", "進行タイマー"],
     ["excel-fx/", "関数早見表"],
+    ["space-delete/", "スペース削除"],   /* ⭐関数早見表の下＝Excelの道具をまとめる（2026-10-08 本人「テストのリンクを全部追加したい」・置き場所＝コードの案）。住所は space/ → space-delete/（2026-10-07） */
+    ["space-unify/", "スペース統一"],
+    ["name-join/", "姓と名の結合"],
+    ["qr/", "QRコード作成"],   /* ⭐姓と名の結合の下（2026-10-08 本人「QRコードは仕事で使うツールでしょ。それ以外は娯楽でも使える。ちょっと色が違う」） */
     ["seki/", "席次表"],
     ["bus/", "バスの座席表"],
     ["shinkansen/", "新幹線の座席表"],
@@ -27,9 +31,7 @@
     ["roulette/", "ルーレット"],
     ["fukubiki/", "福引"],
     ["bingo/", "ビンゴ"],
-    ["qr/", "QRコード作成"],
     ["unit/", "単位変換", "onlySelf"],   /* ⚠まだ一覧に入れない（2026-09-28 本人「なんのチェックもしてない」） */
-    ["space/", "スペース削除", "onlySelf"],   /* ⚠作りたて（2026-10-05）。一覧のどこに入れるかは本人に聞く（ページの型 1-b） */
     "sep",
     ["articles/", "記事一覧"]
   ];
@@ -51,6 +53,16 @@
 
   function esc(t) { return t.replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
 
+  /* ⭐ツール一覧を2列に（2026-10-08 本人「ツール一覧もすごく増えてる。これ、2列にする？」→「2列ならまだいけるか。じゃ、それでいこう」）。
+     左の列を上から下、そのあと右の列（トップの右の「無料ツール」と同じ読み方）。
+     ⚠本来は style.css に書くもの（ページの型 15）。style.css を上げると全ページの ?v= を直すことになるので、一覧を出す site.js に置いた */
+  (function () {
+    var st = document.createElement("style");
+    st.textContent = ".site-head .navlist{column-count:2;column-gap:2px}" +
+      ".site-head .navlist a,.site-head .navlist .now,.site-head .navlist .navsep{break-inside:avoid}";
+    (document.head || document.documentElement).appendChild(st);
+  })();
+
   /* ① ヘッダーのツール一覧 */
   function drawNav() {
     var boxes = document.querySelectorAll("[data-site-nav]");
@@ -65,6 +77,19 @@
     });
     for (var i = 0; i < boxes.length; i++) boxes[i].innerHTML = h.join("\n");
   }
+
+  /* ①-b ツール一覧は、ほかの場所を押したら閉じる・Escでも閉じる（2026-10-08 本人「PCだとほかをクリックしても消えない…どこかをクリックしたら解除できるように」）
+     ⚠一覧の中（ボタン「ツール一覧」と開いた箱）を押したときは閉じない＝今までどおり */
+  document.addEventListener("click", function (e) {
+    var t = document.querySelector(".site-head .navtoggle");
+    if (!t || !t.checked) return;
+    if (e.target.closest && e.target.closest(".navburger, .navlist, .navtoggle")) return;
+    t.checked = false;
+  });
+  document.addEventListener("keydown", function (e) {
+    var t = document.querySelector(".site-head .navtoggle");
+    if (t && t.checked && e.key === "Escape") t.checked = false;
+  });
 
   /* ② フッター（data-site-footer="copy" はコピーライトだけ＝学生用の練習ページ） */
   function drawFooter() {

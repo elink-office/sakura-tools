@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="../favicon.ico?v=3" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png?v=3">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
+<!-- ⭐たたき台（2026-10-07 本人「次はスペース統一」「作って！」）。スペース削除（../space-delete/）と目的がちがう道具＝バラバラなのを1つの形にそろえる
+     （本人「目的は違うかなと思ってさ」「人が作ったデータを集めたとき、名前の間を半角でやる人と全角でやる人がいると思って」）
+     ⭐名前は「統一」（本人「統一がいいね」・ラッコキーワード「エクセル 名前 スペース 統一」が1段目）。画面の言葉は「そろえる」（本人「揃えるとか整えるのほうが…理解しやすい」）
+     ⭐作りはスペース削除を写した（□の印・左右の形・サンプル）。直すときは両方
+     ⚠どこともつなげない＝トップのカード・サイトマップ・ほかのページの「ツール一覧」に入れていない（site.js は onlySelf）
+     ⚠入れた文字は保存しない。処理は unify.js の中で全部やる（外から何も読み込まない） -->
+<meta name="robots" content="noindex,nofollow" data-test><!-- ⭐test だけの1行（原本に入れるときに消す）。site.js はこれを見てテスト版の印を出す -->
+<title>スペース統一｜名前の間を全角か半角にそろえる無料ツール</title>
+<meta name="description" content="Excelや名簿から貼るだけで、名前の間のスペースを全角か半角のどちらかにそろえます。何人もが作ったデータを集めて、全角と半角がバラバラになったときに。前や後ろの余計なスペースもまとめて消せます。Excelの表は列を崩さずそのまま。登録なし・無料。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SAKURA tools">
+<meta property="og:title" content="スペース統一｜名前の間を全角か半角にそろえる無料ツール">
+<meta property="og:description" content="Excelや名簿から貼るだけで、名前の間のスペースを全角か半角のどちらかにそろえます。何人もが作ったデータを集めて、全角と半角がバラバラになったときに。前や後ろの余計なスペースもまとめて消せます。Excelの表は列を崩さずそのまま。登録なし・無料。">
+<!-- LINEで送ったときの絵＝白地にさくらだけ（2026-09-30 本人）。どのツールも同じ1枚。住所は公開用（testと原本で同じ中身にするため） -->
+<meta property="og:image" content="https://sakura-tools.com/img/ogp-sakura.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<link rel="stylesheet" href="../style.css?v=162">
+<link rel="stylesheet" href="space.css?v=2">
+</head>
+<body>
+
+<header class="site-head noprint">
+  <div class="wrap">
+    <a class="logo" href="../"><span class="logo-mark"><img src="../img/logo-sakura-64.png?v=2" srcset="../img/logo-sakura-64.png?v=2 1x, ../img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA tools</span><span class="logo-sub">さくらツールズ</span></a>
+    <nav>
+      <a class="navpin" href="../">トップ</a>
+      <a class="navpin" href="../typing/">タッチタイピング</a>
+      <a class="navpin" href="../seat/">座席表</a>
+      <a class="navpin" href="../slide/">簡単スライド</a>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">ツール一覧</label>
+      <div class="navlist" data-site-nav></div>
+    </nav>
+  </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">スペース統一</span><span class="now-short">スペース統一</span></div></div>
+</header>
+<script src="../site.js?v=7"></script>
+
+<main class="wrap sp-set">
+  <h1>スペース統一</h1>
+  <p class="catch">名前の間の全角と半角を、1つにそろえる</p>
+  <div class="intro i169">
+    <div class="intro-txt">
+    <p class="lead"><strong>登録なし・全部無料。</strong>何人もが作った名簿を集めて、名前の間のスペースが全角と半角でバラバラになったときに、どちらか1つにそろえます。</p>
+    <ul class="can-do">
+      <li><strong>全角か半角</strong>、どちらにもそろえられる</li>
+      <li>前や後ろの<strong>余計なスペース</strong>も消せる</li>
+      <li>Excelの表は<strong>列を崩さず</strong>そのまま</li>
+    </ul>
+    <p class="rel-art">関連記事：<a href="../articles/space-name/">名前のスペースは全角？半角？</a></p>
+    </div>
+    <figure class="t-sample noprint"><img src="../img/space-unify-sample.png?v=2" width="1280" height="720" alt="スペース統一の見本。左の①に、名前の間が全角と半角で混ざった名簿を貼っている。右の③では、名前の間がすべて全角のスペースにそろっている"></figure>
+  </div>
+
+  <div class="guide-row noprint">
+  <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
+  <div class="sp-samples">
+    <button type="button" class="mini" id="sample1">サンプル①（取引先の担当者）</button>
+    <button type="button" class="mini" id="sample2">サンプル②（集めた名簿）</button>
+    <button type="button" class="mini" id="sampleClear" hidden>サンプルを消す</button>
+    <span class="saving" id="sampleMsg"></span>
+  </div>
+  </div>
+
+  <!-- ⭐①②③とも開けて始める（ページの型 2-a の例外「押すものが最初の画面で見える」＝短い道具。スペース削除と同じ） -->
+  <!-- ⭐PC（1000px以上）は左＝①②・右＝③結果・幅は1：1（2026-10-07 本人「結果が右」「同じものの結果だから1：1」）。並べ方は space.css の .lr。スマホは上から下 -->
+  <div class="lr" id="lr">
+  <details class="opt" id="opt1" open>
+    <summary><span class="step">1</span>文字の入力</summary>
+    <div class="body">
+      <p class="sp-lbl">エクセルから貼り付ける（何列でも可）<button type="button" class="tip-btn" aria-label="説明"></button></p>
+      <div class="tip-body" hidden>
+        <p>🔒 <strong>入れた文字はインターネットに送りません。</strong>使っている端末のブラウザの中だけでスペースをそろえているので、入れた名簿や取引先がどこかに保存されることも、AIの学習に使われることもありません。パソコン・タブレット・スマホ、どれでも同じです。だから、名簿や顧客の一覧も、そのまま貼って大丈夫です。</p>
+        <ul>
+          <li>Excelのセルを何列まとめて貼っても、列の区切りは崩れません。そろえるのは、1つ1つのセルの中のスペースだけです。</li>
+          <li>貼ると、すぐ下に「半角のスペース」「全角のスペース」「紛れ込んだ空白」がそれぞれ何個入っているかが出ます。全角と半角の両方が数えられたら、バラバラになっています。</li>
+          <li>「紛れ込んだ空白」は、Webページからコピーしたときなどに、いつの間にか入っている空白です。見た目はスペースと同じですが、ふつうのスペースとは違う文字です。これも選んだほうにそろえます。</li>
+        </ul>
+      </div>
+      <p class="sp-legend sp-tabnote">大きく空いているところは、Excelの列の区切りです。</p>
+      <textarea id="spIn" rows="7" placeholder="クリックして貼り付け（手入力可）&#10;山田 太郎&#10;佐藤　花子" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
+      <p class="sp-count" id="spCount" aria-live="polite">まだ何も入っていません。</p>
+      <p class="sp-legend">印：<span class="sp-lg"><span class="mk mk-f">　</span> 全角</span>　<span class="sp-lg"><span class="mk mk-h"> </span> 半角</span>　<span class="sp-lg"><span class="mk mk-o">&nbsp;</span> 紛れ込んだ空白</span></p>
+      <p class="sp-addrow"><button type="button" class="mini" id="spClear">今の中身をクリア</button></p>
+      <p class="safe">🔒 <strong>使っている端末の中だけで完結しています。</strong>安心してご利用ください。</p>
+    </div>
+  </details>
+
+  <details class="opt" id="opt2" open>
+    <summary><span class="step">2</span>そろえ方</summary>
+    <div class="body">
+      <p class="sp-lbl">名前の間のスペース<button type="button" class="tip-btn" aria-label="説明"></button></p>
+      <div class="tip-body" hidden>
+        <ul>
+          <li><strong>全角にそろえる</strong>：「山田 太郎」（半角）を「山田　太郎」（全角）にします。全角のものはそのままです。はじめはこれが選ばれています。</li>
+          <li><strong>半角にそろえる</strong>：「山田　太郎」（全角）を「山田 太郎」（半角）にします。半角のものはそのままです。</li>
+          <li>VLOOKUPなどで名前を照らし合わせるとき、全角と半角が混ざっているだけで合わないことがあります。</li>
+          <li><strong>名前の前と後ろ・連続したスペース</strong>：「消す」を選ぶと、セルの頭とおしりのスペースを消し、2つ以上連続したスペースを1つにします（ExcelのTRIM関数と同じ）。名字と名前の間のスペースは1つ残って、選んだほうにそろいます。「残す」を選ぶと、スペースの数は変えずに、全角か半角にそろえるだけです。</li>
+          <li>スペースを全部消したいときは、<a href="../space-delete/">スペース削除</a>を使ってください。</li>
+        </ul>
+      </div>
+      <div class="seg" role="radiogroup" aria-label="名前の間のスペース">
+        <label><input type="radio" name="spWidth" value="full" checked><span class="seg-in">全角にそろえる</span></label>
+        <label><input type="radio" name="spWidth" value="half"><span class="seg-in">半角にそろえる</span></label>
+      </div>
+
+      <div class="sp-line">
+        <span class="sp-lbl2">名前の前と後ろ・連続したスペース</span>
+        <!-- ⭐はじめは「消す」＝集めたデータには前後の余計なスペースも混ざっているはず（2026-10-07 コードの案・本人「作って！」） -->
+        <div class="seg" role="radiogroup" aria-label="名前の前と後ろ・連続したスペース">
+          <label><input type="radio" name="spTidy" value="on" checked><span class="seg-in">消す</span></label>
+          <label><input type="radio" name="spTidy" value="off"><span class="seg-in">残す</span></label>
+        </div>
+      </div>
+      <p class="hint" id="spModeNote"></p>
+    </div>
+  </details>
+
+  <details class="opt lr-res" id="opt3" open>
+    <summary><span class="step">3</span>結果</summary>
+    <div class="body">
+      <p class="hint">①に貼った瞬間に、ここに結果が出ます。「結果をコピー」を押して、Excelに貼り付けてください。</p>
+      <textarea id="spOut" rows="7" readonly placeholder="①に貼ると、スペースをそろえた結果がここに出ます。" spellcheck="false"></textarea>
+      <p class="sp-result-row"><button type="button" class="primary sp-copy" id="spCopy" disabled>結果をコピー</button><span class="sp-done" id="spDone"></span></p>
+      <p><span class="saving" id="copyMsg"></span></p>
+    </div>
+  </details>
+  </div><!-- /.lr -->
+
+  <details class="howto">
+    <summary>使い方</summary>
+    <div class="body">
+      <ol>
+        <li>①に、Excelのセルや名簿を貼り付けます。何列まとめて貼っても大丈夫です。</li>
+        <li>②で、全角にそろえるか、半角にそろえるかを選びます。迷ったら、はじめに選ばれている「全角にそろえる」のままで使えます。</li>
+        <li>③の「結果をコピー」を押して、Excelの元の場所に貼り付けます。</li>
+      </ol>
+      <p class="sub">できること</p>
+      <ul class="can">
+        <li><b>全角か半角にそろえる</b><small>名前の間のスペースを、どちらか1つに</small></li>
+        <li><b>余計なスペースも消す</b><small>前や後ろのスペース、連続したスペースもまとめて</small></li>
+        <li><b>Excelの表をそのまま</b><small>何列貼っても列は崩れない。セルの中だけを整える</small></li>
+      </ul>
+      <p class="sub">こんなときに</p>
+      <ul>
+        <li>何人もに入力してもらった名簿を1つにまとめたら、名前の間のスペースがバラバラになっていたとき</li>
+        <li>VLOOKUPやXLOOKUPで、名前は合っているのに「#N/A」が出るとき</li>
+        <li>提出先や社内の決まりで、名前の間を全角（または半角）にそろえるように言われたとき</li>
+        <li>名簿を座席表などの道具に貼る前に、見た目をそろえておきたいとき</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="howto">
+    <summary>よくある質問</summary>
+    <div class="body">
+      <p class="sub">ネットにつながっていないと使えませんか？</p>
+      <p>ページを開いたあとは、使っている端末の中だけで動いています。貼るたびに通信はしません。</p>
+      <p class="sub">入れた文字が外に送られることはありますか？</p>
+      <p>ありません。入れた文字はブラウザの中だけで処理して、どこにも送りません。だから、名簿や取引先の一覧も、そのまま貼って安心です。</p>
+      <p class="sub">AIの学習に使われませんか？</p>
+      <p>使われません。入れた文字はどこにも送らないので、学習に使われることもありません。</p>
+      <p class="sub">学校や会社の決まりで、クラウドのサービスが使えません</p>
+      <p>スペース統一は、入れた文字をクラウドに置きません。使っている端末のブラウザの中だけで動きます。</p>
+      <p class="sub">スペース削除とは何が違いますか？</p>
+      <p>スペース削除は、余計なスペースを消すための道具です。スペース統一は、残すスペースを全角か半角の1つにそろえるための道具です。スペースを全部消したいときは<a href="../space-delete/">スペース削除</a>を使ってください。</p>
+      <p class="sub">英字や数字の全角と半角もそろえられますか？</p>
+      <p>そろえられません。スペース統一がそろえるのは、スペースだけです。</p>
+    </div>
+  </details>
+
+  <details class="howto">
+    <summary>データの扱い</summary>
+    <div class="body">
+      <ul>
+        <li>①に入れた文字は、使っている端末のブラウザの中だけで処理します。インターネットには送りません。</li>
+        <li>入れた文字は保存しません。ページを閉じると消えます。</li>
+        <li>コピーした結果は、端末のクリップボードに入ります。</li>
+      </ul>
+    </div>
+  </details>
+</main>
+
+<footer class="noprint" data-site-footer></footer>
+
+<script src="unify.js?v=2"></script>
+<script>
+/* ⭐③結果が止まる位置＝上の帯（ヘッダー＋道具の名前の帯）のすぐ下12px（スペース削除と同じ）。⚠左右の区画は0.86倍なので、その分を戻して入れる */
+(function () {
+  var lr = document.getElementById('lr'), res = document.getElementById('opt3');
+  if (!lr || !lr.classList.contains('lr') || !res || !window.matchMedia) return;
+  var mq = window.matchMedia('(min-width:1000px)');
+  var setTop = function () {
+    if (!mq.matches) { res.style.top = ''; return; }
+    var hd = document.querySelector('.site-head'), z = parseFloat(getComputedStyle(res).zoom) || 1;
+    var hb = hd ? hd.getBoundingClientRect().bottom : 56;
+    res.style.top = Math.round((hb + 12) / z) + 'px';
+  };
+  setTop();
+  if (mq.addEventListener) mq.addEventListener('change', setTop); else mq.addListener(setTop);
+  window.addEventListener('resize', setTop);
+})();
+</script>
+<script src="../tip.js?v=3"></script>
+</body>
+</html>

@@ -302,7 +302,7 @@ body.screen #prevSheet{ display: none !important; }
    ⭐.aisle ＝通路（何も描かない）／.dead ＝空けた席（点線だけ。机はそこにあるので形は残す）
    ⚠どちらにも .seat を付けない＝ドラッグで人を置けない・文字の大きさの計算にも入らない */
 .grid .aisle{ min-width: 0; }
-.grid .dead{ min-width: 0; border: 1px dashed #d4d4d4; border-radius: 8px; background: transparent; }
+.grid .dead{ min-width: 0; border: 1px dashed #e6e6e6; border-radius: 8px; background: transparent; }
 body.screen .grid .dead{ border-color: #e6e6e6; }
 
 /* ⭐紙の書体をPDFとそろえる（2026-09-23 本人「見本と同じ…フォントでお願い」「フォントはなんでもいいけどね」）。
@@ -449,3 +449,18 @@ main .chk-inline.gap{margin-left:0}
   #lrR #screenOn{border-radius:999px; background:#eaf1f8; border-color:#c3d3e4; color:#2b4a6b}
   #lrR #screenOn:hover{background:#dbe7f3}
 }
+
+/* 🔴グループ記号を「PDFに出す」を外したときの薄い記号（.gno.dim）は、PDFにも出さない（2026-10-08 本人「グループ記号をPDFに出すをチェックオフにしてるのに、記号が入っちゃった」）。
+   原因＝PDFは画面の見本をそのまま写す（paper-pdf.js）。薄い記号は画面に残しているので、紙にも写っていた。PDFを作るあいだ（body.pdfing）だけ消す */
+body.pdfing .sheet .seat .gno.dim{display:none !important}
+
+/* ⭐グループの色の枠を細く（2026-10-08 本人「席次表は…色をつけると字がちっちゃいから、枠線が太すぎて見えにくい。点線も実線も、ちょっと細くしてほしい」）。
+   3px → 2px。空いた席の点線（.empty）も同じ枠なので一緒に細くなる。⚠席次表だけ（座席表は人数が少ないので今のまま＝本人）。
+   画像・モニターの絵（seki.js の lineWidth）も 3 → 2。紙（ブラウザの印刷）は 1mm → .55mm */
+.sheet .seat.g-both, .sheet .seat.g-edge{ border-width: 2px; }
+@media print{ .sheet .seat.g-both, .sheet .seat.g-edge{ border-width: .55mm !important; } }
+/* ⭐空けた席の点線は #d4d4d4 → #e6e6e6（モニターと同じ薄さ・2026-10-08 本人「点線の色を薄くするのはそうしましょう」）＝305行と seki.js（画像の絵）*/
+
+/* 🔴「色なし（番号だけ）」でも、薄い記号（.gno.dim）は薄いまま（2026-10-08 本人「色なし括弧番号だけを選択すると濃いグループ記号になる」）。
+   原因＝style.css の後ろのほうにある「.seat.g-none .gno{color:#555}」が、薄くする決まり（.seat .gno.dim）より後ろにあって勝っていた */
+.sheet .seat.g-none .gno.dim{ color: #c4c4c4; }

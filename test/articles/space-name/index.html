@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta name="robots" content="noindex,nofollow" data-test><!-- ⭐test だけの1行（原本に入れるときに消す）。site.js はこれを見てテスト版の印を出す -->
+<meta charset="utf-8">
+<link rel="icon" href="../../favicon.ico?v=3" sizes="any">
+<link rel="icon" type="image/png" href="../../favicon-32.png?v=3">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png?v=2">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SAKURA tools">
+<meta property="og:title" content="名前のスペースは全角？半角？｜Excelで消す・そろえる・くっつける方法">
+<meta property="og:description" content="名前は合っているのにVLOOKUPで見つからない。原因は、名前に入ったスペースかもしれません。余計なスペースを消す、全角と半角をそろえる、姓と名をくっつける。Excelの関数でのやり方と、貼るだけで終わる無料のツールを紹介します。">
+<meta property="og:url" content="https://sakura-tools.com/articles/space-name/">
+<meta property="og:image" content="https://sakura-tools.com/ogp.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9296990556079874" crossorigin="anonymous"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GCK29PTKBG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GCK29PTKBG');
+</script>
+<title>名前のスペースは全角？半角？｜Excelで消す・そろえる・くっつける方法</title>
+<meta name="description" content="名前は合っているのにVLOOKUPで見つからない。原因は、名前に入ったスペースかもしれません。余計なスペースを消す、全角と半角をそろえる、姓と名をくっつける。Excelの関数でのやり方と、貼るだけで終わる無料のツールを紹介します。">
+<link rel="stylesheet" href="../../style.css?v=162">
+<link rel="stylesheet" href="../articles.css?v=37">
+</head>
+<body>
+<!-- ⭐記事3本目（2026-10-08 本人「スペースが頭がいいと思う。スペースの話で、名前をメインに話するから」＝/articles/space-name/・タイトルはB＝本人「これ検索されてるし」）
+     原稿＝C:\ゆうこ社\開発室\成果物\2026-10-07_記事原案4_第2版_名前のスペース.md（本人が校正した版）
+     ⭐式の中のスペースは、全角＝□・半角＝␣ で書く（本人「この場では関数を設定してほしいんじゃなくて、アプリを使ってほしいから」「角カッコみたいなやつ」）
+     ⚠つなぐ先のスペース削除・スペース統一・名前の結合はまだ公開していない＝この記事を原本に入れるのは、3つと同じとき
+     ⚠図はまだ無い（原稿の図の案＝名簿を貼って□が並んだ画面に赤い注釈／3つの道具の画面に赤い注釈） -->
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="logo" href="../../"><span class="logo-mark"><img src="../../img/logo-sakura-64.png?v=2" srcset="../../img/logo-sakura-64.png?v=2 1x, ../../img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA tools</span><span class="logo-sub">さくらツールズ</span></a>
+    <nav>
+      <a class="navpin" href="../../">トップ</a>
+      <a class="navpin" href="../../typing/">タッチタイピング</a>
+      <a class="navpin" href="../../seat/">座席表</a>
+      <a class="navpin" href="../../slide/">簡単スライド</a>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">ツール一覧</label>
+      <div class="navlist" data-site-nav></div>
+    </nav>
+  </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">記事</span><span class="now-short">記事</span></div></div>
+</header>
+<script src="../../site.js?v=4"></script>
+
+<main class="wrap yomu art2">
+<article class="art">
+  <p class="crumb"><a href="../../">トップ</a> › <a href="../">記事一覧</a> › 名前のスペースは全角？半角？</p>
+
+  <h1>名前のスペースは全角？半角？｜Excelで消す・そろえる・くっつける方法</h1>
+  <p class="meta">2026.10.08　さくらツールズ</p>
+
+  <div class="lead-box">
+    <div class="nayami">
+    <p>あれ？名簿で名前を探したら、VLOOKUPが「#N/A」を返してきた。<br>
+    名前はたしかに合っている。打ちまちがいもない。<br>
+    何度打ち直しても、やっぱりエラーが出るのはなんで？</p>
+    </div>
+    <p>原因が分からないまま、名簿を入力しなおして解決する。実務では、よくあることです。</p>
+    <p>実は、Excelの画面をいくら見比べても、違いは見つかりません。<br>
+    原因は、目に見えないスペース（空白）だからです。</p>
+    <p>この記事では、名前のスペースで困る3つの場面を取り上げます。</p>
+    <div class="wakaru">
+      <p class="wakaru-t">この記事でわかること</p>
+      <ul>
+        <li>余計なスペースを消す</li>
+        <li>全角と半角をそろえる</li>
+        <li>姓と名をくっつける</li>
+      </ul>
+    </div>
+    <p>それぞれ、Excelの関数でのやり方と、貼るだけで終わる無料のツールを紹介します。</p>
+    <p><mark class="pen"><strong>スペースは、見えないけれど1つの文字。</strong></mark><br>
+    この考え方を知っておけば、「見つからない」「数が合わない」の原因の1つを、自分で見つけられるようになります。</p>
+  </div>
+
+  <nav class="mokuji" aria-label="目次">
+    <p class="mokuji-t">目次</p>
+    <ol>
+      <li><a href="#genin">原因はスペース</a></li>
+      <li><a href="#tashikame">スペースが入っているかの確かめ方</a></li>
+      <li><a href="#kesu">余計なスペースを消す</a></li>
+      <li><a href="#soroeru">名前の間のスペースを全角か半角にそろえる</a></li>
+      <li><a href="#kuttsukeru">姓と名が別の列なら、くっつける</a></li>
+      <li><a href="#erabikata">3つのツールの選び方</a></li>
+      <li><a href="#matome">まとめ</a></li>
+    </ol>
+  </nav>
+
+  <h2 id="genin">原因はスペース</h2>
+  <p>上で紹介した、VLOOKUP関数で名前が見つからないという事例。<br>
+  知らないうちにスペースが入っていたというのが、実務で本当に多い原因の1つです。</p>
+  <p>実は、無意識で使っているスペースも<strong>1つの文字</strong>。</p>
+  <p>Excelに限ったことではなく、Wordもそのほかのアプリも、考え方は一緒です。</p>
+  <p>文字数を数える関数に、LEN関数があります。<br>
+  そのLEN関数で試してみてください。スペースが文字だということがよく分かります。</p>
+  <p class="shiki">=LEN("山田太郎")</p>
+  <p>「山田太郎」で出てくる答えは4。4文字という意味です。</p>
+  <p class="shiki">=LEN("山田　太郎")</p>
+  <p>姓と名の間にスペースが入った「山田　太郎」は5。5文字です。<br>
+  では、次の式はどうでしょう。</p>
+  <p class="shiki">=LEN("山田太郎　")</p>
+  <p>後ろにスペースが1つ付いた「山田太郎　」も、5文字と出てきます。</p>
+  <p>ここからは、わかりやすく表示するために、全角スペースを□で、半角スペースを␣で表して説明していきます。</p>
+
+  <h3>1文字ちがえば、別の名前</h3>
+  <p>Excelで関数を扱うとき、式は合っているのに答えが違う。その原因が、スペースのことはよくあります。</p>
+  <p>VLOOKUPもCOUNTIFも、文字が1つでもちがえば「別のもの」として扱うからです。</p>
+  <ul>
+    <li>VLOOKUPで「山田太郎□」を探すと、「山田太郎」は見つからず #N/A</li>
+    <li>COUNTIFで「山田太郎」を数えると、「山田太郎□」は数に入らない</li>
+  </ul>
+  <p>Microsoftのサポートページでも、VLOOKUPが #N/A になる原因の1つに「先頭や末尾のスペース」が挙げられています。<br>
+  もうお分かりですね。<br>
+  <mark class="pen"><strong>式はまちがっていません。まちがっているのは、データです。</strong></mark></p>
+
+  <h3>全角のスペースと半角のスペースも別の文字</h3>
+  <p>スペースにも、全角と半角があります。<br>
+  私たちにとっては、どちらも「何もない」ただのスペース。それでも、Excelにとっては別の文字です。<br>
+  <strong>全角スペースと半角スペースは、まったく違うものとして扱われます。</strong></p>
+  <p>だから「山田␣太郎」（半角）と「山田□太郎」（全角）も、Excelでは別の名前になります。</p>
+  <p>名前を読みやすくするために、姓と名の間にスペースを入れる人は多いものです。ただ、読みやすさの感じ方は人によって違います。<br>
+  「全角がいい」「半角のほうが見やすい」と、それぞれの考えで作った名簿を集めて1つにまとめる。すると、全角と半角が混ざってしまうことがよくあります。</p>
+
+  <h3>Webからコピーすると紛れ込む空白</h3>
+  <p>Webページの文字をコピーして、Excelに貼る機会は多いのではないでしょうか。<br>
+  Webページからコピーした文字には、ふつうのスペースとはちがう「紛れ込んだ空白」が入ることがあります。</p>
+  <p>私たちの目には同じスペースに見えますが、入っているのは「改行しないスペース」という別の文字です。<br>
+  Microsoftの説明では、改行しないスペースは、余計なスペースを消す関数として知られる<strong>TRIM関数でも消えません</strong>。</p>
+  <p>似た文字は、ほかにも10種類以上あります。<strong>どれも、TRIM関数では消すことができません。</strong></p>
+
+  <h2 id="tashikame">スペースが入っているかの確かめ方</h2>
+  <p>上でもふれましたが、スペースが入っているかを確かめる方法を改めて紹介します。</p>
+
+  <h3>LENで文字数を数える</h3>
+  <p class="shiki">=LEN(A2)</p>
+  <p>「山田太郎」なのに5と出たら、どこかに見えない1文字が入っています。</p>
+
+  <h3>2つのセルを「=」で比べる</h3>
+  <p class="shiki">=A2=B2</p>
+  <p>いちばん簡単な方法です。空いているセルに、この式を入力します。<br>
+  同じなら TRUE、1文字でもちがえば FALSE が出ます。<br>
+  FALSE なのに見た目が同じなら、スペースか、全角と半角のちがいを疑ってください。</p>
+
+  <h3>貼るだけでスペースが見える</h3>
+  <p>関数で確かめられるのは、「どこかに何かが入っている」までです。<br>
+  どこに、どの種類のスペースが入っているかまでは見えません。</p>
+  <p>そこで、TRIM関数では消えない紛れ込んだ空白まで、目で見えるようにしたツールを作りました。</p>
+  <p><a href="../../space-delete/">スペース削除</a>と<a href="../../space-unify/">スペース統一</a>の2つは、<strong>Excelから貼るだけで、ほとんどのスペースに印が付きます。</strong></p>
+  <ul>
+    <li>全角のスペース＝桜色の□</li>
+    <li>半角のスペース＝うすい桜色の地</li>
+    <li>紛れ込んだ空白＝点線の枠</li>
+  </ul>
+  <!-- ⭐ツールの画面（2026-10-08 本人「ツールの半角と全角スペースがわかる画像を撮って付けてね」）＝スペース削除のサンプル①を貼ったところ。撮り方＝_案\shots\space-marks.html（2倍で撮って①の箱を切り出し）。箱の線が絵の中にあるので外の枠は付けない -->
+  <figure class="zu nowaku ko-sq">
+    <a href="../../space-delete/"><img src="../../img/space-name-marks.png?v=1" width="890" height="874" loading="lazy"
+         alt="スペース削除の①文字の入力に、取引先の表を貼ったところ。全角のスペースは桜色の□、半角のスペースはうすい桜色の地、紛れ込んだ空白は点線の枠で印が付いている。下に「入っているスペース：半角8個・全角6個・紛れ込んだ空白1個」と出ている"></a>
+    <figcaption>スペース削除に名簿を貼ったところ。スペースの種類ごとに印が付く（押すと開きます）</figcaption>
+  </figure>
+  <p>貼った下には、半角・全角・紛れ込んだ空白が、それぞれ何個入っているかも出ます。<br>
+  全角と半角の両方が数えられたら、名簿の中でバラバラになっている合図です。</p>
+  <p>入れた文字は、インターネットに送りません。使っている端末のブラウザの中だけで動くので、名簿や取引先の一覧もそのまま貼れます。</p>
+
+  <h2 id="kesu">余計なスペースを消す</h2>
+  <p>毎回チェックするときや、データが大量にあるときは、関数を設定するのもおすすめです。</p>
+
+  <h3>前と後ろのスペースはTRIM関数</h3>
+  <p class="shiki">=TRIM(A2)</p>
+  <p>TRIM関数は、<strong>名前の前と後ろのスペースを消します。</strong><br>
+  先ほどの「山田太郎□」のように、知らないうちに入ってしまったスペースを消すのに便利です。</p>
+  <p>また、「山田□□太郎」のように、間にスペースが2つ以上続いているときは、1つに減らします。<br>
+  日本語版のExcelでは、全角のスペースも同じように整えてくれます。</p>
+  <p>連続したスペースを1つにするだけなので、「山田□太郎」の<strong>姓と名の間のスペースは、1つ残ります。</strong><br>
+  区切りとしてスペースを残したいなら、TRIM関数が向いています。</p>
+
+  <h3>全部消したいときはSUBSTITUTE関数</h3>
+  <p>姓と名の間もふくめて、スペースを全部消したいとき。<br>
+  SUBSTITUTE関数で、スペースを「何もない」に置きかえます。</p>
+  <p class="shiki">=SUBSTITUTE(SUBSTITUTE(A2,"␣",""),"□","")</p>
+  <p>内側の "␣" の間には半角スペースが、外側の "□" の間には全角スペースが入っています。<br>
+  SUBSTITUTE関数を2回重ねることで、1つの式で2種類のスペースを消すことができます。</p>
+
+  <h3>貼るだけで消すなら「スペース削除」</h3>
+  <p>TRIM関数やSUBSTITUTE関数で直すと、面倒な手間が1つ残ります。<br>
+  別の列に式を設定して結果を出すので、その結果をコピーして「値で貼り付け」をし、元の列を消す手順が必要です。<br>
+  そのあとは式も要らないので、消しておく必要がありますね。</p>
+  <p>やり方は分かっていても、今そこに10分かけたくない日もあるはずです。<br>
+  Excelが苦手なら、調べるところから始まって、関数の設定や値で貼り付けなど、慣れない作業が続きます。膨大な時間を溶かしてしまうかもしれません。（終わったら、ぐったりする作業ですね）</p>
+  <p>その手間を省くために、もう1つツールを作りました。<br>
+  <a href="../../space-delete/">スペース削除</a>は、Excelからデータを貼るだけで、名前のスペースを消せる無料のツールです。</p>
+  <!-- ⭐ツールの画面・16:9（2026-10-08 本人「スペース削除のツールの説明とか、統一とか結合とか…小さめの16:9」）。撮り方＝_案\shots\space-tool.html?t=space-delete -->
+  <figure class="zu ko">
+    <a href="../../space-delete/"><img src="../../img/space-name-space-delete.png?v=1" width="1280" height="720" loading="lazy" alt="スペース削除の画面。左の①に取引先の表を貼ると、スペースに印が付く。右の③には、スペースを消した結果が出ている"></a>
+    <figcaption>スペース削除に取引先の表を貼ったところ（押すと開きます）</figcaption>
+  </figure>
+  <ul>
+    <li>消し方は3つ＝名前の前と後ろだけ／TRIM関数と同じ／全部</li>
+    <li>TRIM関数で消えない「紛れ込んだ空白」も消せる</li>
+    <li>何列まとめて貼っても、Excelの列は崩れない</li>
+  </ul>
+  <p>入れた文字は、インターネットに送りません。個人情報の入った名簿も、そのまま貼って大丈夫です。</p>
+  <p class="go"><a href="../../space-delete/">→ スペース削除で、名簿のスペースを消してみる</a></p>
+
+  <h2 id="soroeru">名前の間のスペースを全角か半角にそろえる</h2>
+  <p>上でも話したように、何人かに入力してもらった名簿は、名前の間のスペースがバラバラになりがちです。<br>
+  全角で打つ人もいれば、半角で打つ人もいます。<br>
+  そのまま1つにまとめると、同じ人でもVLOOKUPでは見つからなくなるのは、お伝えしたとおりです。<br>
+  （名前に限らず、ほかのデータでも同じです。知らないうちにスペースが入ったデータは、検索でヒットしなくなるのが問題です。）</p>
+
+  <h3>全角と半角、どっちが正しい？</h3>
+  <p>姓と名の間のスペースは、全角と半角どっちが正しいか問題。<br>
+  残念ながら、「絶対にこれが正解」というものはありません。<mark class="pen"><strong>決まりは、提出先ごとにちがいます。</strong></mark></p>
+  <p>たとえば日本年金機構の届書作成プログラムでは、次のように決まっています。</p>
+  <ul>
+    <li>漢字の氏名＝姓と名の間に全角のスペースを1文字</li>
+    <li>カナの氏名＝姓と名の間に半角のスペースを1文字</li>
+  </ul>
+  <p>同じ書類の中でも、漢字とカナで分かれていることがあるわけです。<br>
+  出す先に決まりがあるなら、その決まりに合わせます。<br>
+  社内で使うだけなら、どちらかに決めて、全員でそろえるようにルールを決めておきましょう。</p>
+
+  <h3>関数でそろえるならSUBSTITUTE関数</h3>
+  <p>半角のスペースを全角にそろえる式です。</p>
+  <p class="shiki">=SUBSTITUTE(A2,"␣","□")</p>
+  <p>1つ目の "␣" には半角スペースが、2つ目の "□" には全角スペースが入っています。<br>
+  逆に、全角を半角にそろえたいときは、"␣" と "□" を入れかえます。</p>
+
+  <h3>貼るだけでそろえるなら「スペース統一」</h3>
+  <p>関数を使わずに、スペースの全角と半角をそろえるツールも作りました。<br>
+  <a href="../../space-unify/">スペース統一</a>は、名前の間のスペースを、全角か半角のどちらかにそろえる無料のツールです。</p>
+  <!-- ⭐ツールの画面・16:9（2026-10-08 本人「スペース削除のツールの説明とか、統一とか結合とか…小さめの16:9」）。撮り方＝_案\shots\space-tool.html?t=space-unify -->
+  <figure class="zu ko">
+    <a href="../../space-unify/"><img src="../../img/space-name-space-unify.png?v=1" width="1280" height="720" loading="lazy" alt="スペース統一の画面。左の①に、全角と半角が混ざった名簿を貼っている。右の③では、名前の間がすべて全角のスペースにそろっている"></a>
+    <figcaption>スペース統一で、名前の間を全角にそろえたところ（押すと開きます）</figcaption>
+  </figure>
+  <ul>
+    <li>全角にそろえる／半角にそろえる、の2つから選ぶだけ</li>
+    <li>前と後ろの余計なスペース、連続したスペースもまとめて整えられる</li>
+    <li>何列まとめて貼っても、Excelの列は崩れない</li>
+  </ul>
+  <p>入れた文字は、インターネットに送りません。個人情報の入った名簿も、そのまま貼って大丈夫です。</p>
+  <p class="go"><a href="../../space-unify/">→ スペース統一で、名前の間をそろえてみる</a></p>
+
+  <h2 id="kuttsukeru">姓と名が別の列なら、くっつける</h2>
+  <p>インターネットで名前を入力するとき、姓と名を分けて入力したことがあるのではないでしょうか。<br>
+  仕事で使う名簿も、姓と名が別の列に入っていることがあると思います。</p>
+  <p>分けておけば、スペースを入れるかどうかや、全角か半角かで迷うことがありません。あとの作業も楽になります。</p>
+  <p>実は、別々の列に入っている姓と名は、簡単に1つのセルにまとめられます。<br>
+  では、具体的な方法を確認してみましょう。</p>
+
+  <h3>「&amp;」でくっつける</h3>
+  <p class="shiki">=A2&amp;"□"&amp;B2</p>
+  <p>この式は、「A2」と「全角スペース」と「B2」をくっつける、と考えます。<br>
+  だから、A2の姓とB2の名の間に、全角のスペースを1つ入れてつなぐことができるんです。<br>
+  もちろん半角スペースにすることもできます。その場合は、"□" を "␣" に変えてください。</p>
+
+  <h3>関数でくっつけるならCONCAT関数</h3>
+  <p>「&amp;」の代わりに、CONCAT関数でもくっつけられます。</p>
+  <p class="shiki">=CONCAT(A2,"□",B2)</p>
+  <p>「&amp;」と同じく、A2の姓と全角スペースとB2の名を、順番につなぎます。</p>
+  <p>姓と名の間に入れる文字を先に決めておきたいなら、TEXTJOIN関数も使えます。</p>
+  <p class="shiki">=TEXTJOIN("□",TRUE,A2:B2)</p>
+  <p>最初の "□" が、間に入れる文字です。</p>
+  <p>どの方法でも、結果は式のままです。名簿として使うなら、結果をコピーして「値で貼り付け」をしてから、元の姓と名の列を整理しましょう。</p>
+
+  <h3>入力済みの名前にスペースを入れるのは難しい</h3>
+  <p>「山田太郎」のように、スペースを入れずに1つのセルに入力済みの名前。<br>
+  ここにあとからスペースを入れるのは、簡単ではありません。<br>
+  <strong>どこまでが姓なのかを、名前の文字だけでは見分けられない</strong>からです。</p>
+  <p>元の名簿に姓と名が別の列で残っているなら、そこからくっつけ直すのが確実です。<br>
+  件数が少ないなら、目で見て1つずつ直すのが現実的かもしれません。</p>
+
+  <h3>貼るだけでくっつけるなら「姓と名の結合」</h3>
+  <p>関数を使わずに、姓と名をくっつけるツールも作りました。<br>
+  <a href="../../name-join/">姓と名の結合</a>は、Excelの姓の列と名の列を貼るだけで、1つのセルにくっつける無料のツールです。</p>
+  <!-- ⭐ツールの画面・16:9（2026-10-08 本人「スペース削除のツールの説明とか、統一とか結合とか…小さめの16:9」）。撮り方＝_案\shots\space-tool.html?t=name-join -->
+  <figure class="zu ko">
+    <a href="../../name-join/"><img src="../../img/space-name-name-join.png?v=1" width="1280" height="720" loading="lazy" alt="姓と名の結合の画面。左の①に姓と名の2列を貼ると、右の③に「山田□太郎」のように全角のスペースでくっつけた氏名が出ている"></a>
+    <figcaption>姓と名の結合で、2つの列をくっつけたところ（押すと開きます）</figcaption>
+  </figure>
+  <ul>
+    <li>間は、全角のスペース／半角のスペース／スペースなし、の3つから選べる</li>
+    <li>姓や名の前と後ろに入っていたスペースは、消してからつなぐ</li>
+    <li>関数もフラッシュフィルもいらない</li>
+  </ul>
+  <p class="go"><a href="../../name-join/">→ 姓と名の結合で、名前をくっつけてみる</a></p>
+
+  <h2 id="erabikata">3つのツールの選び方</h2>
+  <p>名簿の名前に関するお悩みを、関数を使わずに解決するツールを、改めて紹介します。</p>
+  <table class="hyo">
+    <thead><tr><th>ツール</th><th>やりたいこと</th></tr></thead>
+    <tbody>
+      <tr><td><a href="../../space-delete/">スペース削除</a></td><td>名前の前と後ろ、または全部のスペースを消したい</td></tr>
+      <tr><td><a href="../../space-unify/">スペース統一</a></td><td>名前の間のスペースを、全角か半角にそろえたい</td></tr>
+      <tr><td><a href="../../name-join/">姓と名の結合</a></td><td>姓と名の2列を、1つのセルにまとめたい</td></tr>
+    </tbody>
+  </table>
+  <p>どのツールも、<strong>入れた名前はインターネットに送りません。</strong><br>
+  使っている端末のブラウザの中だけで動くので、名簿や取引先の一覧もそのまま貼れます。<br>
+  もちろんAIの学習にも使われないので、安心してお使いください。</p>
+
+  <section class="matome">
+    <h2 id="matome">まとめ</h2>
+    <ul>
+      <li>スペースは、見えないけれど1つの文字</li>
+      <li>全角のスペースと半角のスペースも、Excelにとっては別の文字</li>
+      <li>1文字ちがえば、VLOOKUPもCOUNTIFも別の名前として扱う</li>
+      <li>見つけるならLENと「=」、消すならTRIMとSUBSTITUTE</li>
+      <li>全角と半角のどちらにそろえるかは、提出先の決まりに合わせる</li>
+      <li>姓と名をくっつけるなら「&amp;」かCONCAT。1つのセルの名前にあとからスペースを入れるのは難しい</li>
+    </ul>
+    <p>「見つからない」「数が合わない」と思ったら、まずはスペースを疑ってください。<br>
+    手元の名簿をスペース削除に貼って、スペースがいくつ入っているかを見るところから始めてみましょう。</p>
+    <p class="cta"><a href="../../space-delete/">スペース削除を使ってみる</a></p>
+  </section>
+
+  <section class="sanko">
+    <p class="sanko-t">参考</p>
+    <ul>
+      <li><a href="https://support.microsoft.com/ja-jp/office/trim-%E9%96%A2%E6%95%B0-410388fa-c5df-49c6-b16c-9e5630b479f9" target="_blank" rel="noopener">Microsoft サポート「TRIM 関数」</a></li>
+      <li><a href="https://support.microsoft.com/ja-jp/office/vlookup-%E9%96%A2%E6%95%B0%E3%81%AE-n-a-%E3%82%A8%E3%83%A9%E3%83%BC%E3%82%92%E4%BF%AE%E6%AD%A3%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95-e037d763-ffc3-4fae-a909-89c482d389b2" target="_blank" rel="noopener">Microsoft サポート「VLOOKUP 関数の #N/A エラーを修正する方法」</a></li>
+      <li><a href="https://www.nenkin.go.jp/section/faq/denshi/program/data-sakusei/nyuuryoku/name.html" target="_blank" rel="noopener">日本年金機構「【届書作成プログラム】外国籍の場合、被保険者等の氏名の欄はどのように入力したらよいですか。」</a></li>
+    </ul>
+  </section>
+
+  <div class="t-ad"></div>
+
+  <p class="after"><a href="../">← 記事一覧へ</a>　<a href="../../space-delete/">スペース削除へ</a></p>
+</article>
+  <aside class="toc-side" aria-label="目次"></aside>
+</main>
+
+<footer data-site-footer></footer>
+<script src="../articles.js?v=3"></script>
+</body>
+</html>

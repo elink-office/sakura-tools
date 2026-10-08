@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="../favicon.ico?v=3" sizes="any">
+<link rel="icon" type="image/png" href="../favicon-32.png?v=3">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png?v=2">
+<!-- ⭐たたき台（2026-10-05）。Excel系＝事務で使う道具の1つ目（本人「空白の削除のほうが需要がありそうだな」）
+     ⭐名前は「空白削除」ではなく「スペース削除」（2026-10-05 本人「スペースにしよう！私もわかりやすい」）。Excelで「空白」は何も入っていないセル（ブランク）のこと。この道具が消すのはセルの中のスペースという1文字
+     ⭐「空白 削除」で探す人のほうが多い（Googleトレンド 2026-10-05・平均 空白削除59：スペース削除39）ので、題名の後ろと説明文に「空白」も入れた
+     ⚠どこともつなげない＝トップのカード・サイトマップ・ほかのページの「ツール一覧」に入れていない（site.js は onlySelf）
+     ⚠入れた文字は保存しない（画面の保存も作らない）。処理は space.js の中で全部やる（外から何も読み込まない）
+     関連記事＝/articles/space-name/（2026-10-08 test に作った） -->
+<meta name="robots" content="noindex,nofollow" data-test><!-- ⭐test だけの1行（原本に入れるときに消す）。site.js はこれを見てテスト版の印を出す -->
+<title>スペース削除｜全角・半角の空白をまとめて消す無料ツール</title>
+<meta name="description" content="Excelや名簿から貼るだけで、名前の前や後ろに入った全角・半角のスペース（空白）をまとめて消します。Webからコピーしたときに紛れ込んだ空白も消せます。Excelの表は列を崩さずそのまま。登録なし・無料。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SAKURA tools">
+<meta property="og:title" content="スペース削除｜全角・半角の空白をまとめて消す無料ツール">
+<meta property="og:description" content="Excelや名簿から貼るだけで、名前の前や後ろに入った全角・半角のスペース（空白）をまとめて消します。Webからコピーしたときに紛れ込んだ空白も消せます。Excelの表は列を崩さずそのまま。登録なし・無料。">
+<!-- LINEで送ったときの絵＝白地にさくらだけ（2026-09-30 本人）。どのツールも同じ1枚。住所は公開用（testと原本で同じ中身にするため） -->
+<meta property="og:image" content="https://sakura-tools.com/img/ogp-sakura.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<link rel="stylesheet" href="../style.css?v=162">
+<link rel="stylesheet" href="space.css?v=14">
+</head>
+<body>
+
+<header class="site-head noprint">
+  <div class="wrap">
+    <a class="logo" href="../"><span class="logo-mark"><img src="../img/logo-sakura-64.png?v=2" srcset="../img/logo-sakura-64.png?v=2 1x, ../img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA tools</span><span class="logo-sub">さくらツールズ</span></a>
+    <nav>
+      <a class="navpin" href="../">トップ</a>
+      <a class="navpin" href="../typing/">タッチタイピング</a>
+      <a class="navpin" href="../seat/">座席表</a>
+      <a class="navpin" href="../slide/">簡単スライド</a>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">ツール一覧</label>
+      <div class="navlist" data-site-nav></div>
+    </nav>
+  </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">スペース削除</span><span class="now-short">スペース削除</span></div></div>
+</header>
+<script src="../site.js?v=6"></script>
+
+<main class="wrap sp-set">
+  <h1>スペース削除</h1>
+  <p class="catch">貼るだけで、見えないスペースをまとめて消す</p>
+  <div class="intro i169">
+    <div class="intro-txt">
+    <p class="lead"><strong>登録なし・全部無料。</strong>Excelや名簿から貼るだけで、名前の前や後ろに入った全角・半角のスペース（空白）をまとめて消します。</p>
+    <ul class="can-do">
+      <li><strong>全角も半角も</strong>、紛れ込んだ空白も</li>
+      <li>Excelの表は<strong>列を崩さず</strong>そのまま</li>
+      <li>ExcelのTRIMと<strong>同じ消し方</strong>も選べる</li>
+    </ul>
+    <p class="rel-art">関連記事：<a href="../articles/space-name/">名前のスペースは全角？半角？</a></p>
+    </div>
+    <figure class="t-sample noprint"><img src="../img/space-sample.png?v=2" width="1280" height="720" alt="スペース削除の見本。左の①に取引先の表を貼ると、全角のスペースに桜色の□、半角のスペースにうすい桜色の印が付く。右の③には、スペースを消した結果が出ている"></figure>
+  </div>
+
+  <div class="guide-row noprint">
+  <p class="tip-guide noprint"><span class="tip-mark"></span> のしるしを押すと、くわしい説明が出ます。</p>
+  <div class="sp-samples">
+    <button type="button" class="mini" id="sample1">サンプル①（取引先の表）</button>
+    <button type="button" class="mini" id="sample2">サンプル②（クラスの名簿）</button>
+    <button type="button" class="mini" id="sampleClear" hidden>サンプルを消す</button>
+    <span class="saving" id="sampleMsg"></span>
+  </div>
+  </div>
+
+  <!-- ⭐①②③とも開けて始める（ページの型 2-a の例外「押すものが最初の画面で見える」＝短い道具。単位変換・QRコードと同じ） -->
+  <!-- ⭐PC（1000px以上）は左＝①②・右＝③結果（2026-10-07 本人「結果が右のほうがいいね」「基本的に結果を右っていうのを取り入れていこう」）。
+       ページの型 9 の連絡帳の形の並べ方・幅は1：1（貼った表と結果を同じ幅で見比べる）。③は右の列に置くだけ（並べ方は space.css の .lr）。③は下に動かしても画面に残る（止まる位置はページの下の小さなスクリプト）。
+       class="lr" を外すと上から下に戻る。スマホは上から下のまま -->
+  <div class="lr" id="lr">
+  <details class="opt" id="opt1" open>
+    <summary><span class="step">1</span>文字の入力</summary>
+    <div class="body">
+      <p class="sp-lbl">エクセルから貼り付ける（何列でも可）<button type="button" class="tip-btn" aria-label="説明"></button></p>
+      <div class="tip-body" hidden>
+        <p>🔒 <strong>入れた文字はインターネットに送りません。</strong>使っている端末のブラウザの中だけでスペースを消しているので、入れた名簿や取引先がどこかに保存されることも、AIの学習に使われることもありません。パソコン・タブレット・スマホ、どれでも同じです。だから、名簿や顧客の一覧も、そのまま貼って大丈夫です。</p>
+        <ul>
+          <li>Excelのセルを何列まとめて貼っても、列の区切りは崩れません。消すのは、1つ1つのセルの中のスペースだけです。</li>
+          <li>メールやWordの文章を貼っても使えます。1行ずつ消します。</li>
+          <li>貼ると、すぐ下に「半角のスペース」「全角のスペース」「紛れ込んだ空白」がそれぞれ何個入っているかが出ます。</li>
+          <li>「紛れ込んだ空白」は、Webページからコピーしたときなどに、いつの間にか入っている空白です。見た目はスペースと同じですが、ふつうのスペースとは違う文字です。ExcelのTRIM関数では消えません。</li>
+        </ul>
+      </div>
+      <!-- ⭐列の区切り（タブ）は印を付けず、説明の1行にした（2026-10-07 本人「説明書きがあるほうがいいかも。で、縦棒をなくす」・前はうすい灰色の縦線＝空きの右の端だけに出て「この空きは何？」になった）。置き場は「エクセルから貼り付ける」の下（本人） -->
+      <p class="sp-legend sp-tabnote">大きく空いているところは、Excelの列の区切りです。</p>
+      <textarea id="spIn" rows="7" placeholder="クリックして貼り付け（手入力可）&#10;山田 太郎 &#10;　佐藤　花子" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
+      <p class="sp-count" id="spCount" aria-live="polite">まだ何も入っていません。</p>
+      <!-- ⭐スペースに印を付けて見せる（2026-10-07 本人「その□の表示」）＝スペースが1つの文字だと知らない人に、どこに入っているかを見せる。①と③の欄の後ろに印の層を重ねる（space.js の marks） -->
+      <p class="sp-legend">印：<span class="sp-lg"><span class="mk mk-f">　</span> 全角</span>　<span class="sp-lg"><span class="mk mk-h"> </span> 半角</span>　<span class="sp-lg"><span class="mk mk-o">&nbsp;</span> 紛れ込んだ空白</span></p>
+      <p class="sp-addrow"><button type="button" class="mini" id="spClear">今の中身をクリア</button></p>
+      <p class="safe">🔒 <strong>使っている端末の中だけで完結しています。</strong>安心してご利用ください。</p>
+    </div>
+  </details>
+
+  <details class="opt" id="opt2" open>
+    <summary><span class="step">2</span>スペースを消す方法</summary>
+    <div class="body">
+      <p class="sp-lbl">どのスペースを消すか<button type="button" class="tip-btn" aria-label="説明"></button></p>
+      <div class="tip-body" hidden>
+        <ul>
+          <li><strong>名前の前と後ろだけ</strong>：セルの頭とおしりのスペースだけを消します。間のスペースは、いくつ連続していてもそのままです。</li>
+          <li><strong>名前の前と後ろ＋連続したスペースを1つに</strong>：ExcelのTRIM関数と同じ消し方です。「山田　　太郎」のように2つ以上連続したスペースは1つにします。名字と名前の間のスペースは1つ残ります。はじめはこれが選ばれています。</li>
+          <li><strong>全部</strong>：名字と名前の間もふくめて、スペースを全部消します。ExcelでSUBSTITUTE関数を2回重ねるのと同じです。</li>
+          <li>どの消し方でも、全角のスペースと半角のスペースは同じように扱います。</li>
+          <li><strong>名前の間のスペース</strong>：名字と名前の間などに残るスペースを、全角か半角のどちらかにそろえます。はじめは全角です。VLOOKUPなどで名前を照らし合わせるとき、全角と半角が混ざっているだけで合わないことがあります。「全部」を選んだときは、間にスペースが残らないので選べません。</li>
+          <li>消さずに、全角か半角にそろえるだけなら、<a href="../space-unify/">スペース統一</a>も使えます。</li>
+        </ul>
+      </div>
+      <div class="seg" id="spMode" role="radiogroup" aria-label="スペースを消す方法">
+        <!-- ⭐上の段＝名前の前と後ろだけ・全部／下の段＝名前の前と後ろ＋連続したスペースを1つに（2026-10-07 本人「前と後ろだけの右に全部にして、下に前と後ろ+続いた…のボタンを置いたら」）。並べ方は space.css の #spMode -->
+        <label><input type="radio" name="spMode" value="ends"><span class="seg-in">名前の前と後ろだけ</span></label>
+        <label><input type="radio" name="spMode" value="all"><span class="seg-in">全部</span></label>
+        <label><input type="radio" name="spMode" value="trim" checked><span class="seg-in">名前の前と後ろ＋連続したスペースを1つに</span></label>
+      </div>
+      <div class="sp-line" id="spWidthLine">
+        <span class="sp-lbl2">名前の間のスペース</span>
+        <!-- ⭐「そのまま」は置かない＝どちらになっているか分からない人が多い（2026-10-07 本人）。はじめは全角（本人「全角スペースが多いと思うよ」） -->
+        <div class="seg" role="radiogroup" aria-label="名前の間のスペース">
+          <label><input type="radio" name="spWidth" value="full" checked><span class="seg-in">全角にそろえる</span></label>
+          <label><input type="radio" name="spWidth" value="half"><span class="seg-in">半角にそろえる</span></label>
+        </div>
+      </div>
+      <p class="hint" id="spModeNote"></p>
+
+      <div class="sp-line">
+        <span class="sp-lbl2">空の行</span>
+        <div class="seg" role="radiogroup" aria-label="空の行">
+          <label><input type="radio" name="spBlank" value="keep" checked><span class="seg-in">残す</span></label>
+          <label><input type="radio" name="spBlank" value="drop"><span class="seg-in">消す</span></label>
+        </div>
+      </div>
+      <p class="hint">スペースだけが入っていた行も、消したあとは空の行になります。Excelの表で行の位置を変えたくないときは「残す」にしてください。</p>
+    </div>
+  </details>
+
+  <details class="opt lr-res" id="opt3" open>
+    <summary><span class="step">3</span>結果</summary>
+    <div class="body">
+      <p class="hint">①に貼った瞬間に、ここに結果が出ます。「結果をコピー」を押して、Excelに貼り付けてください。</p>
+      <textarea id="spOut" rows="7" readonly placeholder="①に貼ると、スペースを消した結果がここに出ます。" spellcheck="false"></textarea>
+      <p class="sp-result-row"><button type="button" class="primary sp-copy" id="spCopy" disabled>結果をコピー</button><span class="sp-done" id="spDone"></span></p>
+      <p><span class="saving" id="copyMsg"></span></p>
+    </div>
+  </details>
+  </div><!-- /.lr -->
+
+  <details class="howto">
+    <summary>使い方</summary>
+    <div class="body">
+      <ol>
+        <li>①に、Excelのセルや名簿を貼り付けます。何列まとめて貼っても大丈夫です。</li>
+        <li>②で、スペースを消す方法を選びます。迷ったら、はじめに選ばれている「名前の前と後ろ＋連続したスペースを1つに」のままで使えます。</li>
+        <li>③の「結果をコピー」を押して、Excelの元の場所に貼り付けます。</li>
+      </ol>
+      <p class="sub">できること</p>
+      <ul class="can">
+        <li><b>全角・半角のスペースを消す</b><small>名前の前や後ろに入ったスペースを、まとめて消す</small></li>
+        <li><b>紛れ込んだ空白も消す</b><small>Webからコピーした、TRIM関数では消えない空白も</small></li>
+        <li><b>Excelの表をそのまま</b><small>何列貼っても列は崩れない。セルの中だけを整える</small></li>
+      </ul>
+      <p class="sub">こんなときに</p>
+      <ul>
+        <li>VLOOKUPやXLOOKUPで、名前は合っているのに「#N/A」が出るとき</li>
+        <li>COUNTIFで数えると、人数や件数が合わないとき</li>
+        <li>前の担当者や取引先から受け取った名簿を、使う前に整えたいとき</li>
+        <li>学校や職場で、名簿を座席表などの道具に貼る前に下ごしらえしたいとき</li>
+        <li>AIに渡す前の表や、AIが書いた文章を貼ったあとに、余分なスペースを消したいとき</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="howto">
+    <summary>よくある質問</summary>
+    <div class="body">
+      <p class="sub">ネットにつながっていないと使えませんか？</p>
+      <p>ページを開いたあとは、使っている端末の中だけで動いています。貼るたびに通信はしません。</p>
+      <p class="sub">入れた文字が外に送られることはありますか？</p>
+      <p>ありません。入れた文字はブラウザの中だけで処理して、どこにも送りません。だから、名簿や取引先の一覧も、そのまま貼って安心です。</p>
+      <p class="sub">AIの学習に使われませんか？</p>
+      <p>使われません。入れた文字はどこにも送らないので、学習に使われることもありません。</p>
+      <p class="sub">学校や会社の決まりで、クラウドのサービスが使えません</p>
+      <p>スペース削除は、入れた文字をクラウドに置きません。使っている端末のブラウザの中だけで動きます。</p>
+      <p class="sub">ExcelのTRIM関数と何が違いますか？</p>
+      <p>「名前の前と後ろ＋連続したスペースを1つに」は、TRIM関数と同じ消し方です。違いは2つあります。1つは、Webからコピーしたときに紛れ込んだ空白（改行しないスペース）も消せることです。TRIM関数だけでは、この空白は消えません。もう1つは、別の列に結果を出して値で貼り直す手間がないことです。</p>
+      <p class="sub">名字と名前の間のスペースは残せますか？</p>
+      <p>残せます。②で「名前の前と後ろだけ」か「名前の前と後ろ＋連続したスペースを1つに」を選ぶと、名字と名前の間のスペースは残ります。全部消したいときは「全部」を選んでください。</p>
+      <p class="sub">何も入っていないセル（空白セル）や空の行も消せますか？</p>
+      <p>何も入っていないセルは消しません。セルを消すと、表の列がずれてしまうためです。空の行は、②の「空の行」で「消す」を選ぶと消せます。</p>
+    </div>
+  </details>
+
+  <details class="howto">
+    <summary>データの扱い</summary>
+    <div class="body">
+      <ul>
+        <li>①に入れた文字は、使っている端末のブラウザの中だけで処理します。インターネットには送りません。</li>
+        <li>入れた文字は保存しません。ページを閉じると消えます。</li>
+        <li>コピーした結果は、端末のクリップボードに入ります。</li>
+      </ul>
+    </div>
+  </details>
+</main>
+
+<footer class="noprint" data-site-footer></footer>
+
+<script src="space.js?v=9"></script>
+<script>
+/* ⭐③結果が止まる位置＝上の帯（ヘッダー＋道具の名前の帯）のすぐ下12px。帯の高さは画面で変わるので測る（簡単スライドと同じ）。
+   ⚠左右の区画は0.86倍なので、その分を戻して入れる */
+(function () {
+  var lr = document.getElementById('lr'), res = document.getElementById('opt3');
+  if (!lr || !lr.classList.contains('lr') || !res || !window.matchMedia) return;
+  var mq = window.matchMedia('(min-width:1000px)');
+  var setTop = function () {
+    if (!mq.matches) { res.style.top = ''; return; }
+    var hd = document.querySelector('.site-head'), z = parseFloat(getComputedStyle(res).zoom) || 1;
+    var hb = hd ? hd.getBoundingClientRect().bottom : 56;
+    res.style.top = Math.round((hb + 12) / z) + 'px';
+  };
+  setTop();
+  if (mq.addEventListener) mq.addEventListener('change', setTop); else mq.addListener(setTop);
+  window.addEventListener('resize', setTop);
+})();
+</script>
+<script src="../tip.js?v=3"></script>
+</body>
+</html>

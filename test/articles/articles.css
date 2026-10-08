@@ -17,7 +17,14 @@
 .art .meta{font-size:.78rem;color:var(--ink-soft);margin:0 0 22px}
 
 .art p{font-size:1rem;line-height:1.95;margin:0 0 1em}
-.art h2{font-size:1.18rem;margin:44px 0 14px;padding-bottom:6px;border-bottom:2px solid var(--pink-light)}
+/* ⭐H2＝白い帯＋左にはみ出した付箋（番号なし）・字は少し大きく（2026-10-08 本人）
+   いきさつ＝「案Aだね。あと少し文字大きくても」→ うすい桜色はグレーの地でにごる（本人「薄いグレーにピンク、気持ち悪い」）→ 白い帯（案D）
+   →「いつも使うタイルのような付箋のようなボタンって使えないんだよね？」→「さくらツールズっぽいほうがいい」「番号…記事にはいらない。手順じゃないし」→「Hでいきましょう！」
+   ⭐付箋はツールの①②③と同じ（桜色・光 --gloss・影）。番号は目次にだけ（たねまきと同じ形）。⚠style.css の h2::before（縦棒）をここで付箋に上書きしている */
+.art h2{position:relative;font-size:1.3rem;margin:44px 0 14px;padding:8px 12px 8px 30px;background:#fff;border-radius:4px}
+.art h2::before{content:"";display:block;position:absolute;left:-10px;top:50%;transform:translateY(-50%);width:28px;height:28px;margin:0;
+  border-radius:var(--radius);background-color:var(--pink);background-image:var(--gloss);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.85),inset 0 -2px 4px rgba(120,100,70,.05),0 2px 4px rgba(85,74,58,.16),0 1px 1px rgba(85,74,58,.09)}
 .art h3{font-size:1.02rem;margin:28px 0 10px;padding-left:10px;border-left:4px solid var(--pink)}
 .art ul{margin:0 0 1em;padding-left:1.3em;line-height:1.9}
 
@@ -70,6 +77,11 @@
 .art .zu img{width:100%;height:auto;border:1px solid var(--line);border-radius:8px;display:block}
 .art .zu.nowaku img{border:0;border-radius:0}
 .art .zu.photo img{border:0}   /* ⭐骨休めの写真（2026-09-29）＝写真は線なし・角だけ丸く */   /* ⭐絵の中にもう枠があるものは、外の枠を付けない（二重になるため） */
+/* ⭐押せる画像＝ツールへのリンク（2026-10-08 本人「この画像、ぼたんにしてリンクに飛ばすのはどう？」→「なしにしてポインタもっていったときに浮かせよう」）
+   ふだんは影なし（本人「ないほうが背景と一体化していいかも」）。マウスを乗せたときだけ、光は左ななめ上から＝影は右下で少し浮く */
+.art .zu a{display:block}
+.art .zu a img{transition:transform .15s,box-shadow .15s}
+.art .zu a:hover img,.art .zu a:focus-visible img{transform:translate(-2px,-2px);box-shadow:4px 4px 10px rgba(40,40,50,.18)}
 .art .zu figcaption{font-size:.78rem;color:var(--ink-soft);margin-top:6px;line-height:1.6}
 
 /* ⭐目次（2026-09-26）＝「この記事でわかること」・まとめと同じグレーの枠 */
@@ -82,6 +94,7 @@
 .art .mokuji a{color:var(--ink-soft);text-decoration:none}
 .art .mokuji a:hover{color:var(--pink);text-decoration:underline}
 .art .mokuji li::marker{color:var(--pink)}
+.art .mokuji li{padding-left:.5em}   /* ⭐番号と文字のあいだを少しあける（2026-10-08 本人「数値と文字がすごく近いのが気になる」） */
 /* 目次から飛んだとき、見出しがヘッダーの下に隠れないように */
 .art h2[id]{scroll-margin-top:90px}
 
@@ -134,7 +147,8 @@
 @media (min-width:960px){
   main.art2{display:grid;grid-template-columns:minmax(0,37rem) 14rem;gap:32px;justify-content:center}
   main.art2 > *{max-width:none;margin-left:0;margin-right:0}
-  .toc-side{display:block;position:sticky;top:64px;align-self:start;max-height:calc(100vh - 80px);overflow-y:auto;
+  /* ⭐止まる位置＝はじめの位置と同じ（ヘッダーの下74px＋すき間60px）（2026-10-08 本人「スクロールすると目次が上に上がる…最初の位置がいいな。上に少しスペースがある状態のままにしたい」）。⚠前の 64px はヘッダー（74px）の下にもぐっていた */
+  .toc-side{display:block;position:sticky;top:134px;align-self:start;max-height:calc(100vh - 150px);overflow-y:auto;
     padding:14px 0 14px 4px;margin-top:40px}
 }
 .toc-side-t{font-weight:bold;font-size:.82rem;color:var(--ink-soft);margin:0 0 8px 20px}
@@ -195,3 +209,12 @@
   .art h1{font-size:1.25rem}
   .art p{font-size:.96rem}
 }
+
+/* ⭐Excelの式の箱（2026-10-08 スペースの記事で新設）。全角スペースは□・半角は_で書く（本人「この場では関数を設定してほしいんじゃなくて、アプリを使ってほしいから、□入れていい」） */
+/* ⚠字は本文と同じ＝等幅の字だと□が小さくつぶれる。スマホで長い式は折り返す */
+.art .shiki{font-size:.95rem;background:#f6f6f7;border:1px solid var(--line);border-radius:6px;
+  padding:8px 12px;margin:0 0 1em;overflow-wrap:anywhere;line-height:1.7}
+
+/* ⭐小さめの図（2026-10-08 本人「画像、ちょっと大きすぎる」「小さめの16:9の画像が理想的」）＝本文の幅いっぱいにしない。.ko＝16:9・.ko-sq＝四角い絵 */
+.art .zu.ko{max-width:440px;margin-left:auto;margin-right:auto}
+.art .zu.ko-sq{max-width:300px;margin-left:auto;margin-right:auto}
