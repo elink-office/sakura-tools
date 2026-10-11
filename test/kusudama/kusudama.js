@@ -183,7 +183,8 @@ function banner(raw,ex,by){
   var n=Math.max.apply(null, cols.map(function(c,i){ return c.length+(i>0?KUSU_INDENT:0); }));
   var fs=Math.max(14, Math.min(34, Math.floor(262/(n*1.12)))), sp=Math.round(fs*0.12);
   var gapX=Math.round(fs*1.2), w=cols.length===2 ? Math.max(86, gapX+fs+36) : 86, x0=250-w/2, BY=(by||KUSU_BY), fid="ksh"+uid;
-  var h='<line x1="250" y1="0" x2="250" y2="'+BY+'" stroke="#d9a93a" stroke-width="4"/>'+
+  /* ⭐ひもは玉の上のちょうつがい（上の端・y=-玉の半径）から垂らす（2026-10-11 本人「糸が切れてる。つなげてほしい」）。前＝玉の中心（y=0）から。縦長で玉を下げたとき、玉の割れ目の上で糸が途切れて見えた */
+  var h='<line x1="250" y1="-'+KUSU_R+'" x2="250" y2="'+BY+'" stroke="#d9a93a" stroke-width="4"/>'+
         '<rect x="'+x0+'" y="'+BY+'" width="'+w+'" height="290" rx="5" fill="#fff" stroke="#e2403f" stroke-width="4" filter="url(#'+fid+')"/>';
   /* ⭐文字は帯の縦のまん中に（2026-09-24 本人「文字、縦の中央揃えにして」）。2行のときは「1行目」と「2文字下げた2行目」をひとかたまりにして、まん中に置く */
   var step=fs+sp, blockH=Math.max.apply(null, cols.map(function(c,i){ return (c.length+(i>0?KUSU_INDENT:0))*step-sp; }));

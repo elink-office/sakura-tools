@@ -87,8 +87,8 @@
   transform:translate(-50%,-110%);z-index:5}
 .ks-stage .kusu.row{top:calc(var(--ks) * -.0756)}
 @container (max-aspect-ratio: 20/21){
-  .ks-stage .kusu{top:calc(var(--ks) * -.236 + max(0px, 40cqh - var(--ks) * .32))}
-  .ks-stage .kusu.row{top:calc(var(--ks) * -.0756 + max(0px, 40cqh - var(--ks) * .32))}
+  .ks-stage .kusu{top:calc(var(--ks) * -.236 + max(0px, 30cqh - var(--ks) * .32))}
+  .ks-stage .kusu.row{top:calc(var(--ks) * -.0756 + max(0px, 30cqh - var(--ks) * .32))}
 }
 .ks-stage .kusu.in{animation:ksHang .6s cubic-bezier(.3,1.4,.5,1) forwards}
 @keyframes ksHang{from{transform:translate(-50%,-110%)}to{transform:translate(-50%,0)}}
@@ -98,7 +98,7 @@
 .ks-stage .kusu .half{transition:transform .9s cubic-bezier(.3,1.3,.5,1);transform-box:view-box;transform-origin:250px -230px}
 .ks-stage .kusu.open .half.l{transform:rotate(30deg)}   /* ⚠玉を大きくしたので 42°だと画面の外まで開いて見えなくなる */
 .ks-stage .kusu.open .half.r{transform:rotate(-30deg)}
-.ks-stage .kusu .banner{transform:scaleY(0);transform-origin:250px 0px;transform-box:view-box;transition:transform .7s .25s cubic-bezier(.3,1.2,.5,1)}
+.ks-stage .kusu .banner{transform:scaleY(0);transform-origin:250px -230px;transform-box:view-box;transition:transform .7s .25s cubic-bezier(.3,1.2,.5,1)}
 .ks-stage .kusu.open .banner{transform:scaleY(1)}
 
 /* 3・2・1 */

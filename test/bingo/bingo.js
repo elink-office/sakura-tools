@@ -258,7 +258,7 @@ function paintBoard(){
 function numR(n){ var k=String(n).length; return k>2?0.4:(k>1?0.56:0.6); }
 /* ⭐大きい玉＝よこは「回す」ボタンの上（画面のまん中）、上のはしは表の B・I・N・G・O の字の上のはしとそろえる
      （2026-09-27 本人「そのボールを回すの中心に持って行って、上端は、bingoの文字の上端と一緒にしてみて」） */
-function bigD(){ var r=$("stage").getBoundingClientRect(); if(tall) return Math.min(r.width*0.5, r.height*0.27, 600); return Math.min(r.height*0.7, r.width*0.3, 600); }
+function bigD(){ var r=$("stage").getBoundingClientRect(); if(tall) return Math.min(r.width*0.5, r.height*0.25, 600); return Math.min(r.height*0.7, r.width*0.3, 600); }
 /* ⭐玉の数字が玉の内側（.t）に入りきらないときだけ、字を小さくする（2026-10-04 本人：タブレットで「38」が2行に分かれた）。
      ⚠端末の字の形で幅が変わる（iPad では数字が太くて広い）。PCで入っているときは何もしない＝見た目は前のまま。画面に置いたあとに呼ぶ */
 function fitNum(b){
@@ -268,7 +268,7 @@ function fitNum(b){
 }
 function placeCur(){
   var cur=$("cur"), L=$("board") && $("board").querySelector(".bg-letter,.bg-cell"), wrap=cur && cur.parentNode; if(!L || !wrap) return;
-  if(tall){ var H=wrap.getBoundingClientRect().height; cur.style.top=(H*0.34+(H*0.30-bigD())/2)+"px"; return; }   // ⭐縦長＝機械（上34%）と表（下36%）のあいだのまん中
+  if(tall){ var H=wrap.getBoundingClientRect().height; cur.style.top=(H*0.01+(H*0.27-bigD())/2)+"px"; return; }   // ⭐縦長＝画面の上（上28%）に玉・まん中に機械（本人「玉は上。台が中央」）
   cur.style.top=(L.getBoundingClientRect().top-wrap.getBoundingClientRect().top)+"px";
 }
 function ballEl(n,d){

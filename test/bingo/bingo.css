@@ -58,8 +58,9 @@
 
 /* ⭐縦長の画面（スマホ・タブレットのたて）＝上に機械・まん中に大きい玉・下に番号の表（よこ15こ×5段）。2026-10-11 本人「スマホ縦で表が細く見にくい」「玉を真ん中で大きく」「タブレットもそうしたい」
    見本の窓（16:9）は今のまま。たてかどうかは bingo.js の calcTall が決めて、.bg-wrap に .tall を付ける。玉の高さは placeCur */
-.bg-wrap.tall{grid-template-columns:1fr;grid-template-rows:34% 30% 1fr}
-.bg-wrap.tall .bg-mach{grid-column:1;grid-row:1;min-height:0}
+/* ⭐縦長＝上に玉（出た玉）・まん中に機械（台）・下に表（2026-10-11 本人「玉は上。台が中央がいい（これは後で変更するかも）」）。前＝上に機械・まん中に玉 */
+.bg-wrap.tall{grid-template-columns:1fr;grid-template-rows:28% 38% 1fr}
+.bg-wrap.tall .bg-mach{grid-column:1;grid-row:2;min-height:0}
 .bg-wrap.tall .bg-m3.pk-gara{transform:none}
 .bg-wrap.tall .bg-board{grid-column:1;grid-row:3;align-self:center;padding:0 2.5cqw;gap:.9cqw}
 .bg-wrap.tall .bg-board .bg-cell,.bg-wrap.tall .bg-board .bg-letter{height:5.6cqw}
