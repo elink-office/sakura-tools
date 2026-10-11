@@ -28,7 +28,7 @@
 <meta property="og:image:height" content="630">
 <link rel="stylesheet" href="../style.css?v=162">
 <link rel="stylesheet" href="../random/random.css?v=20">
-<link rel="stylesheet" href="roulette.css?v=5">
+<link rel="stylesheet" href="roulette.css?v=8">
 <!-- Google AdSense（2026-09-28 審査の前にそろえた） -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9296990556079874" crossorigin="anonymous"></script>
 </head>
@@ -72,7 +72,7 @@
   <details class="opt" id="opt1">
     <summary><span class="step">1</span>項目</summary>
     <div class="body">
-      <!-- ⭐左に項目、右に分割と外す設定（2026-09-27 本人「スタートがえらい下だから、右に作ってほしい。こんなに広くある必要ないよ笑」） -->
+      <!-- ⭐左に項目、右にこ数と外す設定（2026-09-27 本人「スタートがえらい下だから、右に作ってほしい。こんなに広くある必要ないよ笑」） -->
       <div class="ru-two">
         <div class="ru-col">
           <p class="pk-lbl">項目（1行に1こ）</p>
@@ -80,10 +80,10 @@
           <p class="pk-count"><span id="itemCount">0こ</span><button type="button" class="mini" id="itemsClear">消す</button></p>
         </div>
         <div class="ru-col">
-          <p class="pk-lbl">分割（項目をくり返す）</p>
-          <div class="seg" id="segRep" role="radiogroup" aria-label="分割"><button type="button" data-v="1" class="on">×1</button><button type="button" data-v="2">×2</button><button type="button" data-v="3">×3</button><button type="button" data-v="4">×4</button><button type="button" data-v="6">×6</button><button type="button" data-v="8">×8</button></div>
+          <p class="pk-lbl">こ数（ルーレットのマスの数）</p>
+          <div class="ru-cnts" id="cntRows"></div>
           <p class="ru-note" id="repNote"></p>
-          <p class="hint">「あたり」「はずれ」を入れて ×4 にすると、あたり・はずれ・あたり・はずれ…と8こに分かれます。全部で24こまでです。</p>
+          <p class="hint">項目ごとに、マスの数を決めます。マスが多い項目ほど当たりやすくなります（確率＝その項目のこ数 ÷ 全部のこ数）。「あたり」1こ・「はずれ」4こなら、あたりは20％です。全部で24こまでです。</p>
           <p class="ru-opt"><label><input type="checkbox" id="removeHit"> 当たった項目を、次から外す</label></p>
         </div>
       </div>
@@ -122,11 +122,11 @@
       </ul>
       <p class="hint">人数が多いとき（クラス全員など）は、ランダム指名アプリのトランプやビンゴのほうが見やすいです。</p>
       <!-- ⭐文章を足した（2026-10-08 本人「そうしましょ！」＝アドセンスの「有用性の低いコンテンツ」対策・タイマー（10/1）と同じ形。文はコードの下書き） -->
-      <p class="sub">分割の使い方</p>
+      <p class="sub">こ数の使い方</p>
       <ul>
-        <li>分割は、入れた項目をくり返して、ルーレットのマスを増やす機能です。「あたり」「はずれ」を入れて ×4 にすると、あたり・はずれ・あたり・はずれ…と8こに分かれます。</li>
-        <li>どの項目も同じ数ずつ増えるので、当たる確率は変わりません。項目が少ないときに、ルーレットをにぎやかに見せたいときに使ってください。</li>
-        <li>マスは、分割したあとの数で24こまでです。</li>
+        <li>こ数は、項目ごとに、ルーレットのマスの数を決める機能です。初めは、どの項目も1こずつです。「あたり」を1こ、「はずれ」を4こにすると、全部で5このマスになり、あたりは20％です。</li>
+        <li>同じ項目のマスは、できるだけ離して置きます。項目が少ないときに、ルーレットをにぎやかに見せたいときにも使えます。</li>
+        <li>マスは、全部で24こまでです。</li>
       </ul>
       <p class="sub">使い方の例</p>
       <ul>
@@ -188,7 +188,7 @@
   </div>
 </div>
 
-<script src="roulette.js?v=12"></script>
+<script src="roulette.js?v=15"></script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>

@@ -73,6 +73,19 @@ document.addEventListener("click",function(e){
    動かす画面
    ===================================================================== */
 var run=null, timers=[], cageRaf=0, wakeLock=null, demo=false;
+/* ⭐縦長の画面（スマホ・タブレットのたて）＝上に機械・まん中に大きい玉・下に番号の表（よこ15こ）。見本の窓（16:9）は今のまま
+   （2026-10-11 本人「スマホ縦で表が細く見にくい」「玉を真ん中で大きく」「タブレットもそうしたい」） */
+var tall=false, noteT=0;
+function calcTall(){ if(demo) return false; var r=$("stage").getBoundingClientRect(); return r.height>r.width*1.05; }
+function layoutTall(){
+  var w=document.querySelector(".bg-wrap"), g=$("gara"); if(!w||!g) return;
+  w.classList.toggle("tall",tall);
+  if(tall){ var m=g.parentNode, ratio=G.vb[2]/G.vb[3]; g.style.width=Math.min(m.clientWidth*0.96, m.clientHeight*0.94*ratio)+"px"; }
+  else g.style.width="";
+}
+/* ⭐縦にしたとき、数秒だけ「横向きにすると…」の帯（本人「縦にするたびに・消えるから毎回でもいい」）。タップでも消える・操作は止めない */
+function hideNote(){ clearTimeout(noteT); var n=$("tallNote"); if(n) n.hidden=true; }
+function showNote(){ var n=$("tallNote"); if(!n) return; n.hidden=false; clearTimeout(noteT); noteT=setTimeout(hideNote,4000); }
 function later(fn,ms){ timers.push(setTimeout(fn,ms)); }
 function pool(){ var a=[]; for(var n=1;n<=st.max;n++) if(st.drawn.indexOf(n)<0) a.push(n); return a; }
 
@@ -115,6 +128,7 @@ function build(){
   $("mix").innerHTML=h;
   drawStatic();
   drawCage(run.th||0);
+  tall=calcTall(); layoutTall();
   buildBoard();
 }
 /* 動かない部分（土台・脚・受け皿）。奥（左の脚・土台）と手前（右の脚・受け皿）に分ける */
@@ -210,7 +224,16 @@ function drawCage(th){
    ⭐（2026-09-27 本人「bingoの並びもさ、数字を左側に配置して、縦に並べたい」） */
 function buildBoard(){
   var b=$("board"), h="", n, r, c;
-  if(st.max===75){
+  if(tall){
+    b.style.gridTemplateRows=""; b.style.gridAutoFlow="row";
+    if(st.max===75){
+      b.style.gridTemplateColumns="auto repeat(15,1fr)";
+      for(r=0;r<5;r++){ h+='<span class="bg-letter" style="color:'+LETTER_COLORS[r]+'">'+LETTERS.charAt(r)+'</span>'; for(c=0;c<15;c++){ n=r*15+c+1; h+='<span class="bg-cell" data-n="'+n+'">'+n+'</span>'; } }
+    }else{
+      b.style.gridTemplateColumns="repeat(15,1fr)";
+      for(n=1;n<=st.max;n++) h+='<span class="bg-cell" data-n="'+n+'">'+n+'</span>';
+    }
+  }else if(st.max===75){
     b.style.gridTemplateColumns="repeat(5,1fr)"; b.style.gridTemplateRows=""; b.style.gridAutoFlow="row";
     for(c=0;c<5;c++) h+='<span class="bg-letter" style="color:'+LETTER_COLORS[c]+'">'+LETTERS.charAt(c)+'</span>';
     for(r=0;r<15;r++) for(c=0;c<5;c++){ n=c*15+r+1; h+='<span class="bg-cell" data-n="'+n+'">'+n+'</span>'; }
@@ -235,7 +258,7 @@ function paintBoard(){
 function numR(n){ var k=String(n).length; return k>2?0.4:(k>1?0.56:0.6); }
 /* ⭐大きい玉＝よこは「回す」ボタンの上（画面のまん中）、上のはしは表の B・I・N・G・O の字の上のはしとそろえる
      （2026-09-27 本人「そのボールを回すの中心に持って行って、上端は、bingoの文字の上端と一緒にしてみて」） */
-function bigD(){ var r=$("stage").getBoundingClientRect(); return Math.min(r.height*0.7, r.width*0.3, 600); }
+function bigD(){ var r=$("stage").getBoundingClientRect(); if(tall) return Math.min(r.width*0.5, r.height*0.25, 600); return Math.min(r.height*0.7, r.width*0.3, 600); }
 /* ⭐玉の数字が玉の内側（.t）に入りきらないときだけ、字を小さくする（2026-10-04 本人：タブレットで「38」が2行に分かれた）。
      ⚠端末の字の形で幅が変わる（iPad では数字が太くて広い）。PCで入っているときは何もしない＝見た目は前のまま。画面に置いたあとに呼ぶ */
 function fitNum(b){
@@ -245,6 +268,7 @@ function fitNum(b){
 }
 function placeCur(){
   var cur=$("cur"), L=$("board") && $("board").querySelector(".bg-letter,.bg-cell"), wrap=cur && cur.parentNode; if(!L || !wrap) return;
+  if(tall){ var H=wrap.getBoundingClientRect().height; cur.style.top=(H*0.01+(H*0.27-bigD())/2)+"px"; return; }   // ⭐縦長＝画面の上（上28%）に玉・まん中に機械（本人「玉は上。台が中央」）
   cur.style.top=(L.getBoundingClientRect().top-wrap.getBoundingClientRect().top)+"px";
 }
 function ballEl(n,d){
@@ -318,11 +342,12 @@ function start(isDemo){
   var last=st.drawn[st.drawn.length-1];
   placeCur(); if(last){ var lb=ballEl(last,bigD(),st.drawn.length-1); $("cur").appendChild(lb); fitNum(lb); }   // 続きから＝最後に出た玉を出しておく
   update();
+  if(tall) showNote(); else hideNote();
   if(!demo) keepAwake(true);
 }
 function stop(){
   timers.forEach(clearTimeout); timers=[]; cancelAnimationFrame(cageRaf);
-  $("stage").innerHTML=""; run=null;
+  $("stage").innerHTML=""; run=null; hideNote(); tall=false;
   $("runScreen").hidden=true; $("runScreen").classList.remove("framed"); $("demoBack").hidden=true;
   document.body.style.overflow=""; keepAwake(false);
   if(document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(function(){});
@@ -340,6 +365,7 @@ $("resetBtn").addEventListener("click",function(){
   st.drawn=[]; screenSave(); $("cur").innerHTML=""; paintBoard(); update();
 });
 $("backBtn").addEventListener("click",stop);
+$("tallNote").addEventListener("click",hideNote);
 $("fsBtn").addEventListener("click",function(){
   var el=document.documentElement;
   if(document.fullscreenElement) document.exitFullscreen().catch(function(){}); else if(el.requestFullscreen) el.requestFullscreen().catch(function(){});
@@ -351,6 +377,9 @@ document.addEventListener("keydown",function(e){
 });
 function resize(){
   if(!run) return;
+  var t=calcTall();
+  if(t!==tall){ tall=t; buildBoard(); if(tall) showNote(); else hideNote(); }
+  layoutTall();
   placeCur();
   Array.prototype.forEach.call($("cur").children,function(b){
     var d=bigD(); b.style.width=b.style.height=d+"px"; b.firstChild.style.fontSize=Math.round(d*numR(b._n))+"px"; fitNum(b);

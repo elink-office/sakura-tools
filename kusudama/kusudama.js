@@ -183,7 +183,8 @@ function banner(raw,ex,by){
   var n=Math.max.apply(null, cols.map(function(c,i){ return c.length+(i>0?KUSU_INDENT:0); }));
   var fs=Math.max(14, Math.min(34, Math.floor(262/(n*1.12)))), sp=Math.round(fs*0.12);
   var gapX=Math.round(fs*1.2), w=cols.length===2 ? Math.max(86, gapX+fs+36) : 86, x0=250-w/2, BY=(by||KUSU_BY), fid="ksh"+uid;
-  var h='<line x1="250" y1="0" x2="250" y2="'+BY+'" stroke="#d9a93a" stroke-width="4"/>'+
+  /* ⭐ひもは玉の上のちょうつがい（上の端・y=-玉の半径）から垂らす（2026-10-11 本人「糸が切れてる。つなげてほしい」）。前＝玉の中心（y=0）から。縦長で玉を下げたとき、玉の割れ目の上で糸が途切れて見えた */
+  var h='<line x1="250" y1="-'+KUSU_R+'" x2="250" y2="'+BY+'" stroke="#d9a93a" stroke-width="4"/>'+
         '<rect x="'+x0+'" y="'+BY+'" width="'+w+'" height="290" rx="5" fill="#fff" stroke="#e2403f" stroke-width="4" filter="url(#'+fid+')"/>';
   /* ⭐文字は帯の縦のまん中に（2026-09-24 本人「文字、縦の中央揃えにして」）。2行のときは「1行目」と「2文字下げた2行目」をひとかたまりにして、まん中に置く */
   var step=fs+sp, blockH=Math.max.apply(null, cols.map(function(c,i){ return (c.length+(i>0?KUSU_INDENT:0))*step-sp; }));
@@ -355,7 +356,7 @@ function sizeFor(mode,n,i){
 function hang(i){
   var it=run.items[i], el=document.createElement("div"), s=sizeFor(run.mode,run.items.length,i);
   el.className="kusu"; el.style.left=s.left+"%"; el.style.width=s.w;
-  if(run.mode==="row" && run.items.length>1) el.style.top="-8cqh";   // 並べるときは玉が小さいので、見える部分を少し多めに
+  if(run.mode==="row" && run.items.length>1) el.classList.add("row");
   el.innerHTML=kusuSvg(it.c,it.t,"おめでとう");   // 空のときは「おめでとう」（見本の名前は出さない）
   $("stage").appendChild(el);
   /* ⭐並べたときも、帯（紙）は1つのときと同じくらいの大きさに。銀・銅はほんの少しだけ小さく。ひもが長くなって下にぶら下がる
@@ -418,12 +419,27 @@ function next(){
     }else if(run.idx<n-1){
       el.classList.add("out"); var old=el; setTimeout(function(){ if(old.parentNode) old.remove(); },550);
       clearFx(); run.idx++; run.els[run.idx]=hang(run.idx);
+      /* ⭐カウントダウンありのときは、「次へ」を1回押したら、次のくす玉が下りてすぐ3・2・1（2026-10-11 本人「次へを2回押すのがストレス」「押したらすぐカウントダウン」）。
+         下りるのを待ってから（0.7秒）始める。なしのときは今まで通り（下りてきたあと、もう1回押すと割れる） */
+      if(st.cd){
+        run.busy=true; $("nextBtn").disabled=true;
+        var j=run.idx;
+        later(function(){ run.busy=false; count321(function(){ openKusu(run.els[j], run.items[j].c); if(j>=n-1) run.done=true; updateBtn(); }); },700);
+      }
     }
   }else{
     var i=run.opened;
     count321(function(){ openKusu(run.els[i], run.items[i].c); run.opened++; if(run.opened>=n) run.done=true; updateBtn(); });
   }
 }
+/* ⭐縦長の画面（スマホ・タブレットのたて）では、数秒「横向きにすると…」の帯を出す（2026-10-11 本人「横のサイズを促す」。ビンゴと同じ形・縦にするたび・4秒で消える・タップでも消える・操作は止めない）。見本の窓（16:9）では出さない */
+var noteT=0, wasTall=false, isDemo=false;
+function calcTall(){ if(isDemo) return false; var r=$("runScreen").getBoundingClientRect(); return r.height>r.width*1.05; }
+function hideNote(){ clearTimeout(noteT); var n=$("tallNote"); if(n) n.hidden=true; }
+function showNote(){ var n=$("tallNote"); if(!n) return; n.hidden=false; clearTimeout(noteT); noteT=setTimeout(hideNote,4000); }
+function checkTall(){ var t=calcTall(); if(t&&!wasTall) showNote(); if(!t) hideNote(); wasTall=t; }
+window.addEventListener("resize",function(){ if($("runScreen").hidden) return; clearTimeout(checkTall._t); checkTall._t=setTimeout(checkTall,150); });
+if($("tallNote")) $("tallNote").addEventListener("click",hideNote);
 function start(demo){
   run={items:st.items.slice(0,st.n).map(function(x){ return {c:x.c,t:x.t}; }), els:[], idx:0, opened:0, busy:false, done:false, mode:st.mode};
   clearFx(); $("stage").innerHTML=""; $("cnt").innerHTML="";
@@ -433,9 +449,11 @@ function start(demo){
   if(run.mode==="one") run.els[0]=hang(0);
   else { for(var i=0;i<run.items.length;i++) run.els[i]=hang(i); alignRow(); }
   updateBtn();
+  isDemo=!!demo; wasTall=false; checkTall();
   if(!demo) keepAwake(true);
 }
 function stop(){
+  hideNote(); wasTall=false;
   clearFx(); $("stage").innerHTML=""; $("cnt").innerHTML="";
   $("runScreen").hidden=true; $("runScreen").classList.remove("framed"); $("demoBack").hidden=true;
   document.body.style.overflow=""; keepAwake(false);

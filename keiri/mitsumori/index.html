@@ -146,6 +146,9 @@
       </div>
     </div>
 
+    <!-- ⭐①の保存ボタン（2026-10-11 本人「①と②があるものだと思ってた。それぞれで作って」）。⑧の「保存」と同じ動き -->
+    <p class="btn-row"><button type="button" class="mini" id="saveMe1">この自分の情報を保存</button> <span class="saving" id="meMsg1" hidden></span></p>
+
 
     <div class="tip-body" hidden>
       <p>🔒 入れた内容はインターネットに送りません。使っている端末のブラウザの中だけで作っているので、
@@ -170,7 +173,7 @@
       </div>
       <p style="margin:8px 0 0"><button type="button" id="clientUse">この取引先を自動入力</button></p>
       <p class="inv-hint">会社名・敬称・担当者・住所が入ります。⭐<strong>請求書メーカーで保存した取引先も、同じ一覧に並びます。</strong></p>
-      <p class="inv-hint">③の中の件名と④見積の内容は、③の<strong>「④の内容の入れ方」</strong>から入れます。</p>
+      <p class="inv-hint">③の中の件名と④見積の内容は、③の<strong>「④見積の内容の入れ方」</strong>から入れます。</p>
     </div>
 
     <div class="row tight">
@@ -189,6 +192,9 @@
       <div class="grow"><label for="toAddr">住所<span style="font-weight:normal;font-size:.72rem;opacity:.75">　改行したい場合は / を入れる</span></label>
         <input id="toAddr" type="text" placeholder="東京都〇〇区〇〇1-1-1"></div>
     </div>
+
+    <!-- ⭐②の保存ボタン（⑧の「新しい名前で保存」と同じ動き） -->
+    <p class="btn-row"><button type="button" class="mini" id="clientNew1">この取引先を保存</button> <span class="saving" id="clientMsg1" hidden></span></p>
 
 
   </div>
@@ -213,17 +219,17 @@
     <div id="formLoad" hidden>
       <!-- ⭐ボタンは選ぶ欄の「下」（2026-09-15 本人「やっぱり下に配置して」） -->
       <div class="row tight">
-        <div class="grow"><label for="formSel2">④の内容の入れ方</label>
+        <div class="grow"><label for="formSel2">④見積の内容の入れ方</label>
           <select id="formSel2"><option value="">－</option></select></div>
       </div>
       <!-- ⭐ひな形を選んだら、ボタンが2つ出る（2026-09-15 本人「ひな形を入れると、エクセルから貼り付けるを選択肢に」「入れるボタンと、エクセルで追加ボタンが現れる」）。
            ⭐「エクセルから貼り付ける」を選ぶと貼り付け欄が出る。ひな形が0件なら、この欄は出さずに貼り付け欄をそのまま出す -->
-      <p id="formBtns" hidden style="margin:8px 0 0"><button type="button" id="formUse">このひな形を入れる</button> <button type="button" id="pasteShow">エクセルから追加で貼り付ける</button></p>
-      <p class="inv-hint">⭐<strong>件名と④見積の内容が入ります。</strong>請求書メーカーで保存したひな形も、同じ一覧に並びます。</p>
+      <p id="formBtns" hidden style="margin:8px 0 0"><button type="button" id="formUse">このひな形を入れる</button> <button type="button" id="pasteShow">エクセルから、明細を追加で貼り付ける</button></p>
+      <p class="inv-hint" id="formHint">⭐<strong>件名と④見積の内容が入ります。</strong>請求書メーカーで保存したひな形も、同じ一覧に並びます。</p>
     </div>
 
     <div class="inv-row" id="pasteWrap" style="margin-top:16px">
-      <label for="paste">エクセルから貼り付ける<button type="button" class="tip-btn" aria-expanded="false" aria-label="貼り付けについて"></button></label>
+      <label for="paste">エクセルから、明細を貼り付ける<button type="button" class="tip-btn" aria-expanded="false" aria-label="貼り付けについて"></button></label>
       <div class="tip-body" hidden>
         <p>見積書やエクセルの表を、そのままコピーして貼り付けます。<strong>下の表に直接貼り付けても入ります。</strong></p>
         <p><strong>1行目に見出し（品目・数量・単価など）があれば、並び順が違っても自動で振り分けます。</strong>
@@ -262,6 +268,8 @@
               <option value="3" selected>3桁</option>
               <option value="4">4桁</option>
             </select></div>
+          <div class="w-dig"><label for="noStart">最初の番号</label>
+            <input id="noStart" type="number" min="1" inputmode="numeric" placeholder="1"></div>
           <div class="w-round"><label for="priceMode">単価の入れ方</label>
             <select id="priceMode">
               <option value="ex" selected>税抜で入れる</option>
@@ -274,7 +282,9 @@
               <option value="round">四捨五入</option>
             </select></div>
         </div>
-        <p class="inv-hint">番号の頭は自由に決められます（例 <b>2026-</b> ／ <b>SAKURA-</b>）。<strong>末尾が1つずつ増えます。</strong>
+                <p class="inv-hint">⭐<strong>最初の番号</strong>は、ここから数え始める番号です（例 <b>15</b> と入れると <b>2026-015</b> から）。すでに使った番号より小さいときは、使った番号の次から続けます。</p>
+        <p class="inv-hint"><label class="chk-inline"><input type="checkbox" id="noManual"> 番号を自動で振らない（自分で入れる）</label>　チェックを入れると、番号の欄は空で始まり、PDFを作っても次の番号に進みません。</p>
+<p class="inv-hint">番号の頭は自由に決められます（例 <b>2026-</b> ／ <b>SAKURA-</b>）。<strong>末尾が1つずつ増えます。</strong>
           端数はどれでも構いません。同じ取引先にはいつも同じものを使うと差額が出ません。<br>
           <strong>「税込で入れる」</strong>は、<strong>税込で金額が決まっているとき</strong>（例 「1本 30,000円（税込）」）に使います。消費税は自動で内訳に出します。</p>
 
@@ -391,6 +401,9 @@
 
     <div class="inv-row"><label for="note">備考</label>
       <textarea id="note" placeholder="このお見積の有効期限は発行日より1か月です。&#10;別途、交通費が必要になる場合があります。"></textarea></div>
+
+    <!-- ⭐⑤の保存ボタン（2026-10-11 本人「⑤の横に①の情報と一緒に保存しますみたいなボタンがほしい」）。⑧の「保存」・①のボタンと同じ動き＝①の自分の情報と、⑤の備考 がまとめて残る -->
+    <p class="btn-row"><button type="button" class="mini" id="saveMe5">備考を、①の自分の情報といっしょに保存</button> <span class="saving" id="meMsg5" hidden></span></p>
   </div>
   </details>
 
@@ -442,12 +455,14 @@
     <p class="inv-fname">保存される名前　<b id="fnameOut">見積書.pdf</b></p>
 
     <p style="margin:14px 0 0;text-align:center"><button type="button" id="doPrint" class="primary">PDFで保存</button></p>
+    <!-- ⭐PDFを作った直後に、自分の情報・取引先が未保存なら出す（2026-10-11 本人）。keiri.js の updateSaveNote -->
+    <p class="inv-hint" id="saveNote" hidden style="margin:12px 0 0;text-align:center"></p>
 
   </section>
 
   <!-- ================= (6) 保存したデータの利用 ================= -->
   <section class="card" id="s7">
-    <h2><span class="step">8</span>保存したデータの利用</h2>
+    <h2 id="saveUse"><span class="step">8</span>保存したデータの利用</h2>
     <!-- 🔴⭐⑧の文章（2026-09-15 本人「この文章が気持ち悪くて」）。⭐テンプレート→端末だけ→個別はPDF の順 -->
     <!-- ⭐テンプレートと端末の話は同じ段落（2026-09-15 本人「3行にしたくない」） -->
     <p class="inv-hint">保存したデータは<b>ひな形</b>として、<b>さくらツールズ内の見積書・請求書</b>で使えます。🔒 保存したデータは、使っている端末の中だけに残ります。
@@ -574,12 +589,13 @@
         <ol>
           <li>①に<b>自分の情報</b>を入れて、⑧で「保存」を押します。次からは入りません。</li>
           <li>②に<b>取引先</b>を入れます。一度保存すると、次からは選ぶだけです。</li>
-          <li>③で<b>番号と件名</b>を決めます。エクセルの表があれば、③の中の「エクセルから貼り付ける」に貼れます。</li>
+          <li>③で<b>番号と件名</b>を決めます。エクセルの表があれば、③の中の「エクセルから、明細を貼り付ける」に貼れます。</li>
           <li>④に<b>品目と金額</b>を入れます。消費税と合計は自動で出ます。</li>
           <li>⑤に<b>有効期限と備考</b>を書きます。ここも保存できます。</li>
           <li>⑥で<b>紙の見た目</b>を確かめます。</li>
           <li>⑦の<b>PDFで保存</b>を押して、出てきた画面で「PDF」を選びます。</li>
           <li>見積が通ったら、⑧の下の<b>画面の内容のまま請求書を作る</b>で請求書メーカーに移ります。</li>
+                  <li>直したいときは、②で取引先を選び、③でひな形を選んで、直してからもう一度PDFを作ります。<b>番号は同じまま</b>作れます（確認が出ます）。ひな形に保存していない内容は、入れ直しです。</li>
         </ol>
         <p class="sub">できること</p>
         <ul class="can">
@@ -671,7 +687,7 @@
 
 <footer class="noprint" data-site-footer></footer>
 
-<script src="../../keiri.js?v=62"></script>
+<script src="../../keiri.js?v=71"></script>
 <script src="../../keiri-pdf.js?v=2"></script>
 <script src="../../tip.js?v=3"></script>
 </body>

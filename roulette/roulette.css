@@ -39,3 +39,20 @@
 /* ⭐上の帯＝「n回目」の横に「のこり n個」（2026-09-28 本人「残り○ことかは、左上の○回目の右に置いて」）。福引・ランダム指名と同じ形 */
 .ru-run .pk-top{right:auto;justify-content:flex-start;gap:1.4cqw;padding-left:2cqw}
 .ru-run .pk-round,.ru-run .pk-left{position:static}
+
+/* ⭐縦長の画面（スマホ・タブレットのたて）＝円を画面の真ん中・当たりの文字を円の下（2026-10-11 本人「スマホで見ると円が左に寄る。中央にしてほしい」）
+   前＝横長の形（左に円・右に当たり）のまま縦にして、円が左下に寄った */
+@container (max-aspect-ratio: 20/21){
+  .ru-wrap{grid-template-columns:1fr;grid-template-rows:auto auto;align-content:center;justify-items:center;row-gap:4cqh}
+  .ru-wheelbox{width:min(86cqw,50cqh)}
+  .ru-res{padding:0 4cqw}
+  .ru-hit{font-size:min(7cqh,10cqw)}
+  .ru-hist{font-size:min(2.2cqh,15px)}
+}
+
+/* 項目ごとのこ数（2026-10-11） */
+.ru-cnts{display:flex;flex-direction:column;gap:6px;max-height:16em;overflow:auto}
+.ru-cnt{display:flex;align-items:center;gap:6px;margin:0;font-size:.95rem;font-weight:normal}
+.ru-cnt span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ru-cnt input{width:4em;font-size:1rem;padding:6px 8px;border-radius:8px;border:1px solid var(--line);font-family:inherit}
+.ru-cnt em{font-style:normal;color:var(--ink-soft);font-size:.85rem;min-width:3.6em;text-align:right}
