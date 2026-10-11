@@ -127,7 +127,10 @@ function setOrder(v){
     : st.order==="blank" ? "先に決める席だけ入れて、あとは空のままです。④で「席に入っていない人」を押して、席を押すと入ります。"
     : "先に決める席を入れてから、残りの人を名簿の順に、若い列の A から入れます。";
 }
-$("segOrder").addEventListener("click",function(e){ var b=e.target.closest("button"); if(!b) return; setOrder(b.getAttribute("data-v")); screenSave(); });
+$("segOrder").addEventListener("click",function(e){ var b=e.target.closest("button"); if(!b) return; setOrder(b.getAttribute("data-v")); screenSave();
+  /* ⭐「班ごと」を選んだとき、班がまだ1人も決まっていなければ「詳しい条件」を開く（2026-10-11 本人「推しで」＝閉じたままだと班を決める場所が分からない） */
+  if(st.order==="han" && !Object.keys(st.hanOf||{}).length){ $("condBox").open=true; }
+});
 
 function refreshFix(){
   var codes=seatCodes(), ul=$("fixRows"); ul.innerHTML="";
@@ -242,7 +245,7 @@ function refreshCond(){
   });
   $("hanN").value = st.han>0 ? st.han : "";
   /* ⭐班の一覧＝名前ごとに班を選ぶ。左の線が班の色 */
-  var names=nameList(), mx=Math.max(8, st.han|0), h="";
+  var names=hanListNames(), mx=Math.max(8, st.han|0), h="";
   names.forEach(function(n){ if((st.hanOf[n]|0)>mx) mx=st.hanOf[n]|0; });
   names.forEach(function(n){
     var g=st.hanOf[n]|0, o='<option value="">－</option>';
@@ -251,6 +254,15 @@ function refreshCond(){
   });
   $("hanList").innerHTML = h || '<p class="tm-hint">①に名簿を入れると、ここに名前が並びます。</p>';
 }
+/* ⭐班の一覧の見せ方＝名簿順／班ごと（2026-10-11 本人「名簿順に並んでいるから読みにくい」「切替のときだけ並べ直す」「ぱっと見そっちで見て、そのあと座席を見る」）
+   ＝席には関係しない（一覧の見た目だけ）。「班ごと」にした瞬間の班で並べて、そのあと班を変えても次に切り替えるまで動かさない（目で追えるように）。保存はしない */
+var hanView="list", hanSort=null;
+function sortedByHan(){ var names=nameList(); return names.map(function(n,i){ return [n,i]; }).sort(function(a,b){ var ga=st.hanOf[a[0]]|0, gb=st.hanOf[b[0]]|0; if(!ga) ga=1e6; if(!gb) gb=1e6; return ga-gb || a[1]-b[1]; }).map(function(x){ return x[0]; }); }
+function hanListNames(){ var names=nameList(); if(hanView!=="han" || !hanSort) return names;
+  var has={}; names.forEach(function(n){ has[n]=1; }); var out=hanSort.filter(function(n){ return has[n]; }), seen={}; out.forEach(function(n){ seen[n]=1; });
+  names.forEach(function(n){ if(!seen[n]) out.push(n); }); return out; }
+function setHanView(v){ hanView=(v==="han")?"han":"list"; hanSort=(hanView==="han")?sortedByHan():null; segSet("segHanView",hanView); refreshCond(); }
+$("segHanView").addEventListener("click",function(e){ var b=e.target.closest("button"); if(!b) return; setHanView(b.getAttribute("data-v")); });
 ["sep","adj"].forEach(function(t){
   $(t+"Add").addEventListener("click",function(){ if(!nameList().length){ alert("先に①で、名簿を入れてください。"); $("opt1").open=true; return; } st[t].push(["",""]); refreshCond(); });
   $(t+"Rows").addEventListener("change",function(e){ var s=e.target; if(s.tagName!=="SELECT") return; st[t][+s.getAttribute("data-i")][+s.getAttribute("data-j")]=s.value; drawSheet(); screenSave(); });
@@ -703,6 +715,7 @@ function applyData(s){
   var pairs=function(x){ return Array.isArray(x)?x.map(function(p){ return [String((p&&p[0])||""),String((p&&p[1])||"")]; }):[]; };
   st.sep=pairs(s.sep); st.adj=pairs(s.adj); st.han=Math.max(0,Math.min(20,s.han|0)); st.hanOf=(s.hanOf&&typeof s.hanOf==="object")?s.hanOf:{}; syncHan();
   sel=null; chipSel=null;
+  hanView="list"; hanSort=null; segSet("segHanView","list");
   refreshUp(); countNames(); refreshDatalist(); pruneAssign(); refreshFix(); refreshCond(); seatHint(); drawSheet();
 }
 function screenLoad(){
@@ -732,7 +745,10 @@ function sampleIn(s,msg,partial){
   $("sampleMsg").textContent=msg; setTimeout(function(){ $("sampleMsg").textContent=""; },3500);
 }
 $("sample1Btn").addEventListener("click",function(){
-  sampleIn({names:SAMPLE_NAMES.map(function(n,i){ return (i+1)+"\t"+n+"\t"+(Math.floor(i/5)+1); }).join("\n")   /* ⭐出席番号・名前・班の3列（2026-10-05 名簿の基準にそろえた） */, kind:"std", car:5, from:1, to:8, rs:false, r2:false, up:"none", order:"han", fixed:[{label:"山田先生",code:"5-1C"},{label:"大野 ゆず",code:"5-1D"}], title:"6年1組", assign:{}},"名簿に班（1〜7班）が入っているので、班ごとに並べました");
+  /* ⭐名簿は出席番号・名前だけ（2026-10-11 本人「サンプルに班はないほうがいい」）。班は「詳しい条件」で決めてある状態（名簿の順とずらす＝3つ飛びで7班） */
+  var hanOf={}; SAMPLE_NAMES.forEach(function(n,i){ hanOf[n]=(i*3)%7+1; });
+  sampleIn({names:SAMPLE_NAMES.map(function(n,i){ return (i+1)+"\t"+n; }).join("\n"), kind:"std", car:5, from:1, to:8, rs:false, r2:false, up:"none", order:"han", han:7, hanOf:hanOf, fixed:[{label:"山田先生",code:"5-1C"},{label:"大野 ゆず",code:"5-1D"}], title:"6年1組", assign:{}},"班は「詳しい条件」で決めてあります。班ごとに並べました");
+  setHanView("han");   // ⭐班の一覧も班ごとに（本人「ぱっと見そっちで見て、そのあと座席を見る」）
 });
 $("sample2Btn").addEventListener("click",function(){
   sampleIn({names:SAMPLE_NAMES.join("\n"), kind:"std", car:5, car2:6, from:15, to:20, rs:false, r2:true, from2:1, to2:2, up:"lo", order:"random", fixed:[{label:"山田先生",code:"5-15C"},{label:"大野 ゆず",code:"5-15D"}], title:"6年1組", assign:{}},"作成途中の形です（5号車と6号車にまたがる）。4人が席に入っていません",true);

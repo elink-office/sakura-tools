@@ -11,27 +11,36 @@ function rnd(n){ try{ var a=new Uint32Array(1); crypto.getRandomValues(a); retur
 var COLORS=["#f6c9d4","#c9e3f6","#fde1b8","#cfeccf","#e1d4f4","#fbd0e6","#f7ecb5","#c6ece8"];
 var MAX=24;
 
-/* ⭐分割＝入れた項目をくり返して、細かく分ける（2026-09-27 本人「●分割（回答の倍数にはなるんだろうけど）」「×２とかでいいと思う」）
-   ＝×1・×2・×3・×4・×6・×8。並びは あたり・はずれ・あたり・はずれ…（1回ずつ順にくり返す）。全部で24こをこえる倍は選べない */
-var REPS=[1,2,3,4,6,8];
-var st={items:"", removeHit:false, rep:1};
+/* ⭐項目ごとに「こ数」（ルーレットのマスの数）を決める（2026-10-11 本人「カレーとラーメンでは、1個と4個はできないのね」「あたりとはずれも、自分で入れると思う。だから入れたものに対して設定してほしい」「分割も私の最初の説明が悪かった。コのほうがいい」）
+   ＝前の「分割（×2・×3…）」と「あたりとはずれの数」は、これ1つにまとめた。確率＝その項目のこ数÷全部のこ数。同じ項目が続かないよう、ばらして置く。全部で24こまで */
+var st={items:"", removeHit:false, counts:{}};
 function list(){ return st.items.split(/\r?\n/).map(function(s){ return s.split(/\t/)[0].trim(); }).filter(Boolean).slice(0,MAX); }
-function count(){ var n=list().length; $("itemCount").textContent=n+"こ"+(st.items.split(/\r?\n/).filter(function(s){return s.trim();}).length>MAX?"（"+MAX+"こまで使います）":""); paintRep(); }
-function repOk(k,n){ return k===1 || Math.max(n,2)*k<=MAX; }   // 項目が0〜1このときは2こで数える
-function paintRep(){
-  var n=list().length;
-  if(!repOk(st.rep,n)) st.rep=1;
-  Array.prototype.forEach.call($("segRep").children,function(b){
-    var k=+b.getAttribute("data-v"); b.classList.toggle("on",k===st.rep); b.disabled=!repOk(k,n);
-  });
-  $("repNote").textContent= n>=2 ? "→ "+(n*st.rep)+"こに分かれます" : "";
+function cntOf(n){ var c=st.counts[n]|0; return c>=1?c:1; }
+function totalOf(names){ return names.reduce(function(s,n){ return s+cntOf(n); },0); }
+function count(){ var n=list().length; $("itemCount").textContent=n+"こ"+(st.items.split(/\r?\n/).filter(function(s){return s.trim();}).length>MAX?"（"+MAX+"こまで使います）":""); renderCnt(); }
+function renderCnt(){
+  var names=list(), box=$("cntRows");
+  if(names.length<2){ box.innerHTML='<p class="hint">項目を2こ以上入れると、ここで項目ごとのこ数を決められます。</p>'; $("repNote").textContent=""; return; }
+  var tot=totalOf(names);
+  box.innerHTML=names.map(function(n){
+    return '<label class="ru-cnt"><span>'+esc(n)+'</span><input type="number" min="1" max="'+(MAX-names.length+1)+'" inputmode="numeric" data-n="'+esc(n)+'" value="'+cntOf(n)+'" aria-label="'+esc(n)+'のこ数"> こ<em>'+(Math.round(cntOf(n)/tot*1000)/10)+'％</em></label>';
+  }).join("");
+  $("repNote").textContent="→ 全部で "+tot+"こに分かれます"+(tot>MAX?"（"+MAX+"こをこえています。こ数を減らしてください）":"");
 }
-$("segRep").addEventListener("click",function(e){
-  var b=e.target.closest("button"); if(!b || b.disabled) return;
-  st.rep=+b.getAttribute("data-v"); paintRep(); screenSave();
+$("cntRows").addEventListener("change",function(e){
+  var inp=e.target; if(!inp || inp.tagName!=="INPUT") return;
+  var n=inp.getAttribute("data-n"), names=list(), others=totalOf(names)-cntOf(n);
+  var v=Math.max(1,Math.min(MAX-others, Math.floor(+inp.value)||1));   // ⭐ほかの項目と合わせて24こまで
+  st.counts[n]=v; renderCnt(); screenSave();
 });
-/* 回す面の並び＝項目を順にくり返す。何番目の項目か（色をそろえるため・外すため）も持つ */
-function expand(base,k){ var a=[],c=[]; for(var r=0;r<k;r++) base.forEach(function(t,j){ a.push(t); c.push(j); }); return {items:a, ci:c}; }
+/* 回す面の並び＝こ数ぶんのマスを、同じ項目がかたまらないようにばらして置く。何番目の項目か（色をそろえるため・外すため）も持つ */
+/* ⭐項目ごとに「円の上の何割のところ」に置くかを決めて、その順に並べる。(k+項目のずらし)÷こ数 ＝ 同じ項目はこ数で等間隔・項目どうしは少しずつずらして重ならない
+   （2026-10-11 本人「カレーを分散させることはできないのかな？」＝前は (k+0.5)÷こ数 でずらさず、こ数の少ない項目が一かたまりになってカレーが続けて並んだ） */
+function expand(base,cnt){
+  var t=[], n0=base.length; base.forEach(function(n,j){ for(var k=0;k<cnt[j];k++) t.push({n:n,j:j,p:(k+(j+0.5)/n0)/cnt[j]}); });
+  t.sort(function(a,b){ return a.p-b.p || a.j-b.j; });
+  return {items:t.map(function(x){ return x.n; }), ci:t.map(function(x){ return x.j; })};
+}
 $("items").addEventListener("input",function(){ st.items=this.value; count(); screenSave(); });
 $("itemsClear").addEventListener("click",function(){ $("items").value=""; st.items=""; count(); screenSave(); });
 $("removeHit").addEventListener("change",function(){ st.removeHit=this.checked; screenSave(); });
@@ -50,7 +59,8 @@ $("save").addEventListener("change",function(){
 function screenLoad(){
   try{
     var s=JSON.parse(localStorage.getItem(KEY)||"null"); if(!s) return false;
-    $("save").checked=true; st.items=s.items||""; st.removeHit=!!s.removeHit; st.rep=REPS.indexOf(s.rep)>=0?s.rep:1;
+    $("save").checked=true; st.items=s.items||""; st.removeHit=!!s.removeHit; st.counts=(s.counts && typeof s.counts==="object")?s.counts:{};
+    if(!Object.keys(st.counts).length && s.rep>1) list().forEach(function(n){ st.counts[n]=Math.min(s.rep,MAX); });   // 前の「分割」で保存していたもの
     $("items").value=st.items; $("removeHit").checked=st.removeHit; return true;
   }catch(e){ return false; }
 }
@@ -80,7 +90,7 @@ function wheelSvg(items,ci){
   return h;
 }
 function build(){
-  var e=expand(run.base,run.rep); run.items=e.items; run.ci=e.ci;
+  var e=expand(run.base,run.cnt); run.items=e.items; run.ci=e.ci;
   $("stage").innerHTML='<div class="ru-wrap"><div class="ru-wheelbox"><div class="ru-pin"></div><div class="ru-wheel" id="wheel">'+wheelSvg(run.items,run.ci)+'</div><div class="ru-hub"></div></div>'+
     '<div class="ru-res"><div class="ru-hit" id="hit"></div><div class="ru-hist" id="hist"></div></div></div>';
   run.angle=0;
@@ -97,7 +107,7 @@ function spin(){
   /* 前に当たった項目を外す（チェックがあるとき）。外すのは次に回す直前＝当たりの形はしばらく見えたまま
      ⭐分割しているときは、同じ項目をまとめて外す */
   if(st.removeHit && run.pendingRemove!=null){
-    run.base.splice(run.pendingRemove,1); run.pendingRemove=null;
+    run.base.splice(run.pendingRemove,1); run.cnt.splice(run.pendingRemove,1); run.pendingRemove=null;
     build(); update(); if(run.base.length<2) return;
   }
   run.busy=true; update();
@@ -124,10 +134,11 @@ function start(demo){
      ⭐見本の中身は「あたり」と「はずれ」の細い区切りをたくさん（2026-09-27 本人「見本をね、あたりとはずれにしてさ、細いのをたくさんのほうがいいな」）
        ＝16こ・あたり・はずれ・あたり・はずれ…と交互（本人「あたり、はずれ、あたり、はずれ、と思ってた」）。
        前＝入れる欄のうすい見本（カレー・ラーメン…）→ あたり3こをばらして置く形 */
-  var rep=st.rep;
-  if(demo && items.length<2){ items=["あたり","はずれ"]; rep=8; }   // ＝あたり・はずれの2こを×8＝16こ
+  var cnt=items.map(cntOf);
+  if(demo && items.length<2){ items=["あたり","はずれ"]; cnt=[8,8]; }   // ＝あたり・はずれの2こを8こずつ＝16こ（交互に並ぶ）
   if(items.length<2){ alert("先に①で、項目を2こ以上入れてください。"); $("opt1").open=true; return false; }
-  run={base:items, rep:rep, items:[], ci:[], hits:[], busy:false, angle:0, pendingRemove:null};
+  if(cnt.reduce(function(s,c){ return s+c; },0)>MAX){ alert("マスの合計が"+MAX+"こをこえています。①で、こ数を減らしてください。"); $("opt1").open=true; return false; }
+  run={base:items, cnt:cnt, items:[], ci:[], hits:[], busy:false, angle:0, pendingRemove:null};
   timers.forEach(clearTimeout); timers=[];
   var rs=$("runScreen"); rs.hidden=false; rs.classList.toggle("framed",!!demo);
   $("demoBack").hidden=!demo; $("demoBadge").hidden=!demo;
@@ -167,6 +178,5 @@ function keepAwake(on){
 }
 
 if(screenLoad()) $("opt1").open=true;
-paintRep();
 count();
 })();

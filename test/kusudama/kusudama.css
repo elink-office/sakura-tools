@@ -79,8 +79,17 @@
 .ks-run.framed .tm-fs,.ks-run.framed .run-fs{display:none}
 
 /* ===== くす玉（タイマーのくす玉と同じ作り） ===== */
-.ks-stage .kusu{position:absolute;top:-25cqh;   /* ⭐玉を大きくしたぶん上へ＝玉の下の端は前より少し上（2026-09-24 本人）。⚠-7cqh→-12cqh→-25cqh。並べるときは JS で -8cqh */
+/* ⭐くす玉の上の位置は「画面の高さ」でなく「くす玉の大きさ（--ks）」の割合で決める（2026-10-11 本人「モニターでくす玉がほぼ見えない」「スマホは完全に上に出る」）
+   ＝前は -25cqh だった。大きさは 850px で止まるのに位置は高さで上がり続け、大きいモニターでは玉が画面の外に出た・縦のスマホでは小さい玉が全部外に出た。
+   見本の窓（16:9）は前と同じ見え方（-.236 は見本の窓で -25cqh と同じになる値）。並べるときは -8cqh → -.0756（同じ理由）。
+   縦長（たて）の画面は、全体を下げて、上の端に張りつかないようにする（くす玉の中心が画面の高さの40%あたり） */
+.ks-stage .kusu{position:absolute;--ks:min(82cqw,106cqh,850px);top:calc(var(--ks) * -.236);
   transform:translate(-50%,-110%);z-index:5}
+.ks-stage .kusu.row{top:calc(var(--ks) * -.0756)}
+@container (max-aspect-ratio: 20/21){
+  .ks-stage .kusu{top:calc(var(--ks) * -.236 + max(0px, 40cqh - var(--ks) * .32))}
+  .ks-stage .kusu.row{top:calc(var(--ks) * -.0756 + max(0px, 40cqh - var(--ks) * .32))}
+}
 .ks-stage .kusu.in{animation:ksHang .6s cubic-bezier(.3,1.4,.5,1) forwards}
 @keyframes ksHang{from{transform:translate(-50%,-110%)}to{transform:translate(-50%,0)}}
 .ks-stage .kusu.out{animation:ksOut .5s ease-in forwards}
@@ -113,3 +122,9 @@
 .ks-cd input{width:18px;height:18px;margin:0}
 /* ⚠スマホで①の箱が画面より広くなった（中身の最小幅で並びの列が広がる）＝列の中の箱は縮めてよい（2026-09-26） */
 .ks-grid>details{min-width:0}
+
+/* 「横向きにすると…」の帯（縦にしたときだけ数秒・2026-10-11）。ビンゴと同じ形 */
+.ks-note{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 74px);transform:translateX(-50%);z-index:31;max-width:92%;
+  background:#fff;color:#a84a72;border:1px solid color-mix(in srgb,var(--pink) 45%,#fff);border-radius:999px;padding:8px 16px;font-size:.9rem;font-weight:700;
+  box-shadow:0 2px 8px rgba(0,0,0,.12);text-align:center;cursor:pointer}
+.ks-note[hidden]{display:none}

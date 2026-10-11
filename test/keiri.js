@@ -37,7 +37,7 @@ var $ = function(id){ return document.getElementById(id); };
 
 /* ========== 覚えているもの ========== */
 var db = { me:{}, clients:[], bank:'', note:'', logo:'',
-           noPrefix:'', noDigits:3, usedNos:[], lastSeq:0, docs:{}, forms:[] };
+           noPrefix:'', noDigits:3, noStart:1, noManual:false, usedNos:[], lastSeq:0, docs:{}, forms:[] };
 
 /* ⭐取引先を1件足す（同じ名前があれば足さない） */
 function addClient(c){
@@ -96,6 +96,8 @@ function load(){
       db.backTo   = o.backTo || null;   /* ⭐見積書に戻る道（2026-09-14） */
       db.noPrefix = o.noPrefix || '';
       db.noDigits = o.noDigits || 3;
+      db.noStart  = o.noStart || 1;        /* ⭐最初の番号（2026-10-11） */
+      db.noManual = !!o.noManual;          /* ⭐番号を自動で振らない（2026-10-11） */
       /* ⭐番号の記録は書類ごとに分ける（請求書と見積書で連番が混ざらないように） */
       db.docs = o.docs || {};
       if(!db.docs[DOC]) db.docs[DOC] = {};
@@ -117,7 +119,7 @@ function save(){
     if(!db.docs) db.docs = {};
     db.docs[DOC] = { usedNos: db.usedNos, lastSeq: db.lastSeq };
     var out = {};
-    ['me','clients','bank','note','logo','noPrefix','noDigits','docs','forms','handoff','backTo'].forEach(function(k){ out[k]=db[k]; });   /* ⚠ここに無いものは保存されない（backTo を足し忘れて戻るボタンが出なかった） */
+    ['me','clients','bank','note','logo','noPrefix','noDigits','noStart','noManual','docs','forms','handoff','backTo'].forEach(function(k){ out[k]=db[k]; });   /* ⚠ここに無いものは保存されない（backTo を足し忘れて戻るボタンが出なかった） */
     localStorage.setItem(KEY, JSON.stringify(out));
   }catch(e){}
 }
@@ -177,6 +179,7 @@ function fixPrefixForYear(){
   if(Number(m[1]) !== y){
     db.noPrefix = y + m[2];
     db.lastSeq = 0;
+    db.noStart = 1;   // 年が変わったら、最初の番号も 1 に戻す
     save();
   }
 }
@@ -185,13 +188,19 @@ function zeroPad(n, d){
   while(s.length < d) s = '0' + s;
   return s;
 }
+/* ⭐最初の番号（2026-10-11 本人「自分が設定できる方がいい」）＝ここから数える。⚠すでに使った番号より小さいときは、使った番号の次から（同じ番号を自動では出さない）。
+   ⭐番号を自動で振らない（本人「自動が嫌な人もいる」）＝欄は空で始まり、PDFを作っても次の番号に進まない */
+function autoNo(){
+  return (db.noPrefix || '') + zeroPad(Math.max(db.lastSeq + 1, db.noStart || 1), db.noDigits);
+}
 function makeNo(){
-  return (db.noPrefix || '') + zeroPad(db.lastSeq + 1, db.noDigits);
+  return db.noManual ? '' : autoNo();
 }
 function refreshNo(){
   db.noPrefix = $('noPrefix').value;
   db.noDigits = parseInt($('noDigits').value, 10) || 3;
-  $('invNo').value = makeNo();
+  if($('noStart')) db.noStart = Math.max(1, parseInt($('noStart').value, 10) || 1);
+  if(!db.noManual) $('invNo').value = makeNo();
   checkNo();
 }
 function checkNo(){
@@ -201,12 +210,13 @@ function checkNo(){
      ⭐お試しで見ている人に警告を出さない（2026-09-10 本人「サンプルに出なくできないのかな」） */
   var sampleNo = (db.noPrefix || '') + zeroPad(1, db.noDigits);
   if(!(SAMPLE_ON && v === sampleNo) && v && db.usedNos.indexOf(v) >= 0){
-    hint.innerHTML = '⚠ <strong>この番号は使ったことがあります。</strong>別の番号にしてください。';
+    /* ⭐修正版は同じ番号で作る（2026-10-11 本人「番号だよ。内容は再発行。でも再発行とは書きたくない」）。前＝「別の番号にしてください」で、直す人を止めていた */
+    hint.innerHTML = '⚠ <strong>この番号は、前に使っています。</strong>修正版なら、このまま作れます。別の' + D.title + 'なら、番号を変えてください。';
     hint.style.color = 'var(--bad)';
     return false;
   }
   /* ⭐2026-09-15 本人「自動で見積書を振っています。書き直しも可能です。」→ 番号の欄の案内なので「〇〇番号」にした。書類の名前はページごと */
-  hint.textContent = '自動で' + D.title + '番号を振っています。書き直しも可能です。';
+  hint.textContent = db.noManual ? '番号は自動で振りません。自分で入れてください。' : '自動で' + D.title + '番号を振っています。書き直しも可能です。';
   hint.style.color = '';
   return true;
 }
@@ -1156,7 +1166,7 @@ function drawForms(){
     /* ⭐③の入れ方には「エクセルから貼り付ける」も並べる（2026-09-15 本人「エクセルから貼り付けるを選択肢に」） */
     if(sel.id === 'formSel2' && db.forms.length){
       var ex = document.createElement('option');
-      ex.value = 'excel'; ex.textContent = 'エクセルから貼り付ける';
+      ex.value = 'excel'; ex.textContent = 'エクセルから、明細を貼り付ける';
       sel.appendChild(ex);
     }
     if(keep) sel.value = keep;
@@ -1293,6 +1303,7 @@ function srcUpdate(){
   var v = $('formSel2') ? $('formSel2').value : '';
   var isForm = has && v !== '' && v !== 'excel';
   if($('formBtns')) $('formBtns').hidden = !isForm;
+  if($('formHint')) $('formHint').hidden = (v === 'excel');   // ⭐ひな形の説明は、エクセルを選んだときは隠す（2026-10-11 本人「見積書メーカーで…がエクセルから貼り付けるで必要？」）
   if($('pasteWrap')) $('pasteWrap').hidden = has && !(v === 'excel' || (isForm && PASTE_OPEN));
 }
 /* ⭐④「全部消す」のあとの「消しました。③から入れ直す」を閉じる */
@@ -1433,6 +1444,8 @@ function boot(){
   $('invDate').value  = todayStr();
   $('noPrefix').value = db.noPrefix;
   $('noDigits').value = String(db.noDigits);
+  if($('noStart'))  $('noStart').value = db.noStart > 1 ? String(db.noStart) : '';
+  if($('noManual')) $('noManual').checked = !!db.noManual;
   $('invNo').value    = makeNo();
 
   for(var i=0;i<4;i++) addRow();
@@ -1548,6 +1561,13 @@ function boot(){
   $('invNo').addEventListener('input', checkNo);
   $('noPrefix').addEventListener('input', refreshNo);
   $('noDigits').addEventListener('change', refreshNo);
+  if($('noStart')) $('noStart').addEventListener('input', refreshNo);
+  if($('noManual')) $('noManual').addEventListener('change', function(){
+    db.noManual = this.checked;
+    if(db.noManual){ if($('invNo').value.trim() === autoNo()) $('invNo').value = ''; }   // ⭐自動で入っていた番号だけ空にする（自分で打ったものは残す）
+    else{ $('invNo').value = makeNo(); }
+    checkNo();
+  });
 
   window.addEventListener('resize', fitSheet);
 
@@ -1618,8 +1638,49 @@ function boot(){
     $('logoFile').value = '';   /* 消したときだけ、選択欄も空に戻す */
   };
 
+  /* ⭐PDFを作った直後に、「まだ保存していない」を知らせる（2026-10-11 本人「PDFを作るときに、保存したい場合は、次の⑧で保存してください。ってしたらどう？」「⑧は削除もかかわってくるからね」）
+     ＝自動では保存しない（本人「自分のも自動保存は嫌かも」）。画面は止めない。保存済みと同じ内容なら出さない。⑧で保存したらすぐ消す */
+  var SAVE_NOTE_ON = false;
+  function meUnsaved(){
+    if(typeof SAMPLE_ON !== 'undefined' && SAMPLE_ON) return false;
+    var keys = ['meName','meZip','meAddr','meTel','meMail','meTno'], cur = {};
+    keys.forEach(function(k){ cur[k] = $(k).value.trim(); });
+    if(!(cur.meName || cur.meAddr)) return false;
+    return keys.some(function(k){ return cur[k] !== (db.me[k] || ''); })
+      || $('useInvoice').checked !== !!db.me.useInvoice
+      || ($('bank') && $('bank').value !== (db.bank || ''))
+      || ($('note') && $('note').value !== (db.note || ''));
+  }
+  function clientUnsaved(){
+    if(typeof SAMPLE_ON !== 'undefined' && SAMPLE_ON) return false;
+    var c = nowClient(); if(!c.name) return false;
+    return !db.clients.some(function(x){ return x.name === c.name && x.honor === c.honor && (x.person || '') === c.person && (x.addr || '') === c.addr; });
+  }
+  function updateSaveNote(){
+    var el = $('saveNote'); if(!el) return;
+    var a = meUnsaved(), b = clientUnsaved();
+    if(!SAVE_NOTE_ON || !(a || b)){ el.hidden = true; return; }
+    /* ⭐PDFの次の⑧へ進める（2026-10-11 本人「⑧でもできるから、PDFで保存の時に②で戻るより⑧に進んだ方がよくない？」）。①②にも保存ボタンはある */
+    el.innerHTML = (a && b ? '自分の情報・取引先は' : a ? '自分の情報は' : '取引先は') + '、まだ保存していません。保存したい場合は、次の⑧「保存したデータの利用」で保存してください。<a href="#saveUse" id="saveNoteLink">⑧を開く</a>';
+    el.hidden = false;
+  }
+
+  /* 「⑧を開く」＝⑧まで画面を動かし、未保存のほうのシャッター（自分の情報／取引先）を開く */
+  document.addEventListener('click', function(e){
+    if(!(e.target && e.target.id === 'saveNoteLink')) return;
+    var h = $('saveUse'); if(!h) return;
+    e.preventDefault();
+    var sec = h.closest('section') || document;
+    Array.prototype.forEach.call(sec.querySelectorAll('details.opt.sub'), function(dt){
+      var s = dt.querySelector('summary'), t = s ? s.textContent : '';
+      if((meUnsaved() && t.indexOf('自分の情報') >= 0) || (clientUnsaved() && t.indexOf('取引先') >= 0)) dt.open = true;
+    });
+    h.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
   /* --- 覚える --- */
-  $('saveMe').onclick = function(){
+  /* ⭐保存のボタンは、①と⑧の両方にある（2026-10-11 本人「①と②があるものだと思ってた。それぞれで作ってください」）。どちらも同じ動き。知らせはそのボタンの横に出す */
+  var saveMeNow = function(msgEl){
     ['meName','meZip','meAddr','meTel','meMail','meTno'].forEach(function(k){
       db.me[k] = $(k).value.trim();
     });
@@ -1628,12 +1689,18 @@ function boot(){
     db.note = $('note') ? $('note').value : db.note;
     db.noPrefix = $('noPrefix').value;
     db.noDigits = parseInt($('noDigits').value, 10) || 3;
+    if($('noStart'))  db.noStart = Math.max(1, parseInt($('noStart').value, 10) || 1);
+    if($('noManual')) db.noManual = $('noManual').checked;
     if(!db.me.meName && !db.me.meAddr){ alert('先に①で、屋号・氏名か住所を入れてください。'); return; }
     save();
     drawClients();
-    $('meMsg').textContent = 'この端末に保存しました';
-    flash($('meMsg'));
+    msgEl.textContent = 'この端末に保存しました';
+    flash(msgEl);
+    updateSaveNote();
   };
+  $('saveMe').onclick = function(){ saveMeNow($('meMsg')); };
+  if($('saveMe1')) $('saveMe1').onclick = function(){ saveMeNow($('meMsg1')); };
+  if($('saveMe5')) $('saveMe5').onclick = function(){ saveMeNow($('meMsg5')); };   // ⭐⑤のボタン＝①の自分の情報といっしょに保存（お振込先・備考も入る）
 
   /* ⭐見積書の画面を丸ごと写す（戻る道のため・2026-09-14）。
      ⭐欄の中身は id ごとに、明細は nowForm() で取る。⚠ファイルの欄（ロゴ）は写せないので外す */
@@ -1658,7 +1725,8 @@ function boot(){
   function tellClient(t){ $('clientMsg').textContent = t; flash($('clientMsg')); }
 
   /* ⭐新しい名前で保存＝②の中身を1件足す。名前は会社名（氏名）がそのまま付く */
-  $('clientNew').onclick = function(){
+  var saveClientNow = function(tell){
+    tell = tell || tellClient;
     var c = nowClient();
     if(!c.name){ alert('先に②で、会社名か氏名を入れてください。'); return; }
     if(db.clients.length >= 20){ alert('保存できるのは20件までです。いらないものを削除してください。'); return; }
@@ -1672,8 +1740,11 @@ function boot(){
     }
     save(); drawClients();
     $('clientSel').value = String(hit >= 0 ? hit : db.clients.length - 1);
-    tellClient('この端末に保存しました');
+    tell('この端末に保存しました');
+    updateSaveNote();
   };
+  $('clientNew').onclick = function(){ saveClientNow(); };
+  if($('clientNew1')) $('clientNew1').onclick = function(){ saveClientNow(function(t){ $('clientMsg1').textContent = t; flash($('clientMsg1')); }); };
 
   /* ⭐上書き＝選んでいる1件を、②の中身で置きかえる */
   $('clientSave').onclick = function(){
@@ -1687,6 +1758,7 @@ function boot(){
     db.clients[Number(v)] = c;
     save(); drawClients();
     tellClient('上書きしました');
+    updateSaveNote();
   };
 
   $('clientUse').onclick = function(){
@@ -1903,9 +1975,10 @@ function boot(){
     if(!$('toName').value.trim()){ alert('先に②で、請求先を入れてください。'); return; }
     if(!TOTAL){ alert('先に④で、品目と金額を入れてください。'); return; }
     if(!checkNo()){
-      if(!confirm('この請求書番号は、前に使ったことがあります。このまま進めますか。')) return;
+      if(!confirm('この' + D.title + '番号は、前に使っています。修正版として同じ番号で作りますか。\n（OK＝同じ番号で作る／キャンセル＝やめる）')) return;
     }
     var no = $('invNo').value.trim();
+    if(!no && !confirm('番号が空です。このまま作りますか。')) return;   // ⭐番号が空のとき（本人「Aでいこう」）
     if(no && db.usedNos.indexOf(no) < 0){
       db.usedNos.push(no);
       if(db.usedNos.length > 500) db.usedNos = db.usedNos.slice(-500);
@@ -1913,8 +1986,9 @@ function boot(){
       var pre = db.noPrefix || '';
       var tail = (pre && no.indexOf(pre) === 0) ? no.slice(pre.length) : no;
       var m = /(\d+)\s*$/.exec(tail);
-      if(m) db.lastSeq = Math.max(db.lastSeq, Number(m[1]));
+      if(m && !db.noManual) db.lastSeq = Math.max(db.lastSeq, Number(m[1]));   // ⭐自動で振らないときは、次の番号に進めない
       save();
+      checkNo();   // ⭐使った番号になったので、番号欄の下に「この番号は、前に使っています」を出す（本人「自分で振るだと、同じ番号が表示される。使いましたみたいなのは出ない」）
     }
     /* 🔴⚠⑥がたたまれていると、紙に何も出ない（閉じた details は印刷されない）。
        ⭐押したら必ず開けてから印刷する（2026-09-10） */
@@ -1928,6 +2002,10 @@ function boot(){
       btn.textContent = 'PDFを作っています…';
       window.KEIRI_PDF.save(fileName()).then(function(){
         btn.disabled = false; btn.textContent = label;
+        SAVE_NOTE_ON = true; updateSaveNote();   // ⭐作った直後に、未保存ならお知らせ
+        /* ⭐自動で振るときは、PDFを作り終えたら番号を次に進める（2026-10-11 本人「進める。修正はラクするものではないから」）。⚠PDFを作っている間は進めない（紙の番号が変わるため）。自動で振らないときは進めない */
+        if(!db.noManual){ $('invNo').value = makeNo(); calc(); }
+        checkNo();
       }).catch(function(e){
         btn.disabled = false; btn.textContent = label;
         alert('PDFを作れませんでした。' + (e && e.message ? ('　' + e.message) : ''));
@@ -1992,7 +2070,7 @@ function boot(){
        ⚠db.forms が undefined になり、このあとひな形を保存しようとすると止まっていた。
        ⭐最初の db と同じ形にそろえる */
     db = { me:{}, clients:[], bank:'', note:'', logo:'',
-           noPrefix:defaultPrefix(), noDigits:3, usedNos:[], lastSeq:0, docs:{}, forms:[] };
+           noPrefix:defaultPrefix(), noDigits:3, noStart:1, noManual:false, usedNos:[], lastSeq:0, docs:{}, forms:[] };
     /* 🔴⭐画面の中身も全部消す（2026-09-11 本人「本当に全部」）。
        ⚠以前は①と⑤だけ消えて、②③④が残っていた＝半分残るのが一番困る。
        🔴⚠見積書には bank（お振込先）の欄がない（2026-09-11 に見つけた）。
@@ -2017,6 +2095,8 @@ function boot(){
     }
     $('noPrefix').value = db.noPrefix;
     $('noDigits').value = '3';
+    if($('noStart'))  $('noStart').value = db.noStart > 1 ? String(db.noStart) : '';
+    if($('noManual')) $('noManual').checked = !!db.noManual;
     /* ⭐④を空の4行に戻す（サンプルの透かしもここで消える） */
     clearItems();
     /* ⭐サンプルのえらび欄も戻す */

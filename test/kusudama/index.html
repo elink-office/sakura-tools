@@ -10,6 +10,14 @@
      ⭐日本向けだけ（本人「くす玉は完全に日本だと思ってる。出て来るのが縦書きだし」）
      ⭐道具の名前＝「くす玉メーカー」（2026-09-24 本人「くす玉メーカーだね」＝座席表メーカーとそろう）。⚠前は「くす玉で発表」 -->
 <meta name="robots" content="noindex,nofollow" data-test><!-- ⭐test だけの1行（原本に入れるときに消す）。site.js はこれを見てテスト版の印を出す -->
+<!-- Google tag (gtag.js)（2026-10-08 全ページにそろえた・本人「全ページに入れて！」） -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GCK29PTKBG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GCK29PTKBG');
+</script>
 <title>くす玉｜表彰を盛り上げる！PCで使う無料のくす玉アプリ</title>
 <meta name="description" content="PCで使う無料のくす玉アプリ。名前を打ってスタートを押すだけで、「3・2・1」のあとくす玉が割れて、名前と紙吹雪が出ます。プロジェクターやモニターに映して、優勝や表彰を盛り上げられます。スマホでも使えます。">
 <meta property="og:type" content="website">
@@ -21,7 +29,7 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <link rel="stylesheet" href="../style.css?v=162">
-<link rel="stylesheet" href="kusudama.css?v=13">
+<link rel="stylesheet" href="kusudama.css?v=17">
 <!-- Google AdSense（2026-09-28 審査の前にそろえた） -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9296990556079874" crossorigin="anonymous"></script>
 </head>
@@ -247,6 +255,7 @@
   <!-- ⭐右上＝窓と同じ並び（全画面・✕ とじる）。角は必ず「✕ とじる」（2026-09-27 本人の約束事・ページの型 14-7） -->
   <div class="run-tr"><button type="button" class="run-fs" id="fsBtn" title="全画面">⛶ 全画面</button><button type="button" class="run-close" id="backBtn">✕ とじる</button></div>
   <div class="tm-demo" id="demoBadge" hidden>見本（モニターの形 16:9）</div>
+  <div class="ks-note noprint" id="tallNote" hidden>横向きにすると、くす玉が大きく見えます</div>
   <div class="ks-stage" id="stage"></div>
   <div class="ks-321" id="cnt" aria-live="polite"></div>
   <div class="ks-btns">
@@ -255,7 +264,7 @@
   <div class="fx" id="fx" aria-hidden="true"></div>
 </div>
 
-<script src="kusudama.js?v=22"></script>
+<script src="kusudama.js?v=27"></script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>

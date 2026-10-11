@@ -10,6 +10,14 @@
      ⭐本人「福引のガラガラと、ビンゴは一緒にサクッと作ってもいいね」。番号1〜75を引いて、出た番号を表に並べる形（忘年会など）
      ⭐カゴ・玉・回し方は、ランダム指名メーカー（../random/）と同じ。見た目は random.css を共通で読む -->
 <meta name="robots" content="noindex,nofollow" data-test><!-- ⭐test だけの1行（原本に入れるときに消す）。site.js はこれを見てテスト版の印を出す -->
+<!-- Google tag (gtag.js)（2026-10-08 全ページにそろえた・本人「全ページに入れて！」） -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GCK29PTKBG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GCK29PTKBG');
+</script>
 <title>ビンゴ｜モニターに映せる！PCで使う無料のビンゴアプリ</title>
 <meta name="description" content="PCで使う無料のビンゴアプリ。カゴをくるくる回して、番号の玉が転がってきます。出た番号は表に並びます。プロジェクターやモニターに映して、忘年会や学校のイベントで使えます。スマホでも使えます。登録なし。">
 <meta property="og:type" content="website">
@@ -22,7 +30,7 @@
 <meta property="og:image:height" content="630">
 <link rel="stylesheet" href="../style.css?v=162">
 <link rel="stylesheet" href="../random/random.css?v=20">
-<link rel="stylesheet" href="bingo.css?v=25">
+<link rel="stylesheet" href="bingo.css?v=26">
 <!-- Google AdSense（2026-09-28 審査の前にそろえた） -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9296990556079874" crossorigin="anonymous"></script>
 </head>
@@ -171,6 +179,7 @@
   <!-- ⭐右上＝窓と同じ並び（全画面・✕ とじる）。角は必ず「✕ とじる」（2026-09-27 本人の約束事・ページの型 14-7） -->
   <div class="run-tr"><button type="button" class="run-fs" id="fsBtn" title="全画面">⛶ 全画面</button><button type="button" class="run-close" id="backBtn">✕ とじる</button></div>
   <div class="pk-demo" id="demoBadge" hidden>見本（モニターの形 16:9）</div>
+  <div class="bg-note noprint" id="tallNote" hidden>横向きにすると、玉も表も大きく見えます</div>
   <div class="pk-stage" id="stage"></div>
   <div class="pk-btns">
     <button type="button" class="pk-b cracker" id="crackerBtn" title="当たった人が出たら押す">🎉 ビンゴ！</button>
@@ -180,7 +189,7 @@
 </div>
 
 <script src="../mini3d.js?v=1"></script>
-<script src="bingo.js?v=33"></script>
+<script src="bingo.js?v=34"></script>
 <script src="../tip.js?v=3"></script>
 </body>
 </html>

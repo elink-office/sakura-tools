@@ -355,7 +355,7 @@ function sizeFor(mode,n,i){
 function hang(i){
   var it=run.items[i], el=document.createElement("div"), s=sizeFor(run.mode,run.items.length,i);
   el.className="kusu"; el.style.left=s.left+"%"; el.style.width=s.w;
-  if(run.mode==="row" && run.items.length>1) el.style.top="-8cqh";   // 並べるときは玉が小さいので、見える部分を少し多めに
+  if(run.mode==="row" && run.items.length>1) el.classList.add("row");
   el.innerHTML=kusuSvg(it.c,it.t,"おめでとう");   // 空のときは「おめでとう」（見本の名前は出さない）
   $("stage").appendChild(el);
   /* ⭐並べたときも、帯（紙）は1つのときと同じくらいの大きさに。銀・銅はほんの少しだけ小さく。ひもが長くなって下にぶら下がる
@@ -418,12 +418,27 @@ function next(){
     }else if(run.idx<n-1){
       el.classList.add("out"); var old=el; setTimeout(function(){ if(old.parentNode) old.remove(); },550);
       clearFx(); run.idx++; run.els[run.idx]=hang(run.idx);
+      /* ⭐カウントダウンありのときは、「次へ」を1回押したら、次のくす玉が下りてすぐ3・2・1（2026-10-11 本人「次へを2回押すのがストレス」「押したらすぐカウントダウン」）。
+         下りるのを待ってから（0.7秒）始める。なしのときは今まで通り（下りてきたあと、もう1回押すと割れる） */
+      if(st.cd){
+        run.busy=true; $("nextBtn").disabled=true;
+        var j=run.idx;
+        later(function(){ run.busy=false; count321(function(){ openKusu(run.els[j], run.items[j].c); if(j>=n-1) run.done=true; updateBtn(); }); },700);
+      }
     }
   }else{
     var i=run.opened;
     count321(function(){ openKusu(run.els[i], run.items[i].c); run.opened++; if(run.opened>=n) run.done=true; updateBtn(); });
   }
 }
+/* ⭐縦長の画面（スマホ・タブレットのたて）では、数秒「横向きにすると…」の帯を出す（2026-10-11 本人「横のサイズを促す」。ビンゴと同じ形・縦にするたび・4秒で消える・タップでも消える・操作は止めない）。見本の窓（16:9）では出さない */
+var noteT=0, wasTall=false, isDemo=false;
+function calcTall(){ if(isDemo) return false; var r=$("runScreen").getBoundingClientRect(); return r.height>r.width*1.05; }
+function hideNote(){ clearTimeout(noteT); var n=$("tallNote"); if(n) n.hidden=true; }
+function showNote(){ var n=$("tallNote"); if(!n) return; n.hidden=false; clearTimeout(noteT); noteT=setTimeout(hideNote,4000); }
+function checkTall(){ var t=calcTall(); if(t&&!wasTall) showNote(); if(!t) hideNote(); wasTall=t; }
+window.addEventListener("resize",function(){ if($("runScreen").hidden) return; clearTimeout(checkTall._t); checkTall._t=setTimeout(checkTall,150); });
+if($("tallNote")) $("tallNote").addEventListener("click",hideNote);
 function start(demo){
   run={items:st.items.slice(0,st.n).map(function(x){ return {c:x.c,t:x.t}; }), els:[], idx:0, opened:0, busy:false, done:false, mode:st.mode};
   clearFx(); $("stage").innerHTML=""; $("cnt").innerHTML="";
@@ -433,9 +448,11 @@ function start(demo){
   if(run.mode==="one") run.els[0]=hang(0);
   else { for(var i=0;i<run.items.length;i++) run.els[i]=hang(i); alignRow(); }
   updateBtn();
+  isDemo=!!demo; wasTall=false; checkTall();
   if(!demo) keepAwake(true);
 }
 function stop(){
+  hideNote(); wasTall=false;
   clearFx(); $("stage").innerHTML=""; $("cnt").innerHTML="";
   $("runScreen").hidden=true; $("runScreen").classList.remove("framed"); $("demoBack").hidden=true;
   document.body.style.overflow=""; keepAwake(false);
