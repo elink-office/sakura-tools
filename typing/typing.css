@@ -311,6 +311,26 @@ button.primary:hover{background:var(--accent-deep)}   /* ⭐ステージの色�
 }
 .roma .done,.roma .typed{color:#c8ccd1}
 .roma .cur{color:var(--accent);font-weight:700}
+/* ⭐漢字の行（2026-10-16 本人「長文を漢字にしたい」「ひらがなも一緒に表示して」＝A：漢字の文の下にひらがな）
+   ⭐漢字の行があるときは、漢字を大きく、ひらがなを少し小さく（読むのは漢字・打つ音はひらがなで確かめる） */
+.kanjiline{
+  font-size:31px;line-height:1.6;letter-spacing:.04em;word-break:break-all;
+  text-shadow:0 0 6px rgba(255,255,255,.95),0 0 3px rgba(255,255,255,.9);
+}
+.kanjiline .done{color:#b9bec4}
+.kanjiline .cur{color:var(--accent);font-weight:700}
+.haskanji .kana{font-size:18px;line-height:1.6;margin-top:2px}   /* 2026-10-16 本人「ひらがなはもう少し小さい文字でも良い」＝21→18px */
+/* ⭐字を太く・ローマ字を濃く（2026-10-16 本人「文字が薄くて読みにくいっていう意見もあって」→ 試した見本を見て「だいぶ違うよ」）
+   ⚠元の値＝漢字・ひらがなは太さふつう（400）／ローマ字は var(--sub)＝#82868c・太さふつう。フォントは変えていない */
+.kanjiline,.kana{font-weight:700}
+.roma{color:#4b4f55;font-weight:700}
+/* ⭐同じ文が2行に折り返したときの行間を詰める（2026-10-16 本人「同じ文章が2行になるときに行間を詰めることできる？」）
+   ⭐行と行（漢字・ひらがな・ローマ字）のあいだは、行間ではなく margin で空ける＝別の行だと分かるまま
+   ⚠元の値＝ひらがな 1.7（PCの練習画面 1.6）・漢字 1.6・ローマ字 1.9／漢字があるときのひらがなの上 2px */
+.kana{line-height:1.35}
+.kanjiline{line-height:1.3}
+.roma{line-height:1.45}
+.haskanji .kana{line-height:1.35;margin-top:6px}
 .shake{animation:sh .3s}
 @keyframes sh{
   0%,100%{transform:translateX(0)}
@@ -646,8 +666,10 @@ a.stage{display:block;text-decoration:none;color:var(--text)}
    ⚠狭い画面（900px以下）は今までの大きさのまま */
 @media(min-width:901px){
   .playright .panel{min-height:240px;padding:20px 24px}
-  .playright .kana{font-size:26px;line-height:1.6}
+  .playright .kana{font-size:26px;line-height:1.35}   /* 1.6→1.35（2026-10-16 行間を詰める） */
   .playright .roma{font-size:15px;margin-top:10px}
+  .playright .kanjiline{font-size:26px}
+  .playright .haskanji .kana{font-size:15px}   /* 18→15px（2026-10-16） */
   /* キーボードは1割ほど小さく、横は中央に */
   .playright .kb{margin:14px auto 0;width:max-content;max-width:100%}
   .playright .key{width:40px;height:38px;font-size:12.5px;border-radius:6px}
