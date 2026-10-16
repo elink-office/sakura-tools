@@ -286,7 +286,9 @@ button.primary:hover{background:var(--accent-deep)}   /* ⭐ステージの色�
   /* ⭐タイルを薄くしたら、ガラスの透け感が消えた（2026-09-21 本人）。
      ⭐白の膜を薄く（.26→.18）して、背後の色を濃く見せる（saturate 1.35→1.7）
      ⚠元の値＝background .26 / blur(6px) saturate(1.35) */
-  background:rgba(255,255,255,.18);
+  /* ⭐白の膜を濃く（.18→.7）＝文字とタイルの色が重ならない（2026-10-16 本人「後ろから見てると、今から入力する文字とタイルの色が重なって読みにくい」
+       「透け感がないとかわいくない」「ほんの少しでも透けないとタイルが埋まった感じにもならない」）。すりガラス（blur）はそのまま */
+  background:rgba(255,255,255,.7);
   backdrop-filter:blur(7px) saturate(1.7);
   -webkit-backdrop-filter:blur(7px) saturate(1.7);
   /* タイルが空のときでも境目が分かるように、浮かせる */
@@ -302,7 +304,10 @@ button.primary:hover{background:var(--accent-deep)}   /* ⭐ステージの色�
   text-shadow:0 0 6px rgba(255,255,255,.95),0 0 3px rgba(255,255,255,.9);
 }
 .kana .done{color:#b9bec4}
-.kana .cur{background:var(--accent-dim);border-radius:5px;padding:1px 3px;color:var(--accent);font-weight:700}
+/* ⭐今打っている字に色も囲みもつけない（2026-10-16 本人「ひらがなの目印もいらないよ。打ち終わったら灰色になるならさ」）。
+     理由＝ステージの色＝タイルの色なので、色つきの字がタイルに重なって読みにくい。色がつくのはローマ字の行だけ（イータイピングと同じ）
+   ⚠元の値＝background:var(--accent-dim);border-radius:5px;padding:1px 3px;color:var(--accent);font-weight:700 */
+.kana .cur{font-weight:700}
 .kana .home{color:var(--accent-deep)}
 .roma{
   font-family:"SFMono-Regular",Consolas,monospace;font-size:17px;color:var(--sub);
@@ -318,7 +323,7 @@ button.primary:hover{background:var(--accent-deep)}   /* ⭐ステージの色�
   text-shadow:0 0 6px rgba(255,255,255,.95),0 0 3px rgba(255,255,255,.9);
 }
 .kanjiline .done{color:#b9bec4}
-.kanjiline .cur{color:var(--accent);font-weight:700}
+.kanjiline .cur{font-weight:700}   /* ⭐色をつけない（2026-10-16 本人）。⚠元の値＝color:var(--accent) */
 .haskanji .kana{font-size:18px;line-height:1.6;margin-top:2px}   /* 2026-10-16 本人「ひらがなはもう少し小さい文字でも良い」＝21→18px */
 /* ⭐字を太く・ローマ字を濃く（2026-10-16 本人「文字が薄くて読みにくいっていう意見もあって」→ 試した見本を見て「だいぶ違うよ」）
    ⚠元の値＝漢字・ひらがなは太さふつう（400）／ローマ字は var(--sub)＝#82868c・太さふつう。フォントは変えていない */
