@@ -1031,3 +1031,7 @@ main.yomu > *{max-width:37rem;margin-left:auto;margin-right:auto}
    ⚠座席表の形（座席表・席次表・バス・新幹線）のPCは、各道具のCSSで display:contents（案内は左の列・サンプルは右の列のまま） */
 .guide-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin:0 0 14px}
 .guide-row > p.tip-guide, .guide-row > div{margin:0}
+
+/* ⭐関連記事の1行（2026-10-17 座席の6つ・見積書・請求書に「サーバーに送信しない」の記事を足したときに共通へ）＝できることの下。qr.css・keiri.css・スペースの3つにも同じ指定が残っている（同じ見た目なので害はない） */
+.rel-art{font-size:.82rem;color:var(--ink-soft);margin:10px 0 0;line-height:1.7}
+.rel-art a{color:var(--pink);font-weight:700}
