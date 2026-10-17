@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="../../favicon.ico?v=3" sizes="any">
+<link rel="icon" type="image/png" href="../../favicon-32.png?v=3">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png?v=2">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SAKURA tools">
+<meta property="og:title" content="個人情報の名簿、ネットにコピペして大丈夫？｜サーバーに送信しないツールの見分け方">
+<meta property="og:description" content="「データをサーバーに送信しません」と書いてあるツールは、何がどう安心なのか。サーバーの意味から、送信する・しないの違い、送信しないツールを使うときに気をつけることまでを、銀行と財布のたとえで解説します。">
+<meta property="og:url" content="https://sakura-tools.com/articles/no-server/">
+<meta property="og:image" content="https://sakura-tools.com/ogp.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9296990556079874" crossorigin="anonymous"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GCK29PTKBG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GCK29PTKBG');
+</script>
+<title>個人情報の名簿、ネットにコピペして大丈夫？｜サーバーに送信しないツールの見分け方</title>
+<meta name="description" content="「データをサーバーに送信しません」と書いてあるツールは、何がどう安心なのか。サーバーの意味から、送信する・しないの違い、送信しないツールを使うときに気をつけることまでを、銀行と財布のたとえで解説します。">
+<link rel="stylesheet" href="../../style.css?v=163">
+<link rel="stylesheet" href="../articles.css?v=41">
+</head>
+<body>
+<!-- ⭐記事4本目（2026-10-17 本人「せっかくなのでUPするか。testだけでもいいかも。なぜならまだアドセンス受かってないから。受からなかったらこれをアップするっていう手がある」）＝/articles/no-server/（2026-10-17 タイトルを変えたときに no-server から移した。本人「個人情報の名簿、ネットにコピペして大丈夫？」「検索されるかどうかならキーワードが多いほうがいい」）
+     原稿＝C:\ゆうこ社\制作室\成果物\2026-10-16_記事原案_サーバーに預けないとは.md（本人が3回書き換えた版）
+     ⭐<title> は30字目安に合わせて短くした。h1 は原稿のまま
+     ⚠図はまだ無い -->
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="logo" href="../../"><span class="logo-mark"><img src="../../img/logo-sakura-64.png?v=2" srcset="../../img/logo-sakura-64.png?v=2 1x, ../../img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA tools</span><span class="logo-sub">さくらツールズ</span></a>
+    <nav>
+      <a class="navpin" href="../../">トップ</a>
+      <a class="navpin" href="../../typing/">タッチタイピング</a>
+      <a class="navpin" href="../../seat/">座席表</a>
+      <a class="navpin" href="../../slide/">簡単スライド</a>
+      <input type="checkbox" id="navtoggle" class="navtoggle">
+      <label class="navburger" for="navtoggle">ツール一覧</label>
+      <div class="navlist" data-site-nav></div>
+    </nav>
+  </div>
+  <div class="site-sub"><div class="wrap"><span class="now-long">記事</span><span class="now-short">記事</span></div></div>
+</header>
+<script src="../../site.js?v=4"></script>
+
+<main class="wrap yomu art2">
+<article class="art">
+  <p class="crumb"><a href="../../">トップ</a> › <a href="../">記事一覧</a> › 個人情報の名簿、ネットにコピペして大丈夫？</p>
+
+  <h1>個人情報の名簿、ネットにコピペして大丈夫？｜サーバーに送信しないツールの見分け方</h1>
+  <p class="meta">2026.10.17　さくらツールズ</p>
+
+  <div class="lead-box">
+    <p>「データをサーバーに送信しません」<br>
+    ツールの説明でこの一文を見かけても、何がどう安心なのか、ピンとこない人は多いはずです。</p>
+    <div class="nayami">
+    <p>サーバーって何？<br>
+    データを送信するのとしないのとで、何が違う？<br>
+    インターネットだから個人情報だめだよね？<br>
+    このツール大丈夫？</p>
+    </div>
+    <p>データをサーバーに送信しませんだけでは、安心することはできませんよね。</p>
+    <p>最近便利なWebツールがたくさんあります。<br>
+    その中には、個人情報の入力を促すツールも少なくありません。</p>
+    <p>会社なら、社員の名簿やお客さまの名前。<br>
+    学校なら、子どもの名前や成績。</p>
+    <p>勝手に公開してはいけない個人情報をコピペと言われても・・・<br>
+    「規則に違反するかもしれない」と思うと、手が止まってしまう方が多いのが現状ではないでしょうか。</p>
+    <p>実は<br>
+    「データをサーバーに送信しません」<br>
+    そう書いてあるツールなら、<mark class="pen"><strong>入力した名簿があなたのパソコンやスマホから流出することはありません。</strong></mark><br>
+    Webツールの作成者や運営者にも、ほかの人にも見られることはありません。<br>
+    もちろん、AIの学習に使われることもありません。<br>
+    だから、安心して利用できるのです。</p>
+    <div class="wakaru">
+      <p class="wakaru-t">この記事でわかること</p>
+      <ul>
+        <li>サーバーの意味</li>
+        <li>送信する・送信しないの違い</li>
+        <li>送信しないツールを使うときに気をつけること</li>
+      </ul>
+    </div>
+    <p>この記事では、銀行と財布のたとえで、わかりやすく解説します。</p>
+    <p>安心してWebツールを使うために、理解を深めていきましょう。<br>
+    <mark class="pen"><strong>そして、このサイトにある「さくらツールズ」のツールを使い倒してください！</strong></mark></p>
+  </div>
+
+  <nav class="mokuji" aria-label="目次">
+    <p class="mokuji-t">目次</p>
+    <ol>
+      <li><a href="#server">サーバーとは？</a></li>
+      <li><a href="#chigai">「送信する」と「送信しない」の違い</a></li>
+      <li><a href="#naka">送信しないツールの中で起きていること</a></li>
+      <li><a href="#yoi">送信しないツールのよいところ</a></li>
+      <li><a href="#chui">送信しないツールで気を付けること</a></li>
+      <li><a href="#sakura">さくらツールズの名簿の使い方</a></li>
+      <li><a href="#matome">まとめ</a></li>
+    </ol>
+  </nav>
+
+  <h2 id="server">サーバーとは？</h2>
+  <figure class="zu photo"><img src="../../img/articles/no-server/no-server-art-server.jpg?v=1" width="640" height="333" loading="lazy" alt="データセンターに並ぶサーバーの棚"></figure>
+  <p>サーバーは、インターネットの向こう側にあるコンピューターです。<br>
+  運営する会社の建物やデータセンターに置かれ、たくさんの人のデータを預かっています。</p>
+  <p>たとえば、GoogleドライブやLINE、メールの中身。<br>
+  どれも、自分のスマホの中だけでなく、運営する会社のサーバーに保存されています。<br>
+  だから、スマホを買いかえても、パソコンから開いても、同じデータが出てきます。</p>
+  <p>総務省は、こうした仕組み（クラウドサービス）について、データは事業者のサーバーに保管され、インターネットを通じてやりとりされると説明しています。<br>
+  インターネットがつながっていればどこからでも開ける便利さは、データが「向こう側」、つまり事業者の手元にあるからこそ成り立っています。</p>
+
+  <h2 id="chigai">「送信する」と「送信しない」の違い</h2>
+  <figure class="zu photo"><img src="../../img/articles/no-server/no-server-art-network.jpg?v=1" width="640" height="453" loading="lazy" alt="ビルが並ぶ街の上を、光の線がつないでいるイメージ"></figure>
+  <p>データを「送信する」「送信しない」の違いは、お金にたとえると分かりやすくなります。</p>
+  <ul>
+    <li><strong>サーバーに送信する</strong>＝銀行に預ける。どこのATMからでも引き出せる。そのかわり、お金は自分の手を離れ、銀行が管理する</li>
+    <li><strong>サーバーに送信しない</strong>＝財布に入れておく。財布の外には出ない。そのかわり、財布を家に忘れたら、出先では使えない</li>
+  </ul>
+  <p>サーバーに送信すると、事業者がそのデータを管理します。<br>
+  サーバーに送信しなければ、自分のパソコンの中でデータを管理します。</p>
+  <p>サーバーに送信していない名簿は、保存しているパソコンが必要です。<br>
+  だから、会社や自宅で名簿を保存しているパソコンで操作をする必要がありますよね。<br>
+  財布の考え方と一緒です。</p>
+
+  <h3>送信するサービスの見分け方</h3>
+  <p>では、お金の場合、財布のお金が無くなったらどうしますか？<br>
+  通常、銀行でお金を引き出す場合、キャッシュカードと暗証番号が要ります。<br>
+  ネットバンキングでも、IDとパスワードでログインしないと、自分の口座は開けません。</p>
+  <p>サーバーも同じです。<br>
+  GoogleドライブやLINEのように、データを預けて、あとで自分のものとして取り出すサービスには、IDとパスワードの登録が欠かせません。<br>
+  たくさんの人のデータが集まる場所で、「これはあなたのデータ」だとサーバーが見分けるための鍵だからです。</p>
+  <p>反対に、送信しないツールには、データを預ける先がありません。<br>
+  だから、IDもパスワードも不要です。<br>
+  <mark class="pen"><strong>「登録なしで使える」と書いてあれば、送信しないツールだと見分けるひとつの目印になります。</strong></mark></p>
+  <p>この違いが理解できれば、自分が使いたいツールがどちらなのかを見分けられ、安心して使えるようになります。</p>
+
+  <h2 id="naka">送信しないツールの中で起きていること</h2>
+  <figure class="zu photo"><img src="../../img/articles/no-server/no-server-art-data.jpg?v=1" width="640" height="453" loading="lazy" alt="青い光の線と点が行き交う、データの流れのイメージ"></figure>
+  <p>「送信しない」ツールでも、Webツールだからページを開くときはインターネットを使います。<br>
+  そこで不安を感じる人がいるかもしれません。</p>
+  <p>Webページの仕組みは、ページを開けただけで勝手に送受信するようになっていません。<br>
+  開けたときに自分のパソコンで起こっているのは、その「ページの画面」と「動かすための仕組み」が届けられているだけです。</p>
+  <p>だから、Webツールで、Excelから名簿をコピーして貼り付けをしても大丈夫と言えるのです。</p>
+  <p>例えば、教室の座席表で、名簿をコピペしたとします。<br>
+  ボタンを押すと座席が自動で貼り付けられて席を並べかえてくれますが、その処理はすべて<strong>自分の端末の中だけ</strong>で行われています。</p>
+  <p>インターネット上のページに入力するのだから、ボタンを押した瞬間にどこかに送られるのでは。そう不安に感じて、使えずにいた人もいたでしょう。</p>
+  <p>でも、ボタンを押しても、入力した中身が運営者のサーバーへ送信されることはありません。<br>
+  <mark class="pen"><strong>ツールが、そもそも名簿を外へ送る作りになっていないからです。</strong></mark><br>
+  ツールの運営者の側には、だれが何を入力したかの記録が残る仕組みもありません。<br>
+  運営者の手元に届かない名簿は、AIの学習に使われることもありません。</p>
+  <p>ここで疑問がわいてきませんか？</p>
+  <div class="nayami">
+  <p>それなら、自分のパソコンで入力したデータは、どうなってるの？<br>
+  どこにあるの？どうして表示されるの？</p>
+  </div>
+  <p>それでは保存先を確認しましょう。</p>
+
+  <h3>Webツールで使うデータの保存先</h3>
+  <p>「保存」ボタンがあるWebツールの保存先は、自分が使っているブラウザの中の保存場所になります。</p>
+  <p>ブラウザとは、ホームページを見るためのアプリのことです。<br>
+  パソコンならGoogle ChromeやMicrosoft Edge、iPhoneならSafariが代表的なブラウザです。</p>
+  <p>ブラウザには、ページごとに小さな保存場所が用意されていて、Webツールはその仕組みを使っています。<br>
+  保存した内容は、ブラウザを閉じても残すことが可能です。<br>
+  だから、保存したときと同じ端末の、同じブラウザの、同じユーザーで開けば、データを呼び出すことができるのです。</p>
+
+  <h2 id="yoi">送信しないツールのよいところ</h2>
+  <figure class="zu photo"><img src="../../img/articles/no-server/no-server-art-pc.jpg?v=1" width="640" height="427" loading="lazy" alt="窓辺の机に置いたノートパソコンとコーヒーと観葉植物"></figure>
+  <p>ここからが本題です。<br>
+  送信しないツールのいちばんのよさは、名簿が外に出ないことです。</p>
+  <ul>
+    <li><strong>運営者にも見えない</strong>：サーバーに届かないので、運営者が見ることはできません</li>
+    <li><strong>漏れる場所がない</strong>：運営者のサーバーに名簿がないため、サーバーが狙われても名簿は漏れません</li>
+    <li><strong>AIの学習に使われない</strong>：運営者の手元に名簿が届かないので、学習に使いようがありません</li>
+    <li><strong>登録がいらない</strong>：預ける先がないので、IDやパスワードを作る必要がありません</li>
+  </ul>
+  <p>サーバーに送信するサービスでは、人のミスで中身が見えてしまうことがあります。<br>
+  身近な例として、GoogleドライブやOneDriveのようなクラウドサービスを考えてみましょう。<br>
+  共有の設定をまちがえると、見せるつもりのない相手にまで、中身が公開されてしまいます。<br>
+  サーバーに送信しないツールなら、名簿は端末の外に出ません。共有の設定ミスで名簿が見えてしまう心配もないのです。</p>
+
+  <h2 id="chui">送信しないツールで気を付けること</h2>
+  <figure class="zu photo"><img src="../../img/articles/no-server/no-server-art-coffee.jpg?v=1" width="640" height="427" loading="lazy" alt="ノートパソコンの上に置いた眼鏡と、白いマグカップのコーヒー"></figure>
+  <p>財布に入れたお金は、財布ごとなくせば戻りませんよね。</p>
+  <p>送信しないツールも同じで、守ってくれるのは自分の端末だけです。<br>
+  自分の端末を壊したり無くしたりすると、その保存したデータは使えなくなります。</p>
+
+  <h3>別の端末からは開けない</h3>
+  <p>会社や職員室のパソコンで保存した名簿は、自宅のパソコンやスマホには出てきません。<br>
+  同じパソコンでも、ChromeとEdgeのようにブラウザが違えば、別の保存場所になります。<br>
+  同じChromeでも、ユーザー（プロフィール）を切り替えると、別の保存場所です。<br>
+  続きを別の端末でしたいときは、ファイルやPDFに書き出して持ち運びましょう。</p>
+
+  <h3>消えたら戻せない</h3>
+  <p>ブラウザの「閲覧データの削除」で、保存した内容は消えます。<br>
+  シークレットモード（プライベートブラウズ）で開いた場合も、ウィンドウを閉じた時点で消えます。<br>
+  運営者のサーバーに控えがないので、運営者に頼んでも戻せません。<br>
+  <mark class="pen"><strong>大事な名簿は、元のExcelなどを手元に残しておきましょう。</strong></mark></p>
+
+  <h3>共有のパソコンでは消して帰る</h3>
+  <p>みんなで使うパソコンで保存すると、次に使う人が同じブラウザの同じユーザーで、同じツールを開いたときに、名簿が出てきます。<br>
+  共有の端末で使ったときは、使い終わったら保存を消してから離れてください。</p>
+
+  <h2 id="sakura">さくらツールズの名簿の使い方</h2>
+  <p>さくらツールズで入力した名簿や座席の配置は、お使いの端末の中だけで処理しています。<br>
+  サーバーに送信することはありません。<br>
+  席替えなどの計算も、AIに名簿を渡して行うものではなく、端末の中で決まった手順で計算しています。<br>
+  ここでは、<a href="../../seat/">座席表</a>を例に、名簿の入れ方・保存・呼び出し・削除を順に紹介します。</p>
+
+  <h3>名簿は、Excelから貼り付けると楽</h3>
+  <p>名簿は、1人ずつ手で入力してもかまいません。<br>
+  でも、Excelに名簿があるなら、名前の列をコピーして、「エクセルから貼り付ける」の欄に貼りつけましょう。<br>
+  項目名（見出しの行）は要りません。</p>
+  <!-- ⭐座席表の①名簿の入力にサンプル①を入れたところ（2026-10-17 本人「下の方のさくらツールズの内容なら画面を使ってもいい」）。撮り方＝test を900px幅で開いてサンプル①→①を切り抜き -->
+  <figure class="zu ko">
+    <a href="../../seat/"><img src="../../img/articles/no-server/no-server-seat-paste.png?v=1" width="668" height="262" loading="lazy" alt="座席表の①名簿の入力。「エクセルから貼り付ける（項目名不要）」の欄に、出席番号・名前・男女の名簿が入っている"></a>
+    <figcaption>座席表の「エクセルから貼り付ける」に名簿を貼ったところ（押すと開きます）</figcaption>
+  </figure>
+  <p>座席表など、座る位置を決めるツールは、ドラッグで簡単に移動できるようにしています。<br>
+  コピペしたあとにボタンで自動設定してくれますが、マグネットのように手で足したり直したりできるから本当に使い勝手が良いのが特徴です。</p>
+
+  <h3>保存は、ブラウザの中だけ</h3>
+  <p>会社の名簿やクラスの名簿は、年単位で利用し何度も作り直したいことがありますよね。<br>
+  その場合、いちいち同じ名簿のコピペをするのはストレスです。<br>
+  だから保存できる仕組みを作りました。</p>
+  <!-- ⭐座席表の⑥保存したデータの利用（2026-10-17）。撮り方＝上と同じ -->
+  <figure class="zu ko">
+    <a href="../../seat/"><img src="../../img/articles/no-server/no-server-seat-save.png?v=1" width="676" height="244" loading="lazy" alt="座席表の⑥保存したデータの利用。保存した名簿を使える道具（座席表・席次表・簡単スライド・ランダム指名・バスの座席表・新幹線の座席表）が並び、「データに名前を付けて保存　0/20」がある"></a>
+    <figcaption>座席表の「保存したデータの利用」。保存した名簿を使える道具が並んでいる</figcaption>
+  </figure>
+  <p>保存の方法は2つ。</p>
+  <ul>
+    <li><strong>データに名前を付けて保存</strong>：名前を付けて、20件まで残せます。クラスや部署ごとに分けて残したいときに使います</li>
+    <li><strong>この画面を保存する</strong>：いま開いている画面を、そのまま1つだけ残します。名簿を入れかえると、前のものは上書きされます</li>
+  </ul>
+  <p>どちらも、残るのは使っている端末のブラウザの中だけ。<br>
+  もちろんどこにも送信されないので安心です。</p>
+
+  <h3>保存した名簿の呼び出し</h3>
+  <p>次に使うときは、①名簿の入力にある「保存済のデータ」から名簿を選び、「このデータを自動入力」を押します。<br>
+  名簿も条件も入るので、あとは席替えするだけです。<br>
+  名前を付けて保存した名簿は、さくらツールズのほかの道具でも呼び出せます。</p>
+  <p>名簿を共通して使えるのは、次の6つです。</p>
+  <ul>
+    <li><a href="../../seat/">教室の座席表</a></li>
+    <li><a href="../../seki/">席次表</a></li>
+    <li><a href="../../bus/">バスの座席表</a></li>
+    <li><a href="../../shinkansen/">新幹線の座席表</a></li>
+    <li><a href="../../random/">ランダム指名</a></li>
+    <li><a href="../../slide/">簡単スライド</a></li>
+  </ul>
+
+  <h3>転入・転出で変わった名簿は上書き</h3>
+  <p>保存した名簿は、あとから直せるようにしています。<br>
+  名簿を呼び出して、1行足したり消したりしたら、「上書き」を押してください。<br>
+  転入・転出で人が入れかわったときや、異動で部署のメンバーが変わったときに使えます。<br>
+  新しい名簿を一から貼り付け直す必要はありません。</p>
+
+  <h3>見積書メーカーと請求書メーカーで共通</h3>
+  <p><a href="../../keiri/">経理ツール</a>の見積書メーカーと請求書メーカーも、入力したものは使っている端末のブラウザの中だけで処理しています。<br>
+  保存の分類を4つにして使いやすくしています。</p>
+  <ol>
+    <li>自分の情報（名前・住所・振込先など）</li>
+    <li>取引先</li>
+    <li>詳細のひな形</li>
+    <li>備考</li>
+  </ol>
+  <p>これらは2つで共通して使えます。</p>
+  <figure class="zu ko-sq">
+    <a href="../../keiri/mitsumori/"><img src="../../img/sample/mitsumori-sample.png?v=1" width="800" height="1131" loading="lazy" alt="見積書メーカーで作った見積書の見本。株式会社さくら商事あて、ホームページ制作の見積"></a>
+    <figcaption>見積書メーカーで作った見積書（押すと開きます）</figcaption>
+  </figure>
+  <p>また、見積書メーカーで保存した取引先は、請求書メーカーでもそのまま呼び出せる仕組みにしています。</p>
+  <p>要するに、見積りをして請け負ったら、そのままの形で請求書を発行できるということです。<br>
+  仕事の時短になりますね。</p>
+  <p>作った見積書・請求書そのものは残らないので、ボタン一つで作成できる控えを必ずPDFで保存してください。</p>
+
+  <h3>いらなくなった名簿の削除</h3>
+  <p>保存した名簿は、「保存済のデータ」で選んで「削除」を押すと簡単に削除できます。<br>
+  「この画面を保存する」のチェックを外すと、画面の保存も消えます。<br>
+  共有のパソコンで使ったときは、ここで消してから離れましょう。</p>
+
+  <h3>アクセス解析と広告について</h3>
+  <p>さくらツールズでは、ページの見られ方を知るためのアクセス解析（Googleアナリティクス）と、広告を使っています。集めるのはページの見られ方だけで、入力した名簿は含まれません。くわしくは<a href="../../privacy/">プライバシーポリシー</a>をご覧ください。</p>
+
+  <section class="matome">
+    <h2 id="matome">まとめ</h2>
+    <p>サーバーに送信しないとは、入力した中身が、あなたの端末の外へ出ないということです。<br>
+    運営者にも見えず、漏れる場所もなく、AIの学習にも使われない。<br>
+    そのかわり、別の端末では開けず、消えたら戻せません。</p>
+    <p>名簿のように人に見られたくないものは、送信しないツールで。<br>
+    ただし、元のデータは必ず手元に残しておく。<br>
+    この2つを守れば、安心して名簿を使えます。</p>
+    <p>まずは<a href="../../seat/">座席表</a>で、Excelからの名簿の貼り付けと保存を試してみてください。</p>
+    <p class="cta"><a href="../../seat/">座席表を使ってみる</a></p>
+    <ul class="cta-more">
+      <li><a href="../../seki/">席次表</a></li>
+      <li><a href="../../bus/">バスの座席表</a></li>
+      <li><a href="../../shinkansen/">新幹線の座席表</a></li>
+      <li><a href="../../random/">ランダム指名</a></li>
+      <li><a href="../../slide/">簡単スライド</a></li>
+      <li><a href="../../keiri/">経理ツール</a></li>
+    </ul>
+  </section>
+
+  <section class="sanko">
+    <p class="sanko-t">参考</p>
+    <ul>
+      <li><a href="https://www.soumu.go.jp/main_sosiki/cybersecurity/kokumin/basic/service/07/" target="_blank" rel="noopener">総務省 国民のためのサイバーセキュリティサイト「クラウドサービスの仕組み」</a></li>
+      <li><a href="https://developer.mozilla.org/ja/docs/Web/API/Window/localStorage" target="_blank" rel="noopener">MDN Web Docs「Window: localStorage プロパティ」</a></li>
+      <li><a href="https://support.google.com/chrome/answer/2364824?hl=ja" target="_blank" rel="noopener">Google Chrome ヘルプ「Chrome プロフィールを共有する」</a></li>
+    </ul>
+  </section>
+
+  <div class="t-ad"></div>
+
+  <p class="after"><a href="../">← 記事一覧へ</a>　<a href="../../seat/">座席表へ</a></p>
+</article>
+  <aside class="toc-side" aria-label="目次"></aside>
+</main>
+
+<footer data-site-footer></footer>
+<script src="../articles.js?v=3"></script>
+</body>
+</html>
