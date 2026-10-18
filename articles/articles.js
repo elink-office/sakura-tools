@@ -21,7 +21,8 @@
     groups.forEach(function (g) {
       var li = document.createElement("li"), a = document.createElement("a");
       a.href = "#" + g.h.id; a.textContent = g.h.textContent; li.appendChild(a);
-      if (g.subs.length) {
+      /* ⭐右の目次はH2だけ（2026-10-18 本人「目次にバーが付くのが嫌」→「Aにしようか」）。H3を開くと長い記事で画面に入りきらず、目次の中にスクロールのバーが出た。⚠H3も出すときは false を外す */
+      if (false && g.subs.length) {
         var ul = document.createElement("ul");
         g.subs.forEach(function (s) {
           var sl = document.createElement("li"), sa = document.createElement("a");
@@ -32,7 +33,9 @@
       }
       g.li = li; g.a = a; ol.appendChild(li);
     });
-    side.appendChild(title); side.appendChild(ol);
+    /* ⭐目次は .toc-in に包む＝止まるのは目次だけ（2026-10-18 管理人の枠を右の欄の上に置いたため。枠はスクロールで流れて、目次は残る） */
+    var tin = document.createElement("div"); tin.className = "toc-in";
+    tin.appendChild(title); tin.appendChild(ol); side.appendChild(tin);
 
     /* いまどこを読んでいるか＝画面の上から120pxの線を越えた、いちばん下の見出し */
     var ticking = false;
@@ -47,7 +50,7 @@
       groups.forEach(function (g) {
         var on = g === active;
         g.li.classList.toggle("on", on);
-        g.subs.forEach(function (s) { s._link.classList.toggle("on", on && s === activeSub); });
+        g.subs.forEach(function (s) { if (s._link) s._link.classList.toggle("on", on && s === activeSub); });
       });
     }
     window.addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
@@ -55,4 +58,35 @@
     update();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start); else start();
+})();
+
+/* ⭐記事を書いた人の枠（2026-10-18 本人と相談）＝記事のおしり（参考の下・広告の上）に出す。文はここ1か所＝記事を足しても直さなくてよい
+   いきさつ＝Googleの「有用で信頼性の高いユーザー第一のコンテンツの作成」（2026-10-07更新）の「誰が・どのように」に答えるため。
+   ⭐アイコンはさくらのロゴ・呼び方は「管理人」（本人「いつも使ってるアイコン置くのは少し抵抗ある」「管理人かな」）。
+   ⭐文は「ます」を2つ続けない（本人「ますが2個以上続くと読みにくいのは一緒だよ記事と」）。字は小さめ（本人「ちょっと長いかもだから、文字小さくしてね」） */
+(function () {
+  "use strict";
+  function addAuthor() {
+    var art = document.querySelector("article.art");
+    if (!art || art.querySelector(".author-box")) return;
+    var box = document.createElement("aside");
+    box.className = "author-box";
+    box.setAttribute("aria-label", "この記事を書いた人");
+    var logo = (document.querySelector(".site-head .logo-mark img") || {}).getAttribute ? document.querySelector(".site-head .logo-mark img").getAttribute("src") : "";
+    box.innerHTML =
+      '<p class="author-t">この記事を書いた人</p>' +
+      '<div class="author-in">' +
+        (logo ? '<img class="author-ic" src="' + logo.replace("logo-sakura-64", "logo-sakura-128") + '" width="56" height="56" alt="">' : "") +
+        '<div class="author-tx">' +
+          '<p class="author-nm">さくらツールズ 管理人</p>' +
+          '<p>講師歴16年。Word・Excel・PowerPointを中心に、データ分析などの講義を、毎年のべ500人以上にしています。初心者の方から「具体例があるから興味がわく」「わかりやすくて、楽しくなってきた」と言ってもらえるのが、いちばんの励みです。</p>' +
+          '<p>ツールは、AIを使い、自分ではコードを1行も書かずに、すべて1人で作っています。実際に使う人に話を聞いて、細かい要望に応えながら一つずつ形にしていくのが、さくらツールズの作り方です。</p>' +
+        '</div>' +
+      '</div>';
+    var ad = art.querySelector(".t-ad"), after = art.querySelector(".after");
+    /* ⭐置き場所＝記事のおしり（PCもスマホも）（2026-10-18 本人「記事の下にしよう。目次動くから」）。
+       ⚠右の欄（目次の上）も試したが、目次が止まって動くので、右の欄は目次だけにした */
+    art.insertBefore(box, ad || after || null);
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", addAuthor); else addAuthor();
 })();
