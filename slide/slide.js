@@ -1557,7 +1557,7 @@
     // ⚠名簿は座席表メーカーなどと同じ置き場。文字のまとまりはこのページのものだけ
     // ⭐名簿を消すときの文は roster-tools.js がそろえる（2026-09-27）
     var msg = (c.kind !== 'slide' && window.SAKURA_ROSTER) ? SAKURA_ROSTER.delMsg(c.label||'')
-      : '「'+(c.label||'')+'」を消します。' + (c.kind !== 'slide' ? '座席表メーカー・席次表メーカーからも消えます。' : '') + 'よろしいですか。';
+      : '「'+(c.label||'')+'」を消します。' + (c.kind !== 'slide' ? '教室の席替えメーカー・席次表メーカーからも消えます。' : '') + 'よろしいですか。';
     if (!confirm(msg)) return;
     st.classes.splice(i,1);
     if (!writeStore(st)) return;

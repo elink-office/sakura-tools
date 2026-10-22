@@ -139,8 +139,9 @@ body{
 /* ⭐ツールと記事一覧のあいだの棒線（2026-09-26 本人） */
 .site-head .navlist .navsep{display:block;height:1px;background:var(--line);margin:6px 8px}
 /* ⭐狭い画面はボタンだけ（並びは一覧の中にある）。⭐トップを足して4つになったので 760 → 820px（2026-09-21 本人「トップには行きたい」）
-   ⚠780pxでロゴとの間が詰まりきる（10px）。821px以上なら40px以上あく */
-@media(max-width:820px){
+   ⚠780pxでロゴとの間が詰まりきる（10px）。821px以上なら40px以上あく
+   ⭐2026-10-22「座席表」→「教室の席替え」で長くなったので 820 → 860px（821pxで「トップ」が2行目に落ちた。861pxでロゴとの間45px） */
+@media(max-width:860px){
   .site-head .navpin{display:none}
 }
 @media(max-width:640px){
@@ -812,6 +813,8 @@ body.screen .seat.empty{
 /* ⭐「さくら🌸タッチタイピング」の 🌸 もロゴの画像に（2026-09-21 本人「さくらタッチタイピングもだね」）。文字の大きさに合わせる */
 .inlogo{display:inline-block;width:1em;height:1em;vertical-align:-.12em;margin:0 .06em}
 .logo-main{letter-spacing:.06em}
+/* ⭐「SAKURA tools」は画像（2026-10-22）。高さは字の大きさに合わせる＝前の文字と同じくらいの幅（PCで約130px） */
+.logo-main img{display:block;height:.83em;width:auto}
 .logo-sub{font-size:.72rem;font-weight:normal;color:var(--ink-soft);letter-spacing:.12em}
 /* ⭐スマホでは日本語を出さない（ロゴが幅を取りすぎてナビが崩れるため）。
    ⭐検索には影響しない（title・構造化データ・フッターに入っている） */

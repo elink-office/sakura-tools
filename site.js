@@ -1,5 +1,9 @@
 /* さくらツールズ 全ページ共通（2026-09-29 本人「ツール一覧は、今後増えていくから、まとめましょう」「フッターも…まとめましょう」）
-   ⭐ここ1本で、全ページの①ヘッダーのツール一覧 ②フッター ③テスト版の印 を出す
+   ⭐ここ1本で、全ページの⓪ヘッダー（ロゴ・右上の4つ・ツール一覧のボタン） ①ヘッダーのツール一覧 ②フッター ③テスト版の印 を出す
+   ⭐2026-10-22 ヘッダーもここに入れた（本人「設計大事」「全体のリフォームのときまとめて変更できるように」）。
+     ⚠前は右上の4つが各ページのHTMLにあり、「座席表」の名前を変えるのに全36ページを直した。ページに残すのはそのページの名前の帯（.site-sub）だけ
+   ⭐言葉や並びを直すときは、この site.js だけを直して上げる。ページの ?v= は上げなくてよい（GitHub Pages は Cache-Control: max-age=600＝長くても10分で新しいほうになる・2026-10-22 確かめた）
+     ⚠ページのHTMLの形も一緒に変えるとき（data-site-head の付け方を変えるなど）だけ、全ページの ?v= を上げる
    ⭐道具を足すときは、下の TOOLS に1行足すだけ（ページの型 1-0）。UPするのは「新しい道具のフォルダ」と「site.js」の2つ
    ⭐testのページと原本のページは同じ中身。違いは test にだけある <meta name="robots" … data-test> の1行（原本に入れるときに消す）
    ⚠JavaScriptで入れたリンクも <a href> ならGoogleはたどる（Google 検索セントラル「JavaScript SEO の基本」） */
@@ -11,7 +15,7 @@
     ["teacher/", "先生ツールセット"],
     "sep",
     ["typing/", "タッチタイピング"],
-    ["seat/", "座席表"],
+    ["seat/", "教室の席替え"],   /* ⭐2026-10-22 名前を「教室の席替えメーカー」に（本人「これはもう変更しよう！」） */
     ["slide/", "簡単スライド"],
     ["renraku/", "連絡帳の板書"],   /* ⭐簡単スライドの下（2026-10-04 本人「連絡帳を追加。簡単スライドの下に」） */
     ["random/", "ランダム指名"],
@@ -35,6 +39,22 @@
     "sep",
     ["articles/", "記事一覧"]
   ];
+  /* ⓪ ヘッダーの右上（2026-09-21 本人「タッチタイピング、座席表、簡単スライドにして、ツール一覧にしようか」「トップには行きたい」＝トップも並びに）。
+     ⚠前＝全部並べていた（7つで狭い画面からはみ出した）。座席表は2026-10-22に「教室の席替え」（本人「これはもう変更しよう！」）
+     ⚠長い名前にしたら、狭い画面で2行にならないか見る（style.css の「狭い画面はボタンだけ」の幅＝今は860px） */
+  var PINS = [
+    ["", "トップ"],
+    ["typing/", "タッチタイピング"],
+    ["seat/", "教室の席替え"],
+    ["slide/", "簡単スライド"]
+  ];
+  var LOGO_IMG = "img/logo-sakura-64.png?v=2";
+  var LOGO_IMG2 = "img/logo-sakura-128.png?v=2";
+  /* ⭐「SAKURA tools」の字は画像（2026-10-22 本人「ロゴは画像にしたほうが早い」）。
+     理由＝Googleの検索結果で、サイト名が「SAKURA toolsさくらツールズ」とくっついて出ていた（ロゴの英字と日本語が文字で並んでいたのを読んでいると見た・確かめてはいない）。
+     ⚠alt は空＝画像の字を Google に文字として読ませない。リンクの名前は aria-label。画像はメイリオ太字・4倍の細かさ（make_logo_text.py） */
+  var LOGO_TEXT = "img/logo-text.png?v=1";
+
   /* 一覧の中で「いまこのページ」とみなす別の住所（練習の画面はタッチタイピング） */
   var SAME = { "typing/play.html": "typing/" };
 
@@ -62,6 +82,30 @@
       ".site-head .navlist a,.site-head .navlist .now,.site-head .navlist .navsep{break-inside:avoid}";
     (document.head || document.documentElement).appendChild(st);
   })();
+
+  /* ⓪ ヘッダー（ページには <div class="wrap" data-site-head></div> だけを書く）
+     data-site-head="logo"＝ロゴだけ（学生用のタイピング）／data-logo="nolink"＝ロゴを押しても移らない（練習の画面＝途中で抜けないように） */
+  function drawHead() {
+    var hs = document.querySelectorAll("[data-site-head]");
+    for (var i = 0; i < hs.length; i++) {
+      var box = hs[i];
+      if (box.getAttribute("data-done")) continue;
+      var inner = '<span class="logo-mark"><img src="' + url(LOGO_IMG) + '" srcset="' + url(LOGO_IMG) + " 1x, " + url(LOGO_IMG2) +
+                  ' 2x" width="22" height="22" alt=""></span><span class="logo-main"><img src="' + url(LOGO_TEXT) + '" alt=""></span><span class="logo-sub">さくらツールズ</span>';
+      var h = box.getAttribute("data-logo") === "nolink" ? '<span class="logo">' + inner + "</span>"
+                                                       : '<a class="logo" href="' + url("") + '" aria-label="さくらツールズ トップへ">' + inner + "</a>";
+      if (box.getAttribute("data-site-head") !== "logo") {
+        var pins = PINS.map(function (t) {
+          return rel === t[0] ? '<span class="navpin now" aria-current="page">' + esc(t[1]) + "</span>"
+                              : '<a class="navpin" href="' + url(t[0]) + '">' + esc(t[1]) + "</a>";
+        }).join("\n");
+        h += "\n<nav>\n" + pins + '\n<input type="checkbox" id="navtoggle" class="navtoggle">' +
+             '\n<label class="navburger" for="navtoggle">ツール一覧</label>\n<div class="navlist" data-site-nav></div>\n</nav>';
+      }
+      box.innerHTML = h;
+      box.setAttribute("data-done", "1");
+    }
+  }
 
   /* ① ヘッダーのツール一覧 */
   function drawNav() {
@@ -116,8 +160,8 @@
     document.body.insertBefore(b, document.body.firstChild);
   }
 
-  /* ヘッダーの直後で読むので、ツール一覧はすぐ出す。フッターは読み終わってから */
-  drawNav(); drawTest();
-  function rest() { drawNav(); drawFooter(); drawTest(); }
+  /* ヘッダーの直後で読むので、ヘッダーとツール一覧はすぐ出す。フッターは読み終わってから */
+  drawHead(); drawNav(); drawTest();
+  function rest() { drawHead(); drawNav(); drawFooter(); drawTest(); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", rest); else rest();
 })();

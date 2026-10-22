@@ -9,11 +9,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SAKURA tools">
-<meta property="og:title" content="教室の座席表メーカー｜席替えを簡単に・30人40人・4列">
+<meta property="og:title" content="教室の席替えメーカー｜座席表を簡単に・30人40人・4列">
 <meta property="og:description" content="名簿を貼るだけで席替えができる無料ツール。エクセルテンプレートは不要。30人・35人・40人、4列〜8列の教室席配置に対応。班分け・色分け・先生の向きへの反転・PDFまでこのページで。">
 <meta property="og:url" content="https://sakura-tools.com/seat/">
 <!-- ⭐リンクの絵＝さくら＋「さくらツールズ」＋ツールの名前（＋説明）・メイリオ太字（2026-10-15 本人と決めた） -->
-<meta property="og:image" content="https://sakura-tools.com/img/ogp/ogp-seat.png">
+<meta property="og:image" content="https://sakura-tools.com/img/ogp/ogp-seat.png?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
@@ -28,13 +28,13 @@
   gtag('config', 'G-GCK29PTKBG');
 </script>
 <meta name="google-site-verification" content="PfjmCGxUaN1hzuj_dRw3e4PTY6xepghfXM_CrU_sO-A" />
-<title>教室の座席表メーカー｜席替えを簡単に・30人40人・4列</title>
+<title>教室の席替えメーカー｜座席表を簡単に・30人40人・4列</title>
 <meta name="description" content="いつものエクセルの名簿を貼るだけ。席替えの時短ができる無料ツール。班を分けたあとも、席も班もマグネットみたいに自由に変更。班の色分け・班長マークのオンオフもできて、そのまま教室のモニターに映せる。小学校・中学校・高校に対応。">
 <!-- ⭐紙の書体＝どの端末でも同じ字の形にする（2026-09-23 本人「見本と同じ…フォントでお願い」）。PDFにも同じ書体を入れている（paper-pdf.js） -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&display=swap">
-<link rel="stylesheet" href="../style.css?v=163">
+<link rel="stylesheet" href="../style.css?v=164">
 <link rel="stylesheet" href="seat.css?v=35">
 <link rel="stylesheet" href="../print.css?v=63" media="print">
 <style>
@@ -219,26 +219,13 @@ body.screen .seat.dup .nm{text-decoration:none}
 <body>
 
 <header class="site-head noprint">
-  <div class="wrap">
-    <a class="logo" href="../"><span class="logo-mark"><img src="../img/logo-sakura-64.png?v=2" srcset="../img/logo-sakura-64.png?v=2 1x, ../img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA tools</span><span class="logo-sub">さくらツールズ</span></a>
-    <nav>
-      <!-- ⭐右上＝よく使う3つ＋「ツール一覧」（2026-09-21 本人「タッチタイピング、座席表、簡単スライドにして、ツール一覧にしようか」
-           「全部入れでいいと思う。だって、一覧だから」「トップには行きたい」＝トップも並びに）。⚠前＝全部並べていた（7つで狭い画面からはみ出した） -->
-      <a class="navpin" href="../">トップ</a>
-      <a class="navpin" href="../typing/">タッチタイピング</a>
-      <span class="navpin now" aria-current="page">座席表</span>
-      <a class="navpin" href="../slide/">簡単スライド</a>
-      <input type="checkbox" id="navtoggle" class="navtoggle">
-      <label class="navburger" for="navtoggle">ツール一覧</label>
-      <div class="navlist" data-site-nav></div>
-    </nav>
-  </div>
-  <div class="site-sub"><div class="wrap"><span class="now-long">座席表メーカー</span><span class="now-short">座席表</span></div></div>
+  <div class="wrap" data-site-head></div><!-- ⭐ロゴ・右上の4つ・ツール一覧のボタンは site.js が出す（2026-10-22） -->
+  <div class="site-sub"><div class="wrap"><span class="now-long">教室の席替えメーカー</span><span class="now-short">席替え</span></div></div>
 </header>
-<script src="../site.js?v=4"></script>
+<script src="../site.js?v=10"></script>
 
 <main class="wrap">
-  <h1>教室の座席表メーカー</h1>
+  <h1>教室の席替えメーカー</h1>
   <p class="catch">8列でも40人でも、隣同士の組み合わせも自由自在</p>
 
   <div class="intro">
@@ -913,7 +900,7 @@ body.screen .seat.dup .nm{text-decoration:none}
 
 <script src="../paper-pdf.js?v=5"></script>
 <script src="../seating.js?v=57"></script>
-<script src="../roster-tools.js?v=1"></script>
+<script src="../roster-tools.js?v=2"></script>
 <script src="seat.js?v=233"></script>
 <script>
 /* ⭐PCで左右に並べる（2026-10-02 本人）。

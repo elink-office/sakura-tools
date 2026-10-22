@@ -19,7 +19,7 @@
 
   /* ⭐並び＝ツール一覧の並び（使われそうな順）に近い順。name は札に出す短い名前 */
   var TOOLS = [
-    { name: '座席表',         path: 'seat/' },
+    { name: '教室の席替え',   path: 'seat/' },
     { name: '席次表',         path: 'seki/' },
     { name: '簡単スライド',   path: 'slide/' },
     { name: 'ランダム指名',   path: 'random/' },
