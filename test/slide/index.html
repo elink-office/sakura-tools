@@ -32,29 +32,16 @@
 </script>
 <title>簡単スライドメーカー｜パワーポイントの代わりに大きく映す</title>
 <meta name="description" content="パワーポイントの代わりに、文字と写真をそのまま大きくモニターに映せる無料の道具です。今日のめあて、問題文、作品の写真、発表する子の名前に。スライドを作り込まなくていいので、思いついたその場で出せます。写真の上に文字を重ねることもできます。名簿は座席表・席次表と共通。登録なし・インストールなし・写真も名簿も外に送りません。">
-<link rel="stylesheet" href="../style.css?v=163">
+<link rel="stylesheet" href="../style.css?v=164">
 <link rel="stylesheet" href="slide.css?v=90">
 </head>
 <body>
 
 <header class="site-head noprint">
-  <div class="wrap">
-    <a class="logo" href="../"><span class="logo-mark"><img src="../img/logo-sakura-64.png?v=2" srcset="../img/logo-sakura-64.png?v=2 1x, ../img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA tools</span><span class="logo-sub">さくらツールズ</span></a>
-    <nav>
-      <!-- ⭐右上＝よく使う3つ＋「ツール一覧」（2026-09-21 本人「タッチタイピング、座席表、簡単スライドにして、ツール一覧にしようか」
-           「全部入れでいいと思う。だって、一覧だから」「トップには行きたい」＝トップも並びに）。⚠前＝全部並べていた（7つで狭い画面からはみ出した） -->
-      <a class="navpin" href="../">トップ</a>
-      <a class="navpin" href="../typing/">タッチタイピング</a>
-      <a class="navpin" href="../seat/">座席表</a>
-      <span class="navpin now" aria-current="page">簡単スライド</span>
-      <input type="checkbox" id="navtoggle" class="navtoggle">
-      <label class="navburger" for="navtoggle">ツール一覧</label>
-      <div class="navlist" data-site-nav></div>
-    </nav>
-  </div>
+  <div class="wrap" data-site-head></div><!-- ⭐ロゴ・右上の4つ・ツール一覧のボタンは site.js が出す（2026-10-22） -->
   <div class="site-sub"><div class="wrap"><span class="now-long">簡単スライドメーカー</span><span class="now-short">簡単スライド</span></div></div>
 </header>
-<script src="../site.js?v=4"></script>
+<script src="../site.js?v=10"></script>
 
 <main class="wrap">
   <h1>簡単スライドメーカー</h1>
@@ -329,7 +316,7 @@
         <li>呼び出すのは①の<strong>「このデータを読み込む」</strong>から。</li>
         <li><b>「文字スライドの文字を保存」</b>と<b>「発表者スライドの名前を保存」</b>は、欄が分かれています。それぞれの欄のボタンは、その種類だけを保存・上書き・削除します。</li>
         <li><b>「上書き」と「削除」は、①でえらんでいるもの</b>に効きます。上書きしても、座席表で入れた<b>番号や男女は残ります</b>。</li>
-        <li>文字のデータは100件まで（⚠座席表メーカーの一覧には出ません）。</li>
+        <li>文字のデータは100件まで（⚠教室の席替えメーカーの一覧には出ません）。</li>
         <li>⚠<b>写真・班・作品名は保存されません。</b>写真が残るのは①の「この画面を保存する」だけです。</li>
       </ul>
     </div>
@@ -434,7 +421,7 @@
 
       <h3>発表者をスライドにする</h3>
       <ul>
-        <li><b>座席表メーカーで保存したデータ</b>があれば、選ぶだけで名前が入ります。班の情報があれば、班も一緒に入ります。</li>
+        <li><b>教室の席替えメーカーで保存したデータ</b>があれば、選ぶだけで名前が入ります。班の情報があれば、班も一緒に入ります。</li>
         <li>Excelから貼り付けることもできます。名前だけの1列でも大丈夫です。</li>
         <li>作品名を入れると、作品名が大きく、名前が下に出ます。名前は覚えているので、作品名を主役にしてあります。</li>
         <li>「班ごとにまとめて映す」を選ぶと、班名・その班の作品名・メンバー全員の名前が一緒に出ます。</li>
@@ -502,8 +489,8 @@
   </div>
 </div>
 
-<script src="../roster-tools.js?v=1"></script>
-<script src="slide.js?v=113"></script>
+<script src="../roster-tools.js?v=2"></script>
+<script src="slide.js?v=114"></script>
 <script>
 /* ⭐PCで左右に並べる（2026-10-04 本人・座席表と同じ作り＝ページの型22）。
    ⭐PC（1000px以上）のときだけ、見本の小窓（#lrR）を右の箱（.lr-side）へ移す。狭くなったら元の場所（③の中）へ戻す。

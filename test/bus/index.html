@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://sakura-tools.com/test/img/ogp/ogp-bus.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<link rel="stylesheet" href="../style.css?v=163">
+<link rel="stylesheet" href="../style.css?v=164">
 <link rel="stylesheet" href="bus.css?v=21">
 <!-- Google AdSense（2026-09-28 審査の前にそろえた） -->
 <!-- ⭐test ではアドセンスを止める（2026-10-17 本人「絶対testからcode外したほうがいいよ」）。🔴原本に入れるときは、この囲みを外して下の script の1行だけを残す
@@ -40,21 +40,10 @@
 <body>
 
 <header class="site-head noprint">
-  <div class="wrap">
-    <a class="logo" href="../"><span class="logo-mark"><img src="../img/logo-sakura-64.png?v=2" srcset="../img/logo-sakura-64.png?v=2 1x, ../img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA tools</span><span class="logo-sub">さくらツールズ</span></a>
-    <nav>
-      <a class="navpin" href="../">トップ</a>
-      <a class="navpin" href="../typing/">タッチタイピング</a>
-      <a class="navpin" href="../seat/">座席表</a>
-      <a class="navpin" href="../slide/">簡単スライド</a>
-      <input type="checkbox" id="navtoggle" class="navtoggle">
-      <label class="navburger" for="navtoggle">ツール一覧</label>
-      <div class="navlist" data-site-nav></div>
-    </nav>
-  </div>
+  <div class="wrap" data-site-head></div><!-- ⭐ロゴ・右上の4つ・ツール一覧のボタンは site.js が出す（2026-10-22） -->
   <div class="site-sub"><div class="wrap"><span class="now-long">バスの座席表メーカー</span><span class="now-short">バス座席表</span></div></div>
 </header>
-<script src="../site.js?v=4"></script>
+<script src="../site.js?v=10"></script>
 
 <main class="wrap bs-set">
   <h1>バスの座席表メーカー</h1>
@@ -202,7 +191,7 @@
             <p>班は、名前ごとに決めます。<strong>決めた班は人に付くので、④で席を動かすと、班の色もいっしょに動きます。</strong></p>
             <ul>
               <li><strong>いちばん速いのは、Excelで名前の右に「班」の列（1・2・3… または 1班・2班…）を作って、①にいっしょに貼る方法です。</strong>貼ると、そのまま班になります。Excelに班の番号があれば、ここで1人ずつ決める手間が省けます。<!-- ⭐2026-10-05 本人「Excelで班を入力したほうが仕事が早いと私は思ってる」＝①の基準には入れず、②で説明する --></li>
-              <li>座席表メーカーで名簿を保存して「記録」を残していると、「座席表の班を使う」でその記録の班を入れられます。記録にいない人は班なしになるので、この下の一覧で選んでください。</li>
+              <li>教室の席替えメーカーで名簿を保存して「記録」を残していると、「座席表の班を使う」でその記録の班を入れられます。記録にいない人は班なしになるので、この下の一覧で選んでください。</li>
               <li>この下の一覧で、1人ずつ選び直せます。</li>
               <li>班の数を入れて「自動で分ける」を押すと、名簿の人を班に分けます。並べ方が名簿の順なら上から順に、それ以外はランダムです。</li>
               <li>③の並べ方で「班ごと」を選ぶと、同じ班の人をかたまりで座らせます。バスは、通路の片側の2席ずつ（1Aと1B、2Aと2B…）に、前から班ごとに入ります。</li>
@@ -380,7 +369,7 @@
 
 <datalist id="nameList"></datalist>
 <script src="../paper-pdf.js?v=5"></script>
-<script src="../roster-tools.js?v=1"></script>
+<script src="../roster-tools.js?v=2"></script>
 <script src="bus.js?v=27"></script>
 <script>
 /* ⭐PCで左右に並べる（2026-10-02 本人・座席表と同じ考え）。

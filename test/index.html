@@ -49,28 +49,15 @@
   "url": "https://sakura-tools.com/"
 }
 </script>
-<link rel="stylesheet" href="style.css?v=163">
+<link rel="stylesheet" href="style.css?v=164">
 <link rel="stylesheet" href="top.css?v=69">
 </head>
 <body>
 
 <header class="site-head">
-  <div class="wrap">
-    <a class="logo" href="./"><span class="logo-mark"><img src="img/logo-sakura-64.png?v=2" srcset="img/logo-sakura-64.png?v=2 1x, img/logo-sakura-128.png?v=2 2x" width="22" height="22" alt=""></span><span class="logo-main">SAKURA tools</span><span class="logo-sub">さくらツールズ</span></a>
-    <nav>
-      <!-- ⭐右上＝よく使う3つ＋「ツール一覧」（2026-09-21 本人「タッチタイピング、座席表、簡単スライドにして、ツール一覧にしようか」
-           「全部入れでいいと思う。だって、一覧だから」「トップには行きたい」＝トップも並びに）。⚠前＝全部並べていた（7つで狭い画面からはみ出した） -->
-      <span class="navpin now" aria-current="page">トップ</span>
-      <a class="navpin" href="typing/">タッチタイピング</a>
-      <a class="navpin" href="seat/">座席表</a>
-      <a class="navpin" href="slide/">簡単スライド</a>
-      <input type="checkbox" id="navtoggle" class="navtoggle">
-      <label class="navburger" for="navtoggle">ツール一覧</label>
-      <div class="navlist" data-site-nav></div>
-    </nav>
-  </div>
+  <div class="wrap" data-site-head></div><!-- ⭐ロゴ・右上の4つ・ツール一覧のボタンは site.js が出す（2026-10-22） -->
 </header>
-<script src="site.js?v=4"></script>
+<script src="site.js?v=10"></script>
 
 <main class="wrap">
   <div class="t-hero">
@@ -82,7 +69,7 @@
     <!-- ⭐道具の札（2026-09-28 本人「これから増えていくなら、そこにいろいろ置いてぱっと見で見れるの面白いよね」「並びは左から順にツール一覧の並び」）。形＝保存欄の「共通で使えます」の札（.rt-list）と同じ -->
     <nav class="t-chips" aria-label="無料ツール">
       <a href="typing/">タッチタイピング</a>
-      <a href="seat/">座席表</a>
+      <a href="seat/">教室の席替え</a>
       <a href="slide/">簡単スライド</a>
       <a href="renraku/">連絡帳の板書</a>
       <a href="random/">ランダム指名</a>
@@ -134,7 +121,7 @@
 
     <a class="t-card big school" id="seat" href="seat/">
       <div class="t-tool">
-        <span class="nm">座席表メーカー</span>
+        <span class="nm">教室の席替えメーカー</span>
         <span class="ds">名簿のコピペで、簡単席替え。席の形、30人・40人でも思いどおり。そのうえPDFもモニター表示もボタンひとつ！</span>
         <img class="t-shot" src="img/sample/seat-sample.png?v=13" width="1280" height="720" alt="33人・6列の教室の座席表。3人の班やかぎ型の班も作れる">
       </div>
@@ -347,7 +334,7 @@
     <ul class="t-side-tools">
       <!-- ⭐並び＝ヘッダーのツール一覧と同じ。左の列を上から下、そのあと右の列（2026-09-28 本人） -->
       <li><a href="typing/">さくら<img class="inlogo" src="img/logo-sakura-64.png?v=2" srcset="img/logo-sakura-64.png?v=2 1x, img/logo-sakura-128.png?v=2 2x" alt="">タッチタイピング</a></li>
-      <li><a href="seat/">座席表</a></li>
+      <li><a href="seat/">教室の席替え</a></li>
       <li><a href="slide/">簡単スライド</a></li>
       <li><a href="renraku/">連絡帳の板書</a></li>
       <li><a href="random/">ランダム指名</a></li>
