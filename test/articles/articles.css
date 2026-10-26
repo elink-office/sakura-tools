@@ -127,6 +127,8 @@
   font-size:.74rem;color:var(--ink-soft);text-align:center}
 .art .nagare li.sensei .who{border-color:var(--pink);color:var(--pink);font-weight:bold}
 .art .nagare small{display:block;font-size:.8rem;color:var(--ink-soft)}
+/* 本文の中の小さな注（※〜）（2026-10-26） */
+.art small.chu{font-size:.78rem;color:var(--ink-soft)}
 .art .nagare figcaption{font-size:.78rem;color:var(--ink-soft);margin-top:8px;line-height:1.6}
 
 /* ⭐表（ページの型 9-a と同じ＝横の線だけ・項目名はうすいグレーの字・中央） */

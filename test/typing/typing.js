@@ -4,126 +4,7 @@
    - 記録はブラウザの中（localStorage）に自動で貯まる。
    ========================================================= */
 
-/* ---------- ローマ字テーブル ---------- */
-var KANA = {
- "あ":["a"],"い":["i"],"う":["u"],"え":["e"],"お":["o"],
- "か":["ka","ca"],"き":["ki"],"く":["ku","cu"],"け":["ke"],"こ":["ko","co"],
- "が":["ga"],"ぎ":["gi"],"ぐ":["gu"],"げ":["ge"],"ご":["go"],
- "さ":["sa"],"し":["shi","si"],"す":["su"],"せ":["se"],"そ":["so"],
- "ざ":["za"],"じ":["ji","zi"],"ず":["zu"],"ぜ":["ze"],"ぞ":["zo"],
- "た":["ta"],"ち":["chi","ti"],"つ":["tsu","tu"],"て":["te"],"と":["to"],
- "だ":["da"],"ぢ":["di"],"づ":["du"],"で":["de"],"ど":["do"],
- "な":["na"],"に":["ni"],"ぬ":["nu"],"ね":["ne"],"の":["no"],
- "は":["ha"],"ひ":["hi"],"ふ":["fu","hu"],"へ":["he"],"ほ":["ho"],
- "ば":["ba"],"び":["bi"],"ぶ":["bu"],"べ":["be"],"ぼ":["bo"],
- "ぱ":["pa"],"ぴ":["pi"],"ぷ":["pu"],"ぺ":["pe"],"ぽ":["po"],
- "ま":["ma"],"み":["mi"],"む":["mu"],"め":["me"],"も":["mo"],
- "や":["ya"],"ゆ":["yu"],"よ":["yo"],
- "ら":["ra"],"り":["ri"],"る":["ru"],"れ":["re"],"ろ":["ro"],
- "わ":["wa"],"を":["wo"],
- "ぁ":["xa","la"],"ぃ":["xi","li"],"ぅ":["xu","lu"],"ぇ":["xe","le"],"ぉ":["xo","lo"],
- "ゃ":["xya","lya"],"ゅ":["xyu","lyu"],"ょ":["xyo","lyo"],
- "ー":["-"],"、":[","],"。":["."]
-};
-var YOUON = {
- "きゃ":["kya"],"きゅ":["kyu"],"きょ":["kyo"],
- "ぎゃ":["gya"],"ぎゅ":["gyu"],"ぎょ":["gyo"],
- "しゃ":["sha","sya"],"しゅ":["shu","syu"],"しょ":["sho","syo"],"しぇ":["she"],
- "じゃ":["ja","jya","zya"],"じゅ":["ju","jyu","zyu"],"じょ":["jo","jyo","zyo"],"じぇ":["je"],
- "ちゃ":["cha","tya"],"ちゅ":["chu","tyu"],"ちょ":["cho","tyo"],"ちぇ":["che"],
- "にゃ":["nya"],"にゅ":["nyu"],"にょ":["nyo"],
- "ひゃ":["hya"],"ひゅ":["hyu"],"ひょ":["hyo"],
- "びゃ":["bya"],"びゅ":["byu"],"びょ":["byo"],
- "ぴゃ":["pya"],"ぴゅ":["pyu"],"ぴょ":["pyo"],
- "みゃ":["mya"],"みゅ":["myu"],"みょ":["myo"],
- "りゃ":["rya"],"りゅ":["ryu"],"りょ":["ryo"],
- "ふぁ":["fa"],"ふぃ":["fi"],"ふぇ":["fe"],"ふぉ":["fo"],
- "てぃ":["thi"],"でぃ":["dhi"]
-};
-
-/* かな文字列を「音節」に分解する */
-function toSyllables(kana){
-  var out=[], i=0, prevNasalNa=false;
-  while(i<kana.length){
-    var two=kana.substr(i,2);
-    if(YOUON[two]){
-      // 「きょ」は kyo だけでなく、ki + xyo（小さいょを別に打つ）も認める
-      var cs=YOUON[two].slice();
-      var b1=KANA[two.charAt(0)], b2=KANA[two.charAt(1)];
-      if(b1&&b2){
-        for(var x=0;x<b1.length;x++) for(var y=0;y<b2.length;y++){
-          var comb=b1[x]+b2[y];
-          if(cs.indexOf(comb)<0) cs.push(comb);
-        }
-      }
-      out.push({disp:two,cands:cs,nasal:false}); i+=2;
-      prevNasalNa=false; continue;
-    }
-    var one=kana.charAt(i);
-
-    if(one==="っ"){
-      var nx=toSyllables(kana.substr(i+1,2))[0];
-      // 子音重ね（natta）を先頭にする。xtu を先頭にすると表示が naxtuta になってしまう
-      var arr=[];
-      if(nx){
-        for(var k=0;k<nx.cands.length;k++){
-          var h=nx.cands[k].charAt(0);
-          if("aiueo".indexOf(h)<0 && arr.indexOf(h)<0) arr.push(h);
-        }
-      }
-      arr.push("xtu","ltu");
-      out.push({disp:"っ",cands:arr});
-      i+=1; continue;
-    }
-
-    if(one==="ん"){
-      var nch=kana.charAt(i+1), cands;
-      prevNasalNa=false;
-      /* ⭐最後の「ん」は n 1つで終わる。nn と打つ人の2つめの n は、次で1回だけ見のがす（swallowN）
-           （2026-09-18 本人「んで終わるときにnだけにしてほしい」「私はどっちもやるわ」「chiとかtiでも見分けつくのに」） */
-      if(!nch){ out.push({disp:"ん",cands:["n","xn"],endN:true}); i+=1; continue; }
-      else{
-        var ns=toSyllables(kana.substr(i+1,2))[0];
-        var f=ns?ns.cands[0].charAt(0):"";
-        if(f!=="" && "aiueoy".indexOf(f)>=0){
-          cands=["nn","xn"];              // 次が母音・や行：nn が必要
-        }else if(f==="n"){
-          cands=["n","xn"];               // 次がな行：n1つで確定し、次の音節側で nn も受ける
-          prevNasalNa=true;
-        }else{
-          cands=["n","nn","xn"];
-        }
-      }
-      out.push({disp:"ん",cands:cands});
-      i+=1; continue;
-    }
-
-    if(KANA[one]){
-      var cc=KANA[one].slice();
-      if(prevNasalNa){                    // 「かばんの」を kabanno / kabannno のどちらでも打てるように
-        var ext=[]; for(var z=0;z<cc.length;z++) ext.push("n"+cc[z]);
-        cc=cc.concat(ext); prevNasalNa=false;
-      }
-      out.push({disp:one,cands:cc}); i+=1; continue;
-    }
-    prevNasalNa=false;
-    out.push({disp:one,cands:[one]}); i+=1;
-  }
-  return out;
-}
-/* ⭐英字は2文字で1マス（2026-09-16 本人「2文字でいこう」）。
-   ⚠日本語は「1音＝1マス」（「さ」は s a と2回打って1マス）。英語も手ごたえをそろえる。
-   ⭐スペースは前のかたまりにくっつける＝かたまりの頭に空白を置かない */
-function toDirect(str){
-  var out=[], buf="";
-  for(var i=0;i<str.length;i++){
-    var c=str.charAt(i);
-    if(buf.length>=2 && c!==" "){ out.push({disp:buf,cands:[buf]}); buf=""; }
-    buf+=c;
-  }
-  if(buf) out.push({disp:buf,cands:[buf]});
-  return out;
-}
+/* ---------- ローマ字テーブル・toSyllables・toDirect は romaji.js へ移した（2026-10-23）。typing.js より先に読み込む ---------- */
 
 /* ---------- ステージ ----------
    ホームポジション = 左 a s d f / 右 j k l ;
@@ -838,7 +719,7 @@ var stageIdx=0, itemIdx=0, curItems=[], syls=[], si=0, buf="";
 var startAt=0, keys=0, chars=0, miss=0, timer=null, running=false, pausedMs=0;   // keys=打鍵数 / chars=文字数
 var bestTower=0, lives=0;   // bestTower = その回いちばん多く塗れたタイル数
 var lastResult=null, runToken=0, celebrateCancel=null, stageDone=false, justReset=true;
-var MISS_PENALTY=2.5;   // ミス1回あたりの実質ロス（秒）
+/* MISS_PENALTY（ミス1回あたりの実質ロス＝2.5秒）は romaji.js へ移した（2026-10-23・文章のタイピングと共通） */
 /* ⭐記録の箱を入口ごとに分ける（2026-09-21 本人「学生用は学生用にしたい」
      「将来的に学校に配れたら配りたいし、そのページを知っている人だけのものにしたい」）
    ⭐学生用は頭に gk_ を付ける。一般用は今までどおり（今までの記録が消えないように）
@@ -1005,16 +886,8 @@ var SHIFTED={"!":"1",'"':"2","#":"3","$":"4","%":"5","&":"6","'":"7","(":"8",")"
    ⚠**戻す可能あり**。元の色＝
      ["#e0577f","#ef8a3c","#e2b52c","#43a877","#2ea9bd","#4a6bcf","#8a5cd0"]
    ⭐今の色＝元の色に**白を20%**混ぜたもの */
-var BLOCKCOL=["#e67999","#f2a163","#e8c456","#69b992","#58baca","#6e89d8","#a17ad9"];
-/* ⭐タイルの色を選べる（2026-09-27 本人「色がたくさんあるのをうっとうしいと思う人もいるかなと思って」）。
-   ⭐カラフル＝BLOCKCOL の7色。単色＝7色から1色取り出して、濃い・ふつう・薄いの3段。グレー＝モノトーン。
-   ⭐効くのは 練習のタイル・ステージの番号のタイル（とページの色）。⚠紙吹雪は BLOCKCOL のまま（本人「紙吹雪は今のままでいいよ」） */
-var TILEPICK=[
-  ["colorful","カラフル",null],
-  ["pink","ピンク",BLOCKCOL[0]], ["orange","オレンジ",BLOCKCOL[1]], ["yellow","きいろ",BLOCKCOL[2]],
-  ["green","みどり",BLOCKCOL[3]], ["cyan","みずいろ",BLOCKCOL[4]], ["blue","あお",BLOCKCOL[5]],
-  ["purple","むらさき",BLOCKCOL[6]], ["gray","グレー","#9ba1a8"]
-];
+/* ⭐BLOCKCOL（タイルの7色）と TILEPICK（選べる9つの色）は romaji.js へ移した（2026-10-24・文章のタイピングと共通）
+   ⚠色を足す・変えるときは romaji.js を直す */
 var TILEKEY=K("typingTileColor");
 var tileChoice="colorful";
 try{ tileChoice=localStorage.getItem(TILEKEY)||"colorful"; }catch(e){}
@@ -2295,6 +2168,20 @@ function renderStageCards(){
         a.innerHTML='<span class="tl">'+stageLabel(i)+'</span>'+mid+'<span class="mb">'+b+'</span>';
         box.appendChild(a);
       });
+      /* ⭐日本語のいちばん下に「長文のタイピング」への入口（2026-10-24 本人「番号なしで置いてみて」）。
+           ⭐番号なし＝ステージ（指を育てる練習）とは別のコーナー（本人「番号振らずにっていうのも手。だって雰囲気ちがうもん」）
+           ⭐英語の下には置かない（本人「英語の下、まー90％見ないな」）。⚠学生用には出さない（まだ一般用だけ） */
+      if(g.id==="ja" && !GAKUSEI){
+        var ab=document.createElement("a"); ab.className="mini mini-bun"; ab.href=(GP?"../":"")+"bun/";
+        ab.innerHTML='<span class="tl"></span>'
+          + (GAKUSEI ? '<span class="mn">長文のタイピング</span>'
+                     : '<span class="mtx"><span class="mn">長文のタイピング</span><span class="ds2">仕事で使う文章を、読みながら入力する練習。敬語のメールや時候のあいさつなど。</span></span>')
+          + '<span class="mb"></span>';
+        /* ⭐タイルの色＝日本語の最後（12）の次の色（本人「変な色のボタンはいやだよ。12の次の色にして」）。選んだタイルの色にも合わせて変わる */
+        var nJa=0; STAGES.forEach(function(s2){ if(stageGroup(s2)==="ja") nJa++; });
+        var tcb=tileCols(); ab.style.setProperty("--tile", tcb[((GROUPSTART.ja||0)+nJa) % tcb.length]);
+        box.appendChild(ab);
+      }
       if(GP){ el.appendChild(box); return; }
       cols[COLS[g.id]||0].appendChild(box);
     });

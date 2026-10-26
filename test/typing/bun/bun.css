@@ -1,0 +1,154 @@
+/* 文章のタイピング（/typing/bun/）の見た目（2026-10-24 浮かぶ窓の形）
+   ⭐ページはシンプル（本人「そもそももっとシンプルでいいかも」）。始めると、周りがグレーになって窓が浮かぶ（本人「そのくらいのほうが集中できる」）
+   ⭐e-typing の見た目（本人の画面録画 2026-10-24）＝上の文章が大きい字・打ったところから色が変わる／下はひらがなとローマ字の2本だけ（漢字なし）
+     ／字はふつうの太さ・打ったところはうすい色・ローマ字は大文字／1字ずつずれる（滑らせない）
+   ⭐色はさくら色 1本（ページの型 8-a） */
+:root{color-scheme:light}
+.bun-meta{font-size:.82rem;color:var(--ink-soft);margin:0 0 4px}
+/* ⭐見出しの左の番号のタイル＝さくらタイピングのステージ（typing.css の a.mini .tl）と同じ光り方 */
+.bun-h1{display:flex;align-items:center;gap:12px}
+.bun-tl{flex:none;display:inline-flex;align-items:center;justify-content:center;min-width:44px;height:32px;padding:0 6px;border-radius:5px;
+  color:#fff;font-size:14px;font-weight:700;font-family:Consolas,monospace;letter-spacing:.02em;text-shadow:0 1px 1px rgba(90,70,60,.25);
+  background-color:var(--tile,#6e89d8);
+  background-image:radial-gradient(115% 78% at 50% -14%,rgba(255,255,255,.82) 0%,rgba(255,255,255,.36) 36%,rgba(255,255,255,.05) 64%,rgba(255,255,255,0) 100%),
+    linear-gradient(180deg,rgba(255,255,255,.05) 0%,rgba(255,255,255,0) 58%,rgba(255,255,255,.16) 100%);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.85),inset 0 -2px 4px rgba(120,100,70,.05),0 2px 4px rgba(85,74,58,.16),0 1px 1px rgba(85,74,58,.09)}
+.bun-meta a{color:var(--pink);font-weight:700}
+
+/* ⭐練習画面の見た目（さくらタイピングの .panel・.textwrap と同じ考え方）＝白い枠の中にタイルのマス目、その上にすりガラスのカード
+   ⚠形は typing.css の .panel・.cell・.textwrap を写した。さくらタイピング側を変えたら、ここも合わせる */
+.bun-panel{position:relative;margin:16px 0 0}   /* ⭐枠と地もなくした（2026-10-24 本人「マスだけじゃなく。背景全部」）。⚠前＝白い地・線・余白26px 24px 20px */
+.bun-tiles{position:absolute;inset:0;z-index:0;pointer-events:none;display:none}   /* ⭐マス目は出さない（2026-10-24 本人「タイルの背景置いてるけど、これもう一度なくしてみて」）。戻すときは display:none を消す */
+.bun-tiles span{position:absolute;border:1px solid rgba(120,110,95,.11);border-radius:3px}
+.bun-tiles span.on{border-color:transparent}
+.bun-tiles span.on i{position:absolute;inset:2px;border-radius:5px;display:block;
+  background-image:radial-gradient(115% 78% at 50% -14%,rgba(255,255,255,.82) 0%,rgba(255,255,255,.36) 36%,rgba(255,255,255,.05) 64%,rgba(255,255,255,0) 100%)}
+/* 文章の全体（読みもの）。⭐Google が読める本文 */
+.bun-all{position:relative;z-index:1;padding:16px 20px;font-size:1.05rem;line-height:2;color:var(--ink);
+  border-radius:10px;background:#fff;border:1px solid var(--line)}   /* ⭐すりガラスと影もやめて、ふつうの白い箱に（本人「背景全部」）。⚠前＝すりガラス・影 */
+/* ⭐スタートボタン＝さくらタイピングの「スタート」と同じ光り方の、小さいもの（本人「親指で押すボタンの小さいバージョン」
+     「大きすぎるし親指でスペースキーとかなくていい」・2026-10-24）。⚠前＝220×118＋「おやゆびでスペースキー」
+   ⚠光り方は typing.css の .bigmsg.startmsg を写した。さくらタイピング側を変えたら、ここも合わせる
+   ⭐色は選んだ色（--bun-c）。はじめは さくら色 */
+.bun-startrow{position:relative;z-index:1;text-align:center;margin:18px 0 0}
+.bun-startbtn{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;
+  width:150px;height:52px;border:0;border-radius:10px;cursor:pointer;
+  background:
+    radial-gradient(115% 78% at 50% -14%,rgba(255,255,255,.55) 0%,rgba(255,255,255,.22) 36%,rgba(255,255,255,.04) 64%,rgba(255,255,255,0) 100%),
+    linear-gradient(180deg,rgba(255,255,255,.05) 0%,rgba(255,255,255,0) 58%,rgba(0,0,0,.08) 100%),
+    var(--bun-c,#e67999);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.7),inset 0 -3px 0 rgba(0,0,0,.12),0 6px 14px rgba(60,50,40,.22),0 2px 3px rgba(60,50,40,.14)}
+/* ⭐乗せても色を変えない＝サイト共通の「button:hover で うすいピンク」を打ち消す（本人「押そうと思うと、薄いピンクになる」）。少し明るくするだけ */
+.bun-startbtn:hover{background:
+    radial-gradient(115% 78% at 50% -14%,rgba(255,255,255,.55) 0%,rgba(255,255,255,.22) 36%,rgba(255,255,255,.04) 64%,rgba(255,255,255,0) 100%),
+    linear-gradient(180deg,rgba(255,255,255,.05) 0%,rgba(255,255,255,0) 58%,rgba(0,0,0,.08) 100%),
+    var(--bun-c,#e67999);filter:brightness(1.05)}
+.bun-startbtn:active{transform:translateY(1px)}
+.bun-startbtn em{font-style:normal;font-weight:800;color:#fff;font-size:20px;line-height:1;letter-spacing:.06em;text-shadow:0 1px 2px rgba(0,0,0,.18)}
+/* 色を選ぶ四角（さくらタイピングの「タイルの色」と同じ9つ） */
+/* ⭐色の四角は練習の窓の頭（✕ とじる の左）。選んだ色は窓の中だけに効く */
+.bun-colors{display:inline-flex;align-items:center;gap:5px;margin-left:auto;font-size:12px;color:var(--ink-soft)}
+.bun-colors .lbl{margin-right:4px}
+.bun-colors button{width:16px;height:16px;padding:0;margin:0;cursor:pointer;border:1px solid rgba(0,0,0,.1);border-radius:4px;box-shadow:inset 0 1px 1px rgba(255,255,255,.6)}
+.bun-colors button.on{box-shadow:0 0 0 2px #fff,0 0 0 4px #888}
+
+/* ---------- 浮かぶ窓 ---------- */
+.bw-shade{position:fixed;inset:0;background:rgba(40,40,45,.55);z-index:900;display:none}
+/* ⭐窓の上の端は動かさない（本人「入力後に速さとか出るのはいいんだけど、ウィンドウのサイズが上が動くのが嫌」）。⚠前＝まん中そろえ（中身が増えると上にも伸びた） */
+.bw{position:fixed;left:50%;top:max(16px,calc(50vh - 300px));transform:translateX(-50%);z-index:901;display:none;
+  width:min(636px,calc(100vw - 32px));   /* ⭐記事と同じ幅＝中身592px（37rem）＋左右22px（本人「幅が広いわ。1文が長すぎる。記事の時くらいの幅にして」）。⚠前＝1080px */max-height:calc(100vh - 32px);overflow:auto;
+  background:#fff;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.28)}
+.bw-open .bw-shade,.bw-open .bw{display:block}
+.bw-open{overflow:hidden}
+.bw-head{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--line);font-size:.85rem;color:var(--ink-soft)}
+.bw-head b{color:var(--ink)}
+.bw-x{margin-left:10px;border:0;background:none;font-size:.85rem;color:var(--ink-soft);cursor:pointer}
+/* ⭐入力しない字の案内＝窓の上（本人「上に書かないと読まない」） */
+.bw-note{margin:0;padding:8px 22px;font-size:.82rem;font-weight:700;color:#a84a72;background:#fdf3f6;border-bottom:1px solid var(--line)}
+/* 上の段＝文章の全体。⭐大きい字（本人「上の文章を大きい文字にしたほうがいいのかも」）。打ったところは うすいさくら色 */
+.bw-all{position:relative;padding:14px 22px;font-size:24px;line-height:1.75;letter-spacing:.03em;color:#4a4d52;
+  height:calc(24px * 1.75 * 7 + 28px);overflow:auto;border-bottom:1px solid var(--line)}   /* 7行ぶん＝結果を下に足しても、高さ800pxの画面に収まる */
+.bw-all .done{color:var(--bun-typed,#e2a9bf)}
+/* ふりがな（ルビ）。打たない字なので小さく・うすく */
+.bw-all rt,.bun-all rt{font-size:.5em;color:var(--ink-soft);letter-spacing:0}
+.bw-all .done rt{color:inherit}
+/* ⭐ミスしたところ＝赤い波線（終わったあとも残る）・下の行のミスした音は赤い字 */
+.bw-all .mx{text-decoration:underline wavy #d9534f;text-decoration-thickness:1.5px;text-underline-offset:6px}
+.bw-kana b.mx,.bw-roma b.mx{font-weight:inherit;color:#d9534f}
+.bw-roma b.mx.now{background:#fde3e3;border-radius:3px}
+/* 下の段＝ひらがなとローマ字だけ（高さは固定＝上下に動かない） */
+.bw-now{padding:12px 22px 14px;background:#fff}
+/* ひらがな・ローマ字＝全文の1本の行。⭐打っている場所は箱のまん中に止まり、行ごと左へ滑る（bun.js の flow）
+   まん中の細い線＝打っている場所の目印 */
+.bw-flow{position:relative;padding:4px 0;border:1px solid var(--line);border-radius:6px}
+.bw-kana,.bw-roma{overflow:hidden;white-space:nowrap}
+.bw-kana{font-size:20px;line-height:1.6;letter-spacing:.04em;color:#4a4d52;padding:0 4px}
+.bw-roma{font-size:28px;line-height:1.5;letter-spacing:.02em;text-transform:uppercase;padding:0 4px}
+.bw-line{display:inline-block}
+.bw-kana .done{color:var(--bun-typed,#e2a9bf)}
+.bw-roma .bw-line{color:#4a4d52}
+.bw-roma .typed{color:var(--bun-typed,#e2a9bf)}
+.bw-roma.miss{animation:bwMiss .25s}
+@keyframes bwMiss{0%,100%{transform:none}30%{transform:translateX(-4px)}70%{transform:translateX(4px)}}
+.bw-hint{font-size:.8rem;color:var(--ink-soft);margin:10px 0 0}
+.bw-ime{font-size:.82rem;color:#a84a72;font-weight:700;margin:6px 0 0}
+/* 結果 */
+/* ⭐結果は打つ行の下に出す（打つ行は消さない＝上は動かない）。「もう一度」は右にスタートと同じ形で */
+.bw-result{display:flex;align-items:center;gap:16px;padding:14px 22px 16px;border-top:1px solid var(--line);background:#fbf7f9}
+.bw-result[hidden]{display:none}
+.bw-result .rbody{flex:1 1 auto}
+.bw-result dl{display:flex;flex-wrap:wrap;gap:8px 26px;margin:0}
+.bw-result dt{font-size:.78rem;color:var(--ink-soft)}
+.bw-result dd{margin:0;font-size:1.3rem;font-weight:700}
+.bw-result dd.hl{color:var(--pink)}
+.bw-result p{margin:12px 0 0;font-size:.9rem}
+.bw-result .bun-startbtn{flex:0 0 auto}
+
+/* この文章のポイント（読みもの） */
+.bun-points{margin:26px 0 22px}
+.bun-points h2{font-size:1.05rem;margin:0 0 8px}
+.bun-points ul{margin:0;padding-left:1.2em;line-height:1.9;font-size:.92rem}
+.bun-nav{display:flex;justify-content:space-between;gap:10px;margin:18px 0;font-size:.88rem}
+.bun-nav a{color:var(--pink);font-weight:700}
+
+/* ⭐2列（広い画面だけ）＝左に本文・右に文章の一覧。形は記事の目次（articles.css の main.art2・.toc-side）と同じ
+   ⚠記事の目次の形を変えたら、ここも合わせる */
+.bun-side{margin:28px 0 10px;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.bun-side-t{font-weight:bold;font-size:.82rem;color:var(--ink-soft);margin:0 0 8px}
+.bun-side ol{list-style:none;margin:0;padding:0}
+.bun-side li{padding:0;margin:2px 0}
+.bun-side a{display:block;padding:4px 6px;border-radius:6px;color:var(--ink-soft);text-decoration:none;font-size:.8rem;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bun-side a:hover{color:var(--pink)}
+.bun-side .no{display:inline-block;min-width:2.4em;font-family:Consolas,monospace;font-size:.76rem}
+/* ⭐今のページ＝帯（本人「文字が黒く太いより、帯が付いたほうが選択してるっぽい」）。色は選んだ色のうすい地 */
+.bun-side li.on a{background:var(--pink-light);color:var(--ink)}
+.bun-side li.on .no{color:var(--pink)}
+/* ⭐下の2つのリンク＝押せると分かる形（本人「何にも変化ないからリンクわかりにくいよ」）＝下線・頭に ›・乗せると色が濃く */
+.bun-side-all{margin:10px 0 0;font-size:.8rem}
+.bun-side-all a{display:inline-block;padding:0 0 0 .9em;position:relative;color:var(--pink);font-weight:700;white-space:normal;
+  text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}   /* ⚠長いリンクは折り返す（本人「横スクロール嫌だな」） */
+.bun-side-all a::before{content:"›";position:absolute;left:0;top:0}
+.bun-side-all a:hover{color:var(--ink);text-decoration-thickness:2px}
+/* ⭐幅と切り替わる幅は、ページの型 13（記事の2列）と同じ＝本文37rem・右14rem・すき間32px・960px以上
+   （2026-10-24 本人「私の画面だけで考えるのはやめてください。基本はページの型を使ったり」）。⚠一度 760px・12rem にしたのを戻した */
+@media (min-width:960px){
+  main.bun2{display:grid;grid-template-columns:minmax(0,37rem) 14rem;gap:32px;justify-content:center;max-width:none}
+  main.bun2 > *{max-width:none;margin-left:0;margin-right:0}
+  .bun-side{align-self:stretch;margin:40px 0 0;padding:0;border:0;background:none}
+  .bun-side-in{position:sticky;top:134px;max-height:calc(100vh - 150px);overflow-y:auto;overflow-x:hidden;padding:14px 0 14px 4px}
+}
+
+/* 一覧（/typing/bun/） */
+.bun-list{list-style:none;margin:16px 0;padding:0}
+.bun-list li{border-bottom:1px solid var(--line);padding:10px 2px}
+.bun-list a{color:var(--ink);font-weight:700;text-decoration:none}
+.bun-list a:hover{color:var(--pink)}
+.bun-list .no{display:inline-block;min-width:3.4em;margin-right:.8em;color:var(--pink);font-family:Consolas,monospace}   /* ⭐番号と題のあいだを空ける（本人「くっつきすぎ」） */
+.bun-list .cat{font-size:.78rem;color:var(--ink-soft);margin-left:.6em}
+
+@media (max-width:560px){
+  .bun-all{font-size:.98rem;padding:12px 14px}
+  .bw-all{font-size:18px;height:calc(18px * 1.75 * 7 + 28px)}
+  .bw-kana{font-size:16px}
+  .bw-roma{font-size:20px}
+}
