@@ -2171,7 +2171,9 @@ function renderStageCards(){
       /* ⭐日本語のいちばん下に「長文のタイピング」への入口（2026-10-24 本人「番号なしで置いてみて」）。
            ⭐番号なし＝ステージ（指を育てる練習）とは別のコーナー（本人「番号振らずにっていうのも手。だって雰囲気ちがうもん」）
            ⭐英語の下には置かない（本人「英語の下、まー90％見ないな」）。⚠学生用には出さない（まだ一般用だけ） */
-      if(g.id==="ja" && !GAKUSEI){
+      /* ⚠長文のタイピングは test だけ（まだ公開していない）＝原本では入口を出さない（test のページにだけある meta[data-test] で見分ける）。
+           🔴長文を公開するときは「&& document.querySelector("meta[data-test]")」を外す（2026-10-26） */
+      if(g.id==="ja" && !GAKUSEI && document.querySelector("meta[data-test]")){
         var ab=document.createElement("a"); ab.className="mini mini-bun"; ab.href=(GP?"../":"")+"bun/";
         ab.innerHTML='<span class="tl"></span>'
           + (GAKUSEI ? '<span class="mn">長文のタイピング</span>'
