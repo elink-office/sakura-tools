@@ -891,6 +891,10 @@ a.mini .tl{
   box-shadow:inset 0 1px 1px rgba(255,255,255,.85),inset 0 -2px 4px rgba(120,100,70,.05),0 2px 4px rgba(85,74,58,.16),0 1px 1px rgba(85,74,58,.09);
 }
 
+/* ⭐「長文のタイピング」への入口（2026-10-24）。番号なし・タイルはカラフル・上に点線＝ステージとは別のコーナー */
+a.mini.mini-bun{margin-top:6px;border-top:1px dashed #e3d6dc;border-radius:0 0 4px 4px;padding-top:10px}
+/* タイルの色は typing.js が BLOCKCOL（romaji.js）から入れる＝色を1か所で持つ */
+
 /* ⭐3列目＝「数字と記号」の下に「英語」を重ねる（2026-09-19） */
 .bigcol{display:flex;flex-direction:column;gap:18px}
 /* ⭐Shift キー（2026-09-19 数字と記号）。いちばん下の段の左右。⚠左の Shift を置くので、段の左の空きは Shift の幅で埋める */

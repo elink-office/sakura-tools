@@ -83,7 +83,9 @@
           '<p>ツールは、AIを使い、自分ではコードを1行も書かずに、すべて1人で作っています。実際に使う人に話を聞いて、細かい要望に応えながら一つずつ形にしていくのが、さくらツールズの作り方です。</p>' +
         '</div>' +
       '</div>';
-    var ad = art.querySelector(".t-ad"), after = art.querySelector(".after");
+    /* ⭐記事のおしり＝「最後の」広告の場所の前（2026-10-26 本人「記事のこの記事を書いた人の位置を下にそろえて」）。
+       ⚠前は「最初の」広告の場所の前で、広告の場所が途中にもある記事（ホームポジション）では途中に出ていた */
+    var ads = art.querySelectorAll(".t-ad"), ad = ads.length ? ads[ads.length - 1] : null, after = art.querySelector(".after");
     /* ⭐置き場所＝記事のおしり（PCもスマホも）（2026-10-18 本人「記事の下にしよう。目次動くから」）。
        ⚠右の欄（目次の上）も試したが、目次が止まって動くので、右の欄は目次だけにした */
     art.insertBefore(box, ad || after || null);
