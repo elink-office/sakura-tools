@@ -10,8 +10,7 @@
 /* ⭐中央に置くのは共通の style.css（main.yomu）に移した（2026-09-26）。記事の見た目だけここに残す */
 
 /* 戻り道（トップ › 記事一覧 › 記事） */
-.crumb{font-size:.78rem;color:var(--ink-soft);margin:14px 0 6px}
-.crumb a{color:var(--ink-soft)}
+/* 道しるべ（.crumb）の見た目は style.css に移した（2026-10-27・全ページ共通） */
 
 .art h1{font-size:1.45rem;line-height:1.5;margin:6px 0 8px}
 .art .meta{font-size:.78rem;color:var(--ink-soft);margin:0 0 22px}

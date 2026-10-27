@@ -41,9 +41,9 @@
   ];
   /* ⓪ ヘッダーの右上（2026-09-21 本人「タッチタイピング、座席表、簡単スライドにして、ツール一覧にしようか」「トップには行きたい」＝トップも並びに）。
      ⚠前＝全部並べていた（7つで狭い画面からはみ出した）。座席表は2026-10-22に「教室の席替え」（本人「これはもう変更しよう！」）
+     ⭐「トップ」は外した（2026-10-27 本人「ヘッダー右上のトップは不要だ。これ、いらないんだけどって思ってたんだよ」）＝トップへは ロゴ と 道しるべの「トップ」
      ⚠長い名前にしたら、狭い画面で2行にならないか見る（style.css の「狭い画面はボタンだけ」の幅＝今は860px） */
   var PINS = [
-    ["", "トップ"],
     ["typing/", "さくらタイピング"],   /* ⭐2026-10-26 名前を「さくらタイピング」に（本人「さくらタッチタイピングより、さくらタイピングのほうが流れがいい」「呼びやすいほうがいい」） */
     ["seat/", "教室の席替え"],
     ["slide/", "簡単スライド"]
@@ -69,6 +69,7 @@
   var here = location.href.split("#")[0].split("?")[0];
   var rel = here.indexOf(base) === 0 ? here.slice(base.length) : "";
   rel = rel.replace(/index\.html$/, "");
+  var rawRel = rel;                      // 道しるべ用（練習の画面も「練習」と出す）
   rel = SAME[rel] || rel;
 
   function esc(t) { return t.replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
@@ -160,8 +161,60 @@
     document.body.insertBefore(b, document.body.firstChild);
   }
 
-  /* ヘッダーの直後で読むので、ヘッダーとツール一覧はすぐ出す。フッターは読み終わってから */
-  drawHead(); drawNav(); drawTest();
-  function rest() { drawHead(); drawNav(); drawFooter(); drawTest(); }
+
+  /* ④ 道しるべ（パンくず）（2026-10-27 本人「タイピングにある道しるべ、全部に着けたらいいんじゃないの？」「グレーでいいかな。細い字で、選択を太い字に」）
+     ⭐全部のページの道しるべを、ここ1か所で作る＝見た目も「›」のすき間も全ページでそろう（10/24 本人「そろえるのが基本だよね」）
+     ⭐中身はページの住所から作る。途中の段は CRUMB_PARENT の名前、最後の段（今のページ）は TOOLS などの名前か、見出し（h1）
+     ⭐置き場＝ヘッダーの下のピンクの帯（.site-sub）の中（2026-10-27 本人「これをさ、ピンクの帯に入れたらどうなのかな？」「帯に入れて」）
+       ＝帯の「ページの名前」と入れ替える。帯が無いページだけ main（さくらタイピングは .tpwrap）の頭
+     ⭐Google 向けの道しるべ（構造化データ BreadcrumbList）も一緒に出す */
+  var CRUMB_PARENT = { "articles/": "記事一覧", "typing/": "さくらタイピング", "typing/bun/": "長文のタイピング", "typing/student/": "学生用", "keiri/": "経理ツール" };
+  var CRUMB_NAME = { "typing/play.html": "練習", "typing/student/play.html": "練習", "typing/student/": "学生用", "typing/bun/": "長文のタイピング", "articles/": "記事一覧", "keiri/": "経理ツール" };
+  function crumbName(path) {
+    if (CRUMB_NAME[path]) return CRUMB_NAME[path];
+    for (var i = 0; i < TOOLS.length; i++) if (TOOLS[i] !== "sep" && TOOLS[i][0] === path) return TOOLS[i][1];
+    for (var j = 0; j < FOOT_LINKS.length; j++) if (FOOT_LINKS[j][0] === path) return FOOT_LINKS[j][1];
+    return null;
+  }
+  function pageTitle() {
+    var h = document.querySelector("h1"); if (!h) return (document.title || "").split("｜")[0];
+    var tl = h.querySelector(".bun-tl");
+    if (tl) return "No." + tl.textContent + " " + h.textContent.replace(tl.textContent, "").trim();   // 長文＝No.003 長寿のお祝いの名前
+    return h.textContent.split("｜")[0].trim();
+  }
+  function drawCrumb() {
+    var rel = rawRel;
+    if (!rel) return;                                                   // トップには出さない（2回呼ばれる＝すぐと読み終わり。2回目で見出しの名前に直す）
+    if (rel.indexOf("typing/student/") === 0) return;                   // 学生用には出さない＝帯の文章（タッチタイピングへの近道は…）をそのまま残す（2026-10-27 本人「学生はピンクの帯のところ文章にしてたと思う。戻せる？」）。⚠学生用はロゴ以外のリンクを置かない（9/16）
+    var segs = rel.split("/"), items = [["", "トップ"]], acc = "";
+    for (var i = 0; i < segs.length - 1; i++) {                        // 途中の段（親）
+      acc += segs[i] + "/";
+      if (acc !== rel && CRUMB_PARENT[acc]) items.push([acc, CRUMB_PARENT[acc]]);
+    }
+    items.push([rel, crumbName(rel) || pageTitle()]);                  // 今のページ
+    var h = items.map(function (it, k) {
+      return k === items.length - 1 ? '<b aria-current="page">' + esc(it[1]) + "</b>" : '<a href="' + url(it[0]) + '">' + esc(it[1]) + "</a>";
+    }).join('<span class="sep" aria-hidden="true">›</span>');
+    var old = document.querySelectorAll(".crumb");                       // 前の置き場（本文の上）に残っていたら外す
+    for (var o = 0; o < old.length; o++) old[o].parentNode.removeChild(old[o]);
+    var band = document.querySelector(".site-sub .wrap"), box = document.createElement("nav");
+    box.className = "crumb noprint";
+    if (band) { band.innerHTML = ""; band.classList.add("has-crumb"); band.appendChild(box); }
+    else {
+      var host = document.querySelector("main") || document.querySelector(".tpwrap") || document.querySelector(".fxwrap");
+      if (!host) return;
+      host.insertBefore(box, host.firstChild);
+    }
+    box.id = "siteCrumb"; box.setAttribute("aria-label", "現在地"); box.innerHTML = h;
+    /* Google 向け（BreadcrumbList） */
+    var ld = document.getElementById("crumbLd") || document.createElement("script"); ld.id = "crumbLd"; ld.type = "application/ld+json";
+    ld.textContent = JSON.stringify({ "@context": "https://schema.org", "@type": "BreadcrumbList",
+      itemListElement: items.map(function (it, k) { return { "@type": "ListItem", position: k + 1, name: it[1], item: url(it[0]) }; }) });
+    document.head.appendChild(ld);
+  }
+
+  /* ヘッダーの直後で読むので、ヘッダー・ツール一覧・道しるべはすぐ出す（帯はヘッダーの中＝もうある）。フッターは読み終わってから */
+  drawHead(); drawNav(); drawTest(); drawCrumb();
+  function rest() { drawHead(); drawNav(); drawFooter(); drawTest(); drawCrumb(); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", rest); else rest();
 })();

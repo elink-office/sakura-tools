@@ -59,7 +59,7 @@
     <li>作品の写真はモニター画面いっぱいに、名前と作品名も</li>
     <li>班ごとにするのもボタン一つ、発表会でも使えます</li>
   </ul>
-  <p class="rel-art">関連記事：<a href="../articles/no-server/">個人情報の名簿、ネットにコピペして大丈夫？</a></p>
+  <p class="rel-art">関連記事：<a href="../articles/no-server/">名簿をネットのツールにコピペして大丈夫？</a></p>
     </div>
     <figure class="t-sample noprint"><img src="../img/sample/slide-sample.png?v=1" width="1280" height="720" alt="簡単スライドの画面。「教室に戻ったらすること　①着替え　②プリントの直し　③読書」が大きく映っている"></figure>
   </div>
@@ -74,7 +74,7 @@
   <div class="slide-sample noprint">
     <!-- ⭐名前は①の切り替えに寄せる（2026-09-15 本人） -->
     <button type="button" class="mini" id="sampleT">サンプル①（文字をスライド）</button>
-    <button type="button" class="mini" id="sampleL">サンプル②（発表者をスライド）</button>
+    <button type="button" class="mini" id="sampleL">サンプル②（名前をスライド）</button>   <!-- ⭐①と形をそろえた（2026-10-27 本人「サンプルを見てほしいから、名前をスライドに変更して、中はそのままでいい」） -->
     <button type="button" class="mini" id="sampleOff" hidden>サンプルを消す</button>
     <span class="saving" id="sampleMsg"></span>
   </div>
@@ -93,7 +93,7 @@
       <div class="seg" id="kind">
         <!-- ⚠autocomplete="off"＝ブラウザが読み込み直しのときに前の選択を勝手に戻さないように（2026-09-15 本人「最初が選択された状態だった」） -->
         <label><input type="radio" name="kind" value="text" autocomplete="off"><span class="seg-in">文字をスライドにする</span></label>
-        <label><input type="radio" name="kind" value="list" autocomplete="off"><span class="seg-in">発表者をスライドにする</span></label>
+        <label><input type="radio" name="kind" value="list" autocomplete="off"><span class="seg-in">名前をスライドにする</span></label>
       </div>
       <!-- ⭐はじめはどちらも選ばない（2026-09-15 本人「最初はどっちも白にしておくことできないかな？選択したら色がつく」）。選ぶまで入力の欄は出さない -->
       <p class="hint" id="kindHint" style="margin:6px 0 8px">上のどちらかを選ぶと、入力の欄が出ます。</p>
@@ -314,7 +314,7 @@
       <ul>
         <li><strong>名前を付けて、<b style="font-size:inherit">20件</b>まで保存できます。</strong>残るのは<strong>使っている端末の中だけ</strong>です。</li>
         <li>呼び出すのは①の<strong>「このデータを読み込む」</strong>から。</li>
-        <li><b>「文字スライドの文字を保存」</b>と<b>「発表者スライドの名前を保存」</b>は、欄が分かれています。それぞれの欄のボタンは、その種類だけを保存・上書き・削除します。</li>
+        <li><b>「文字スライドの文字を保存」</b>と<b>「名前スライドの名前を保存」</b>は、欄が分かれています。それぞれの欄のボタンは、その種類だけを保存・上書き・削除します。</li>
         <li><b>「上書き」と「削除」は、①でえらんでいるもの</b>に効きます。上書きしても、座席表で入れた<b>番号や男女は残ります</b>。</li>
         <li>文字のデータは100件まで（⚠教室の席替えメーカーの一覧には出ません）。</li>
         <li>⚠<b>写真・班・作品名は保存されません。</b>写真が残るのは①の「この画面を保存する」だけです。</li>
@@ -340,7 +340,7 @@
         </div>
       </details>
       <details class="opt sub">
-        <summary>発表者スライドの名前を保存<span id="clsCount" class="cnt">0/20</span></summary>
+        <summary>名前スライドの名前を保存<span id="clsCount" class="cnt">0/20</span></summary>
         <div class="body">
           <!-- 🔴 上書きも置いた（2026-09-06 本人「名簿に関しては上書きできるはずだよね？」）。
                ⭐番号・男女は namesNow() で残すので、上書きしても落ちない -->
@@ -419,7 +419,7 @@
         <li>文字の位置と大きさは、<b>一覧で1枚ずつ</b>決めます。写真のときは<b>中央・上・下</b>（写真に重ねる）か<b>外</b>（下のボタンの行に小さく）を選べます。</li>
       </ul>
 
-      <h3>発表者をスライドにする</h3>
+      <h3>名前をスライドにする</h3>
       <ul>
         <li><b>教室の席替えメーカーで保存したデータ</b>があれば、選ぶだけで名前が入ります。班の情報があれば、班も一緒に入ります。</li>
         <li>Excelから貼り付けることもできます。名前だけの1列でも大丈夫です。</li>

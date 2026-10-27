@@ -228,7 +228,7 @@ button.primary:hover{background:var(--accent-deep)}   /* ⭐ステージの色�
   position:relative;overflow:hidden;min-height:300px;
   padding:26px 30px;display:flex;flex-direction:column;justify-content:center;
 }
-.stackbg{position:absolute;left:0;right:0;top:0;bottom:0;z-index:0;pointer-events:none}
+.stackbg{position:absolute;left:0;right:0;top:0;bottom:0;z-index:0;pointer-events:none;filter:brightness(.93) saturate(.92)}   /* ⭐タイルを全体に少し暗く＝カードの字が浮かぶ（2026-10-27 本人・10/24の宿題①「タイルの部分を少し全体的に暗くすると文字が浮かび上がる」） */
 /* タイル：ステージの総打鍵数だけタイルを作り、ランダムな順に塗っていく */
 .grid{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
 .cell{position:absolute;border:1px solid rgba(120,110,95,.11);border-radius:3px}
@@ -288,7 +288,7 @@ button.primary:hover{background:var(--accent-deep)}   /* ⭐ステージの色�
      ⚠元の値＝background .26 / blur(6px) saturate(1.35) */
   /* ⭐白の膜を濃く（.18→.7）＝文字とタイルの色が重ならない（2026-10-16 本人「後ろから見てると、今から入力する文字とタイルの色が重なって読みにくい」
        「透け感がないとかわいくない」「ほんの少しでも透けないとタイルが埋まった感じにもならない」）。すりガラス（blur）はそのまま */
-  background:rgba(255,255,255,.7);
+  background:rgba(255,255,255,.86);   /* ⭐入力をもっと浮き上がらせる（2026-10-27 本人「もっと入力を浮き上がらせることはできるかな？」）＝白の膜を濃く .7→.86。すこしだけ透けて、タイルが埋まった感じは残す */
   backdrop-filter:blur(7px) saturate(1.7);
   -webkit-backdrop-filter:blur(7px) saturate(1.7);
   /* タイルが空のときでも境目が分かるように、浮かせる */
@@ -801,10 +801,15 @@ a.stage{display:block;text-decoration:none;color:var(--text)}
 /* ⭐スタートは塗りつぶし（2026-09-17 本人「下が見えると気持ち悪い」「タイルのカードの色でスタートが白抜き」）。
    ⭐地＝ステージの色／字＝白。⚠前は白の半透明で、下のお題が透けていた */
 /* ⭐お題のカードの上にだけ重ねる。タイルと同じ光り方で立体に（2026-09-17 本人「立体感出せたらいいな」） */
+/* ⭐日本語のお題のローマ字は大文字で見せる（2026-10-27 本人「ローマ字は大文字に変更したい」・学生が打ちにくいと言うことがある）。
+   ⚠見せ方だけ＝打つのは今までどおり小文字（Shift はいらない）。
+   ⭐ホームポジション（1〜6）と画面のキーボードも大文字（本人「キーボードのキーに書いてあるから、画像のキーボードも大文字でいいかなと思ってた」）。
+   ⚠英語のステージ（abc・英単語・英文）は小文字のまま＝大文字と小文字を打ち分けるため */
+.roma.up,.kana.up{text-transform:uppercase}
 .bigmsg.startmsg{
   inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);
   /* ⭐大きさは固定（2026-09-17 本人「文字を隠すとボタンのサイズが変わる」「オレンジにそろえて」）。⚠前はお題の長さで横に伸びていた */
-  width:220px;height:118px;max-width:calc(100vw - 32px);
+  width:220px;height:96px;max-width:calc(100vw - 32px);   /* ⭐高さを少し小さく（2026-10-27 本人「スタートボタンが大きすぎる」「高さをもう少し小さくして」）。⚠前＝118px */
   border-radius:14px;cursor:pointer;
   background-color:var(--accent);
   background-image:
@@ -816,8 +821,8 @@ a.stage{display:block;text-decoration:none;color:var(--text)}
     0 6px 14px rgba(60,50,40,.22),
     0 2px 3px rgba(60,50,40,.14);
 }
-.bigmsg.startmsg em{color:#fff;font-size:34px;text-shadow:0 1px 2px rgba(0,0,0,.18)}
-.bigmsg.startmsg span{color:#fff;font-size:12px;margin-top:6px;text-shadow:0 1px 1px rgba(0,0,0,.15)}
+.bigmsg.startmsg em{color:#fff;font-size:34px;line-height:1.1;text-shadow:0 1px 2px rgba(0,0,0,.18)}
+.bigmsg.startmsg span{color:#fff;font-size:12px;margin-top:2px;text-shadow:0 1px 1px rgba(0,0,0,.15)}   /* ⭐「おやゆびでスペースキー」を少し上に（2026-10-27 本人）。⚠前＝margin-top:6px・em の行の高さはふつう */
 /* ⭐スタートを押すまで、お題の文字は見せない（2026-09-17 本人）。カードの枠はそのまま */
 .textwrap.waiting > :not(.startmsg):not(.touchnote):not(.stagenote){visibility:hidden}   /* ⭐スタートの下の説明は見せる（2026-09-20） */
 /* ⭐押す前は、お題のカードの枠・影・すりガラスも消す（2026-09-17 本人「文字の枠が残ってる」） */

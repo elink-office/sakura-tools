@@ -320,12 +320,12 @@
   function wrongKind(isText){
     /* ⭐まだどちらも選んでいないとき（2026-09-15 はじめは白にした） */
     if (!document.querySelector('input[name=kind]:checked')){
-      alert('①で「文字をスライドにする」か「発表者をスライドにする」を選んでください。');
+      alert('①で「文字をスライドにする」か「名前をスライドにする」を選んでください。');
       return true;
     }
     var k = kind();
     if (isText && k === 'list'){
-      alert('①で「発表者をスライドにする」を選んでいます。保存したい場合は「発表者スライドの名前を保存」を選んでください。');
+      alert('①で「名前をスライドにする」を選んでいます。保存したい場合は「名前スライドの名前を保存」を選んでください。');
       return true;
     }
     if (!isText && k === 'text'){
@@ -1210,7 +1210,7 @@
       setRows(parse(SAMPLE_LIST));
       /* ⭐サンプル②は「班ごとにまとめて映す」にしておく（2026-09-14 本人）。⚠消すと前の映し方に戻る（stash.mode） */
       var mg = document.querySelector('input[name=mode][value="group"]'); if (mg) mg.checked = true;
-      name = 'サンプル②（発表者をスライド）';
+      name = 'サンプル②（名前をスライド）';   // ボタンの名前とそろえる（2026-10-27）
     } else {
       $('lines').value = SAMPLE_TEXT;
       addLines(SAMPLE_TEXT);
@@ -1553,7 +1553,7 @@
     var st = readStore(), c = st.classes[i];
     if (!c) return;
     /* ⚠文字側のえらびには名前のデータも並ぶ。⭐欄と種類が違うときは消さない */
-    if (isText && c.kind !== 'slide'){ alert('「' + (c.label||'') + '」は名前のデータです。「発表者スライドの名前を保存」の欄で消してください。'); return; }
+    if (isText && c.kind !== 'slide'){ alert('「' + (c.label||'') + '」は名前のデータです。「名前スライドの名前を保存」の欄で消してください。'); return; }
     // ⚠名簿は座席表メーカーなどと同じ置き場。文字のまとまりはこのページのものだけ
     // ⭐名簿を消すときの文は roster-tools.js がそろえる（2026-09-27）
     var msg = (c.kind !== 'slide' && window.SAKURA_ROSTER) ? SAKURA_ROSTER.delMsg(c.label||'')
