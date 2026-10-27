@@ -72,7 +72,7 @@ var STAGES=[
 
  /* ⭐1回30語＝タイル約100枚（2026-09-18 本人「100だと1分100だから、ちょうど1分か」→「それでいこう」）。
       ⚠文字はタイルの約1.07倍（しゅ＝2文字で1枚）＝100/1分の人で1分と少し。前は15語＝約50枚 */
- {name:"単語",mode:"kana",shuffle:true,pick:30,fj:false,
+ {name:"単語",mode:"kana",shuffle:true,pick:21,fj:false,   /* ⭐1回21語（約76字）＝1分70字くらいの人に合わせて7割に（2026-10-27 本人「多すぎると萎えるよね。1分70字くらいの人に合わせて7割くらいにしてみるか」）。⚠前＝30語（約108字） */
   desc:"ことばを1つずつ。短いので、正確さだけに集中できます。",
   items:[
     "あさごはん","でんしゃ","かいもの","せんたく","そうじ","しごと","やすみ","てんき","まいにち","ともだち","かぞく","がっこう","きょうしつ",
@@ -285,6 +285,10 @@ STAGES.push({name:"ミスなしチャレンジ（英語）",lang:"en",mode:"mix"
                "あいうえお","きゃきゅきょ","単語","日常のことば","日常のことば（ながめ）",
                "ミスなしチャレンジ","数字","記号","記号（Shift）","abc","英単語","日常のことば（英語）","英文（記号あり）","ミスなしチャレンジ（英語）"];
   STAGES.sort(function(a,b){ return ORDER.indexOf(a.name) - ORDER.indexOf(b.name); });
+  /* ⭐カードの幅を、そのステージでいちばん長いお題に合わせて固定（fixW）（2026-10-27 本人「単語は…固定にしたい」→「ほかのステージも箱のサイズ固定がいいと思う」）
+     ⚠長い文章のステージは今は外す（本人「長い文章はちょっと待って」）＝日常のことば（ながめ）・英文（記号あり）。ミスなしチャレンジも外す（お題の切れ方が毎回ちがう） */
+  var NOFIX = ["日常のことば（ながめ）","英文（記号あり）"];
+  STAGES.forEach(function(st){ if(!st.challenge && NOFIX.indexOf(st.name)<0) st.fixW=true; });
 })();
 
 /* ⭐英語の日本語訳（2026-09-16 本人「英語が苦手だからこれで覚えたい」）。
@@ -793,7 +797,7 @@ function buildKeyboard(){
          四本指のホーム（asdf jkl;）は枠線だけで囲む */
       k.className="key"+(HOMEKEYS[c]?" hp":"")+((c==="f"||c==="j")?" fj":"");
       k.setAttribute("data-k",c);
-      k.textContent=c;
+      k.textContent=/[a-z]/.test(c) ? c.toUpperCase() : c;   /* ⭐キーの字は大文字（本物のキーボードと同じ・2026-10-27 本人）。data-k は小文字のまま */
       var f=FINGER[c];
       if(f){
         var bar=document.createElement("div");
@@ -1217,15 +1221,34 @@ function cancelCelebrate(){ if(celebrateCancel) celebrateCancel(); }
 function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
 /* 打っている途中にローマ字の表示が kyo ↔ kixyo と変わるので、
    ガラスの幅は「このお題でありうる最長」で先に固定しておく（幅が踊らない） */
+/* ⭐単語のステージは、カードの幅を「そのステージでいちばん長いお題」に合わせて固定（2026-10-27 本人「単語は一番横幅取るサイズに合わせて四角のサイズは固定にしたい」）
+     ＝お題が変わるたびにカードの大きさが変わらない。対象は STAGES の fixW:true のステージ */
 function lockGlassWidth(){
   var tw=document.querySelector(".textwrap"), m=$("measure");
   if(!tw||!m||!syls.length) return;
+  var st=STAGES[stageIdx];
+  if(st && st.fixW){
+    var mx=0;
+    for(var q=0;q<curItems.length;q++){
+      var sy=itemSyls(q);
+      if($("optHome") && $("optHome").checked && st.basic) sy=sy.concat([{disp:"fj",cands:["fj"],home:true}]);
+      var it=curItems[q], kk = st.mode==="kana" ? it : null;
+      mx=Math.max(mx, glassWidthFor(sy, kk ? kanjiTokens(kk) : null));
+    }
+    tw.style.width=Math.ceil(mx)+"px";
+    return;
+  }
+  tw.style.width=Math.ceil(glassWidthFor(syls, kanjiToks))+"px";
+}
+function glassWidthFor(syls, kanjiToks){
+  var m=$("measure");
   var cs=getComputedStyle($("kana"));
   m.style.font=cs.font; m.style.letterSpacing=cs.letterSpacing;
-  m.textContent=syls.map(function(x){return x.home?"fj":x.disp}).join("");
+  m.style.textTransform=cs.textTransform;
+  m.textContent=syls.map(function(x){return x.home?"FJ":x.disp}).join("");
   var wKana=m.getBoundingClientRect().width + syls.length*7;   // 現在位置の帯の分
   var cs2=getComputedStyle($("roma"));
-  m.style.font=cs2.font; m.style.letterSpacing=cs2.letterSpacing;
+  m.style.font=cs2.font; m.style.letterSpacing=cs2.letterSpacing; m.style.textTransform=cs2.textTransform;   /* 大文字のときは大文字の幅で測る */
   m.textContent=syls.map(function(x){
     var mx=x.cands[0];
     for(var i=1;i<x.cands.length;i++) if(x.cands[i].length>mx.length) mx=x.cands[i];
@@ -1234,13 +1257,13 @@ function lockGlassWidth(){
   var wRoma=m.getBoundingClientRect().width;
   /* ⭐漢字の行があるときは、その幅も入れる（2026-10-16） */
   var wKanji=0, kl=document.getElementById("kanjiLine");
-  if(kanjiToks && kl && kl.style.display!=="none"){
+  if(kanjiToks && kl){   /* 隠れていても字の大きさは測れる（単語の固定幅でほかのお題の漢字も測るため） */
     var cs3=getComputedStyle(kl);
     m.style.font=cs3.font; m.style.letterSpacing=cs3.letterSpacing;
     m.textContent=kanjiToks.map(function(x){return x.k}).join("");
     wKanji=m.getBoundingClientRect().width + kanjiToks.length*2;
   }
-  tw.style.width=Math.ceil(Math.max(wKana,wRoma,wKanji)+44)+"px";
+  return Math.max(wKana,wRoma,wKanji)+44;
 }
 function render(){
   var kh="", rh="";
@@ -1256,13 +1279,14 @@ function render(){
             '<span class="cur">'+esc(s.disp.charAt(buf.length))+'</span>'+
             esc(s.disp.substr(buf.length+1));
     }else{
-      kh += '<span class="'+cls+'">'+(s.home?"fj":esc(s.disp))+"</span>";
+      kh += '<span class="'+cls+'">'+(s.home?"FJ":esc(s.disp))+"</span>";   /* ⭐終わりの f j は大文字で（2026-10-27 本人「fjfjってくっつくから見にくい」） */
     }
 
-    if(i<si){ rh += '<span class="done">'+esc(s.cands[0])+"</span>"; }
+    if(i<si){ rh += '<span class="done">'+esc(s.home?"FJ":s.cands[0])+"</span>"; }
     else if(i===si){
       var pick=s.cands[0];
       for(var j=0;j<s.cands.length;j++){ if(s.cands[j].indexOf(buf)===0){ pick=s.cands[j]; break; } }
+      if(s.home) pick=pick.toUpperCase();   /* ⭐f j は大文字で見せる（打つのは小文字） */
       if(plain && pick.length>1){
         rh += '<span class="typed">'+esc(pick.substr(0,buf.length))+'</span>'+
               '<span class="cur">'+esc(pick.charAt(buf.length))+'</span>'+
@@ -1271,7 +1295,7 @@ function render(){
         rh += '<span class="typed">'+esc(pick.substr(0,buf.length))+'</span><span class="cur">'+esc(pick.substr(buf.length))+"</span>";
       }
     }
-    else{ rh += esc(s.cands[0]); }
+    else{ rh += esc(s.home?"FJ":s.cands[0]); }
   }
   $("kana").innerHTML=kh;
   $("roma").innerHTML=rh;
@@ -1501,6 +1525,11 @@ function loadItem(i){
   /* ⭐日本語のお題は、上に漢字の行を出す（2026-10-16 本人）。チャレンジは かな のお題だけ */
   var _kkey = st.challenge ? ((_it && _it.kana) ? _it.t : null) : (st.mode==="kana" ? _it : null);
   kanjiToks = _kkey ? kanjiTokens(_kkey) : null;
+  /* ⭐日本語のお題（かなを打つもの）だけ、ローマ字を大文字で見せる（2026-10-27 本人） */
+  /* ⭐ホームポジションなど、英語以外の英字のお題（direct）も大文字で見せる（2026-10-27 本人）。英語（lang:"en"）は小文字のまま */
+  var _up = st.mode==="kana" || !!(st.challenge && _it && _it.kana) || (st.mode==="direct" && st.lang!=="en");
+  if($("roma")) $("roma").classList.toggle("up", _up);
+  if($("kana")) $("kana").classList.toggle("up", _up && st.mode==="direct");
   $("stProg").innerHTML="お題<br>"+(i+1)+" / "+curItems.length;
   render();
   lockGlassWidth();
